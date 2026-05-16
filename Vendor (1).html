@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Medistock | Supplier Portal</title>
+    <style>
+        /* --- CSS STYLES --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            display: flex;
+            background-color: #f4f7fe;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* --- SIDEBAR --- */
+        .sidebar {
+            width: 280px;
+            background: #0b1437;
+            display: flex;
+            flex-direction: column;
+            padding: 2.5rem 1.2rem;
+            z-index: 10;
+            color: white;
+            box-shadow: 4px 0px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .brand {
+            padding: 0 0.5rem 3rem;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .brand-logo-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .sidebar-logo {
+            width: 40px;
+            height: 40px;
+            object-fit: contain;
+            border-radius: 8px;
+        }
+
+        .brand h1 {
+            color: #ffffff;
+            font-size: 1.3rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+
+        .brand p {
+            font-size: 0.65rem;
+            color: #707ebe;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-left: 52px;
+            margin-top: -5px;
+        }
+
+        .nav-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            flex-grow: 1;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 14px 18px;
+            text-decoration: none;
+            color: #a3aed0;
+            font-weight: 600;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .nav-item:hover {
+            background: rgba(255, 255, 255, 0.05);
+            color: #ffffff;
+        }
+
+        .nav-item.active {
+            background: #4318FF;
+            color: white;
+            box-shadow: 0 10px 20px rgba(67, 24, 255, 0.3);
+        }
+
+        .logout-btn {
+            margin-top: auto;
+            color: #ff8077;
+            background: rgba(238, 93, 80, 0.05);
+            border: 1px solid rgba(238, 93, 80, 0.1);
+        }
+
+        /* --- MAIN WRAPPER --- */
+        .wrapper {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        /* --- HEADER --- */
+        .top-header {
+            background: white;
+            display: flex;
+            flex-direction: column;
+            padding: 1.5rem 2.5rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .header-top-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .search-container {
+            width: 450px;
+        }
+
+        .search-container input {
+            width: 100%;
+            padding: 12px 20px;
+            background: #f4f7fe;
+            border: 1px solid #e2e8f0;
+            border-radius: 14px;
+            outline: none;
+        }
+
+        .header-right-actions {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .notification-container {
+            position: relative;
+            cursor: pointer;
+        }
+
+        .notification-icon {
+            font-size: 1.3rem;
+            color: #a3aed0;
+            background: #f4f7fe;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 10px;
+        }
+
+        .notif-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #ee5d50;
+            color: white;
+            font-size: 0.65rem;
+            padding: 2px 6px;
+            border-radius: 50%;
+            border: 2px solid white;
+        }
+
+        .user-meta {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding-left: 20px;
+            border-left: 1px solid #f1f5f9;
+        }
+
+        .profile-thumb {
+            width: 45px;
+            height: 45px;
+            background: #4318FF;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .profile-thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .role-badge {
+            font-size: 0.7rem;
+            font-weight: 800;
+            color: #4318FF;
+            text-transform: uppercase;
+            background: rgba(67, 24, 255, 0.1);
+            padding: 2px 8px;
+            border-radius: 5px;
+        }
+
+        /* --- NOTIFICATION TOASTS --- */
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: -400px;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 12px;
+            font-weight: 600;
+            transition: 0.5s ease;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .toast.success {
+            background: #05cd99;
+            box-shadow: 0 10px 20px rgba(5, 205, 153, 0.3);
+        }
+
+        .toast.danger {
+            background: #ee5d50;
+            box-shadow: 0 10px 20px rgba(238, 93, 80, 0.3);
+        }
+
+        /* --- CONTENT --- */
+        .main-content {
+            padding: 2rem 2.5rem;
+            overflow-y: auto;
+            flex-grow: 1;
+        }
+
+        .view-section {
+            display: none;
+            animation: slideUp 0.4s ease;
+        }
+
+        .view-section.active {
+            display: block;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(15px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 1.5rem;
+            margin-bottom: 1.2rem;
+            border: 1px solid #f1f5f9;
+            border-left: 5px solid transparent;
+            transition: 0.3s;
+        }
+
+        .hosp-name {
+            font-size: 1.1rem;
+            color: #1b2559;
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+        }
+
+        .med-details {
+            color: #a3aed0;
+            font-size: 0.9rem;
+            margin-top: 4px;
+        }
+
+        .priority-dot {
+            height: 8px;
+            width: 8px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 8px;
+        }
+
+        .priority-high {
+            background: #ee5d50;
+        }
+
+        .priority-med {
+            background: #ffb547;
+        }
+
+        .priority-low {
+            background: #05cd99;
+        }
+
+        .new-tag {
+            background: #4318FF;
+            color: white;
+            font-size: 0.6rem;
+            padding: 2px 8px;
+            border-radius: 4px;
+            margin-right: 12px;
+            display: none;
+            font-weight: 800;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 10px;
+            border: none;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .btn-accept {
+            background: #05cd99;
+            color: white;
+        }
+
+        .btn-deny {
+            background: #fee2e2;
+            color: #ee5d50;
+        }
+
+        .status-label {
+            font-weight: 800;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            padding: 8px 15px;
+            border-radius: 8px;
+        }
+
+        /* Account Forms */
+        .form-group {
+            margin-bottom: 1.2rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: #1b2559;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #e0e5f2;
+            border-radius: 10px;
+            outline: none;
+            background: #f9fbff;
+        }
+    </style>
+</head>
+
+<body onload="initializeVendorPage()">
+
+    <div id="toast-success" class="toast success">✅ Order Accepted Successfully!</div>
+    <div id="toast-deny" class="toast danger">❌ Order Denied</div>
+    <div id="toast-profile" class="toast success">✅ Profile Updated Successfully!</div>
+
+    <aside class="sidebar">
+        <div class="brand">
+            <div class="brand-logo-row">
+                <img src="logformedistock.png" alt="Logo" class="sidebar-logo">
+                <h1>Smart Medistock</h1>
+            </div>
+            <p>Supplier Portal</p>
+        </div>
+        <nav class="nav-menu">
+            <div class="nav-item active" onclick="showSection('orders', this)">Orders</div>
+            <div class="nav-item" onclick="showSection('profile', this)">Account Settings</div>
+            <div class="nav-item logout-btn" onclick="handleLogout()">Logout</div>
+        </nav>
+    </aside>
+
+    <div class="wrapper">
+        <header class="top-header">
+            <div class="header-top-row">
+                <div class="search-container"><input type="text" id="searchInput" onkeyup="filterSearch()"
+                        placeholder="Search Hospital or Medicine..."></div>
+                <div class="header-right-actions">
+                    <div id="current-date" style="font-size: 0.85rem; color: #a3aed0;"></div>
+                    <div class="notification-container" onclick="showOrdersWithNew()">
+                        <div class="notification-icon">🔔</div>
+                        <span class="notif-badge" id="main-badge">6</span>
+                    </div>
+                    <div class="user-meta">
+                        <div class="user-details">
+                            <p id="display-name" style="font-weight: 700; color: #1b2559;">Venkatesh</p><span
+                                class="role-badge" id="display-role">Supplier</span>
+                        </div>
+                        <div class="profile-thumb"><img
+                                src="https://ui-avatars.com/api/?name=Venkatesh&background=4318FF&color=fff"></div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <section id="orders" class="view-section active">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 20px;">
+                    <h2 style="color: #1b2559;">Incoming Stock Orders</h2>
+                </div>
+
+                <div id="order-list">
+                    <div class="card searchable" id="order-1">
+                        <div style="display:flex; justify-content:space-between; align-items:center; width:100%;">
+                            <div class="order-info">
+                                <h3 class="hosp-name"><span class="new-tag">NEW</span>City General Hospital</h3>
+                                <p class="med-details"><span
+                                        class="priority-dot priority-high"></span><strong>Paracetamol 650mg</strong> —
+                                    500 Units</p>
+                            </div>
+                            <div class="action-area" style="display:flex; gap:10px;">
+                                <button class="btn btn-deny" onclick="handleOrderAction(1, 'deny')">Decline</button>
+                                <button class="btn btn-accept" onclick="handleOrderAction(1, 'accept')">Accept</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card searchable" id="order-2">
+                        <div style="display:flex; justify-content:space-between; align-items:center; width:100%;">
+                            <div class="order-info">
+                                <h3 class="hosp-name"><span class="new-tag">NEW</span>Sunrise Medical Center</h3>
+                                <p class="med-details"><span
+                                        class="priority-dot priority-med"></span><strong>Amoxicillin 500mg</strong> —
+                                    1,200 Units</p>
+                            </div>
+                            <div class="action-area" style="display:flex; gap:10px;">
+                                <button class="btn btn-deny" onclick="handleOrderAction(2, 'deny')">Decline</button>
+                                <button class="btn btn-accept" onclick="handleOrderAction(2, 'accept')">Accept</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card searchable" id="order-3">
+                        <div style="display:flex; justify-content:space-between; align-items:center; width:100%;">
+                            <div class="order-info">
+                                <h3 class="hosp-name"><span class="new-tag">NEW</span>Apollo Specialty Clinic</h3>
+                                <p class="med-details"><span class="priority-dot priority-low"></span><strong>Vitamin D3
+                                        Caps</strong> — 300 Packs</p>
+                            </div>
+                            <div class="action-area" style="display:flex; gap:10px;">
+                                <button class="btn btn-deny" onclick="handleOrderAction(3, 'deny')">Decline</button>
+                                <button class="btn btn-accept" onclick="handleOrderAction(3, 'accept')">Accept</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="profile" class="view-section">
+                <h2 style="margin-bottom: 1.5rem; color: #1b2559;">Account Settings</h2>
+                <div class="card" style="max-width: 600px; border-left:none;">
+                    <div class="form-group"><label>Full Name</label><input type="text" id="input-name"></div>
+                    <div class="form-group"><label>Username</label><input type="text" id="input-username" readonly
+                            style="background-color: #e2e8f0; cursor: not-allowed;" title="Username cannot be changed">
+                    </div>
+                    <div class="form-group"><label>Email Address</label><input type="email" id="input-email"></div>
+                    <div class="form-group"><label>Facility Address</label><textarea id="input-address" rows="3"
+                            style="width: 100%; padding: 12px; border: 1px solid #e0e5f2; border-radius: 10px; outline: none; background: #f9fbff; resize: none;"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Account Role</label>
+                        <select id="input-role">
+                            <option value="Supplier">Supplier</option>
+                            <option value="Medicine Supplier">Medicine Supplier</option>
+                            <option value="Distributor">Distributor</option>
+                            <option value="Manufacturer">Manufacturer</option>
+                        </select>
+                    </div>
+                    <div style="margin: 20px 0; border-top: 1px solid #eee; padding-top: 20px;">
+                        <h4 style="margin-bottom:15px; color:#1b2559;">Security</h4>
+                        <div class="form-group"><label>New Password</label><input type="password" id="input-pass"
+                                placeholder="Leave blank to keep current password"></div>
+                    </div>
+                    <button class="btn btn-accept" onclick="saveProfile()" style="width: 100%;">Save All
+                        Changes</button>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        function updateDate() {
+            document.getElementById('current-date').innerText = new Date().toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' });
+        }
+
+        function initializeVendorPage() {
+            updateDate();
+            const stored = localStorage.getItem('supplierProfile');
+            if (!stored) {
+                return;
+            }
+            const profile = JSON.parse(stored);
+            if (profile.name) {
+                document.getElementById('display-name').innerText = profile.name.split(' ')[0] || profile.username || 'Supplier';
+                document.getElementById('input-name').value = profile.name;
+            }
+            if (profile.username) {
+                document.getElementById('input-username').value = profile.username;
+            }
+            if (profile.email) {
+                document.getElementById('input-email').value = profile.email;
+            }
+            if (profile.address) {
+                document.getElementById('input-address').value = profile.address;
+            }
+
+            // Ensure the role exists in the dropdown
+            const roleSelect = document.getElementById('input-role');
+            let optionExists = Array.from(roleSelect.options).some(opt => opt.value === profile.role);
+            if (!optionExists && profile.role) {
+                let opt = document.createElement('option');
+                opt.value = profile.role;
+                opt.text = profile.role;
+                roleSelect.add(opt);
+            }
+
+            if (profile.role) {
+                document.getElementById('display-role').innerText = profile.role;
+                document.getElementById('input-role').value = profile.role;
+            }
+            const avatarImg = document.querySelector('.profile-thumb img');
+            if (avatarImg && (profile.name || profile.username)) {
+                avatarImg.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(profile.name || profile.username)}&background=4318FF&color=fff`;
+            }
+        }
+
+        function showSection(sectionId, element) {
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+            element.classList.add('active');
+            document.querySelectorAll('.view-section').forEach(sec => sec.classList.remove('active'));
+            document.getElementById(sectionId).classList.add('active');
+        }
+
+        function showOrdersWithNew() {
+            showSection('orders', document.querySelector('.nav-item'));
+            document.querySelectorAll('.new-tag').forEach(tag => tag.style.display = 'inline-block');
+            document.getElementById('main-badge').style.display = 'none';
+        }
+
+        // HANDLE ACCEPT/DENY WITH ONE-TIME ACCESS
+        function handleOrderAction(orderId, action) {
+            const card = document.getElementById(`order-${orderId}`);
+            const actionArea = card.querySelector('.action-area');
+            const newTag = card.querySelector('.new-tag');
+
+            // Hide the NEW tag if it's there
+            if (newTag) newTag.style.display = 'none';
+
+            if (action === 'accept') {
+                // UI Updates
+                card.style.borderLeftColor = '#05cd99';
+                actionArea.innerHTML = '<span class="status-label" style="background:#e6f9f4; color:#05cd99;">Accepted</span>';
+                showToast('toast-success');
+            } else {
+                // UI Updates
+                card.style.borderLeftColor = '#ee5d50';
+                actionArea.innerHTML = '<span class="status-label" style="background:#fff2f1; color:#ee5d50;">Denied</span>';
+                showToast('toast-deny');
+            }
+        }
+
+        function showToast(toastId) {
+            const toast = document.getElementById(toastId);
+            toast.style.right = '20px';
+            setTimeout(() => { toast.style.right = '-400px'; }, 3000);
+        }
+
+        function saveProfile() {
+            const newName = document.getElementById('input-name').value;
+            const newEmail = document.getElementById('input-email').value;
+            const newAddress = document.getElementById('input-address').value;
+            const newRole = document.getElementById('input-role').value;
+            const newPass = document.getElementById('input-pass').value;
+
+            document.getElementById('display-name').innerText = newName.split(' ')[0] || 'Supplier';
+            document.getElementById('display-role').innerText = newRole;
+
+            const storedProfile = JSON.parse(localStorage.getItem('supplierProfile')) || {};
+            const storedAccount = JSON.parse(localStorage.getItem('supplierAccount')) || {};
+
+            storedProfile.name = newName;
+            storedProfile.email = newEmail;
+            storedProfile.address = newAddress;
+            storedProfile.role = newRole;
+            if (newPass) {
+                storedProfile.password = newPass;
+            }
+
+            localStorage.setItem('supplierProfile', JSON.stringify(storedProfile));
+
+            // Keep the main supplier account synced for future logins
+            storedAccount.name = newName;
+            storedAccount.email = newEmail;
+            storedAccount.address = newAddress;
+            storedAccount.role = newRole;
+            if (newPass) {
+                storedAccount.password = newPass;
+            }
+            localStorage.setItem('supplierAccount', JSON.stringify(storedAccount));
+            
+            // Also update the global users dictionary
+            const allUsers = JSON.parse(localStorage.getItem('smartMediStockUsers')) || {};
+            if (allUsers[storedProfile.username]) {
+                allUsers[storedProfile.username].name = newName;
+                allUsers[storedProfile.username].email = newEmail;
+                allUsers[storedProfile.username].address = newAddress;
+                allUsers[storedProfile.username].role = newRole;
+                if (newPass) allUsers[storedProfile.username].password = newPass;
+                localStorage.setItem('smartMediStockUsers', JSON.stringify(allUsers));
+            }
+
+            const avatarImg = document.querySelector('.profile-thumb img');
+            if (avatarImg) {
+                avatarImg.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(newName || storedProfile.username)}&background=4318FF&color=fff`;
+            }
+
+            showToast('toast-profile');
+            document.getElementById('input-pass').value = '';
+        }
+
+        function filterSearch() {
+            let filter = document.getElementById('searchInput').value.toLowerCase();
+            let cards = document.querySelectorAll('.searchable');
+            cards.forEach(card => {
+                let text = card.innerText.toLowerCase();
+                card.style.display = text.includes(filter) ? "block" : "none";
+            });
+        }
+
+        function handleLogout() {
+            if (confirm("Logout?")) {
+                localStorage.removeItem('supplierProfile');
+                window.location.href = 'signin.html';
+            }
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart MediStock - Portal</title>
+    <link rel="icon" type="image/png" href="logformedistock.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* BASE STYLES */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #ffffff;
+            display: flex;
+            min-height: screen;
+            overflow-x: hidden;
+        }
+
+        .hidden-view {
+            display: none !important;
+        }
+
+        .required-star {
+            color: #ff4d4d;
+            margin-left: 2px;
+            font-weight: bold;
+        }
+
+        /* SIDEBAR SECTION */
+        .sidebar {
+            display: none;
+            width: 40%;
+            color: #ffffff;
+            padding: 64px;
+            flex-direction: column;
+            justify-content: space-between;
+            position: fixed;
+            height: 100vh;
+            background-color: #000;
+            background-image:
+                linear-gradient(to right, rgba(0, 0, 0, 0.85) 30%, rgba(0, 0, 0, 0.2) 100%),
+                url('https://images.pexels.com/photos/4033148/pexels-photo-4033148.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2');
+            background-size: cover;
+            background-position: center;
+            box-shadow: 10px 0 30px rgba(0, 0, 0, 0.3);
+            z-index: 10;
+        }
+
+        @media (min-width: 1024px) {
+            .sidebar {
+                display: flex;
+            }
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 96px;
+        }
+
+        .logo-container {
+            width: 52px;
+            height: 52px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(8px);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .logo-container img {
+            width: 40px;
+            height: 40px;
+            object-fit: contain;
+        }
+
+        .brand-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: -0.025em;
+        }
+
+        .hero-title {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 24px;
+            line-height: 1.1;
+        }
+
+        .hero-desc {
+            color: #d1d5db;
+            font-size: 1.125rem;
+            line-height: 1.6;
+            max-width: 320px;
+            font-weight: 300;
+        }
+
+        .footer-text {
+            font-size: 0.875rem;
+            color: #9ca3af;
+            font-weight: 500;
+            letter-spacing: 0.025em;
+        }
+
+        /* MAIN FORM SECTION */
+        .main-content {
+            width: 100%;
+            padding: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        @media (min-width: 1024px) {
+            .main-content {
+                width: 60%;
+                margin-left: 40%;
+                padding: 80px;
+            }
+        }
+
+        .form-wrapper {
+            max-width: 500px;
+            width: 100%;
+        }
+
+        h2 {
+            font-size: 2.25rem;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 8px;
+        }
+
+        .sub-heading {
+            color: #6b7280;
+            margin-bottom: 40px;
+            font-size: 1.125rem;
+        }
+
+        /* INPUT STYLES */
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .label {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: #9ca3af;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 8px;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 16px;
+            border-radius: 12px;
+            background-color: #f3f7ff;
+            border: 1px solid #e2e8f0;
+            font-size: 1rem;
+            transition: all 0.2s ease;
+            outline: none;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            border-color: #10b981;
+            background-color: #ffffff;
+            box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1);
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        @media (min-width: 768px) {
+            .grid-2 {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        /* BUTTONS & LINKS */
+        .btn-submit {
+            width: 100%;
+            background-color: #000;
+            color: #fff;
+            font-weight: 700;
+            padding: 16px;
+            border-radius: 12px;
+            border: none;
+            font-size: 1.125rem;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-submit:hover {
+            background-color: #1f2937;
+        }
+
+        .link-green {
+            color: #10b981;
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        .link-green:hover {
+            text-decoration: underline;
+        }
+
+        .flex-between {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.875rem;
+            margin-bottom: 24px;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #4b5563;
+            cursor: pointer;
+        }
+
+        .checkbox-group input {
+            width: 16px;
+            height: 16px;
+        }
+
+        .switch-view {
+            margin-top: 32px;
+            text-align: center;
+            color: #4b5563;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="sidebar">
+        <div>
+            <div class="logo-area">
+                <div class="logo-container">
+                    <img src="logformedistock.png" alt="Logo">
+                </div>
+                <span class="brand-name">Smart MediStock</span>
+            </div>
+
+            <div id="left-text-login">
+                <h1 class="hero-title">Healthcare <br>Supply Chain.</h1>
+                <p class="hero-desc">Efficiently track and manage pharmaceutical inventory with our enterprise-grade
+                    platform.</p>
+            </div>
+
+            <div id="left-text-signup" class="hidden-view">
+                <h1 class="hero-title">Join the future of <br>Medicine.</h1>
+                <p class="hero-desc">Register your facility to ensure vital medicines reach patients in need, exactly
+                    when they need them.</p>
+            </div>
+        </div>
+
+        <div class="footer-text">
+            © 2026 Smart MediStock System
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="form-wrapper">
+
+            <div id="login-view">
+                <h2>Login</h2>
+                <p class="sub-heading">Enter your details to access the stock dashboard.</p>
+
+                <form onsubmit="handleLogin(event)">
+                    <div class="form-group">
+                        <label class="label">Username<span class="required-star">*</span></label>
+                        <input id="login-username" type="text" placeholder="Enter username" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="label">Password<span class="required-star">*</span></label>
+                        <input id="login-password" type="password" placeholder="Enter password" required>
+                    </div>
+
+                    <div class="flex-between">
+                        <label class="checkbox-group">
+                            <input type="checkbox"> Remember me
+                        </label>
+                        <a href="#" class="link-green">Forgot password?</a>
+                    </div>
+
+                    <button type="submit" class="btn-submit">Log In</button>
+                </form>
+
+                <div class="switch-view">
+                    Don't have an account? <a href="#" onclick="toggleAuth('signup')" class="link-green">Sign up</a>
+                </div>
+            </div>
+
+            <div id="signup-view" class="hidden-view">
+                <h2>Create Account</h2>
+                <p class="sub-heading">Register your facility to start managing stock.</p>
+
+                <form onsubmit="handleSignup(event)">
+                    <div class="grid-2 form-group">
+                        <div>
+                            <label class="label">Name<span class="required-star">*</span></label>
+                            <input id="signup-name" type="text" placeholder="Full Name" required>
+                        </div>
+                        <div>
+                            <label class="label">Username<span class="required-star">*</span></label>
+                            <input id="signup-username" type="text" placeholder="User Name" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="label">Email Address<span class="required-star">*</span></label>
+                        <input id="signup-email" type="email" placeholder="email@hospital.com" required>
+                    </div>
+
+                    <div class="grid-2 form-group">
+                        <div>
+                            <label class="label">Set Password<span class="required-star">*</span></label>
+                            <input id="signup-password" type="password" placeholder="••••••••" required>
+                        </div>
+                        <div>
+                            <label class="label">Confirm<span class="required-star">*</span></label>
+                            <input id="signup-confirm" type="password" placeholder="••••••••" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="label">Facility Address<span class="required-star">*</span></label>
+                        <textarea id="signup-address" placeholder="Facility Name & Full Address" required rows="2"
+                            style="resize:none"></textarea>
+                    </div>
+
+                    <div class="grid-2 form-group">
+                        <div>
+                            <label class="label">Category<span class="required-star">*</span></label>
+                            <select id="catSel" onchange="updateRoles()" required>
+                                <option value="">Select</option>
+                                <option value="hospital">Hospital</option>
+                                <option value="clinic">Clinic</option>
+                                <option value="store">Medical Store</option>
+                                <option value="supplier">Supplier</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="label">Role<span class="required-star">*</span></label>
+                            <select id="roleSel" required>
+                                <option value="">Select Role</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-submit" style="margin-top: 16px;">Create Account</button>
+                </form>
+
+                <div class="switch-view">
+                    Already have an account? <a href="#" onclick="toggleAuth('login')" class="link-green">Log in</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleAuth(view) {
+            const loginView = document.getElementById('login-view');
+            const signupView = document.getElementById('signup-view');
+            const leftLogin = document.getElementById('left-text-login');
+            const leftSignup = document.getElementById('left-text-signup');
+
+            if (view === 'signup') {
+                loginView.classList.add('hidden-view');
+                signupView.classList.remove('hidden-view');
+                leftLogin.classList.add('hidden-view');
+                leftSignup.classList.remove('hidden-view');
+            } else {
+                signupView.classList.add('hidden-view');
+                loginView.classList.remove('hidden-view');
+                leftSignup.classList.add('hidden-view');
+                leftLogin.classList.remove('hidden-view');
+            }
+        }
+
+        function updateRoles() {
+            const category = document.getElementById('catSel').value;
+            const roleSelect = document.getElementById('roleSel');
+            roleSelect.innerHTML = '<option value="">Select Role</option>';
+
+            const roles = {
+                hospital: ['CEO', 'StockinManager', 'Billing Executive'],
+                clinic: ['Owner', 'Stocker'],
+                store: ['Owner', 'StockinManager', 'Billing Executive'],
+                supplier: ['Medicine Supplier']
+            };
+
+            if (category && roles[category]) {
+                roles[category].forEach(role => {
+                    let opt = document.createElement('option');
+                    opt.value = role.toLowerCase().replace(/\s/g, '-');
+                    opt.text = role;
+                    roleSelect.add(opt);
+                });
+            }
+        }
+
+        function handleSignup(event) {
+            event.preventDefault();
+            const name = document.getElementById('signup-name').value.trim();
+            const username = document.getElementById('signup-username').value.trim();
+            const email = document.getElementById('signup-email').value.trim();
+            const password = document.getElementById('signup-password').value;
+            const confirm = document.getElementById('signup-confirm').value;
+            const address = document.getElementById('signup-address').value.trim();
+            const category = document.getElementById('catSel').value;
+            const roleText = document.getElementById('roleSel').selectedOptions[0]?.text || '';
+            const roleValue = document.getElementById('roleSel').value;
+
+            if (password !== confirm) {
+                alert('Password and confirm password must match.');
+                return;
+            }
+
+            const account = {
+                name,
+                username,
+                email,
+                password,
+                address,
+                category,
+                role: roleText || roleValue
+            };
+
+            let users = JSON.parse(localStorage.getItem('smartMediStockUsers')) || {};
+            if (users[username]) {
+                alert('Username already exists. Please choose a different one.');
+                return;
+            }
+            users[username] = account;
+            localStorage.setItem('smartMediStockUsers', JSON.stringify(users));
+
+            // Keep storing single account for backward compatibility
+            localStorage.setItem('userAccount', JSON.stringify(account));
+            // Also set supplierAccount just in case someone relies on it
+            if (account.role.toLowerCase().includes('supplier')) {
+                localStorage.setItem('supplierAccount', JSON.stringify(account));
+            }
+            alert('Account created successfully. Please log in.');
+            toggleAuth('login');
+            document.getElementById('login-username').value = username;
+            document.getElementById('login-password').value = '';
+        }
+
+        function handleLogin(event) {
+            event.preventDefault();
+            const username = document.getElementById('login-username').value.trim();
+            const password = document.getElementById('login-password').value;
+            
+            let users = JSON.parse(localStorage.getItem('smartMediStockUsers')) || {};
+            
+            // Support older single-account storage
+            let legacyUser = JSON.parse(localStorage.getItem('userAccount')) || JSON.parse(localStorage.getItem('supplierAccount'));
+            if (legacyUser && legacyUser.username && !users[legacyUser.username]) {
+                users[legacyUser.username] = legacyUser;
+                localStorage.setItem('smartMediStockUsers', JSON.stringify(users));
+            }
+
+            const account = users[username];
+
+            if (!account) {
+                alert('No registered account found for this username. Please sign up first.');
+                return;
+            }
+
+            if (password !== account.password) {
+                alert('Invalid password.');
+                return;
+            }
+
+            if (account.role.toLowerCase().includes('supplier')) {
+                localStorage.setItem('supplierProfile', JSON.stringify(account));
+                window.location.href = 'Vendor (1).html';
+            } else if (account.role.toLowerCase().includes('stocker')) {
+                localStorage.setItem('stockerProfile', JSON.stringify(account));
+                window.location.href = 'Stocker.html';
+            } else if (account.role.toLowerCase().includes('ceo')) {
+                localStorage.setItem('ceoProfile', JSON.stringify(account));
+                window.location.href = 'CEO dashboard.html';
+            } else if (account.role.toLowerCase().includes('billing executive')) {
+                localStorage.setItem('billingProfile', JSON.stringify(account));
+                window.location.href = 'Billing Exceutive.html';
+            } else if (account.role.toLowerCase().includes('stockinmanager') || account.role.toLowerCase().includes('stock-in')) {
+                localStorage.setItem('stockinProfile', JSON.stringify(account));
+                window.location.href = 'StockinManager.html';
+            } else {
+                alert('Portal for this role (' + account.role + ') is not available yet.');
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', function () {
+            const stored = localStorage.getItem('userAccount') || localStorage.getItem('supplierAccount');
+            if (stored) {
+                const account = JSON.parse(stored);
+                document.getElementById('login-username').value = account.username;
+            }
+        });
+    </script>
+</body>
+
+</html>
