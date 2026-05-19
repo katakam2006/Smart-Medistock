@@ -268,12 +268,14 @@
 
             <div id="left-text-login">
                 <h1 class="hero-title">Healthcare <br>Supply Chain.</h1>
-                <p class="hero-desc">Efficiently track and manage pharmaceutical inventory with our enterprise-grade platform.</p>
+                <p class="hero-desc">Efficiently track and manage pharmaceutical inventory with our enterprise-grade
+                    platform.</p>
             </div>
 
             <div id="left-text-signup" class="hidden-view">
                 <h1 class="hero-title">Join the future of <br>Medicine.</h1>
-                <p class="hero-desc">Register your facility to ensure vital medicines reach patients in need, exactly when they need them.</p>
+                <p class="hero-desc">Register your facility to ensure vital medicines reach patients in need, exactly
+                    when they need them.</p>
             </div>
         </div>
 
@@ -348,7 +350,8 @@
 
                     <div class="form-group">
                         <label class="label">Facility Address<span class="required-star">*</span></label>
-                        <textarea id="signup-address" placeholder="Facility Name & Full Address" required rows="2" style="resize:none"></textarea>
+                        <textarea id="signup-address" placeholder="Facility Name & Full Address" required rows="2"
+                            style="resize:none"></textarea>
                     </div>
 
                     <div class="grid-2 form-group">
@@ -424,39 +427,41 @@
 
         function handleSignup(e) {
             if (e) e.preventDefault();
-            
-            // Fixed field IDs to match HTML structures perfectly
+
             const username = document.getElementById('signup-username').value.trim();
             const email = document.getElementById('signup-email').value.trim();
             const pass = document.getElementById('signup-password').value;
             const role = document.getElementById('roleSel').value;
+            // FIX 1: Grab the address input string dynamically from the DOM textarea
+            const address = document.getElementById('signup-address').value.trim();
 
-            if (!username || !email || !pass || !role) {
+            if (!username || !email || !pass || !role || !address) {
                 alert('Please fill all fields');
                 return;
             }
 
-            fetch('/api/register', {
+            // FIX 2: Switched to secure absolute URL path on port 3000
+            fetch('https://localhost:3000/api/register', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ username, email, password: pass, role })
+                // FIX 3: Sent address data object elements natively through JSON body string
+                body: JSON.stringify({ username, email, password: pass, role, address })
             })
-            .then(res => res.json())
-            .then(data => {
-                if (data.error) {
-                    alert(data.error);
-                } else {
-                    alert('Registration Successful! Please Login.');
-                    toggleAuth('login'); // Fixed view redirection trigger function
-                }
-            })
-            .catch(err => console.error('Error during registration:', err));
+                .then(res => res.json())
+                .then(data => {
+                    if (data.error) {
+                        alert(data.error);
+                    } else {
+                        alert('Registration Successful! Please Login.');
+                        toggleAuth('login');
+                    }
+                })
+                .catch(err => console.error('Error during registration:', err));
         }
 
         function handleLogin(e) {
             if (e) e.preventDefault();
-            
-            // Fixed field password ID match
+
             const username = document.getElementById('login-username').value.trim();
             const pass = document.getElementById('login-password').value;
 
@@ -465,39 +470,40 @@
                 return;
             }
 
-            fetch('/api/login', {
+            // FIX 4: Switched login endpoint to point to secure HTTPS backend channel port 3000
+            fetch('https://localhost:3000/api/login', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ username, password: pass })
             })
-            .then(res => res.json())
-            .then(data => {
-                if (data.error) {
-                    alert(data.error);
-                } else {
-                    const account = data.user;
-                    
-                    if (account.role.toLowerCase().includes('vendor') || account.role.toLowerCase().includes('supplier')) {
-                        localStorage.setItem('supplierProfile', JSON.stringify(account));
-                        window.location.href = 'Vendor (1).html';
-                    } else if (account.role.toLowerCase().includes('stocker')) {
-                        localStorage.setItem('stockerProfile', JSON.stringify(account));
-                        window.location.href = 'Stocker.html';
-                    } else if (account.role.toLowerCase().includes('ceo')) {
-                        localStorage.setItem('ceoProfile', JSON.stringify(account));
-                        window.location.href = 'CEO dashboard.html';
-                    } else if (account.role.toLowerCase().includes('billing executive')) {
-                        localStorage.setItem('billingProfile', JSON.stringify(account));
-                        window.location.href = 'Billing Exceutive.html';
-                    } else if (account.role.toLowerCase().includes('stockinmanager') || account.role.toLowerCase().includes('stock-in')) {
-                        localStorage.setItem('stockinProfile', JSON.stringify(account));
-                        window.location.href = 'StockinManager.html';
+                .then(res => res.json())
+                .then(data => {
+                    if (data.error) {
+                        alert(data.error);
                     } else {
-                        alert('Portal for this role (' + account.role + ') is not available yet.');
+                        const account = data.user;
+
+                        if (account.role.toLowerCase().includes('vendor') || account.role.toLowerCase().includes('supplier')) {
+                            localStorage.setItem('supplierProfile', JSON.stringify(account));
+                            window.location.href = 'Vendor (1).html';
+                        } else if (account.role.toLowerCase().includes('stocker')) {
+                            localStorage.setItem('stockerProfile', JSON.stringify(account));
+                            window.location.href = 'Stocker.html';
+                        } else if (account.role.toLowerCase().includes('ceo')) {
+                            localStorage.setItem('ceoProfile', JSON.stringify(account));
+                            window.location.href = 'CEO dashboard.html';
+                        } else if (account.role.toLowerCase().includes('billing executive') || account.role.toLowerCase().includes('billing-executive')) {
+                            localStorage.setItem('billingProfile', JSON.stringify(account));
+                            window.location.href = 'Billing Exceutive.html';
+                        } else if (account.role.toLowerCase().includes('stockinmanager') || account.role.toLowerCase().includes('stock-in')) {
+                            localStorage.setItem('stockinProfile', JSON.stringify(account));
+                            window.location.href = 'StockinManager.html';
+                        } else {
+                            alert('Portal for this role (' + account.role + ') is not available yet.');
+                        }
                     }
-                }
-            })
-            .catch(err => console.error('Error during login:', err));
+                })
+                .catch(err => console.error('Error during login:', err));
         }
 
         window.addEventListener('DOMContentLoaded', function () {

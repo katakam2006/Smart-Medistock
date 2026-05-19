@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,60 +10,270 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
-            --sidebar-bg: #0f172a; --main-bg: #f8fafc; --accent: #3b82f6;
-            --text-main: #1e293b; --white: #ffffff; --danger: #ef4444;
-            --warning: #f59e0b; --success: #10b981; --purple: #8b5cf6;
+            --sidebar-bg: #0f172a;
+            --main-bg: #f8fafc;
+            --accent: #3b82f6;
+            --text-main: #1e293b;
+            --white: #ffffff;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --success: #10b981;
+            --purple: #8b5cf6;
             --border: #e2e8f0;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
-        body { display: flex; background-color: var(--main-bg); color: var(--text-main); min-height: 100vh; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            display: flex;
+            background-color: var(--main-bg);
+            color: var(--text-main);
+            min-height: 100vh;
+        }
 
         /* Sidebar */
-        aside { width: 260px; background-color: var(--sidebar-bg); color: white; padding: 1.5rem 1rem; position: fixed; height: 100vh; display: flex; flex-direction: column; z-index: 100; }
-        .logo-container { display: flex; align-items: center; gap: 12px; padding: 1rem; margin-bottom: 2rem; border-bottom: 1px solid #1e293b; color: var(--accent); }
-        .menu-list { flex: 1; list-style: none; }
-        .menu-item { display: flex; align-items: center; gap: 12px; padding: 12px 1rem; margin-bottom: 4px; border-radius: 8px; cursor: pointer; transition: 0.2s; color: #94a3b8; font-size: 0.9rem; }
-        .menu-item:hover, .menu-item.active { background-color: #334155; color: white; }
-        .menu-item.active { border-left: 4px solid var(--accent); }
+        aside {
+            width: 260px;
+            background-color: var(--sidebar-bg);
+            color: white;
+            padding: 1.5rem 1rem;
+            position: fixed;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            z-index: 100;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 1rem;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid #1e293b;
+            color: var(--accent);
+        }
+
+        .menu-list {
+            flex: 1;
+            list-style: none;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 1rem;
+            margin-bottom: 4px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.2s;
+            color: #94a3b8;
+            font-size: 0.9rem;
+        }
+
+        .menu-item:hover,
+        .menu-item.active {
+            background-color: #334155;
+            color: white;
+        }
+
+        .menu-item.active {
+            border-left: 4px solid var(--accent);
+        }
 
         /* Layout */
-        main { flex: 1; margin-left: 260px; padding: 2rem; width: calc(100% - 260px); }
-        header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; background: white; padding: 0.75rem 1.5rem; border-radius: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
-        
-        .profile-box-header { display: flex; align-items: center; gap: 12px; padding-left: 20px; border-left: 1px solid var(--border); }
-        .profile-img { width: 40px; height: 40px; border-radius: 50%; border: 2px solid var(--accent); object-fit: cover; }
+        main {
+            flex: 1;
+            margin-left: 260px;
+            padding: 2rem;
+            width: calc(100% - 260px);
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            background: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+        }
+
+        .profile-box-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding-left: 20px;
+            border-left: 1px solid var(--border);
+        }
+
+        .profile-img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 2px solid var(--accent);
+            object-fit: cover;
+        }
 
         /* Summary Cards */
-        .summary-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; margin-bottom: 2rem; }
-        .summary-card { background: var(--white); padding: 1.5rem; border-radius: 12px; border-bottom: 4px solid var(--accent); position: relative; }
-        .summary-card .val { font-size: 1.8rem; font-weight: 800; display: block; margin: 5px 0 10px; }
-        .view-link { font-size: 0.7rem; font-weight: 700; color: var(--accent); cursor: pointer; text-transform: uppercase; text-decoration: none; display: flex; align-items: center; gap: 4px; }
+        .summary-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .summary-card {
+            background: var(--white);
+            padding: 1.5rem;
+            border-radius: 12px;
+            border-bottom: 4px solid var(--accent);
+            position: relative;
+        }
+
+        .summary-card .val {
+            font-size: 1.8rem;
+            font-weight: 800;
+            display: block;
+            margin: 5px 0 10px;
+        }
+
+        .view-link {
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: var(--accent);
+            cursor: pointer;
+            text-transform: uppercase;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
 
         /* Tables & UI */
-        .card { background: var(--white); border-radius: 12px; padding: 1.5rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 1.5rem; }
-        table { width: 100%; border-collapse: collapse; }
-        th { text-align: left; padding: 12px; background: #f8fafc; color: #64748b; font-size: 0.7rem; text-transform: uppercase; }
-        td { padding: 12px; border-bottom: 1px solid #f1f5f9; font-size: 0.8rem; }
-        
-        .tag { padding: 4px 10px; border-radius: 6px; font-size: 0.65rem; font-weight: bold; }
-        .tag-success { background: #dcfce7; color: #15803d; }
-        .tag-danger { background: #fee2e2; color: #dc2626; }
-        .tag-warning { background: #ffedd5; color: #d97706; }
+        .card {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            margin-bottom: 1.5rem;
+        }
 
-        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
 
-        .scanner-view { width: 100%; max-width: 200px; height: 200px; background: #0f172a; border-radius: 12px; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; }
-        .scan-line { position: absolute; width: 100%; height: 2px; background: #22c55e; top: 0; animation: scan 2s infinite linear; }
-        @keyframes scan { 0% { top: 0; } 100% { top: 100%; } }
+        th {
+            text-align: left;
+            padding: 12px;
+            background: #f8fafc;
+            color: #64748b;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+        }
 
-        #confirm-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center; }
-        .modal-box { background: white; padding: 2rem; border-radius: 12px; text-align: center; width: 350px; }
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #f1f5f9;
+            font-size: 0.8rem;
+        }
 
-        .content-section { display: none; }
-        .content-section.active { display: block; }
+        .tag {
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.65rem;
+            font-weight: bold;
+        }
+
+        .tag-success {
+            background: #dcfce7;
+            color: #15803d;
+        }
+
+        .tag-danger {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .tag-warning {
+            background: #ffedd5;
+            color: #d97706;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        .scanner-view {
+            width: 100%;
+            max-width: 200px;
+            height: 200px;
+            background: #0f172a;
+            border-radius: 12px;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .scan-line {
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            background: #22c55e;
+            top: 0;
+            animation: scan 2s infinite linear;
+        }
+
+        @keyframes scan {
+            0% {
+                top: 0;
+            }
+
+            100% {
+                top: 100%;
+            }
+        }
+
+        #confirm-modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-box {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            text-align: center;
+            width: 350px;
+        }
+
+        .content-section {
+            display: none;
+        }
+
+        .content-section.active {
+            display: block;
+        }
     </style>
 </head>
+
 <body>
 
     <div id="confirm-modal">
@@ -70,24 +281,34 @@
             <h3 id="modal-title">Action Confirmation</h3>
             <p id="modal-desc" style="margin: 15px 0; color: #64748b;">Are you sure?</p>
             <div style="display:flex; gap:10px;">
-                <button onclick="closeModal()" style="flex:1; padding:10px; border:none; border-radius:6px; cursor:pointer;">No</button>
-                <button id="modal-confirm-btn" style="flex:1; padding:10px; border:none; border-radius:6px; background:var(--accent); color:white; cursor:pointer;">Yes</button>
+                <button onclick="closeModal()"
+                    style="flex:1; padding:10px; border:none; border-radius:6px; cursor:pointer;">No</button>
+                <button id="modal-confirm-btn"
+                    style="flex:1; padding:10px; border:none; border-radius:6px; background:var(--accent); color:white; cursor:pointer;">Yes</button>
             </div>
         </div>
     </div>
 
     <aside>
         <div class="logo-container">
-            <img src="logformedistock.png" alt="Logo" style="width: 38px; height: 38px; object-fit: contain; border-radius: 8px;" onerror="this.src='https://placehold.co/100x100/3B82F6/FFF?text=SM'">
+            <img src="logformedistock.png" alt="Logo"
+                style="width: 38px; height: 38px; object-fit: contain; border-radius: 8px;"
+                onerror="this.src='https://placehold.co/100x100/3B82F6/FFF?text=SM'">
             <h2>MEDISTOCK</h2>
         </div>
         <ul class="menu-list">
-            <li class="menu-item active" id="nav-dashboard" onclick="showSection('dashboard')"><i data-lucide="layout-grid"></i> Dashboard</li>
-            <li class="menu-item" id="nav-medicines" onclick="showSection('medicines')"><i data-lucide="pill"></i> Medicines</li>
-            <li class="menu-item" id="nav-stock-in" onclick="showSection('stock-in')"><i data-lucide="barcode"></i> Stock In</li>
-            <li class="menu-item" id="nav-alerts" onclick="showSection('alerts')"><i data-lucide="bell-ring"></i> Alerts</li>
-            <li class="menu-item" id="nav-prediction" onclick="showSection('prediction')"><i data-lucide="trending-up"></i> Prediction</li>
-            <li class="menu-item" style="color: #fca5a5; margin-top: auto;" onclick="logoutAction()"><i data-lucide="log-out"></i> Logout</li>
+            <li class="menu-item active" id="nav-dashboard" onclick="showSection('dashboard')"><i
+                    data-lucide="layout-grid"></i> Dashboard</li>
+            <li class="menu-item" id="nav-medicines" onclick="showSection('medicines')"><i data-lucide="pill"></i>
+                Medicines</li>
+            <li class="menu-item" id="nav-stock-in" onclick="showSection('stock-in')"><i data-lucide="barcode"></i>
+                Stock In</li>
+            <li class="menu-item" id="nav-alerts" onclick="showSection('alerts')"><i data-lucide="bell-ring"></i> Alerts
+            </li>
+            <li class="menu-item" id="nav-prediction" onclick="showSection('prediction')"><i
+                    data-lucide="trending-up"></i> Prediction</li>
+            <li class="menu-item" style="color: #fca5a5; margin-top: auto;" onclick="logoutAction()"><i
+                    data-lucide="log-out"></i> Logout</li>
         </ul>
     </aside>
 
@@ -95,7 +316,11 @@
         <header>
             <h2 id="page-title">EXECUTIVE DASHBOARD</h2>
             <div class="profile-box-header">
-                <div style="text-align: right;"><h4 id="user-name">Venkatesh Rao</h4><p id="user-role-label" style="font-size: 11px; font-weight: bold; color: var(--accent);">STOCK-IN EXECUTIVE</p></div>
+                <div style="text-align: right;">
+                    <h4 id="user-name">Venkatesh Rao</h4>
+                    <p id="user-role-label" style="font-size: 11px; font-weight: bold; color: var(--accent);">STOCK-IN
+                        EXECUTIVE</p>
+                </div>
                 <img id="user-avatar" src="https://i.pravatar.cc/150?u=vrao" class="profile-img">
             </div>
         </header>
@@ -104,22 +329,26 @@
             <div class="summary-card">
                 <h4>Total Medicines</h4>
                 <span class="val" id="count-meds">1,248</span>
-                <span class="view-link" onclick="showSection('medicines')">View Inventory <i data-lucide="chevron-right" style="width:12px;"></i></span>
+                <span class="view-link" onclick="showSection('medicines')">View Inventory <i data-lucide="chevron-right"
+                        style="width:12px;"></i></span>
             </div>
             <div class="summary-card" style="border-color: var(--purple)">
                 <h4>Batches Scanned</h4>
                 <span class="val" id="count-scans">84</span>
-                <span class="view-link" onclick="showSection('stock-in')">View History <i data-lucide="chevron-right" style="width:12px;"></i></span>
+                <span class="view-link" onclick="showSection('stock-in')">View History <i data-lucide="chevron-right"
+                        style="width:12px;"></i></span>
             </div>
             <div class="summary-card" style="border-color: var(--danger)">
                 <h4>Expiries</h4>
-                <span class="val">12</span>
-                <span class="view-link" onclick="showSection('alerts')">Manage Alerts <i data-lucide="chevron-right" style="width:12px;"></i></span>
+                <span class="val" id="count-expiries">12</span>
+                <span class="view-link" onclick="showSection('alerts')">Manage Alerts <i data-lucide="chevron-right"
+                        style="width:12px;"></i></span>
             </div>
             <div class="summary-card" style="border-color: var(--warning)">
                 <h4>Low Stock</h4>
-                <span class="val">26</span>
-                <span class="view-link" onclick="showSection('alerts')">Order Now <i data-lucide="chevron-right" style="width:12px;"></i></span>
+                <span class="val" id="count-low-stock">26</span>
+                <span class="view-link" onclick="showSection('alerts')">Order Now <i data-lucide="chevron-right"
+                        style="width:12px;"></i></span>
             </div>
         </div>
 
@@ -131,12 +360,32 @@
             </div>
             <div class="grid-2">
                 <div class="card">
-                    <h3 style="color: var(--danger); margin-bottom: 1rem;"><i data-lucide="calendar-x" style="width:18px;"></i> Near Expiry</h3>
-                    <table id="dash-expiry"><thead><tr><th>Medicine</th><th>Expiry</th><th>Status</th></tr></thead><tbody></tbody></table>
+                    <h3 style="color: var(--danger); margin-bottom: 1rem;"><i data-lucide="calendar-x"
+                            style="width:18px;"></i> Near Expiry</h3>
+                    <table id="dash-expiry">
+                        <thead>
+                            <tr>
+                                <th>Medicine</th>
+                                <th>Expiry</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
                 </div>
                 <div class="card">
-                    <h3 style="color: var(--warning); margin-bottom: 1rem;"><i data-lucide="trending-down" style="width:18px;"></i> Stock Depleted</h3>
-                    <table id="dash-low"><thead><tr><th>Medicine</th><th>Left</th><th>Action</th></tr></thead><tbody></tbody></table>
+                    <h3 style="color: var(--warning); margin-bottom: 1rem;"><i data-lucide="trending-down"
+                            style="width:18px;"></i> Stock Depleted</h3>
+                    <table id="dash-low">
+                        <thead>
+                            <tr>
+                                <th>Medicine</th>
+                                <th>Left</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
                 </div>
             </div>
         </section>
@@ -206,7 +455,18 @@
         <section id="medicines" class="content-section">
             <div class="card">
                 <h3>Medicine Inventory Master</h3>
-                <table id="med-table"><thead><tr><th>Medicine</th><th>Category</th><th>SKU</th><th>Stock</th><th>Status</th></tr></thead><tbody></tbody></table>
+                <table id="med-table">
+                    <thead>
+                        <tr>
+                            <th>Medicine</th>
+                            <th>Category</th>
+                            <th>SKU</th>
+                            <th>Stock</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
             </div>
         </section>
 
@@ -214,19 +474,73 @@
             <div class="card">
                 <h3>Scanner Entry</h3>
                 <div style="display:flex; gap:2rem; align-items:center;">
-                    <div class="scanner-view"><div class="scan-line"></div><i data-lucide="qr-code" style="color:white; width:50px;"></i></div>
+                    <div class="scanner-view">
+                        <div class="scan-line"></div><i data-lucide="qr-code" style="color:white; width:50px;"></i>
+                    </div>
                     <div style="flex:1; display:grid; grid-template-columns:1fr 1fr; gap:15px;">
-                        <select id="scan-name" style="padding:10px; border-radius:8px; border:1px solid var(--border);"></select>
-                        <input type="number" id="scan-qty" placeholder="Quantity" style="padding:10px; border-radius:8px; border:1px solid var(--border);">
-                        <button onclick="commitScan()" style="grid-column: span 2; padding:12px; background:var(--accent); color:white; border:none; border-radius:8px; font-weight:bold; cursor:pointer;">Commit to Master Inventory</button>
+                        <select id="scan-name"
+                            style="padding:10px; border-radius:8px; border:1px solid var(--border);"></select>
+                        <input type="number" id="scan-qty" placeholder="Quantity"
+                            style="padding:10px; border-radius:8px; border:1px solid var(--border);">
+                        <button onclick="commitScan()"
+                            style="grid-column: span 2; padding:12px; background:var(--accent); color:white; border:none; border-radius:8px; font-weight:bold; cursor:pointer;">Commit
+                            to Master Inventory</button>
                     </div>
                 </div>
             </div>
-            <div class="card"><h3>Recent Scan History</h3><table id="scan-table"><thead><tr><th>Batch</th><th>Item</th><th>Qty</th><th>Verification</th></tr></thead><tbody></tbody></table></div>
+            <div class="card">
+                <h3>Recent Scan History</h3>
+                <table id="scan-table">
+                    <thead>
+                        <tr>
+                            <th>Batch</th>
+                            <th>Item</th>
+                            <th>Qty</th>
+                            <th>Verification</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
         </section>
 
         <section id="alerts" class="content-section">
-            <div class="card"><h3>Active Alerts</h3><table id="alert-table"><thead><tr><th>Type</th><th>Medicine</th><th>Status</th><th>Action</th></tr></thead><tbody></tbody></table></div>
+            <div class="card">
+                <h3>Active Alerts</h3>
+                <table id="alert-table">
+                    <thead>
+                        <tr>
+                            <th>Type</th>
+                            <th>Medicine</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+            <div class="card" style="margin-top: 1.5rem;">
+                <h3>Recent Orders Tracking</h3>
+                <div style="overflow-x:auto; margin-top: 1rem;">
+                    <table id="orders-tracking-table">
+                        <thead>
+                            <tr>
+                                <th>Order ID</th>
+                                <th>Medicine Name</th>
+                                <th>Qty Requested</th>
+                                <th>Status</th>
+                                <th>Last Updated</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ordersBody">
+                            <tr>
+                                <td colspan="5" style="text-align: center; color: #64748b; padding: 20px;">No recent
+                                    orders.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </section>
     </main>
 
@@ -234,12 +548,18 @@
         const meds = ["Dolo 650", "Pan 40", "Limcee", "Azee 500", "Telma 40", "Metformin", "Okacet", "Zincovit", "Vikas Drops", "Calpol", "Allegra", "Taxim-O", "Montina-L", "Combiflam", "Becosules", "Thyronorm", "Augmentin", "Zifi 200", "Liv 52", "Shelcal"];
         let dChart, pChart;
 
+        let hardcodedAlertsHtml = '';
+        let hardcodedDashLowHtml = '';
+        let hardcodedDashExpiryHtml = '';
+
         function init() {
             lucide.createIcons();
             initProfile();
             populateMaster();
             populateDashboardAlerts();
             renderCharts();
+            loadDynamicAlerts();
+            loadRecentOrders();
         }
 
         function initProfile() {
@@ -247,8 +567,13 @@
             if (stored) {
                 const profile = JSON.parse(stored);
                 document.getElementById('user-name').innerText = profile.name || profile.username;
-                document.getElementById('user-role-label').innerText = (profile.role || 'StockinManager').toUpperCase();
-                
+
+                let displayRole = profile.role || 'Stock-In Executive';
+                if (displayRole.toLowerCase() === 'stockinmanager' || displayRole.toLowerCase() === 'stock-in-executive') {
+                    displayRole = 'Stock-In Executive';
+                }
+                document.getElementById('user-role-label').innerText = displayRole.toUpperCase();
+
                 // Optional: Update avatar based on name
                 const avatar = document.getElementById('user-avatar');
                 if (avatar) {
@@ -256,7 +581,7 @@
                 }
 
                 // Update page title if needed
-                document.getElementById('page-title').innerText = `${(profile.role || 'EXECUTIVE').toUpperCase()} DASHBOARD`;
+                document.getElementById('page-title').innerText = `${displayRole.toUpperCase()} DASHBOARD`;
             }
         }
 
@@ -264,15 +589,14 @@
             const mTable = document.querySelector('#med-table tbody');
             const sName = document.querySelector('#scan-name');
             const sTable = document.querySelector('#scan-table tbody');
-            const aTable = document.querySelector('#alert-table tbody');
 
             meds.forEach((m, i) => {
-                mTable.innerHTML += `<tr><td><b>${m}</b></td><td>General</td><td>#SKU-${1000+i}</td><td>${500 + i*10}</td><td><span class="tag tag-success">ACTIVE</span></td></tr>`;
+                mTable.innerHTML += `<tr><td><b>${m}</b></td><td>General</td><td>#SKU-${1000 + i}</td><td>${500 + i * 10}</td><td><span class="tag tag-success">ACTIVE</span></td></tr>`;
                 sName.innerHTML += `<option>${m}</option>`;
-                if(i < 8) {
+                if (i < 8) {
                     sTable.innerHTML += `<tr><td>#BT-0${i}</td><td>${m}</td><td>100</td><td><span class="tag tag-success">VERIFIED</span></td></tr>`;
                     const isExp = i % 2 === 0;
-                    aTable.innerHTML += `<tr><td><span class="tag ${isExp?'tag-danger':'tag-warning'}">${isExp?'EXPIRY':'LOW STOCK'}</span></td><td>${m}</td><td>Critical</td><td><button onclick="openOrderModal('alert-cell-${i}')" id="alert-cell-${i}" style="background:var(--accent); color:white; border:none; padding:5px 10px; border-radius:4px; cursor:pointer;">Order</button></td></tr>`;
+                    hardcodedAlertsHtml += `<tr><td><span class="tag ${isExp ? 'tag-danger' : 'tag-warning'}">${isExp ? 'EXPIRY' : 'LOW STOCK'}</span></td><td>${m}</td><td>Critical</td><td><button onclick="openOrderModal('alert-cell-${i}')" id="alert-cell-${i}" style="background:var(--accent); color:white; border:none; padding:5px 10px; border-radius:4px; cursor:pointer;">Order</button></td></tr>`;
                 }
             });
         }
@@ -280,10 +604,158 @@
         function populateDashboardAlerts() {
             const expTbody = document.querySelector('#dash-expiry tbody');
             const lowTbody = document.querySelector('#dash-low tbody');
-            const expiries = [{name: "Dolo 650", date: "May 2026", type: "CRITICAL"}, {name: "Pan 40", date: "Jun 2026", type: "WARNING"}, {name: "Limcee", date: "May 2026", type: "CRITICAL"}];
-            expiries.forEach(e => { expTbody.innerHTML += `<tr><td>${e.name}</td><td>${e.date}</td><td><span class="tag ${e.type === 'CRITICAL' ? 'tag-danger' : 'tag-warning'}">${e.type}</span></td></tr>`; });
-            const lowStock = [{name: "Telma 40", qty: "12 units"}, {name: "Metformin", qty: "4 units"}, {name: "Okacet", qty: "15 units"}];
-            lowStock.forEach(l => { lowTbody.innerHTML += `<tr><td>${l.name}</td><td><b>${l.qty}</b></td><td><button onclick="showSection('alerts')" style="padding:2px 8px; font-size:10px; cursor:pointer;">Order</button></td></tr>`; });
+            const expiries = [{ name: "Dolo 650", date: "May 2026", type: "CRITICAL" }, { name: "Pan 40", date: "Jun 2026", type: "WARNING" }, { name: "Limcee", date: "May 2026", type: "CRITICAL" }];
+            expiries.forEach(e => { hardcodedDashExpiryHtml += `<tr><td>${e.name}</td><td>${e.date}</td><td><span class="tag ${e.type === 'CRITICAL' ? 'tag-danger' : 'tag-warning'}">${e.type}</span></td></tr>`; });
+            const lowStock = [{ name: "Telma 40", qty: "12 units" }, { name: "Metformin", qty: "4 units" }, { name: "Okacet", qty: "15 units" }];
+            lowStock.forEach(l => { hardcodedDashLowHtml += `<tr><td>${l.name}</td><td><b>${l.qty}</b></td><td><button onclick="showSection('alerts')" style="padding:2px 8px; font-size:10px; cursor:pointer; background:var(--accent); color:white; border:none; border-radius:4px;">Order</button></td></tr>`; });
+
+            expTbody.innerHTML = hardcodedDashExpiryHtml;
+            lowTbody.innerHTML = hardcodedDashLowHtml;
+        }
+
+        async function loadDynamicAlerts() {
+            try {
+                const alertsRes = await fetch('/api/alerts/active');
+                if (!alertsRes.ok) return;
+                const alerts = await alertsRes.json();
+
+                const countersRes = await fetch('/api/dashboard/counters');
+                if (countersRes.ok) {
+                    const counters = await countersRes.json();
+                    document.getElementById('count-low-stock').innerText = (26 + counters.lowStockCount).toString();
+                    document.getElementById('count-expiries').innerText = (12 + counters.expiryCount).toString();
+                }
+
+                const aTable = document.querySelector('#alert-table tbody');
+                let dynamicAlertRows = '';
+                let dynamicDashLowRows = '';
+                let dynamicDashExpiryRows = '';
+
+                alerts.forEach(alt => {
+                    const isExp = alt.alert_type === 'EXPIRY';
+
+                    let actionHtml = '';
+                    if (alt.status === 'Pending' || alt.status === 'Critical') {
+                        actionHtml = `<button onclick="placeVendorOrder('${alt.medicine_name}', ${alt.id})" id="dyn-alert-btn-${alt.id}" style="background:var(--accent); color:white; border:none; padding:5px 10px; border-radius:4px; cursor:pointer;">Order</button>`;
+                    } else {
+                        const tagClass = alt.status === 'Accepted' ? 'tag-success' : (alt.status === 'Denied' ? 'tag-danger' : 'tag-warning');
+                        actionHtml = `<span class="tag ${tagClass}">${alt.status.toUpperCase()}</span>`;
+                    }
+
+                    const isPending = alt.status === 'Pending' || alt.status === 'Critical';
+                    const bgStyle = isPending ? 'background-color: #fef08a;' : '';
+
+                    dynamicAlertRows += `
+                        <tr style="${bgStyle}">
+                            <td><span class="tag ${isExp ? 'tag-danger' : 'tag-warning'}">${alt.alert_type}</span></td>
+                            <td><b>${alt.medicine_name}</b></td>
+                            <td><span style="font-weight:bold; color:${isPending ? 'var(--danger)' : '#64748b'};">${alt.status}</span></td>
+                            <td>${actionHtml}</td>
+                        </tr>
+                    `;
+
+                    if (isPending) {
+                        if (isExp) {
+                            dynamicDashExpiryRows += `<tr style="background:#fee2e2;"><td>${alt.medicine_name}</td><td>Just Now</td><td><span class="tag tag-danger">CRITICAL</span></td></tr>`;
+                        } else {
+                            dynamicDashLowRows += `<tr style="background:#ffedd5;"><td>${alt.medicine_name}</td><td><b>Pending</b></td><td><button onclick="showSection('alerts')" style="padding:2px 8px; font-size:10px; cursor:pointer; background:var(--accent); color:white; border:none; border-radius:4px;">Order</button></td></tr>`;
+                        }
+                    }
+                });
+
+                if (aTable) aTable.innerHTML = dynamicAlertRows + hardcodedAlertsHtml;
+
+                const expTbody = document.querySelector('#dash-expiry tbody');
+                const lowTbody = document.querySelector('#dash-low tbody');
+                if (expTbody) expTbody.innerHTML = dynamicDashExpiryRows + hardcodedDashExpiryHtml;
+                if (lowTbody) lowTbody.innerHTML = dynamicDashLowRows + hardcodedDashLowHtml;
+
+            } catch (err) {
+                console.error("Error loading dynamic alerts:", err);
+            }
+        }
+
+        async function placeVendorOrder(medName, alertId) {
+            try {
+                const orderResponse = await fetch('https://localhost:3000/api/orders/place', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        medicine_name: medName,
+                        quantity_requested: 100,
+                        vendor_id: 1
+                    })
+                });
+
+                if (!orderResponse.ok) {
+                    console.error("Failed to place vendor order on server.");
+                    return;
+                }
+
+                if (alertId) {
+                    const alertResponse = await fetch(`https://localhost:3000/api/alerts/${alertId}`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ status: 'Ordered' })
+                    });
+                    if (!alertResponse.ok) {
+                        console.error("Failed to update alert status.");
+                    }
+                }
+
+                loadDynamicAlerts();
+                loadRecentOrders();
+            } catch (err) {
+                console.error("Error inside placeVendorOrder fetch flow:", err);
+            }
+        }
+
+        async function loadRecentOrders() {
+            try {
+                const response = await fetch('https://localhost:3000/api/orders/executive/status');
+                if (!response.ok) {
+                    console.error("Failed to fetch order status logs from server.");
+                    return;
+                }
+                const orders = await response.json();
+                const tbody = document.getElementById('ordersBody');
+                if (!tbody) return;
+
+                if (orders.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: #64748b; padding: 20px;">No recent orders.</td></tr>`;
+                    return;
+                }
+
+                let rowsHtml = '';
+                orders.forEach(order => {
+                    let statusTag = '';
+                    if (order.status === 'Pending') {
+                        statusTag = `<span class="tag tag-warning" style="background:#ffedd5; color:#d97706;">PENDING</span>`;
+                    } else if (order.status === 'Accepted') {
+                        statusTag = `<span class="tag tag-success" style="background:#dcfce7; color:#15803d;">ACCEPTED</span>`;
+                    } else if (order.status === 'Denied') {
+                        statusTag = `<span class="tag tag-danger" style="background:#fee2e2; color:#dc2626;">DENIED</span>`;
+                    }
+
+                    const dateStr = new Date(order.updated_at).toLocaleString();
+                    rowsHtml += `
+                        <tr>
+                            <td><b>#ORD-${order.order_id}</b></td>
+                            <td>${order.medicine_name}</td>
+                            <td><b>${order.quantity_requested}</b></td>
+                            <td>${statusTag}</td>
+                            <td>${dateStr}</td>
+                        </tr>
+                    `;
+                });
+                tbody.innerHTML = rowsHtml;
+            } catch (err) {
+                console.error("Error loading recent orders:", err);
+            }
         }
 
         function logoutAction() {
@@ -312,18 +784,18 @@
         function renderCharts() {
             dChart = new Chart(document.getElementById('dashChart'), {
                 type: 'line',
-                data: { labels: ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'], datasets: [{label: 'Outflow', data: [300, 450, 320, 700, 850, 400, 200], borderColor: '#3b82f6', tension: 0.3, fill: true, backgroundColor: 'rgba(59, 130, 246, 0.1)'}] },
+                data: { labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'], datasets: [{ label: 'Outflow', data: [300, 450, 320, 700, 850, 400, 200], borderColor: '#3b82f6', tension: 0.3, fill: true, backgroundColor: 'rgba(59, 130, 246, 0.1)' }] },
                 options: { maintainAspectRatio: false }
             });
             pChart = new Chart(document.getElementById('pChart'), {
                 type: 'bar',
-                data: { labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'], datasets: [{label: 'Predicted Units', data: [400, 250, 680, 410], backgroundColor: '#8b5cf6'}] },
+                data: { labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'], datasets: [{ label: 'Predicted Units', data: [400, 250, 680, 410], backgroundColor: '#8b5cf6' }] },
                 options: { maintainAspectRatio: false }
             });
         }
 
         function updatePredictChart() {
-            pChart.data.datasets[0].data = Array.from({length: 4}, () => Math.floor(Math.random() * 800) + 100);
+            pChart.data.datasets[0].data = Array.from({ length: 4 }, () => Math.floor(Math.random() * 800) + 100);
             pChart.update();
         }
 
@@ -331,12 +803,22 @@
             document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
             document.getElementById(id).classList.add('active');
             document.querySelectorAll('.menu-item').forEach(m => m.classList.remove('active'));
-            document.getElementById('nav-'+id).classList.add('active');
+            document.getElementById('nav-' + id).classList.add('active');
             document.getElementById('page-title').innerText = id.toUpperCase();
             document.getElementById('dash-summary').style.display = id === 'dashboard' ? 'grid' : 'none';
         }
 
+        document.addEventListener('DOMContentLoaded', () => {
+            loadDynamicAlerts();
+            loadRecentOrders();
+            setInterval(() => {
+                loadDynamicAlerts();
+                loadRecentOrders();
+            }, 5000);
+        });
+
         window.onload = init;
     </script>
 </body>
+
 </html>

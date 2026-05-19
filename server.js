@@ -2,17 +2,9 @@ const express = require('express');
 const mysql = require('mysql2');
 const path = require('path');
 const cors = require('cors');
-const https = require('https'); 
-const fs = require('fs');      
 
 const app = express();
 const PORT = 3000;
-
-// HTTPS Server Configuration
-const options = {
-    pfx: fs.readFileSync(path.join(__dirname, 'security', 'key.pfx')),
-    passphrase: 'password' 
-};
 
 // Middleware
 app.use(cors());
@@ -21,10 +13,10 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Initialize MySQL Connection Pool
 const pool = mysql.createPool({
-    host: 'localhost',           
-    user: 'root',                
-    password: 'Hemasrikotha@07', 
-    database: 'smart_medistock', 
+    host: 'localhost',
+    user: 'root',
+    password: 'Hemasrikotha@07',
+    database: 'smart_medistock',
     waitForConnections: true,
     connectionLimit: 10,
     queueLimit: 0
@@ -49,7 +41,33 @@ async function initializeDatabase() {
         `);
         console.log('MySQL users table verified/created.');
 
-        // 2. Seed a default CEO account if the table is completely empty
+        // 2. Create inventory_alerts table if it doesn't exist
+        await db.query(`
+            CREATE TABLE IF NOT EXISTS inventory_alerts (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                alert_type VARCHAR(50) NOT NULL,
+                medicine_name VARCHAR(100) NOT NULL,
+                status VARCHAR(50) NOT NULL DEFAULT 'Pending',
+                triggered_by VARCHAR(50),
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+            )
+        `);
+        console.log('MySQL inventory_alerts table verified/created.');
+
+        // 3. Create purchase_orders table if it doesn't exist
+        await db.query(`
+            CREATE TABLE IF NOT EXISTS purchase_orders (
+                order_id INT AUTO_INCREMENT PRIMARY KEY,
+                medicine_name VARCHAR(100) NOT NULL,
+                quantity_requested INT NOT NULL,
+                vendor_id INT DEFAULT 1,
+                status ENUM('Pending', 'Accepted', 'Denied') DEFAULT 'Pending',
+                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+            )
+        `);
+        console.log('MySQL purchase_orders table verified/created.');
+
+        // 4. Seed a default CEO account if the table is completely empty
         const [rows] = await db.query('SELECT COUNT(*) as count FROM users');
         if (rows[0].count === 0) {
             await db.query(`
@@ -67,7 +85,7 @@ initializeDatabase();
 // API: Register User
 app.post('/api/register', async (req, res) => {
     const { username, email, password, role, address } = req.body;
-    
+
     if (!username || !password || !role) {
         return res.status(400).json({ error: 'Missing mandatory fields' });
     }
@@ -94,14 +112,142 @@ app.post('/api/login', async (req, res) => {
         if (rows.length === 0) {
             return res.status(401).json({ error: 'Invalid username or password' });
         }
-        
+
         res.json({ message: 'Login successful', user: rows[0] });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
 });
 
-// Start the server using HTTPS wrapping
-https.createServer(options, app).listen(PORT, () => {
-    console.log(`Secure backend server running at https://localhost:${PORT}`);
+// API: Intimate Alert (Create alert)
+app.post('/api/alerts/intimate', async (req, res) => {
+    const { alert_type, medicine_name, status, triggered_by } = req.body;
+    if (!alert_type || !medicine_name) {
+        return res.status(400).json({ error: 'Missing mandatory fields alert_type or medicine_name' });
+    }
+
+    const query = `INSERT INTO inventory_alerts (alert_type, medicine_name, status, triggered_by) VALUES (?, ?, ?, ?)`;
+    try {
+        const [result] = await db.query(query, [alert_type, medicine_name, status || 'Pending', triggered_by || 'Billing Executive']);
+        res.status(201).json({ message: 'Alert created successfully!', alertId: result.insertId });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// API: Get Active Alerts
+app.get('/api/alerts/active', async (req, res) => {
+    const query = `SELECT * FROM inventory_alerts ORDER BY id DESC`;
+    try {
+        const [rows] = await db.query(query);
+        res.json(rows);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// API: Get Dashboard Counters
+app.get('/api/dashboard/counters', async (req, res) => {
+    const lowStockQuery = `SELECT COUNT(*) as count FROM inventory_alerts WHERE alert_type = 'LOW STOCK' AND status = 'Pending'`;
+    const expiryQuery = `SELECT COUNT(*) as count FROM inventory_alerts WHERE alert_type = 'EXPIRY' AND status = 'Pending'`;
+    try {
+        const [[lowStockResult]] = await db.query(lowStockQuery);
+        const [[expiryResult]] = await db.query(expiryQuery);
+        res.json({
+            lowStockCount: lowStockResult.count,
+            expiryCount: expiryResult.count
+        });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// API: Update Alert Status
+app.put('/api/alerts/:id', async (req, res) => {
+    const { id } = req.params;
+    const { status } = req.body;
+    if (!status) {
+        return res.status(400).json({ error: 'Missing status' });
+    }
+
+    const query = `UPDATE inventory_alerts SET status = ? WHERE id = ?`;
+    try {
+        await db.query(query, [status, id]);
+        res.json({ message: 'Alert status updated successfully!' });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// API: Place a new purchase order (Stock-In Executive -> Vendor)
+app.post('/api/orders/place', async (req, res) => {
+    const { medicine_name, quantity_requested, vendor_id } = req.body;
+    if (!medicine_name || !quantity_requested) {
+        return res.status(400).json({ error: 'Missing medicine_name or quantity_requested' });
+    }
+
+    const query = `INSERT INTO purchase_orders (medicine_name, quantity_requested, vendor_id, status) VALUES (?, ?, ?, 'Pending')`;
+    try {
+        const [result] = await db.query(query, [medicine_name, quantity_requested, vendor_id || 1]);
+        res.status(201).json({
+            message: 'Order placed successfully!',
+            orderId: result.insertId,
+            order: {
+                order_id: result.insertId,
+                medicine_name,
+                quantity_requested,
+                vendor_id: vendor_id || 1,
+                status: 'Pending'
+            }
+        });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// API: Fetch all pending purchase orders for the Medicine Supplier (Vendor)
+app.get('/api/orders/vendor/pending', async (req, res) => {
+    const query = `SELECT * FROM purchase_orders WHERE status = 'Pending' ORDER BY order_id DESC`;
+    try {
+        const [rows] = await db.query(query);
+        res.json(rows);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// API: Update order response (Vendor accept/deny)
+app.put('/api/orders/vendor/respond/:orderId', async (req, res) => {
+    const { orderId } = req.params;
+    const { status } = req.body;
+    if (!status || !['Accepted', 'Denied'].includes(status)) {
+        return res.status(400).json({ error: 'Invalid or missing status (must be Accepted or Denied)' });
+    }
+
+    const query = `UPDATE purchase_orders SET status = ? WHERE order_id = ?`;
+    try {
+        const [result] = await db.query(query, [status, orderId]);
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ error: 'Order not found' });
+        }
+        res.json({ message: `Order status updated to ${status} successfully!` });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// API: Fetch all purchase orders with statuses for the Stock-In Executive tracking list
+app.get('/api/orders/executive/status', async (req, res) => {
+    const query = `SELECT * FROM purchase_orders ORDER BY order_id DESC`;
+    try {
+        const [rows] = await db.query(query);
+        res.json(rows);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// Start standard HTTP Server on port 3000
+app.listen(PORT, () => {
+    console.log(`Backend server successfully running at http://localhost:${PORT}`);
 });

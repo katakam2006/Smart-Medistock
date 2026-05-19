@@ -420,53 +420,21 @@
             <section id="orders" class="view-section active">
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 20px;">
                     <h2 style="color: #1b2559;">Incoming Stock Orders</h2>
-                </div>
-
-                <div id="order-list">
-                    <div class="card searchable" id="order-1">
-                        <div style="display:flex; justify-content:space-between; align-items:center; width:100%;">
-                            <div class="order-info">
-                                <h3 class="hosp-name"><span class="new-tag">NEW</span>City General Hospital</h3>
-                                <p class="med-details"><span
-                                        class="priority-dot priority-high"></span><strong>Paracetamol 650mg</strong> —
-                                    500 Units</p>
-                            </div>
-                            <div class="action-area" style="display:flex; gap:10px;">
-                                <button class="btn btn-deny" onclick="handleOrderAction(1, 'deny')">Decline</button>
-                                <button class="btn btn-accept" onclick="handleOrderAction(1, 'accept')">Accept</button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="card searchable" id="order-2">
-                        <div style="display:flex; justify-content:space-between; align-items:center; width:100%;">
-                            <div class="order-info">
-                                <h3 class="hosp-name"><span class="new-tag">NEW</span>Sunrise Medical Center</h3>
-                                <p class="med-details"><span
-                                        class="priority-dot priority-med"></span><strong>Amoxicillin 500mg</strong> —
-                                    1,200 Units</p>
-                            </div>
-                            <div class="action-area" style="display:flex; gap:10px;">
-                                <button class="btn btn-deny" onclick="handleOrderAction(2, 'deny')">Decline</button>
-                                <button class="btn btn-accept" onclick="handleOrderAction(2, 'accept')">Accept</button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="card searchable" id="order-3">
-                        <div style="display:flex; justify-content:space-between; align-items:center; width:100%;">
-                            <div class="order-info">
-                                <h3 class="hosp-name"><span class="new-tag">NEW</span>Apollo Specialty Clinic</h3>
-                                <p class="med-details"><span class="priority-dot priority-low"></span><strong>Vitamin D3
-                                        Caps</strong> — 300 Packs</p>
-                            </div>
-                            <div class="action-area" style="display:flex; gap:10px;">
-                                <button class="btn btn-deny" onclick="handleOrderAction(3, 'deny')">Decline</button>
-                                <button class="btn btn-accept" onclick="handleOrderAction(3, 'accept')">Accept</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <                <div id="order-list" class="card" style="padding: 1.5rem; border-radius: 20px; border-left: none; overflow-x: auto;">
+                    <table style="width: 100%; border-collapse: collapse; text-align: left;">
+                        <thead>
+                            <tr style="border-bottom: 2px solid #e2e8f0;">
+                                <th style="padding: 12px; color: #a3aed0; font-weight: 600; font-size: 0.85rem; text-transform: uppercase;">Order ID</th>
+                                <th style="padding: 12px; color: #a3aed0; font-weight: 600; font-size: 0.85rem; text-transform: uppercase;">Medicine Name</th>
+                                <th style="padding: 12px; color: #a3aed0; font-weight: 600; font-size: 0.85rem; text-transform: uppercase;">Requested Quantity</th>
+                                <th style="padding: 12px; color: #a3aed0; font-weight: 600; font-size: 0.85rem; text-transform: uppercase; text-align: right;">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="incomingOrdersBody">
+                            <tr><td colspan="4" style="text-align: center; padding: 24px; color: #a3aed0;">Loading incoming orders...</td></tr>
+                        </tbody>
+                    </table>
+                </div>         </div>
             </section>
 
             <section id="profile" class="view-section">
@@ -545,6 +513,8 @@
             if (avatarImg && (profile.name || profile.username)) {
                 avatarImg.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(profile.name || profile.username)}&background=4318FF&color=fff`;
             }
+            loadPendingOrders();
+            setInterval(loadPendingOrders, 5000);
         }
 
         function showSection(sectionId, element) {
@@ -560,25 +530,96 @@
             document.getElementById('main-badge').style.display = 'none';
         }
 
-        // HANDLE ACCEPT/DENY WITH ONE-TIME ACCESS
-        function handleOrderAction(orderId, action) {
-            const card = document.getElementById(`order-${orderId}`);
-            const actionArea = card.querySelector('.action-area');
-            const newTag = card.querySelector('.new-tag');
+        let dynamicPendingOrders = [];
 
-            // Hide the NEW tag if it's there
+        async function loadPendingOrders() {
+            try {
+                const response = await fetch('/api/orders/vendor/pending');
+                if (!response.ok) return;
+                const orders = await response.json();
+                dynamicPendingOrders = orders;
+
+                // Update the main badge with the pending count
+                const badge = document.getElementById('main-badge');
+                if (badge) {
+                    badge.innerText = orders.length;
+                    badge.style.display = orders.length > 0 ? 'block' : 'none';
+                }
+
+                const listContainer = document.getElementById('order-list');
+                if (!listContainer) return;
+
+                if (orders.length === 0) {
+                    listContainer.innerHTML = `
+                        <div class="card" style="text-align: center; color: #a3aed0; border-left: none; padding: 2.5rem;">
+                            <h3>No pending orders at the moment</h3>
+                            <p style="font-size: 0.9rem; margin-top: 5px;">Excellent job! All incoming restocks have been processed.</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                let cardsHtml = '';
+                orders.forEach(order => {
+                    cardsHtml += `
+                        <div class="card searchable" id="order-${order.order_id}" style="border-left-color: #ffb547;">
+                            <div style="display:flex; justify-content:space-between; align-items:center; width:100%;">
+                                <div class="order-info">
+                                    <h3 class="hosp-name"><span class="new-tag" style="display:inline-block;">NEW</span>Hospital Inventory Refill</h3>
+                                    <p class="med-details">
+                                        <span class="priority-dot priority-high"></span>
+                                        <strong>${order.medicine_name}</strong> — ${order.quantity_requested} Units
+                                    </p>
+                                </div>
+                                <div class="action-area" style="display:flex; gap:10px;">
+                                    <button class="btn btn-deny" onclick="handleOrderAction(${order.order_id}, 'deny')">Decline</button>
+                                    <button class="btn btn-accept" onclick="handleOrderAction(${order.order_id}, 'accept')">Accept</button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+                listContainer.innerHTML = cardsHtml;
+            } catch (err) {
+                console.error("Error loading pending orders:", err);
+            }
+        }
+
+        async function handleOrderAction(orderId, action) {
+            const card = document.getElementById(`order-${orderId}`);
+            const actionArea = card ? card.querySelector('.action-area') : null;
+            const newTag = card ? card.querySelector('.new-tag') : null;
+
             if (newTag) newTag.style.display = 'none';
 
-            if (action === 'accept') {
-                // UI Updates
-                card.style.borderLeftColor = '#05cd99';
-                actionArea.innerHTML = '<span class="status-label" style="background:#e6f9f4; color:#05cd99;">Accepted</span>';
-                showToast('toast-success');
-            } else {
-                // UI Updates
-                card.style.borderLeftColor = '#ee5d50';
-                actionArea.innerHTML = '<span class="status-label" style="background:#fff2f1; color:#ee5d50;">Denied</span>';
-                showToast('toast-deny');
+            const status = action === 'accept' ? 'Accepted' : 'Denied';
+
+            try {
+                const response = await fetch(`/api/orders/vendor/respond/${orderId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ status })
+                });
+
+                if (response.ok) {
+                    if (action === 'accept') {
+                        if (card) card.style.borderLeftColor = '#05cd99';
+                        if (actionArea) actionArea.innerHTML = '<span class="status-label" style="background:#e6f9f4; color:#05cd99;">Accepted</span>';
+                        showToast('toast-success');
+                    } else {
+                        if (card) card.style.borderLeftColor = '#ee5d50';
+                        if (actionArea) actionArea.innerHTML = '<span class="status-label" style="background:#fff2f1; color:#ee5d50;">Denied</span>';
+                        showToast('toast-deny');
+                    }
+                    setTimeout(loadPendingOrders, 1500);
+                } else {
+                    alert("Failed to respond to order.");
+                }
+            } catch (err) {
+                console.error("Error responding to order:", err);
+                alert("Error connecting to server.");
             }
         }
 
