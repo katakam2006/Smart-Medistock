@@ -188,7 +188,7 @@
 
         .dash-tables-row {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: repeat(3, 1fr);
             gap: 1.5rem;
             margin-top: 1rem;
         }
@@ -269,14 +269,18 @@
         }
 
         .btn-intimate {
-            background: var(--warning);
-            color: #451a03;
+            background: #d97706;
+            color: white;
             border: none;
-            padding: 4px 8px;
+            padding: 6px 12px;
             border-radius: 4px;
             cursor: pointer;
             font-size: 0.65rem;
             font-weight: 700;
+            transition: background 0.2s;
+        }
+        .btn-intimate:hover {
+            background: #b45309;
         }
 
         .content-section {
@@ -307,12 +311,43 @@
             font-size: 0.7rem;
             font-weight: bold;
         }
+
+        #confirm-modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-box {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            text-align: center;
+            width: 350px;
+        }
     </style>
 </head>
 
 <body>
 
     <div id="toast">Action Processed!</div>
+
+    <div id="confirm-modal">
+        <div class="modal-box">
+            <h3 id="modal-title">Action Confirmation</h3>
+            <p id="modal-desc" style="margin: 15px 0; color: #64748b;">Are you sure?</p>
+            <div style="display:flex; gap:10px;">
+                <button onclick="closeModal()"
+                    style="flex:1; padding:10px; border:none; border-radius:6px; cursor:pointer;">No</button>
+                <button id="modal-confirm-btn"
+                    style="flex:1; padding:10px; border:none; border-radius:6px; background:var(--accent); color:white; cursor:pointer;">Yes</button>
+            </div>
+        </div>
+    </div>
 
     <aside>
         <div class="logo-container">
@@ -357,44 +392,66 @@
         <section id="dashboard" class="content-section active">
             <div class="stats-grid">
                 <div class="stat-card">
-                    <h4>Medicines</h4><span class="val">25</span>
+                    <h4>MEDICINES</h4><span class="val">25</span>
                 </div>
                 <div class="stat-card" style="border-left-color: #8b5cf6">
-                    <h4>Total Stock</h4><span class="val" id="stat-qty">0</span>
+                    <h4>TOTAL STOCK</h4><span class="val" id="stat-qty">0</span>
                 </div>
                 <div class="stat-card" style="border-left-color: var(--warning)">
-                    <h4>Low Stock</h4><span class="val" id="stat-low-stock">0</span>
+                    <h4>LOW STOCK</h4><span class="val" id="stat-low-stock">0</span>
                 </div>
                 <div class="stat-card" style="border-left-color: var(--danger)">
-                    <h4>Expiries</h4><span class="val">04</span>
+                    <h4>EXPIRIES</h4><span class="val">04</span>
                 </div>
                 <div class="stat-card" style="border-left-color: var(--success)">
-                    <h4>Dispatched</h4><span class="val" id="stat-so">0</span>
+                    <h4>DISPATCHED ITEMS</h4><span class="val" id="stat-so">0</span>
                 </div>
             </div>
 
             <div class="dash-tables-row">
                 <div class="card">
-                    <h3 style="color: var(--warning); font-size: 0.9rem; margin-bottom: 10px;">Low Stock Items</h3>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                        <h3 style="color: var(--warning); font-size: 0.9rem;">Low Stock Items</h3>
+                        <a href="javascript:void(0)" onclick="showSection('alerts')" style="color: var(--accent); font-size: 0.75rem; text-decoration: none; font-weight: 600;">View All</a>
+                    </div>
                     <table>
                         <thead>
                             <tr>
-                                <th>Medicine</th>
-                                <th>Stock</th>
-                                <th>Action</th>
+                                <th>MEDICINE</th>
+                                <th>STOCK</th>
+                                <th>ACTION</th>
                             </tr>
                         </thead>
                         <tbody id="dash-low-stock"></tbody>
                     </table>
                 </div>
                 <div class="card">
-                    <h3 style="color: var(--danger); font-size: 0.9rem; margin-bottom: 10px;">Upcoming Expiries</h3>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                        <h3 style="color: var(--success); font-size: 0.9rem;">Overstock Items</h3>
+                        <a href="javascript:void(0)" onclick="showSection('alerts')" style="color: var(--accent); font-size: 0.75rem; text-decoration: none; font-weight: 600;">View All</a>
+                    </div>
                     <table>
                         <thead>
                             <tr>
-                                <th>Medicine</th>
-                                <th>Exp Date</th>
-                                <th>Action</th>
+                                <th>MEDICINE</th>
+                                <th>STOCK</th>
+                                <th>ACTION</th>
+                            </tr>
+                        </thead>
+                        <tbody id="dash-overstock"></tbody>
+                    </table>
+                </div>
+                <div class="card">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                        <h3 style="color: var(--danger); font-size: 0.9rem;">Upcoming Expiries</h3>
+                        <a href="javascript:void(0)" onclick="showSection('alerts')" style="color: var(--accent); font-size: 0.75rem; text-decoration: none; font-weight: 600;">View All</a>
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>MEDICINE</th>
+                                <th>EXP DATE</th>
+                                <th>ACTION</th>
                             </tr>
                         </thead>
                         <tbody id="dash-expiry"></tbody>
@@ -403,15 +460,17 @@
             </div>
 
             <div class="card">
-                <h3 style="color: var(--success); font-size: 0.9rem; margin-bottom: 10px;">Recent Dispatches (New Bills)
-                </h3>
+                <h3 style="color: var(--success); font-size: 0.9rem; margin-bottom: 10px;">Recent Dispatches (New Bills)</h3>
                 <table>
                     <thead>
                         <tr>
-                            <th>Bill ID</th>
-                            <th>Medicine</th>
-                            <th>Qty</th>
-                            <th>Status</th>
+                            <th>BILL ID</th>
+                            <th>MEDICINE</th>
+                            <th>CATEGORY</th>
+                            <th>QTY TAKEN</th>
+                            <th>UNIT PRICE</th>
+                            <th>TOTAL AMOUNT</th>
+                            <th>STATUS</th>
                         </tr>
                     </thead>
                     <tbody id="dash-recent-bills"></tbody>
@@ -495,15 +554,85 @@
     <script>
         const medNames = ["Insulin", "Metformin", "Lisinopril", "Atorvastatin", "Amlodipine", "Albuterol", "Omeprazole", "Losartan", "Sertraline", "Gabapentin", "Hydrochlorothiazide", "Montelukast", "Amoxicillin", "Pantoprazole", "Furosemide", "Escitalopram", "Rosuvastatin", "Prednisone", "Tamsulosin", "Meloxicam", "Clopidogrel", "Propranolol", "Warfarin", "Diclofenac", "Azithromycin"];
         const cats = ["Diabetes", "Diabetes", "Cardiac", "Cardiac", "Cardiac", "Respiratory", "Gastric", "Cardiac", "Mental", "Mental", "Cardiac", "Respiratory", "Antibiotic", "Gastric", "Cardiac", "Mental", "Cardiac", "Steroid", "Urology", "Pain", "Cardiac", "Cardiac", "Blood", "Pain", "Antibiotic"];
+        
+        // Define exact expiry dates and pricing fields to match the realistic dataset
+        const expiryDates = {
+            "Amoxicillin": "2026-11-01",
+            "Pantoprazole": "2026-06-11",
+            "Furosemide": "2026-07-19",
+            "Escitalopram": "2026-08-01",
+            "Insulin": "2026-12-15",
+            "Metformin": "2027-02-20",
+            "Lisinopril": "2026-09-30",
+            "Atorvastatin": "2027-05-18",
+            "Amlodipine": "2026-10-05",
+            "Albuterol": "2026-08-25",
+            "Omeprazole": "2026-07-12",
+            "Losartan": "2026-06-28",
+            "Sertraline": "2026-07-30",
+            "Gabapentin": "2027-01-15",
+            "Hydrochlorothiazide": "2026-11-20",
+            "Montelukast": "2027-03-10",
+            "Rosuvastatin": "2026-12-01",
+            "Prednisone": "2026-09-15",
+            "Tamsulosin": "2026-10-25",
+            "Meloxicam": "2027-04-12",
+            "Clopidogrel": "2026-08-05",
+            "Propranolol": "2026-11-18",
+            "Warfarin": "2026-10-12",
+            "Diclofenac": "2026-07-07",
+            "Azithromycin": "2026-06-25"
+        };
+
+        const prices = {
+            "Insulin": 25, "Metformin": 10, "Lisinopril": 15, "Atorvastatin": 30, "Amlodipine": 12,
+            "Albuterol": 18, "Omeprazole": 14, "Losartan": 16, "Sertraline": 22, "Gabapentin": 28,
+            "Hydrochlorothiazide": 8, "Montelukast": 20, "Amoxicillin": 15, "Pantoprazole": 17, "Furosemide": 9,
+            "Escitalopram": 21, "Rosuvastatin": 32, "Prednisone": 7, "Tamsulosin": 24, "Meloxicam": 11,
+            "Clopidogrel": 19, "Propranolol": 13, "Warfarin": 15, "Diclofenac": 8, "Azithromycin": 26
+        };
 
         let inventory = [];
         let stockouts = [];
 
-        function init() {
-            for (let i = 0; i < 25; i++) {
-                inventory.push({ id: `MED-${1000 + i}`, name: medNames[i], cat: cats[i], stock: Math.floor(Math.random() * 400) + 50 });
-            }
+        async function init() {
             initProfile();
+            try {
+                const response = await fetch('http://localhost:3000/api/medicines');
+                if (!response.ok) throw new Error("Could not reach backend dataset API");
+
+                const datasetItems = await response.json();
+                inventory = [];
+                if (datasetItems.length > 0) {
+                    datasetItems.forEach((item, i) => {
+                        const name = item["Medicine Name"] || 'Unknown';
+                        const rawPrice = item["Price ($)"] || item.Price || 15;
+                        inventory.push({
+                            id: item["Medicine ID"] || `MED-${1000 + i}`,
+                            name: name,
+                            cat: item["Category"] || 'General',
+                            stock: Math.floor(Math.random() * 400) + 50,
+                            expiry: expiryDates[name] || "2026-12-31",
+                            price: parseFloat(rawPrice) || 15
+                        });
+                    });
+                }
+            } catch (err) {
+                console.error("Error connecting inventory element to backend dataset:", err);
+                inventory = [];
+                for (let i = 0; i < 25; i++) {
+                    const name = medNames[i];
+                    inventory.push({ 
+                        id: `MED-${1000 + i}`, 
+                        name: name, 
+                        cat: cats[i], 
+                        stock: Math.floor(Math.random() * 400) + 50,
+                        expiry: expiryDates[name] || "2026-12-31",
+                        price: prices[name] || 15
+                    });
+                }
+            }
+
             renderAll();
             populateDropdown();
             lucide.createIcons();
@@ -516,7 +645,7 @@
                 const displayName = profile.name || profile.username;
                 document.getElementById('page-display-title').innerText = `${displayName}!`;
                 document.getElementById('profile-name').innerText = displayName;
-                
+
                 // Update avatar with user initials
                 const avatar = document.querySelector('.profile-box img');
                 if (avatar) {
@@ -558,7 +687,10 @@
             const newBill = {
                 bid: `B-${Math.floor(Math.random() * 9000) + 1000}`,
                 name: med.name,
+                cat: med.cat,
                 qty: qty,
+                price: med.price,
+                total: qty * med.price,
                 date: new Date().toISOString().split('T')[0]
             };
             stockouts.unshift(newBill);
@@ -571,6 +703,9 @@
 
         function renderAll() {
             const lowStockItems = inventory.filter(m => m.stock < 100);
+            const overstockItems = inventory.filter(m => m.stock >= 350);
+            const expiryMedicines = ["Amoxicillin", "Pantoprazole", "Furosemide", "Escitalopram"];
+            const expiryItems = inventory.filter(m => expiryMedicines.includes(m.name));
 
             // Update Statistics
             document.getElementById('stat-qty').innerText = inventory.reduce((a, b) => a + b.stock, 0).toLocaleString();
@@ -579,12 +714,41 @@
 
             // Dashboard: Recent Bills
             document.getElementById('dash-recent-bills').innerHTML = stockouts.slice(0, 5).map(s => `
-                <tr><td>#${s.bid}</td><td><b>${s.name}</b></td><td>${s.qty}</td><td><span class="badge-new">New Dispatch</span></td></tr>
+                <tr>
+                    <td>#${s.bid}</td>
+                    <td><b>${s.name}</b></td>
+                    <td>${s.cat}</td>
+                    <td>${s.qty}</td>
+                    <td>₹${s.price}</td>
+                    <td>₹${s.total}</td>
+                    <td><span class="badge-new">Dispatched</span></td>
+                </tr>
             `).join('');
 
-            // Dashboard: Low Stock & Expiry
-            document.getElementById('dash-low-stock').innerHTML = lowStockItems.slice(0, 4).map(m => `<tr><td><b>${m.name}</b></td><td style="color:var(--danger)">${m.stock}</td><td><button class="btn-intimate" onclick="intimate(this, '${m.name}', 'LOW STOCK', ${m.stock})">Intimate</button></td></tr>`).join('');
-            document.getElementById('dash-expiry').innerHTML = inventory.slice(10, 14).map(m => `<tr><td><b>${m.name}</b></td><td style="color:var(--danger)">2026-06-15</td><td><button class="btn-intimate" onclick="intimate(this, '${m.name}', 'EXPIRY', ${m.stock})">Intimate</button></td></tr>`).join('');
+            // Dashboard: Low Stock, Overstock & Expiry
+            document.getElementById('dash-low-stock').innerHTML = lowStockItems.slice(0, 4).map(m => `
+                <tr>
+                    <td><b>${m.name}</b></td>
+                    <td style="color:var(--danger); font-weight:bold;">${m.stock}</td>
+                    <td><button class="btn-intimate" onclick="intimate(this, '${m.name}', 'LOW STOCK', ${m.stock})">Intimate</button></td>
+                </tr>
+            `).join('');
+
+            document.getElementById('dash-overstock').innerHTML = overstockItems.slice(0, 4).map(m => `
+                <tr>
+                    <td><b>${m.name}</b></td>
+                    <td style="color:var(--success); font-weight:bold;">${m.stock}</td>
+                    <td><button class="btn-intimate" onclick="intimate(this, '${m.name}', 'OVERSTOCK', ${m.stock})">Intimate</button></td>
+                </tr>
+            `).join('');
+
+            document.getElementById('dash-expiry').innerHTML = expiryItems.map(m => `
+                <tr>
+                    <td><b>${m.name}</b></td>
+                    <td style="color:var(--danger); font-weight:bold;">${m.expiry}</td>
+                    <td><button class="btn-intimate" onclick="intimate(this, '${m.name}', 'EXPIRY', ${m.stock})">Intimate</button></td>
+                </tr>
+            `).join('');
 
             // Medicines Menu: Inventory Master (Updated live)
             document.querySelector('#med-table tbody').innerHTML = inventory.map(m => `
@@ -599,8 +763,24 @@
             `).join('');
 
             // Alerts Menu
-            document.querySelector('#alert-table tbody').innerHTML = lowStockItems.map(m => `
-                <tr><td><b>${m.name}</b></td><td><span style="color:var(--warning)">Low Stock Alert</span></td><td>${m.stock}</td><td><button class="btn-intimate" onclick="intimate(this, '${m.name}', 'LOW STOCK', ${m.stock})">Notify</button></td></tr>
+            const alertsList = [];
+            lowStockItems.forEach(m => {
+                alertsList.push({ name: m.name, type: 'Low Stock Alert', color: 'var(--warning)', stock: m.stock, actionType: 'LOW STOCK' });
+            });
+            overstockItems.forEach(m => {
+                alertsList.push({ name: m.name, type: 'Overstock Alert', color: 'var(--success)', stock: m.stock, actionType: 'OVERSTOCK' });
+            });
+            inventory.filter(m => m.expiry < '2026-09-01').forEach(m => {
+                alertsList.push({ name: m.name, type: 'Upcoming Expiry Alert', color: 'var(--danger)', stock: m.stock, actionType: 'EXPIRY', info: `Exp: ${m.expiry}` });
+            });
+
+            document.querySelector('#alert-table tbody').innerHTML = alertsList.map(a => `
+                <tr>
+                    <td><b>${a.name}</b></td>
+                    <td><span style="color:${a.color}; font-weight:bold;">${a.type}</span> ${a.info ? `<small>(${a.info})</small>` : ''}</td>
+                    <td>${a.stock}</td>
+                    <td><button class="btn-intimate" onclick="intimate(this, '${a.name}', '${a.actionType}', ${a.stock})">Notify</button></td>
+                </tr>
             `).join('');
         }
 
@@ -626,10 +806,10 @@
         async function intimate(btn, medName, alertType, stockQty) {
             btn.disabled = true;
             btn.innerText = "Sending...";
-            
+
             const stored = localStorage.getItem('billingProfile');
             const username = stored ? JSON.parse(stored).username : 'vyshnavi';
-            
+
             try {
                 const response = await fetch('/api/alerts/intimate', {
                     method: 'POST',
@@ -643,7 +823,7 @@
                         triggered_by: username
                     })
                 });
-                
+
                 if (response.ok) {
                     btn.innerText = "Sent";
                     showToast(`${alertType} alert sent for ${medName}!`);
@@ -660,10 +840,17 @@
             }
         }
         function handleLogout() {
-            if (confirm("Logout?")) {
+            document.getElementById('modal-title').innerText = "Logout Confirmation";
+            document.getElementById('modal-desc').innerText = "Are you sure you want to end your current session?";
+            document.getElementById('confirm-modal').style.display = 'flex';
+            document.getElementById('modal-confirm-btn').onclick = () => {
                 localStorage.removeItem('billingProfile');
-                window.location.href = "index.html";
-            }
+                window.location.href = 'index.html';
+            };
+        }
+
+        function closeModal() {
+            document.getElementById('confirm-modal').style.display = 'none';
         }
 
         window.onload = init;

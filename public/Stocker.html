@@ -300,6 +300,24 @@
             z-index: 2000;
         }
 
+        #confirm-modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 3000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-box {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            text-align: center;
+            width: 350px;
+        }
+
         @keyframes fadeIn {
             from {
                 opacity: 0;
@@ -316,6 +334,19 @@
 <body onload="init()">
 
     <div id="toast">Action Successful</div>
+
+    <div id="confirm-modal">
+        <div class="modal-box">
+            <h3 id="modal-title" style="color: var(--text-main); font-size: 1.2rem; font-weight: bold; margin-bottom: 10px;">Action Confirmation</h3>
+            <p id="modal-desc" style="margin: 15px 0; color: var(--text-muted); font-size: 0.9rem;">Are you sure?</p>
+            <div style="display:flex; gap:10px;">
+                <button onclick="closeModal()"
+                    style="flex:1; padding:10px; border:none; border-radius:6px; cursor:pointer; background: #e0e5f2; color: var(--text-main); font-weight: bold;">No</button>
+                <button id="modal-confirm-btn"
+                    style="flex:1; padding:10px; border:none; border-radius:6px; background:var(--primary); color:white; cursor:pointer; font-weight: bold;">Yes</button>
+            </div>
+        </div>
+    </div>
 
     <aside class="sidebar">
         <div class="brand"><img src="logformedistock.png">
@@ -587,22 +618,79 @@
             document.getElementById('input-pass').value = '';
         }
 
-        function init() {
+        let activeMedicines = [];
+
+        async function init() {
             initProfile();
+            await loadMedicinesAndAlerts();
+            renderCharts();
+        }
+
+        async function loadMedicinesAndAlerts() {
             const si = document.getElementById('siBody');
             const so = document.getElementById('soBody');
             const al = document.getElementById('alBody');
             const pr = document.getElementById('prBody');
 
-            meds.forEach((m, i) => {
+            si.innerHTML = '';
+            so.innerHTML = '';
+            al.innerHTML = '';
+            pr.innerHTML = '';
+
+            try {
+                const response = await fetch('http://localhost:3000/api/medicines');
+                if (!response.ok) throw new Error("Could not reach backend dataset API");
+
+                const datasetItems = await response.json();
+                activeMedicines = datasetItems.map(item => item["Medicine Name"] || 'Unknown');
+            } catch (err) {
+                console.error("Error loading medicines:", err);
+                activeMedicines = meds; // Fallback to offline meds
+            }
+
+            // Populate stock-in, stock-out, prediction tables
+            activeMedicines.forEach((m, i) => {
                 const stock = Math.floor(Math.random() * 400) + 10;
-                const alertQty = (i % 2 === 0) ? Math.floor(Math.random() * 50) + 1 : Math.floor(Math.random() * 10) + 1;
                 si.innerHTML += `<tr><td>#INV-${100 + i}</td><td>${m}</td><td>B-${500 + i}</td><td>${stock}</td></tr>`;
                 so.innerHTML += `<tr><td>${m}</td><td>${stock}</td><td><span class="badge ${stock < 50 ? 'bg-red' : 'bg-green'}">${stock < 50 ? 'Low' : 'OK'}</span></td><td><button class="btn" style="padding:4px 10px" onclick="generateBill('${m}')">Bill</button></td></tr>`;
-                al.innerHTML += `<tr><td>${i % 2 === 0 ? 'Expiring Soon' : 'Shortage'}</td><td>${m}</td><td>${alertQty} Units</td><td><span class="badge ${i % 4 === 0 ? 'bg-red' : 'bg-yellow'}">High</span></td><td><button class="btn" style="padding:4px 10px" onclick="resolve(this)">Resolve</button></td></tr>`;
                 pr.innerHTML += `<tr><td>${m}</td><td>Rising</td><td>${stock + 150}</td></tr>`;
             });
-            renderCharts();
+
+            // Load active alerts from database
+            try {
+                const alertsRes = await fetch('http://localhost:3000/api/alerts/active');
+                if (!alertsRes.ok) throw new Error("Could not fetch alerts");
+                const alerts = await alertsRes.json();
+
+                alerts.forEach(alt => {
+                    const isPending = alt.status === 'Pending' || alt.status === 'Critical' || alt.status === 'Ordered';
+                    const priorityClass = alt.alert_type === 'EXPIRY' ? 'bg-red' : 'bg-yellow';
+                    const priorityName = alt.alert_type === 'EXPIRY' ? 'High' : 'Medium';
+                    
+                    let actionHtml = '';
+                    if (isPending) {
+                        actionHtml = `<button class="btn" style="padding:4px 10px" onclick="resolveAlert(this, ${alt.id})">Resolve</button>`;
+                    } else {
+                        actionHtml = `<span class="badge bg-green">${alt.status.toUpperCase()}</span>`;
+                    }
+
+                    al.innerHTML += `
+                        <tr id="alert-row-${alt.id}">
+                            <td>${alt.alert_type}</td>
+                            <td><b>${alt.medicine_name}</b></td>
+                            <td>${alt.status} <small>(by ${alt.triggered_by || 'system'})</small></td>
+                            <td><span class="badge ${priorityClass}">${priorityName}</span></td>
+                            <td>${actionHtml}</td>
+                        </tr>
+                    `;
+                });
+            } catch (err) {
+                console.error("Error loading alerts:", err);
+                activeMedicines.slice(0, 10).forEach((m, i) => {
+                    const alertQty = (i % 2 === 0) ? Math.floor(Math.random() * 50) + 1 : Math.floor(Math.random() * 10) + 1;
+                    al.innerHTML += `<tr><td>${i % 2 === 0 ? 'Expiring Soon' : 'Shortage'}</td><td>${m}</td><td>${alertQty} Units</td><td><span class="badge ${i % 4 === 0 ? 'bg-red' : 'bg-yellow'}">High</span></td><td><button class="btn" style="padding:4px 10px" onclick="resolveOffline(this)">Resolve</button></td></tr>`;
+                });
+            }
         }
 
         function filterTable() {
@@ -657,15 +745,57 @@
             table.insertAdjacentHTML('afterbegin', `<tr style="background:#f0f7ff"><td>${time}</td><td>${item}</td><td>${qty}</td></tr>`);
         }
 
-        function resolve(btn) { btn.closest('tr').remove(); showToast("Alert Resolved"); }
+        function resolveOffline(btn) { btn.closest('tr').remove(); showToast("Alert Resolved"); }
+
+        async function resolveAlert(btn, alertId) {
+            document.getElementById('modal-title').innerText = "Resolve Alert Confirmation";
+            document.getElementById('modal-desc').innerText = "Are you sure you want to mark this inventory shortage/expiry alert as resolved?";
+            document.getElementById('confirm-modal').style.display = 'flex';
+            document.getElementById('modal-confirm-btn').onclick = async () => {
+                closeModal();
+                btn.disabled = true;
+                btn.innerText = "Resolving...";
+
+                try {
+                    const response = await fetch(`http://localhost:3000/api/alerts/${alertId}`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ status: 'Resolved' })
+                    });
+
+                    if (response.ok) {
+                        showToast("Alert Resolved");
+                        await loadMedicinesAndAlerts();
+                    } else {
+                        btn.disabled = false;
+                        btn.innerText = "Resolve";
+                        alert("Failed to update status on server.");
+                    }
+                } catch (err) {
+                    console.error("Error resolving alert:", err);
+                    btn.disabled = false;
+                    btn.innerText = "Resolve";
+                    alert("Error connecting to server.");
+                }
+            };
+        }
 
         function handleLogout() {
             const name = document.getElementById('display-name').innerText;
-            if (confirm(`Logout ${name}?`)) {
+            document.getElementById('modal-title').innerText = "Logout Confirmation";
+            document.getElementById('modal-desc').innerText = `Are you sure you want to end your current session, ${name}?`;
+            document.getElementById('confirm-modal').style.display = 'flex';
+            document.getElementById('modal-confirm-btn').onclick = () => {
                 localStorage.removeItem('stockerProfile');
                 document.body.classList.add('logout-active');
                 setTimeout(() => window.location.href = 'index.html', 800);
-            }
+            };
+        }
+
+        function closeModal() {
+            document.getElementById('confirm-modal').style.display = 'none';
         }
 
         function showToast(msg) {
@@ -676,7 +806,7 @@
 
         function renderCharts() {
             new Chart(document.getElementById('mainChart'), { type: 'line', data: { labels: ['09:00', '10:00', '11:00', '12:00', '13:00'], datasets: [{ label: 'Flow', data: [10, 30, 20, 45, 25], borderColor: '#4318FF', tension: 0.4 }] } });
-            new Chart(document.getElementById('predBarChart'), { type: 'bar', data: { labels: meds.slice(0, 8), datasets: [{ label: 'Forecast', data: [300, 450, 200, 500, 350, 400, 150, 280], backgroundColor: '#4318FF' }] } });
+            new Chart(document.getElementById('predBarChart'), { type: 'bar', data: { labels: activeMedicines.length > 0 ? activeMedicines.slice(0, 8) : meds.slice(0, 8), datasets: [{ label: 'Forecast', data: [300, 450, 200, 500, 350, 400, 150, 280], backgroundColor: '#4318FF' }] } });
         }
     </script>
 </body>

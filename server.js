@@ -2,6 +2,7 @@ const express = require('express');
 const mysql = require('mysql2');
 const path = require('path');
 const cors = require('cors');
+const fs = require('fs');
 
 const app = express();
 const PORT = 3000;
@@ -148,18 +149,47 @@ app.get('/api/alerts/active', async (req, res) => {
 
 // API: Get Dashboard Counters
 app.get('/api/dashboard/counters', async (req, res) => {
-    const lowStockQuery = `SELECT COUNT(*) as count FROM inventory_alerts WHERE alert_type = 'LOW STOCK' AND status = 'Pending'`;
-    const expiryQuery = `SELECT COUNT(*) as count FROM inventory_alerts WHERE alert_type = 'EXPIRY' AND status = 'Pending'`;
     try {
-        const [[lowStockResult]] = await db.query(lowStockQuery);
-        const [[expiryResult]] = await db.query(expiryQuery);
+        const [lowStockRows] = await db.query(`SELECT COUNT(*) as count FROM inventory_alerts WHERE alert_type = 'LOW STOCK' AND status = 'Pending'`);
+        const [expiryRows] = await db.query(`SELECT COUNT(*) as count FROM inventory_alerts WHERE alert_type = 'EXPIRY' AND status = 'Pending'`);
         res.json({
-            lowStockCount: lowStockResult.count,
-            expiryCount: expiryResult.count
+            lowStockCount: lowStockRows[0].count,
+            expiryCount: expiryRows[0].count
         });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
+});
+
+// API Endpoint to fetch medicine dataset rows safely
+app.get('/api/medicines', (req, res) => {
+    const csvPath = path.resolve(__dirname, 'medicine_dataset_250k-v2.csv');
+
+    fs.readFile(csvPath, 'utf8', (err, data) => {
+        if (err) {
+            console.error("CSV Read Error Details:", err);
+            return res.status(500).json({ error: "Failed to read dataset file. Check file placement." });
+        }
+
+        const lines = data.split('\n');
+        const headers = lines[0].split(',');
+        const result = [];
+
+        // Limit to first 100 rows for display performance so it loads instantly
+        const maxRows = Math.min(lines.length, 101);
+
+        for (let i = 1; i < maxRows; i++) {
+            if (!lines[i].trim()) continue;
+            const currentline = lines[i].split(',');
+            const obj = {};
+            for (let j = 0; j < headers.length; j++) {
+                obj[headers[j].trim()] = currentline[j] ? currentline[j].trim() : '';
+            }
+            result.push(obj);
+        }
+
+        res.json(result);
+    });
 });
 
 // API: Update Alert Status

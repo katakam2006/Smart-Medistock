@@ -460,51 +460,56 @@
         }
 
         function handleLogin(e) {
-            if (e) e.preventDefault();
+    if (e) e.preventDefault();
 
-            const username = document.getElementById('login-username').value.trim();
-            const pass = document.getElementById('login-password').value;
+    const username = document.getElementById('login-username').value.trim();
+    const pass = document.getElementById('login-password').value;
 
-            if (!username || !pass) {
-                alert('Please fill all fields');
-                return;
+    if (!username || !pass) {
+        alert('Please fill all fields');
+        return;
+    }
+
+    // FIXED: Changed https to http to match your working server.js standard connection
+    fetch('http://localhost:3000/api/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password: pass })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.error) {
+            alert(data.error);
+        } else {
+            const account = data.user;
+            const userRole = account.role.toLowerCase();
+
+            // FIXED: Flexible checks matching exact database strings like 'BillingExecutive'
+            if (userRole.includes('vendor') || userRole.includes('supplier')) {
+                localStorage.setItem('supplierProfile', JSON.stringify(account));
+                window.location.href = 'Vendor (1).html';
+            } else if (userRole.includes('stocker')) {
+                localStorage.setItem('stockerProfile', JSON.stringify(account));
+                window.location.href = 'Stocker.html';
+            } else if (userRole.includes('ceo')) {
+                localStorage.setItem('ceoProfile', JSON.stringify(account));
+                window.location.href = 'CEO dashboard.html';
+            } else if (userRole.includes('billing')) {
+                localStorage.setItem('billingProfile', JSON.stringify(account));
+                window.location.href = 'Billing Exceutive.html';
+            } else if (userRole.includes('stockin') || userRole.includes('stock-in')) {
+                localStorage.setItem('stockinProfile', JSON.stringify(account));
+                window.location.href = 'StockinManager.html';
+            } else {
+                alert('Portal for this role (' + account.role + ') is not available yet.');
             }
-
-            // FIX 4: Switched login endpoint to point to secure HTTPS backend channel port 3000
-            fetch('https://localhost:3000/api/login', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ username, password: pass })
-            })
-                .then(res => res.json())
-                .then(data => {
-                    if (data.error) {
-                        alert(data.error);
-                    } else {
-                        const account = data.user;
-
-                        if (account.role.toLowerCase().includes('vendor') || account.role.toLowerCase().includes('supplier')) {
-                            localStorage.setItem('supplierProfile', JSON.stringify(account));
-                            window.location.href = 'Vendor (1).html';
-                        } else if (account.role.toLowerCase().includes('stocker')) {
-                            localStorage.setItem('stockerProfile', JSON.stringify(account));
-                            window.location.href = 'Stocker.html';
-                        } else if (account.role.toLowerCase().includes('ceo')) {
-                            localStorage.setItem('ceoProfile', JSON.stringify(account));
-                            window.location.href = 'CEO dashboard.html';
-                        } else if (account.role.toLowerCase().includes('billing executive') || account.role.toLowerCase().includes('billing-executive')) {
-                            localStorage.setItem('billingProfile', JSON.stringify(account));
-                            window.location.href = 'Billing Exceutive.html';
-                        } else if (account.role.toLowerCase().includes('stockinmanager') || account.role.toLowerCase().includes('stock-in')) {
-                            localStorage.setItem('stockinProfile', JSON.stringify(account));
-                            window.location.href = 'StockinManager.html';
-                        } else {
-                            alert('Portal for this role (' + account.role + ') is not available yet.');
-                        }
-                    }
-                })
-                .catch(err => console.error('Error during login:', err));
         }
+    })
+    .catch(err => {
+        console.error('Error during login:', err);
+        alert('Could not connect to the server. Please ensure server.js is running.');
+    });
+}
 
         window.addEventListener('DOMContentLoaded', function () {
             const stored = localStorage.getItem('userAccount') || localStorage.getItem('supplierAccount');
