@@ -4,6 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <title>Stocker Dashboard - Smart MediStock</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -208,6 +211,60 @@
             text-decoration: none;
         }
 
+        .forecast-card {
+            background: linear-gradient(135deg, #eef2ff 0%, #ffffff 100%);
+            border: 1px solid #e0e7ff;
+        }
+
+        .forecast-label {
+            font-size: 0.75rem;
+            font-weight: 800;
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        .forecast-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 14px;
+        }
+
+        .forecast-header h3 {
+            color: var(--text-main);
+            font-size: 1.05rem;
+            margin-top: 4px;
+        }
+
+        .forecast-list {
+            display: grid;
+            gap: 10px;
+        }
+
+        .forecast-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 10px 12px;
+            font-size: 0.85rem;
+        }
+
+        .forecast-item strong {
+            color: var(--primary);
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1.2fr 0.8fr;
+            gap: 20px;
+            align-items: start;
+        }
+
         /* General UI */
         .page-header {
             margin-bottom: 20px;
@@ -410,7 +467,22 @@
                     </div>
                 </div>
 
-                <div class="table-container"><canvas id="mainChart" height="80"></canvas></div>
+                <div class="dashboard-grid">
+                    <div class="table-container"><canvas id="mainChart" height="80"></canvas></div>
+                    <div class="table-container forecast-card">
+                        <div class="forecast-header">
+                            <div>
+                                <p class="forecast-label">AI Live Forecast</p>
+                            </div>
+                            <button class="btn" onclick="showSection('prediction', document.getElementById('m-prediction'))">View All Forecast</button>
+                        </div>
+                        <div class="forecast-list">
+                            <div class="forecast-item"><span>Paracetamol 500mg</span><strong>+1,200 units</strong></div>
+                            <div class="forecast-item"><span>Amoxicillin 250mg</span><strong>+340 units</strong></div>
+                            <div class="forecast-item"><span>Vitamin C</span><strong>+180 units</strong></div>
+                        </div>
+                    </div>
+                </div>
                 <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 20px;">
                     <div class="table-container">
                         <h4>Recent Scans (In)</h4>
