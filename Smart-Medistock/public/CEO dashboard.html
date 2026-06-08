@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart MediStock - Pro</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F8FAFC;
+            color: #1E293B;
+        }
+
+        .sidebar-active {
+            background: #2563EB;
+            color: white !important;
+        }
+
+        .hidden-view {
+            display: none !important;
+        }
+
+        .metric-card {
+            background: white;
+            padding: 16px 24px;
+            border-radius: 12px;
+            border: 1px solid #E2E8F0;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #CBD5E1;
+            border-radius: 10px;
+        }
+
+        /* Fixed Logo Styling for PNG */
+        .brand-logo {
+            width: 42px;
+            height: 42px;
+            border-radius: 8px;
+            object-fit: contain;
+            background: transparent;
+        }
+    </style>
+</head>
+
+<body class="flex h-screen overflow-hidden">
+
+    <aside class="w-64 bg-[#0F172A] text-slate-400 flex flex-col shrink-0 p-4">
+        <div class="flex items-center gap-3 px-2 mb-10">
+            <img src="logformedistock.png" alt="Logo" class="brand-logo"
+                onerror="this.src='https://placehold.co/100x100/2563EB/FFF?text=SM'">
+            <div>
+                <h1 class="text-white font-bold text-sm leading-tight">Smart Medistock</h1>
+                <p class="text-[10px] text-slate-500 uppercase tracking-widest">Medicine Inventory</p>
+            </div>
+        </div>
+        <nav class="flex-1 space-y-2">
+            <a href="javascript:void(0)" id="nav-dashboard" onclick="showView('dashboard-view', this)"
+                class="nav-link sidebar-active flex items-center gap-3 px-4 py-2.5 text-sm font-medium rounded-lg transition-all"><i
+                    class="fas fa-th-large w-5"></i> Dashboard</a>
+            <a href="javascript:void(0)" id="nav-stock-in" onclick="showView('stock-in-view', this)"
+                class="nav-link flex items-center gap-3 px-4 py-2.5 text-sm font-medium rounded-lg hover:bg-slate-800 transition-all"><i
+                    class="fas fa-plus-square w-5"></i> Stock In</a>
+            <a href="javascript:void(0)" id="nav-stock-out" onclick="showView('stock-out-view', this)"
+                class="nav-link flex items-center gap-3 px-4 py-2.5 text-sm font-medium rounded-lg hover:bg-slate-800 transition-all"><i
+                    class="fas fa-minus-square w-5"></i> Stock Out</a>
+            <a href="javascript:void(0)" id="nav-alerts" onclick="showView('alerts-view', this)"
+                class="nav-link flex items-center gap-3 px-4 py-2.5 text-sm font-medium rounded-lg hover:bg-slate-800 transition-all"><i
+                    class="fas fa-exclamation-triangle w-5"></i> Alerts</a>
+            <a href="javascript:void(0)" id="nav-prediction" onclick="showView('prediction-view', this)"
+                class="nav-link flex items-center gap-3 px-4 py-2.5 text-sm font-medium rounded-lg hover:bg-slate-800 transition-all"><i
+                    class="fas fa-brain w-5"></i> Prediction <span
+                    class="ml-auto bg-green-500 text-[10px] text-white px-1.5 py-0.5 rounded-full font-bold">New</span></a>
+            <a href="javascript:void(0)" id="nav-reports" onclick="showView('reports-view', this)"
+                class="nav-link flex items-center gap-3 px-4 py-2.5 text-sm font-medium rounded-lg hover:bg-slate-800 transition-all"><i
+                    class="fas fa-file-alt w-5"></i> Reports</a>
+        </nav>
+        <div class="mt-auto border-t border-slate-800 pt-4">
+            <a href="javascript:void(0)" onclick="handleLogout()"
+                class="flex items-center gap-3 px-4 py-2.5 text-sm font-medium rounded-lg hover:bg-red-900/20 text-red-400 transition-all">
+                <i class="fas fa-sign-out-alt w-5"></i> Logout
+            </a>
+        </div>
+    </aside>
+
+    <main class="flex-1 flex flex-col overflow-hidden">
+        <header class="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-8 shrink-0">
+            <h2 id="page-title" class="text-xl font-bold text-slate-800">Dashboard</h2>
+        </header>
+
+        <div id="dashboard-view" class="content-view flex-1 overflow-y-auto p-8 space-y-8">
+            <div class="grid grid-cols-4 gap-6">
+                <div class="metric-card">
+                    <p class="text-[10px] text-blue-600 font-bold uppercase mb-1">Total Medicines</p>
+                    <h3 class="text-2xl font-extrabold">245</h3>
+                </div>
+                <div class="metric-card">
+                    <p class="text-[10px] text-green-600 font-bold uppercase mb-1">Total Stock</p>
+                    <h3 class="text-2xl font-extrabold">15,230</h3>
+                </div>
+                <div class="metric-card border-l-4 border-orange-500">
+                    <p class="text-[10px] text-orange-600 font-bold uppercase mb-1">Low Stock</p>
+                    <h3 class="text-2xl font-extrabold">23</h3>
+                </div>
+                <div class="metric-card border-l-4 border-red-500">
+                    <p class="text-[10px] text-red-600 font-bold uppercase mb-1">Expiring Soon</p>
+                    <h3 class="text-2xl font-extrabold">17</h3>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-12 gap-8">
+                <div class="col-span-8 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                    <h3 class="font-bold text-slate-800 text-sm mb-8">Stock Overview (Last 7 Days)</h3>
+                    <div class="h-[280px]"><canvas id="stockChart"></canvas></div>
+                </div>
+                <div class="col-span-4 bg-indigo-50/50 p-6 rounded-2xl border border-indigo-100 flex flex-col">
+                    <h3 class="font-bold text-indigo-900 text-sm mb-6">AI Forecast</h3>
+                    <div class="space-y-3">
+                        <div
+                            class="bg-white p-3.5 rounded-xl border border-indigo-100 flex justify-between items-center">
+                            <span class="text-xs font-semibold text-slate-600">Paracetamol 500mg</span><span
+                                class="text-xs font-bold text-indigo-600">+1,200</span>
+                        </div>
+                        <div
+                            class="bg-white p-3.5 rounded-xl border border-indigo-100 flex justify-between items-center">
+                            <span class="text-xs font-semibold text-slate-600">Amoxicillin 250mg</span><span
+                                class="text-xs font-bold text-indigo-600">+300</span>
+                        </div>
+                    </div>
+                    <div onclick="showView('prediction-view', document.getElementById('nav-prediction'))"
+                        class="mt-auto p-4 bg-indigo-600 rounded-xl cursor-pointer text-white font-bold text-center hover:bg-indigo-700 transition-all">
+                        View All Predictions</div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-8">
+                <div class="metric-card">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="font-bold text-orange-600 text-xs uppercase">Low Stock Alerts</h3>
+                        <button onclick="showView('alerts-view', document.getElementById('nav-alerts'))"
+                            class="text-blue-600 text-[10px] font-bold uppercase hover:underline">View All</button>
+                    </div>
+                    <table class="w-full text-xs text-slate-600">
+                        <tbody>
+                            <tr>
+                                <td class="py-2">Azithromycin 500mg</td>
+                                <td class="text-red-500 font-bold text-right">15 Left</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="metric-card">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="font-bold text-red-600 text-xs uppercase">Expiry Alerts</h3>
+                        <button onclick="showView('alerts-view', document.getElementById('nav-alerts'))"
+                            class="text-blue-600 text-[10px] font-bold uppercase hover:underline">View All</button>
+                    </div>
+                    <table class="w-full text-xs text-slate-600">
+                        <tbody>
+                            <tr>
+                                <td class="py-2">Cetirizine 10mg</td>
+                                <td class="text-red-600 font-bold text-right">June 2026</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div id="stock-in-view" class="content-view flex-1 overflow-y-auto p-8 space-y-8 hidden-view">
+            <div class="flex justify-between items-start">
+                <div class="space-y-4">
+                    <h3 class="text-2xl font-extrabold text-slate-800">Stock In Analytics</h3>
+                    <select id="stockInInterval" onchange="initStockInChart()"
+                        class="bg-white border border-slate-200 px-4 py-2 rounded-xl text-xs font-bold shadow-sm outline-none">
+                        <option value="weekly">Weekly (Mon-Sun)</option>
+                        <option value="monthly">Monthly View</option>
+                    </select>
+                </div>
+                <div class="flex gap-4">
+                    <div class="metric-card min-w-[160px]">
+                        <p class="text-[10px] text-blue-600 font-bold uppercase mb-1">Items Received</p>
+                        <h3 class="text-xl font-extrabold">1,240</h3>
+                    </div>
+                    <div class="metric-card min-w-[160px]">
+                        <p class="text-[10px] text-blue-600 font-bold uppercase mb-1">Total Batches</p>
+                        <h3 class="text-xl font-extrabold">12</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                <div class="h-[300px]"><canvas id="stockInGrowthChart"></canvas></div>
+            </div>
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                <div class="p-4 bg-slate-50 border-b font-bold text-[10px] text-slate-500 uppercase tracking-widest">
+                    Transaction History</div>
+                <table class="w-full text-left text-sm divide-y divide-slate-100">
+                    <thead class="bg-slate-50/50 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+                        <tr>
+                            <th class="px-8 py-4">Medicine Name</th>
+                            <th class="px-8 py-4">Batch ID</th>
+                            <th class="px-8 py-4">Quantity</th>
+                            <th class="px-8 py-4">Date Added</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-slate-600 divide-y divide-slate-50">
+                        <tr>
+                            <td class="px-8 py-4 font-bold">Paracetamol 500mg</td>
+                            <td class="px-8 py-4">BT-990</td>
+                            <td class="px-8 py-4 text-blue-600 font-bold">+500</td>
+                            <td class="px-8 py-4">11 May 2026</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="stock-out-view" class="content-view flex-1 overflow-y-auto p-8 space-y-8 hidden-view">
+            <div class="flex justify-between items-start">
+                <div class="space-y-4">
+                    <h3 class="text-2xl font-extrabold text-slate-800">Stock Out Trend</h3>
+                    <select id="stockOutInterval" onchange="initStockOutChart()"
+                        class="bg-white border border-slate-200 px-4 py-2 rounded-xl text-xs font-bold shadow-sm outline-none">
+                        <option value="weekly">Weekly (Mon-Sun)</option>
+                        <option value="monthly">Monthly View</option>
+                    </select>
+                </div>
+                <div class="flex gap-4">
+                    <div class="metric-card min-w-[160px]">
+                        <p class="text-[10px] text-indigo-600 font-bold uppercase mb-1">Items Sold</p>
+                        <h3 class="text-xl font-extrabold">840</h3>
+                    </div>
+                    <div class="metric-card min-w-[160px]">
+                        <p class="text-[10px] text-indigo-600 font-bold uppercase mb-1">Total Revenue</p>
+                        <h3 class="text-xl font-extrabold">₹42,000</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                <div class="h-[300px]"><canvas id="stockOutTrendChart"></canvas></div>
+            </div>
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                <div class="p-4 bg-slate-50 border-b font-bold text-[10px] text-slate-500 uppercase tracking-widest">
+                    Sales History</div>
+                <table class="w-full text-left text-sm divide-y divide-slate-100">
+                    <thead class="bg-slate-50/50 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+                        <tr>
+                            <th class="px-8 py-4">Medicine Name</th>
+                            <th class="px-8 py-4">Invoice No</th>
+                            <th class="px-8 py-4">Quantity</th>
+                            <th class="px-8 py-4">Date Out</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-slate-600 divide-y divide-slate-50">
+                        <tr>
+                            <td class="px-8 py-4 font-bold">Amoxicillin 250mg</td>
+                            <td class="px-8 py-4">INV-772</td>
+                            <td class="px-8 py-4 text-red-600 font-bold">-40</td>
+                            <td class="px-8 py-4">11 May 2026</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="alerts-view" class="content-view flex-1 overflow-y-auto p-8 space-y-8 hidden-view">
+            <h3 class="text-2xl font-extrabold text-slate-800">Critical Alerts</h3>
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden mb-8">
+                <div class="p-4 bg-orange-50 font-bold text-orange-800 text-xs uppercase">Low Stock Medicines</div>
+                <table class="w-full text-sm divide-y divide-slate-100">
+                    <tbody class="text-slate-600">
+                        <tr>
+                            <td class="px-8 py-4 font-bold">Azithromycin 500mg</td>
+                            <td class="px-8 py-4 text-red-600 font-bold">15 Units Left</td>
+                            <td class="px-8 py-4 text-right"><button
+                                    class="bg-blue-600 text-white px-4 py-1.5 rounded-lg text-xs font-bold uppercase">Order</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                <div class="p-4 bg-red-50 font-bold text-red-800 text-xs uppercase">Expiring Products</div>
+                <table class="w-full text-sm divide-y divide-slate-100">
+                    <tbody class="text-slate-600">
+                        <tr>
+                            <td class="px-8 py-4 font-bold">Cetirizine 10mg</td>
+                            <td class="px-8 py-4 text-red-600 font-bold">Exp: June 2026</td>
+                            <td class="px-8 py-4 text-right"><button
+                                    class="bg-red-600 text-white px-4 py-1.5 rounded-lg text-xs font-bold uppercase">Remove</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="prediction-view" class="content-view flex-1 overflow-y-auto p-8 space-y-8 hidden-view">
+            <h3 class="text-2xl font-extrabold text-slate-800">AI Prediction Center</h3>
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                <table class="w-full text-left text-sm divide-y divide-slate-100">
+                    <thead class="bg-slate-50 text-[10px] font-bold text-slate-500 uppercase tracking-wider">
+                        <tr>
+                            <th class="px-8 py-4">Medicine</th>
+                            <th class="px-8 py-4">Predicted Demand</th>
+                            <th class="px-8 py-4">Confidence</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-slate-600">
+                        <tr>
+                            <td class="px-8 py-4 font-bold">Paracetamol 500mg</td>
+                            <td class="px-8 py-4 font-bold text-blue-600">+1,200 Units</td>
+                            <td class="px-8 py-4 font-bold text-green-600">98% Match</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="reports-view" class="content-view flex-1 overflow-y-auto p-8 space-y-8 hidden-view">
+            <div class="flex justify-between items-center mb-8">
+                <h3 class="text-2xl font-extrabold text-slate-800">Inventory Analytics</h3><select id="reportYearSelect"
+                    onchange="updateAllReportCharts()"
+                    class="bg-white border border-slate-200 px-4 py-2 rounded-xl text-xs font-bold shadow-sm outline-none cursor-pointer">
+                    <option value="2025">Year: 2025</option>
+                    <option value="2024">Year: 2024</option>
+                    <option value="2023">Year: 2023</option>
+                </select>
+            </div>
+            <div class="space-y-8">
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                    <h4 class="font-bold text-slate-700 text-sm mb-4">Stock Overview</h4>
+                    <div class="h-[250px]"><canvas id="reportStockChart"></canvas></div>
+                </div>
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                    <h4 class="font-bold text-slate-700 text-sm mb-4">Stock In Trend</h4>
+                    <div class="h-[250px]"><canvas id="reportStockInChart"></canvas></div>
+                </div>
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                    <h4 class="font-bold text-slate-700 text-sm mb-4">Stock Out Trend</h4>
+                    <div class="h-[250px]"><canvas id="reportStockOutChart"></canvas></div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        let charts = {};
+        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        const weekDays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+
+        const reportData = {
+            "2025": { stock: [12000, 13100, 14000, 15230, 14800, 15500, 16000, 15800, 16200, 16500, 17000, 17200], in: [4200, 3800, 5100, 4900, 5230, 4500, 5000, 5500, 5100, 5800, 5400, 6000], out: [1000, 2500, 1500, 3000, 2000, 4000, 3500, 4500, 3800, 5000, 4200, 5500] },
+            "2024": { stock: [10000, 10500, 11000, 11500, 11200, 11800, 12000, 12200, 12500, 12800, 13000, 13200], in: [3000, 3200, 3100, 3500, 3400, 3600, 3700, 3800, 3900, 4000, 4100, 4200], out: [800, 900, 1200, 1100, 1300, 1400, 1500, 1600, 1700, 1800, 1900, 2000] },
+            "2023": { stock: [8000, 8200, 8500, 8700, 8900, 9100, 9300, 9500, 9700, 9900, 10000, 10200], in: [2000, 2100, 2200, 2300, 2400, 2500, 2600, 2700, 2800, 2900, 3000, 3100], out: [500, 600, 700, 650, 800, 850, 900, 950, 1000, 1100, 1150, 1200] }
+        };
+
+        function showView(viewId, btn) {
+            document.querySelectorAll('.content-view').forEach(v => v.classList.add('hidden-view'));
+            document.getElementById(viewId).classList.remove('hidden-view');
+            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('sidebar-active'));
+            if (btn) btn.classList.add('sidebar-active');
+            document.getElementById('page-title').innerText = viewId.split('-')[0].charAt(0).toUpperCase() + viewId.split('-')[0].slice(1).replace('-', ' ');
+
+            if (viewId === 'dashboard-view') initDashboardChart();
+            if (viewId === 'stock-in-view') setTimeout(initStockInChart, 50);
+            if (viewId === 'stock-out-view') setTimeout(initStockOutChart, 50);
+            if (viewId === 'reports-view') setTimeout(updateAllReportCharts, 50);
+        }
+
+        function initDashboardChart() {
+            const ctx = document.getElementById('stockChart').getContext('2d');
+            if (charts.dashboard) charts.dashboard.destroy();
+            charts.dashboard = new Chart(ctx, { type: 'line', data: { labels: ['05 May', '06 May', '07 May', '08 May', '09 May', '10 May', '11 May'], datasets: [{ data: [14200, 14800, 15000, 14500, 15100, 14900, 15230], borderColor: '#2563EB', tension: 0.4, fill: true, backgroundColor: 'rgba(37, 99, 235, 0.05)' }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } } });
+        }
+
+        function initStockInChart() {
+            const interval = document.getElementById('stockInInterval').value;
+            const labels = interval === 'weekly' ? weekDays : months;
+            const data = interval === 'weekly' ? [150, 230, 180, 310, 290, 200, 150] : reportData["2025"].in;
+            const ctx = document.getElementById('stockInGrowthChart').getContext('2d');
+            if (charts.stockIn) charts.stockIn.destroy();
+            charts.stockIn = new Chart(ctx, { type: 'bar', data: { labels: labels, datasets: [{ data: data, backgroundColor: '#3B82F6', borderRadius: 8 }] }, options: { maintainAspectRatio: false, plugins: { legend: { display: false } } } });
+        }
+
+        function initStockOutChart() {
+            const interval = document.getElementById('stockOutInterval').value;
+            const labels = interval === 'weekly' ? weekDays : months;
+            const data = interval === 'weekly' ? [90, 140, 110, 180, 160, 130, 95] : reportData["2025"].out;
+            const ctx = document.getElementById('stockOutTrendChart').getContext('2d');
+            if (charts.stockOut) charts.stockOut.destroy();
+            charts.stockOut = new Chart(ctx, { type: 'line', data: { labels: labels, datasets: [{ data: data, borderColor: '#6366F1', backgroundColor: 'rgba(99, 102, 241, 0.1)', fill: true, tension: 0.4 }] }, options: { maintainAspectRatio: false, plugins: { legend: { display: false } } } });
+        }
+
+        function updateAllReportCharts() {
+            const year = document.getElementById('reportYearSelect').value;
+            const data = reportData[year];
+            renderReportChart('reportStockChart', data.stock, '#2563EB', 'rgba(37, 99, 235, 0.05)', 'repStock');
+            renderReportChart('reportStockInChart', data.in, '#3B82F6', 'rgba(59, 130, 246, 0.1)', 'repStockIn');
+            renderReportChart('reportStockOutChart', data.out, '#6366F1', 'rgba(99, 102, 241, 0.1)', 'repStockOut');
+        }
+
+        function renderReportChart(id, data, color, bg, key) {
+            const ctx = document.getElementById(id).getContext('2d');
+            if (charts[key]) charts[key].destroy();
+            charts[key] = new Chart(ctx, { type: 'line', data: { labels: months, datasets: [{ data: data, borderColor: color, fill: true, backgroundColor: bg, tension: 0.4 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } } });
+        }
+
+        async function fetchSystemMetrics() {
+            try {
+                // FIXED: Direct address mapping configured to read analytics arrays via http channel port 3000
+                const response = await fetch('http://localhost:3000/api/dashboard/counters');
+                if (response.ok) {
+                    const counters = await response.json();
+
+                    // Update dynamic overview fields on the executive summary layout if they exist
+                    const lowStockBadge = document.getElementById('ceo-low-stock-count');
+                    const activeAlertsBadge = document.getElementById('ceo-alerts-count');
+
+                    if (lowStockBadge) lowStockBadge.innerText = counters.lowStockCount;
+                    if (activeAlertsBadge) activeAlertsBadge.innerText = counters.expiryCount;
+                }
+            } catch (err) {
+                console.error("Error communicating with backend analytics engine:", err);
+            }
+        }
+
+        function handleLogout() {
+            if (confirm("Are you sure you want to logout?")) {
+                localStorage.removeItem('ceoProfile');
+                window.location.href = 'index.html';
+            }
+        }
+
+        function initProfile() {
+            const stored = localStorage.getItem('ceoProfile');
+            if (stored) {
+                const profile = JSON.parse(stored);
+                const nameLabel = document.getElementById('ceo-profile-name');
+                if (nameLabel) nameLabel.innerText = profile.name || profile.username;
+            }
+        }
+
+        window.onload = function () {
+            initProfile();
+            initDashboardChart();
+            fetchSystemMetrics();
+        };
+    </script>
+</body>
+
+</html>

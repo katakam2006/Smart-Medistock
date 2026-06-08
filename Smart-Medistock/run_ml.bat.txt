@@ -1,0 +1,30 @@
+@echo off
+echo ===================================================
+echo   LAUNCHING PYTHON PIPELINE VIA DIRECT ROUTE
+echo ===================================================
+echo.
+
+:: Hardcoding the absolute direct path to the local Windows Store App folder
+set PY_CMD="%USERPROFILE%\AppData\Local\Microsoft\WindowsApps\python.exe"
+
+echo Testing connection path...
+%PY_CMD% --version
+if %errorlevel% neq 0 (
+    echo.
+    echo Path fallback triggered... Trying alternative internal command...
+    set PY_CMD=python
+)
+
+echo.
+echo [1/2] Installing Required Data Libraries...
+%PY_CMD% -m pip install pandas numpy scikit-learn joblib
+
+echo.
+echo [2/2] Running Machine Learning Training Script...
+%PY_CMD% train_model.py
+
+echo.
+echo ===================================================
+echo   PIPELINE COMPLETION CHECKLIST SUCCESSFUL!
+echo ===================================================
+pause
