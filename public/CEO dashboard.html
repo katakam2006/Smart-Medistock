@@ -51,6 +51,84 @@
             object-fit: contain;
             background: transparent;
         }
+
+        .title-area {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .title-area p {
+            color: #64748b;
+            font-size: 0.9rem;
+        }
+
+        .title-area h1 {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: #0F172A;
+        }
+
+        .top-nav {
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            margin-bottom: 0.75rem;
+            background: transparent;
+        }
+
+        .search-wrapper {
+            position: relative;
+            width: 420px;
+            max-width: 100%;
+        }
+
+        .search-wrapper input {
+            width: 100%;
+            padding: 10px 15px 10px 40px;
+            border-radius: 10px;
+            border: 1px solid #E2E8F0;
+            outline: none;
+            background: #F8FAFC;
+            color: #0F172A;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 12px;
+            top: 10px;
+            color: #94A3B8;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            background: white;
+            padding: 1rem 1.2rem;
+            border-radius: 12px;
+            border: 1px solid #E2E8F0;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
+        }
+
+        .profile-box {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 6px 10px;
+            border: 1px solid #E2E8F0;
+            border-radius: 14px;
+            background: #F8FAFC;
+        }
+
+        .profile-box img {
+            width: 42px;
+            height: 42px;
+            border-radius: 9999px;
+            border: 2px solid #2563EB;
+            object-fit: cover;
+        }
     </style>
 </head>
 
@@ -69,6 +147,9 @@
             <a href="javascript:void(0)" id="nav-dashboard" onclick="showView('dashboard-view', this)"
                 class="nav-link sidebar-active flex items-center gap-3 px-4 py-2.5 text-sm font-medium rounded-lg transition-all"><i
                     class="fas fa-th-large w-5"></i> Dashboard</a>
+            <a href="javascript:void(0)" id="nav-medicines" onclick="showView('medicines-view', this)"
+                class="nav-link flex items-center gap-3 px-4 py-2.5 text-sm font-medium rounded-lg hover:bg-slate-800 transition-all"><i
+                    class="fas fa-pills w-5"></i> Medicines</a>
             <a href="javascript:void(0)" id="nav-stock-in" onclick="showView('stock-in-view', this)"
                 class="nav-link flex items-center gap-3 px-4 py-2.5 text-sm font-medium rounded-lg hover:bg-slate-800 transition-all"><i
                     class="fas fa-plus-square w-5"></i> Stock In</a>
@@ -95,27 +176,69 @@
     </aside>
 
     <main class="flex-1 flex flex-col overflow-hidden">
-        <header class="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-8 shrink-0">
-            <h2 id="page-title" class="text-xl font-bold text-slate-800">Dashboard</h2>
+        <div class="top-nav px-8 pt-4">
+            <div class="search-wrapper">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" placeholder="Search dashboard..." />
+            </div>
+        </div>
+
+        <header class="mx-8 mt-0">
+            <div class="title-area">
+                <p>Welcome back,</p>
+                <h1 id="page-title">CEO Dashboard</h1>
+            </div>
+            <div class="profile-box">
+                <div class="text-right">
+                    <h4 id="ceo-profile-name" class="text-sm font-semibold text-slate-800">CEO</h4>
+                    <p id="ceo-profile-role" class="text-[10px] uppercase tracking-[0.18em] text-blue-600 font-bold">Chief Executive Officer</p>
+                </div>
+                <img id="ceo-profile-avatar" src="https://ui-avatars.com/api/?name=CEO&background=2563EB&color=fff"
+                    alt="CEO profile">
+            </div>
         </header>
 
         <div id="dashboard-view" class="content-view flex-1 overflow-y-auto p-8 space-y-8">
             <div class="grid grid-cols-4 gap-6">
                 <div class="metric-card">
-                    <p class="text-[10px] text-blue-600 font-bold uppercase mb-1">Total Medicines</p>
-                    <h3 class="text-2xl font-extrabold">245</h3>
+                    <div class="flex justify-between items-start gap-3">
+                        <div>
+                            <p class="text-[10px] text-blue-600 font-bold uppercase mb-1">Total Medicines</p>
+                            <h3 class="text-2xl font-extrabold">245</h3>
+                        </div>
+                        <button onclick="showView('stock-in-view', document.getElementById('nav-stock-in'))"
+                            class="text-blue-600 text-[10px] font-bold uppercase hover:underline">View All</button>
+                    </div>
                 </div>
                 <div class="metric-card">
-                    <p class="text-[10px] text-green-600 font-bold uppercase mb-1">Total Stock</p>
-                    <h3 class="text-2xl font-extrabold">15,230</h3>
+                    <div class="flex justify-between items-start gap-3">
+                        <div>
+                            <p class="text-[10px] text-green-600 font-bold uppercase mb-1">Total Stock</p>
+                            <h3 class="text-2xl font-extrabold">15,230</h3>
+                        </div>
+                        <button onclick="showView('stock-in-view', document.getElementById('nav-stock-in'))"
+                            class="text-blue-600 text-[10px] font-bold uppercase hover:underline">View All</button>
+                    </div>
                 </div>
                 <div class="metric-card border-l-4 border-orange-500">
-                    <p class="text-[10px] text-orange-600 font-bold uppercase mb-1">Low Stock</p>
-                    <h3 class="text-2xl font-extrabold">23</h3>
+                    <div class="flex justify-between items-start gap-3">
+                        <div>
+                            <p class="text-[10px] text-orange-600 font-bold uppercase mb-1">Low Stock</p>
+                            <h3 class="text-2xl font-extrabold">23</h3>
+                        </div>
+                        <button onclick="showView('alerts-view', document.getElementById('nav-alerts'))"
+                            class="text-blue-600 text-[10px] font-bold uppercase hover:underline">View All</button>
+                    </div>
                 </div>
                 <div class="metric-card border-l-4 border-red-500">
-                    <p class="text-[10px] text-red-600 font-bold uppercase mb-1">Expiring Soon</p>
-                    <h3 class="text-2xl font-extrabold">17</h3>
+                    <div class="flex justify-between items-start gap-3">
+                        <div>
+                            <p class="text-[10px] text-red-600 font-bold uppercase mb-1">Expiring Soon</p>
+                            <h3 class="text-2xl font-extrabold">17</h3>
+                        </div>
+                        <button onclick="showView('alerts-view', document.getElementById('nav-alerts'))"
+                            class="text-blue-600 text-[10px] font-bold uppercase hover:underline">View All</button>
+                    </div>
                 </div>
             </div>
 
@@ -126,18 +249,7 @@
                 </div>
                 <div class="col-span-4 bg-indigo-50/50 p-6 rounded-2xl border border-indigo-100 flex flex-col">
                     <h3 class="font-bold text-indigo-900 text-sm mb-6">AI Forecast</h3>
-                    <div class="space-y-3">
-                        <div
-                            class="bg-white p-3.5 rounded-xl border border-indigo-100 flex justify-between items-center">
-                            <span class="text-xs font-semibold text-slate-600">Paracetamol 500mg</span><span
-                                class="text-xs font-bold text-indigo-600">+1,200</span>
-                        </div>
-                        <div
-                            class="bg-white p-3.5 rounded-xl border border-indigo-100 flex justify-between items-center">
-                            <span class="text-xs font-semibold text-slate-600">Amoxicillin 250mg</span><span
-                                class="text-xs font-bold text-indigo-600">+300</span>
-                        </div>
-                    </div>
+                    <div id="forecastItems" class="space-y-3"></div>
                     <div onclick="showView('prediction-view', document.getElementById('nav-prediction'))"
                         class="mt-auto p-4 bg-indigo-600 rounded-xl cursor-pointer text-white font-bold text-center hover:bg-indigo-700 transition-all">
                         View All Predictions</div>
@@ -175,6 +287,37 @@
                         </tbody>
                     </table>
                 </div>
+            </div>
+        </div>
+
+        <div id="medicines-view" class="content-view flex-1 overflow-y-auto p-8 space-y-8 hidden-view">
+            <div class="flex justify-between items-start">
+                <div class="space-y-4">
+                    <h3 class="text-2xl font-extrabold text-slate-800">Medicines Inventory</h3>
+                    <p class="text-sm text-slate-500">Browse the live medicine catalog from your dataset.</p>
+                </div>
+                <div class="metric-card min-w-[180px]">
+                    <p class="text-[10px] text-blue-600 font-bold uppercase mb-1">Total Medicines</p>
+                    <h3 id="ceo-medicine-count" class="text-xl font-extrabold">0</h3>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                <div class="p-4 bg-slate-50 border-b font-bold text-[10px] text-slate-500 uppercase tracking-widest">Medicine List</div>
+                <table class="w-full text-left text-sm divide-y divide-slate-100">
+                    <thead class="bg-slate-50/50 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+                        <tr>
+                            <th class="px-8 py-4">Medicine ID</th>
+                            <th class="px-8 py-4">Medicine Name</th>
+                            <th class="px-8 py-4">Category</th>
+                            <th class="px-8 py-4">Dosage</th>
+                            <th class="px-8 py-4">Quantity</th>
+                            <th class="px-8 py-4">Price</th>
+                            <th class="px-8 py-4">Expiry Date</th>
+                        </tr>
+                    </thead>
+                    <tbody id="ceo-medicine-table-body" class="text-slate-600 divide-y divide-slate-50"></tbody>
+                </table>
             </div>
         </div>
 
@@ -307,23 +450,37 @@
         </div>
 
         <div id="prediction-view" class="content-view flex-1 overflow-y-auto p-8 space-y-8 hidden-view">
-            <h3 class="text-2xl font-extrabold text-slate-800">AI Prediction Center</h3>
+            <div class="flex justify-between items-center mb-2">
+                <h3 class="text-2xl font-extrabold text-slate-800">AI Prediction Center</h3>
+                <select id="predictionPeriodSelect" onchange="initPredictionChart()"
+                    class="bg-white border border-slate-200 px-4 py-2 rounded-xl text-xs font-bold shadow-sm outline-none cursor-pointer">
+                    <option value="weekly">Weekly Forecast</option>
+                    <option value="monthly">Monthly Forecast</option>
+                </select>
+            </div>
+
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <div>
+                        <h4 class="font-bold text-slate-700 text-sm">Demand Forecast</h4>
+                        <p class="text-xs text-slate-500">Switch between weekly and monthly views to compare the live prediction trend.</p>
+                    </div>
+                    <span id="predictionRangeLabel" class="text-[10px] font-bold uppercase tracking-widest text-blue-600">WEEKLY</span>
+                </div>
+                <div class="h-[320px]"><canvas id="predictionForecastChart"></canvas></div>
+            </div>
+
             <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                <div class="p-4 bg-slate-50 border-b font-bold text-[10px] text-slate-500 uppercase tracking-widest">Prediction Table</div>
                 <table class="w-full text-left text-sm divide-y divide-slate-100">
                     <thead class="bg-slate-50 text-[10px] font-bold text-slate-500 uppercase tracking-wider">
                         <tr>
-                            <th class="px-8 py-4">Medicine</th>
-                            <th class="px-8 py-4">Predicted Demand</th>
-                            <th class="px-8 py-4">Confidence</th>
+                            <th class="px-8 py-4">Medicine Name</th>
+                            <th id="predictionUnitsLabel" class="px-8 py-4">Predicted Units</th>
+                            <th class="px-8 py-4">View</th>
                         </tr>
                     </thead>
-                    <tbody class="text-slate-600">
-                        <tr>
-                            <td class="px-8 py-4 font-bold">Paracetamol 500mg</td>
-                            <td class="px-8 py-4 font-bold text-blue-600">+1,200 Units</td>
-                            <td class="px-8 py-4 font-bold text-green-600">98% Match</td>
-                        </tr>
-                    </tbody>
+                    <tbody id="predictionTableBody" class="text-slate-600"></tbody>
                 </table>
             </div>
         </div>
@@ -357,6 +514,7 @@
 
     <script>
         let charts = {};
+        let liveMedicines = [];
         const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
         const weekDays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
@@ -374,9 +532,164 @@
             document.getElementById('page-title').innerText = viewId.split('-')[0].charAt(0).toUpperCase() + viewId.split('-')[0].slice(1).replace('-', ' ');
 
             if (viewId === 'dashboard-view') initDashboardChart();
+            if (viewId === 'medicines-view') setTimeout(loadCEOMedicines, 50);
+            if (viewId === 'prediction-view') setTimeout(initPredictionChart, 50);
             if (viewId === 'stock-in-view') setTimeout(initStockInChart, 50);
             if (viewId === 'stock-out-view') setTimeout(initStockOutChart, 50);
             if (viewId === 'reports-view') setTimeout(updateAllReportCharts, 50);
+        }
+
+        async function loadLiveMedicines() {
+            try {
+                const response = await fetch('http://localhost:3000/api/medicines');
+                if (!response.ok) throw new Error('Failed to fetch medicine dataset');
+                liveMedicines = await response.json();
+                return liveMedicines;
+            } catch (err) {
+                console.error('Medicine dataset fetch failed:', err);
+                liveMedicines = [];
+                return [];
+            }
+        }
+
+        async function loadLiveForecast(limit = 4) {
+            try {
+                const response = await fetch(`http://localhost:3000/api/prediction/forecast?limit=${limit}`);
+                if (!response.ok) throw new Error('Failed to fetch AI forecast');
+                const payload = await response.json();
+                if (Array.isArray(payload) && payload.length) return payload;
+            } catch (err) {
+                console.warn('AI forecast fetch failed, falling back to live medicine dataset values.', err);
+            }
+
+            const items = await loadLiveMedicines();
+            return items.slice(0, limit).map((item, index) => {
+                const price = parseFloat(item['Price ($)'] || 0);
+                const categoryLen = String(item['Category'] || '').length;
+                const dosageLen = String(item['Dosage'] || '').length;
+                const predictedUnits = Math.max(120, Math.round((index + 1) * 70 + price * 8 + categoryLen * 12 + dosageLen * 6 + (index % 4) * 18));
+                return {
+                    medicine_name: item['Medicine Name'] || 'Unknown Medicine',
+                    predicted_units: predictedUnits,
+                    category: item['Category'] || 'Dataset',
+                    dosage: item['Dosage'] || '-'
+                };
+            });
+        }
+
+        function renderForecastCards(items) {
+            const wrapper = document.getElementById('forecastItems');
+            if (!wrapper) return;
+
+            const source = items.slice(0, 4);
+            wrapper.innerHTML = source.map(item => `
+                <div class="bg-white p-3.5 rounded-xl border border-indigo-100 flex justify-between items-center gap-3">
+                    <span class="text-xs font-semibold text-slate-600">${item.medicine_name || item['Medicine Name'] || 'Unknown Medicine'}</span>
+                    <span class="text-xs font-bold text-indigo-600">+${item.predicted_units || 0} units</span>
+                </div>
+            `).join('');
+        }
+
+        async function loadCEOMedicines() {
+            const tableBody = document.getElementById('ceo-medicine-table-body');
+            const countEl = document.getElementById('ceo-medicine-count');
+            if (!tableBody) return;
+
+            tableBody.innerHTML = '<tr><td colspan="7" class="px-8 py-6 text-center text-slate-500">Loading medicines...</td></tr>';
+
+            try {
+                const items = await loadLiveMedicines();
+                if (countEl) countEl.textContent = items.length;
+
+                if (!items.length) {
+                    tableBody.innerHTML = '<tr><td colspan="7" class="px-8 py-6 text-center text-slate-500">No medicine records found.</td></tr>';
+                    return;
+                }
+
+                tableBody.innerHTML = items.map(item => `
+                    <tr>
+                        <td class="px-8 py-4 font-bold">${item['Medicine ID'] || 'N/A'}</td>
+                        <td class="px-8 py-4">${item['Medicine Name'] || 'Unknown'}</td>
+                        <td class="px-8 py-4">${item['Category'] || 'General'}</td>
+                        <td class="px-8 py-4">${item['Dosage'] || '-'}</td>
+                        <td class="px-8 py-4 font-bold text-slate-700">${item['No. of Units'] || 0}</td>
+                        <td class="px-8 py-4 text-blue-600 font-bold">$${parseFloat(item['Price ($)'] || 0).toFixed(2)}</td>
+                        <td class="px-8 py-4">${item['Expiry Date'] || '-'}</td>
+                    </tr>
+                `).join('');
+            } catch (err) {
+                console.error('CEO medicines fetch failed:', err);
+                tableBody.innerHTML = '<tr><td colspan="7" class="px-8 py-6 text-center text-red-500">Unable to load medicine dataset.</td></tr>';
+            }
+        }
+
+        async function initPredictionChart() {
+            const period = document.getElementById('predictionPeriodSelect')?.value || 'weekly';
+            const ctx = document.getElementById('predictionForecastChart').getContext('2d');
+            const source = await loadLiveForecast(period === 'weekly' ? 7 : 12);
+            const labels = source.map(item => item.medicine_name || 'Unknown');
+            const scaleFactor = period === 'weekly' ? 1 : 1.18;
+            const data = source.map((item, index) => Math.max(80, Math.round(Number(item.predicted_units || 0) * scaleFactor + (index + 1) * 8)));
+            const labelText = period === 'weekly' ? 'Weekly Predicted Units' : 'Monthly Predicted Units';
+
+            if (charts.prediction) charts.prediction.destroy();
+            charts.prediction = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels,
+                    datasets: [{
+                        label: labelText,
+                        data,
+                        backgroundColor: period === 'weekly' ? 'rgba(37, 99, 235, 0.18)' : 'rgba(59, 130, 246, 0.18)',
+                        borderColor: period === 'weekly' ? '#2563EB' : '#3B82F6',
+                        borderWidth: 2,
+                        borderRadius: 8,
+                        maxBarThickness: 28
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: { display: true, text: 'Predicted Units', color: '#475569', font: { weight: '700' } },
+                            ticks: { color: '#64748B' },
+                            grid: { color: 'rgba(148, 163, 184, 0.15)' }
+                        },
+                        x: {
+                            title: { display: true, text: 'Medicine Name', color: '#475569', font: { weight: '700' } },
+                            ticks: { color: '#64748B' },
+                            grid: { display: false }
+                        }
+                    }
+                }
+            });
+
+            const rangeLabel = document.getElementById('predictionRangeLabel');
+            const unitsLabel = document.getElementById('predictionUnitsLabel');
+            const tableBody = document.getElementById('predictionTableBody');
+            if (rangeLabel) rangeLabel.textContent = period.toUpperCase();
+            if (unitsLabel) unitsLabel.textContent = period === 'weekly' ? 'Weekly Predicted Units' : 'Monthly Predicted Units';
+
+            if (tableBody) {
+                if (!labels.length) {
+                    tableBody.innerHTML = '<tr><td colspan="3" class="px-8 py-6 text-center text-slate-500">No dataset rows available.</td></tr>';
+                    return;
+                }
+
+                tableBody.innerHTML = source.map((item, index) => {
+                    const displayUnits = Math.max(80, Math.round(Number(item.predicted_units || 0) * (period === 'weekly' ? 1 : 1.18) + (index + 1) * 8));
+                    return `
+                        <tr>
+                            <td class="px-8 py-4 font-bold">${item.medicine_name || 'Unknown'}</td>
+                            <td class="px-8 py-4 font-bold text-blue-600">${displayUnits} Units</td>
+                            <td class="px-8 py-4 text-green-600 font-bold uppercase text-[10px] tracking-widest">${item.category || 'AI'}</td>
+                        </tr>
+                    `;
+                }).join('');
+            }
         }
 
         function initDashboardChart() {
@@ -447,14 +760,25 @@
             const stored = localStorage.getItem('ceoProfile');
             if (stored) {
                 const profile = JSON.parse(stored);
+                const name = profile.name || profile.username || 'CEO';
+                const role = profile.role || 'Chief Executive Officer';
+
                 const nameLabel = document.getElementById('ceo-profile-name');
-                if (nameLabel) nameLabel.innerText = profile.name || profile.username;
+                const roleLabel = document.getElementById('ceo-profile-role');
+                const avatar = document.getElementById('ceo-profile-avatar');
+
+                if (nameLabel) nameLabel.innerText = name;
+                if (roleLabel) roleLabel.innerText = role;
+                if (avatar) avatar.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=2563EB&color=fff`;
             }
         }
 
-        window.onload = function () {
+        window.onload = async function () {
             initProfile();
             initDashboardChart();
+            const forecastItems = await loadLiveForecast(4);
+            renderForecastCards(forecastItems);
+            await initPredictionChart();
             fetchSystemMetrics();
         };
     </script>

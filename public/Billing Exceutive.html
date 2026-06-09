@@ -178,6 +178,18 @@
             margin: 5px 0;
         }
 
+        .stat-link {
+            display: inline-block;
+            margin-top: 4px;
+            color: var(--accent);
+            text-decoration: none;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            cursor: pointer;
+        }
+
         .card {
             background: var(--white);
             border-radius: 12px;
@@ -393,18 +405,23 @@
             <div class="stats-grid">
                 <div class="stat-card">
                     <h4>MEDICINES</h4><span class="val">25</span>
+                    <a href="javascript:void(0)" class="stat-link" onclick="showSection('medicines')">View All</a>
                 </div>
                 <div class="stat-card" style="border-left-color: #8b5cf6">
                     <h4>TOTAL STOCK</h4><span class="val" id="stat-qty">0</span>
+                    <a href="javascript:void(0)" class="stat-link" onclick="showSection('medicines')">View All</a>
                 </div>
                 <div class="stat-card" style="border-left-color: var(--warning)">
                     <h4>LOW STOCK</h4><span class="val" id="stat-low-stock">0</span>
+                    <a href="javascript:void(0)" class="stat-link" onclick="showSection('alerts')">View All</a>
                 </div>
                 <div class="stat-card" style="border-left-color: var(--danger)">
                     <h4>EXPIRIES</h4><span class="val">04</span>
+                    <a href="javascript:void(0)" class="stat-link" onclick="showSection('alerts')">View All</a>
                 </div>
                 <div class="stat-card" style="border-left-color: var(--success)">
                     <h4>DISPATCHED ITEMS</h4><span class="val" id="stat-so">0</span>
+                    <a href="javascript:void(0)" class="stat-link" onclick="showSection('stock-out')">View All</a>
                 </div>
             </div>
 
@@ -522,7 +539,7 @@
                                 <th>ID No</th>
                                 <th>Medicine Name</th>
                                 <th>Category</th>
-                                <th>Stock</th>
+                                <th>Quantity</th>
                             </tr>
                         </thead>
                         <tbody></tbody>
@@ -552,46 +569,6 @@
     </main>
 
     <script>
-        const medNames = ["Insulin", "Metformin", "Lisinopril", "Atorvastatin", "Amlodipine", "Albuterol", "Omeprazole", "Losartan", "Sertraline", "Gabapentin", "Hydrochlorothiazide", "Montelukast", "Amoxicillin", "Pantoprazole", "Furosemide", "Escitalopram", "Rosuvastatin", "Prednisone", "Tamsulosin", "Meloxicam", "Clopidogrel", "Propranolol", "Warfarin", "Diclofenac", "Azithromycin"];
-        const cats = ["Diabetes", "Diabetes", "Cardiac", "Cardiac", "Cardiac", "Respiratory", "Gastric", "Cardiac", "Mental", "Mental", "Cardiac", "Respiratory", "Antibiotic", "Gastric", "Cardiac", "Mental", "Cardiac", "Steroid", "Urology", "Pain", "Cardiac", "Cardiac", "Blood", "Pain", "Antibiotic"];
-        
-        // Define exact expiry dates and pricing fields to match the realistic dataset
-        const expiryDates = {
-            "Amoxicillin": "2026-11-01",
-            "Pantoprazole": "2026-06-11",
-            "Furosemide": "2026-07-19",
-            "Escitalopram": "2026-08-01",
-            "Insulin": "2026-12-15",
-            "Metformin": "2027-02-20",
-            "Lisinopril": "2026-09-30",
-            "Atorvastatin": "2027-05-18",
-            "Amlodipine": "2026-10-05",
-            "Albuterol": "2026-08-25",
-            "Omeprazole": "2026-07-12",
-            "Losartan": "2026-06-28",
-            "Sertraline": "2026-07-30",
-            "Gabapentin": "2027-01-15",
-            "Hydrochlorothiazide": "2026-11-20",
-            "Montelukast": "2027-03-10",
-            "Rosuvastatin": "2026-12-01",
-            "Prednisone": "2026-09-15",
-            "Tamsulosin": "2026-10-25",
-            "Meloxicam": "2027-04-12",
-            "Clopidogrel": "2026-08-05",
-            "Propranolol": "2026-11-18",
-            "Warfarin": "2026-10-12",
-            "Diclofenac": "2026-07-07",
-            "Azithromycin": "2026-06-25"
-        };
-
-        const prices = {
-            "Insulin": 25, "Metformin": 10, "Lisinopril": 15, "Atorvastatin": 30, "Amlodipine": 12,
-            "Albuterol": 18, "Omeprazole": 14, "Losartan": 16, "Sertraline": 22, "Gabapentin": 28,
-            "Hydrochlorothiazide": 8, "Montelukast": 20, "Amoxicillin": 15, "Pantoprazole": 17, "Furosemide": 9,
-            "Escitalopram": 21, "Rosuvastatin": 32, "Prednisone": 7, "Tamsulosin": 24, "Meloxicam": 11,
-            "Clopidogrel": 19, "Propranolol": 13, "Warfarin": 15, "Diclofenac": 8, "Azithromycin": 26
-        };
-
         let inventory = [];
         let stockouts = [];
 
@@ -611,7 +588,7 @@
                             id: item["Medicine ID"] || `MED-${1000 + i}`,
                             name: name,
                             cat: item["Category"] || 'General',
-                            stock: Math.floor(Math.random() * 400) + 50,
+                            stock: parseInt(item["No. of Units"] || item.Quantity || 0, 10) || 0,
                             expiry: expiryDates[name] || "2026-12-31",
                             price: parseFloat(rawPrice) || 15
                         });
@@ -620,17 +597,6 @@
             } catch (err) {
                 console.error("Error connecting inventory element to backend dataset:", err);
                 inventory = [];
-                for (let i = 0; i < 25; i++) {
-                    const name = medNames[i];
-                    inventory.push({ 
-                        id: `MED-${1000 + i}`, 
-                        name: name, 
-                        cat: cats[i], 
-                        stock: Math.floor(Math.random() * 400) + 50,
-                        expiry: expiryDates[name] || "2026-12-31",
-                        price: prices[name] || 15
-                    });
-                }
             }
 
             renderAll();

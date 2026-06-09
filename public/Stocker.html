@@ -632,8 +632,6 @@
     </div>
 
     <script>
-        const meds = ["Dolo 650", "Pan 40", "Augmentin", "Telma 40", "Limcee", "Azee 500", "Calpol", "Voveran", "Thyronorm", "Metolar", "Atorva", "Gliclazide", "Montina-L", "Allegra", "Zifi 200", "Clavam", "Omez", "Cetgel", "Combiflam", "Shelcal", "Liv 52", "Econorm", "Becosules", "Taxim-O", "Meftal-Spas"];
-
         function initProfile() {
             const stored = localStorage.getItem('stockerProfile');
             if (stored) {
@@ -714,18 +712,21 @@
                 if (!response.ok) throw new Error("Could not reach backend dataset API");
 
                 const datasetItems = await response.json();
-                activeMedicines = datasetItems.map(item => item["Medicine Name"] || 'Unknown');
+                activeMedicines = datasetItems.map(item => ({
+                    name: item["Medicine Name"] || 'Unknown',
+                    quantity: parseInt(item["No. of Units"] || item.Quantity || 0, 10) || 0
+                }));
             } catch (err) {
                 console.error("Error loading medicines:", err);
-                activeMedicines = meds; // Fallback to offline meds
+                activeMedicines = [];
             }
 
             // Populate stock-in, stock-out, prediction tables
             activeMedicines.forEach((m, i) => {
-                const stock = Math.floor(Math.random() * 400) + 10;
-                si.innerHTML += `<tr><td>#INV-${100 + i}</td><td>${m}</td><td>B-${500 + i}</td><td>${stock}</td></tr>`;
-                so.innerHTML += `<tr><td>${m}</td><td>${stock}</td><td><span class="badge ${stock < 50 ? 'bg-red' : 'bg-green'}">${stock < 50 ? 'Low' : 'OK'}</span></td><td><button class="btn" style="padding:4px 10px" onclick="generateBill('${m}')">Bill</button></td></tr>`;
-                pr.innerHTML += `<tr><td>${m}</td><td>Rising</td><td>${stock + 150}</td></tr>`;
+                const stock = Math.max(1, m.quantity || 0);
+                si.innerHTML += `<tr><td>#INV-${100 + i}</td><td>${m.name}</td><td>B-${500 + i}</td><td>${stock}</td></tr>`;
+                so.innerHTML += `<tr><td>${m.name}</td><td>${stock}</td><td><span class="badge ${stock < 50 ? 'bg-red' : 'bg-green'}">${stock < 50 ? 'Low' : 'OK'}</span></td><td><button class="btn" style="padding:4px 10px" onclick="generateBill('${m.name}')">Bill</button></td></tr>`;
+                pr.innerHTML += `<tr><td>${m.name}</td><td>Rising</td><td>${stock + 150}</td></tr>`;
             });
 
             // Load active alerts from database
@@ -759,8 +760,8 @@
             } catch (err) {
                 console.error("Error loading alerts:", err);
                 activeMedicines.slice(0, 10).forEach((m, i) => {
-                    const alertQty = (i % 2 === 0) ? Math.floor(Math.random() * 50) + 1 : Math.floor(Math.random() * 10) + 1;
-                    al.innerHTML += `<tr><td>${i % 2 === 0 ? 'Expiring Soon' : 'Shortage'}</td><td>${m}</td><td>${alertQty} Units</td><td><span class="badge ${i % 4 === 0 ? 'bg-red' : 'bg-yellow'}">High</span></td><td><button class="btn" style="padding:4px 10px" onclick="resolveOffline(this)">Resolve</button></td></tr>`;
+                    const alertQty = Math.max(1, (m.quantity || 0));
+                    al.innerHTML += `<tr><td>${i % 2 === 0 ? 'Expiring Soon' : 'Shortage'}</td><td>${m.name}</td><td>${alertQty} Units</td><td><span class="badge ${i % 4 === 0 ? 'bg-red' : 'bg-yellow'}">High</span></td><td><button class="btn" style="padding:4px 10px" onclick="resolveOffline(this)">Resolve</button></td></tr>`;
                 });
             }
         }
@@ -878,7 +879,7 @@
 
         function renderCharts() {
             new Chart(document.getElementById('mainChart'), { type: 'line', data: { labels: ['09:00', '10:00', '11:00', '12:00', '13:00'], datasets: [{ label: 'Flow', data: [10, 30, 20, 45, 25], borderColor: '#4318FF', tension: 0.4 }] } });
-            new Chart(document.getElementById('predBarChart'), { type: 'bar', data: { labels: activeMedicines.length > 0 ? activeMedicines.slice(0, 8) : meds.slice(0, 8), datasets: [{ label: 'Forecast', data: [300, 450, 200, 500, 350, 400, 150, 280], backgroundColor: '#4318FF' }] } });
+            new Chart(document.getElementById('predBarChart'), { type: 'bar', data: { labels: activeMedicines.length > 0 ? activeMedicines.map(m => m.name).slice(0, 8) : meds.slice(0, 8), datasets: [{ label: 'Forecast', data: [300, 450, 200, 500, 350, 400, 150, 280], backgroundColor: '#4318FF' }] } });
         }
     </script>
 </body>

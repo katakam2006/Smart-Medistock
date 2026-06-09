@@ -3,6 +3,7 @@ const mysql = require('mysql2');
 const path = require('path');
 const cors = require('cors');
 const fs = require('fs');
+const { spawnSync } = require('child_process');
 
 const app = express();
 const PORT = 3000;
@@ -161,9 +162,38 @@ app.get('/api/dashboard/counters', async (req, res) => {
     }
 });
 
+// API: Fetch live RobustMed AI prediction rows for the CEO dashboard
+app.get('/api/prediction/forecast', (req, res) => {
+    const limit = Math.max(1, Math.min(50, parseInt(req.query.limit || '12', 10)));
+    const pythonCmd = process.platform === 'win32' ? 'python' : 'python3';
+
+    const child = spawnSync(pythonCmd, ['train_model.py', 'forecast', String(limit)], {
+        cwd: __dirname,
+        encoding: 'utf8'
+    });
+
+    if (child.error) {
+        console.error('Prediction API error:', child.error);
+        return res.status(500).json({ error: 'Python prediction engine is unavailable.' });
+    }
+
+    if (child.status !== 0) {
+        console.error('Prediction script failed:', child.stderr || child.stdout);
+        return res.status(500).json({ error: 'Prediction engine failed to run.' });
+    }
+
+    try {
+        const payload = JSON.parse(child.stdout || '[]');
+        res.json(payload);
+    } catch (err) {
+        console.error('Prediction JSON parse error:', err);
+        res.status(500).json({ error: 'Prediction output could not be parsed.' });
+    }
+});
+
 // API Endpoint to fetch medicine dataset rows safely
 app.get('/api/medicines', (req, res) => {
-    const csvPath = path.resolve(__dirname, 'medicine_dataset_250k-v2.csv');
+    const csvPath = path.resolve(__dirname, 'medicine_dataset_250k-v2_fixed.csv');
 
     fs.readFile(csvPath, 'utf8', (err, data) => {
         if (err) {

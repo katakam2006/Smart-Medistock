@@ -1,0 +1,1982 @@
+{
+  "gabapentin": {
+    "Medicine Name": "Gabapentin",
+    "Category": "Antibiotic",
+    "Dosage": "50 mg",
+    "Price ($)": 100.0
+  },
+  "pantoprazole": {
+    "Medicine Name": "Pantoprazole",
+    "Category": "Antiviral",
+    "Dosage": "10 mg",
+    "Price ($)": 5.79
+  },
+  "citalopram hcl": {
+    "Medicine Name": "Citalopram HCL",
+    "Category": "Analgesic",
+    "Dosage": "100 mg",
+    "Price ($)": 201.63
+  },
+  "ibuprofen": {
+    "Medicine Name": "Ibuprofen",
+    "Category": "Antibiotic",
+    "Dosage": "20 mg",
+    "Price ($)": 7.0
+  },
+  "atorvastatin active": {
+    "Medicine Name": "Atorvastatin Active",
+    "Category": "Antihistamine",
+    "Dosage": "10 mg",
+    "Price ($)": 8.91
+  },
+  "omeprazole plus": {
+    "Medicine Name": "Omeprazole Plus",
+    "Category": "Antidiabetic",
+    "Dosage": "100 mg",
+    "Price ($)": 134.09
+  },
+  "citalopram forte": {
+    "Medicine Name": "Citalopram Forte",
+    "Category": "Diuretic",
+    "Dosage": "5 mL",
+    "Price ($)": 115.52
+  },
+  "escitalopram ultra": {
+    "Medicine Name": "Escitalopram Ultra",
+    "Category": "Proton Pump Inhibitor",
+    "Dosage": "10 mL",
+    "Price ($)": 23.33
+  },
+  "gabapentin active": {
+    "Medicine Name": "Gabapentin Active",
+    "Category": "Corticosteroid",
+    "Dosage": "10 mg",
+    "Price ($)": 206.02
+  },
+  "carvedilol ultra": {
+    "Medicine Name": "Carvedilol Ultra",
+    "Category": "Analgesic",
+    "Dosage": "50 mg",
+    "Price ($)": 203.29
+  },
+  "rosuvastatin": {
+    "Medicine Name": "Rosuvastatin",
+    "Category": "Proton Pump Inhibitor",
+    "Dosage": "10 mg",
+    "Price ($)": 81.84
+  },
+  "valsartan": {
+    "Medicine Name": "Valsartan",
+    "Category": "Diuretic",
+    "Dosage": "500 mg",
+    "Price ($)": 226.05
+  },
+  "atorvastatin": {
+    "Medicine Name": "Atorvastatin",
+    "Category": "Bronchodilator",
+    "Dosage": "650 mg",
+    "Price ($)": 80.77
+  },
+  "fluoxetine": {
+    "Medicine Name": "Fluoxetine",
+    "Category": "Proton Pump Inhibitor",
+    "Dosage": "10 mg",
+    "Price ($)": 218.83
+  },
+  "escitalopram xr": {
+    "Medicine Name": "Escitalopram XR",
+    "Category": "Analgesic",
+    "Dosage": "850 mg",
+    "Price ($)": 223.89
+  },
+  "lisinopril": {
+    "Medicine Name": "Lisinopril",
+    "Category": "Bronchodilator",
+    "Dosage": "50 mg",
+    "Price ($)": 156.07
+  },
+  "omeprazole ultra": {
+    "Medicine Name": "Omeprazole Ultra",
+    "Category": "Beta-Blocker",
+    "Dosage": "5 mg",
+    "Price ($)": 42.52
+  },
+  "fluoxetine active": {
+    "Medicine Name": "Fluoxetine Active",
+    "Category": "Analgesic",
+    "Dosage": "20 mg",
+    "Price ($)": 173.32
+  },
+  "metformin hcl": {
+    "Medicine Name": "Metformin HCL",
+    "Category": "Anticoagulant",
+    "Dosage": "10 mg",
+    "Price ($)": 178.66
+  },
+  "prednisone": {
+    "Medicine Name": "Prednisone",
+    "Category": "Antiviral",
+    "Dosage": "850 mg",
+    "Price ($)": 60.46
+  },
+  "lipitor active": {
+    "Medicine Name": "Lipitor Active",
+    "Category": "Corticosteroid",
+    "Dosage": "250 mg",
+    "Price ($)": 181.29
+  },
+  "azithromycin": {
+    "Medicine Name": "Azithromycin",
+    "Category": "Proton Pump Inhibitor",
+    "Dosage": "5 mg",
+    "Price ($)": 158.25
+  },
+  "bupropion": {
+    "Medicine Name": "Bupropion",
+    "Category": "Diuretic",
+    "Dosage": "100 mg",
+    "Price ($)": 12.48
+  },
+  "albuterol": {
+    "Medicine Name": "Albuterol",
+    "Category": "Proton Pump Inhibitor",
+    "Dosage": "5 mL",
+    "Price ($)": 19.26
+  },
+  "lipitor sodium": {
+    "Medicine Name": "Lipitor Sodium",
+    "Category": "Antiviral",
+    "Dosage": "1000 mg",
+    "Price ($)": 65.82
+  },
+  "tamsulosin sodium": {
+    "Medicine Name": "Tamsulosin Sodium",
+    "Category": "Antifungal",
+    "Dosage": "5 mL",
+    "Price ($)": 47.58
+  },
+  "escitalopram ds": {
+    "Medicine Name": "Escitalopram DS",
+    "Category": "Antiviral",
+    "Dosage": "50 mg",
+    "Price ($)": 77.58
+  },
+  "amoxicillin": {
+    "Medicine Name": "Amoxicillin",
+    "Category": "Diuretic",
+    "Dosage": "5 mg",
+    "Price ($)": 96.0
+  },
+  "azithromycin active": {
+    "Medicine Name": "Azithromycin Active",
+    "Category": "Corticosteroid",
+    "Dosage": "5 mg",
+    "Price ($)": 76.83
+  },
+  "carvedilol plus": {
+    "Medicine Name": "Carvedilol Plus",
+    "Category": "Antiviral",
+    "Dosage": "10 mL",
+    "Price ($)": 9.67
+  },
+  "prednisone combo": {
+    "Medicine Name": "Prednisone Combo",
+    "Category": "Antihistamine",
+    "Dosage": "10 mL",
+    "Price ($)": 48.87
+  },
+  "citalopram ds": {
+    "Medicine Name": "Citalopram DS",
+    "Category": "Analgesic",
+    "Dosage": "50 mg",
+    "Price ($)": 179.52
+  },
+  "azithromycin combo": {
+    "Medicine Name": "Azithromycin Combo",
+    "Category": "Diuretic",
+    "Dosage": "10 mg",
+    "Price ($)": 155.41
+  },
+  "duloxetine": {
+    "Medicine Name": "Duloxetine",
+    "Category": "Antiviral",
+    "Dosage": "650 mg",
+    "Price ($)": 41.85
+  },
+  "clopidogrel ultra": {
+    "Medicine Name": "Clopidogrel Ultra",
+    "Category": "Analgesic",
+    "Dosage": "250 mg",
+    "Price ($)": 14.97
+  },
+  "meloxicam xr": {
+    "Medicine Name": "Meloxicam XR",
+    "Category": "Antidepressant",
+    "Dosage": "5 mL",
+    "Price ($)": 158.49
+  },
+  "meloxicam": {
+    "Medicine Name": "Meloxicam",
+    "Category": "Corticosteroid",
+    "Dosage": "10 mg",
+    "Price ($)": 212.45
+  },
+  "sertraline ds": {
+    "Medicine Name": "Sertraline DS",
+    "Category": "Anticoagulant",
+    "Dosage": "500 mg",
+    "Price ($)": 56.81
+  },
+  "tamsulosin active": {
+    "Medicine Name": "Tamsulosin Active",
+    "Category": "Antidiabetic",
+    "Dosage": "10 mL",
+    "Price ($)": 185.95
+  },
+  "acetaminophen plus": {
+    "Medicine Name": "Acetaminophen Plus",
+    "Category": "Beta-Blocker",
+    "Dosage": "50 mg",
+    "Price ($)": 72.48
+  },
+  "ibuprofen combo": {
+    "Medicine Name": "Ibuprofen Combo",
+    "Category": "Diuretic",
+    "Dosage": "250 mg",
+    "Price ($)": 209.52
+  },
+  "bupropion ultra": {
+    "Medicine Name": "Bupropion Ultra",
+    "Category": "Diuretic",
+    "Dosage": "850 mg",
+    "Price ($)": 127.1
+  },
+  "bupropion combo": {
+    "Medicine Name": "Bupropion Combo",
+    "Category": "Antifungal",
+    "Dosage": "20 mg",
+    "Price ($)": 174.47
+  },
+  "rosuvastatin max": {
+    "Medicine Name": "Rosuvastatin Max",
+    "Category": "Diuretic",
+    "Dosage": "850 mg",
+    "Price ($)": 122.29
+  },
+  "azithromycin forte": {
+    "Medicine Name": "Azithromycin Forte",
+    "Category": "Antibiotic",
+    "Dosage": "500 mg",
+    "Price ($)": 127.68
+  },
+  "valsartan combo": {
+    "Medicine Name": "Valsartan Combo",
+    "Category": "Antiviral",
+    "Dosage": "850 mg",
+    "Price ($)": 228.37
+  },
+  "pantoprazole xr": {
+    "Medicine Name": "Pantoprazole XR",
+    "Category": "Antihistamine",
+    "Dosage": "650 mg",
+    "Price ($)": 157.34
+  },
+  "duloxetine max": {
+    "Medicine Name": "Duloxetine Max",
+    "Category": "Antidepressant",
+    "Dosage": "5 mg",
+    "Price ($)": 172.16
+  },
+  "metformin": {
+    "Medicine Name": "Metformin",
+    "Category": "Antifungal",
+    "Dosage": "10 mg",
+    "Price ($)": 31.5
+  },
+  "levothyroxine hcl": {
+    "Medicine Name": "Levothyroxine HCL",
+    "Category": "Antidiabetic",
+    "Dosage": "5 mL",
+    "Price ($)": 229.77
+  },
+  "gabapentin forte": {
+    "Medicine Name": "Gabapentin Forte",
+    "Category": "Anticoagulant",
+    "Dosage": "50 mg",
+    "Price ($)": 216.92
+  },
+  "escitalopram": {
+    "Medicine Name": "Escitalopram",
+    "Category": "Analgesic",
+    "Dosage": "850 mg",
+    "Price ($)": 184.78
+  },
+  "losartan combo": {
+    "Medicine Name": "Losartan Combo",
+    "Category": "Antifungal",
+    "Dosage": "1000 mg",
+    "Price ($)": 75.81
+  },
+  "gabapentin ultra": {
+    "Medicine Name": "Gabapentin Ultra",
+    "Category": "Diuretic",
+    "Dosage": "500 mg",
+    "Price ($)": 220.83
+  },
+  "montelukast": {
+    "Medicine Name": "Montelukast",
+    "Category": "Proton Pump Inhibitor",
+    "Dosage": "850 mg",
+    "Price ($)": 236.1
+  },
+  "duloxetine xr": {
+    "Medicine Name": "Duloxetine XR",
+    "Category": "Antibiotic",
+    "Dosage": "10 mL",
+    "Price ($)": 50.26
+  },
+  "tamsulosin hcl": {
+    "Medicine Name": "Tamsulosin HCL",
+    "Category": "Beta-Blocker",
+    "Dosage": "10 mg",
+    "Price ($)": 97.22
+  },
+  "hydrochlorothiazide ds": {
+    "Medicine Name": "Hydrochlorothiazide DS",
+    "Category": "Proton Pump Inhibitor",
+    "Dosage": "1000 mg",
+    "Price ($)": 96.63
+  },
+  "montelukast combo": {
+    "Medicine Name": "Montelukast Combo",
+    "Category": "Antidepressant",
+    "Dosage": "5 mg",
+    "Price ($)": 157.44
+  },
+  "carvedilol forte": {
+    "Medicine Name": "Carvedilol Forte",
+    "Category": "Antiviral",
+    "Dosage": "5 mL",
+    "Price ($)": 170.31
+  },
+  "carvedilol combo": {
+    "Medicine Name": "Carvedilol Combo",
+    "Category": "Beta-Blocker",
+    "Dosage": "5 mL",
+    "Price ($)": 30.35
+  },
+  "lipitor ultra": {
+    "Medicine Name": "Lipitor Ultra",
+    "Category": "Antiviral",
+    "Dosage": "10 mg",
+    "Price ($)": 107.78
+  },
+  "tamsulosin plus": {
+    "Medicine Name": "Tamsulosin Plus",
+    "Category": "Antiviral",
+    "Dosage": "250 mg",
+    "Price ($)": 222.91
+  },
+  "ibuprofen max": {
+    "Medicine Name": "Ibuprofen Max",
+    "Category": "Antifungal",
+    "Dosage": "5 mg",
+    "Price ($)": 187.26
+  },
+  "tamsulosin": {
+    "Medicine Name": "Tamsulosin",
+    "Category": "Analgesic",
+    "Dosage": "5 mL",
+    "Price ($)": 66.62
+  },
+  "gabapentin hcl": {
+    "Medicine Name": "Gabapentin HCL",
+    "Category": "Corticosteroid",
+    "Dosage": "10 mg",
+    "Price ($)": 164.68
+  },
+  "citalopram": {
+    "Medicine Name": "Citalopram",
+    "Category": "Antibiotic",
+    "Dosage": "500 mg",
+    "Price ($)": 190.87
+  },
+  "ibuprofen hcl": {
+    "Medicine Name": "Ibuprofen HCL",
+    "Category": "Statin",
+    "Dosage": "50 mg",
+    "Price ($)": 82.18
+  },
+  "hydrochlorothiazide": {
+    "Medicine Name": "Hydrochlorothiazide",
+    "Category": "Antidepressant",
+    "Dosage": "10 mg",
+    "Price ($)": 96.06
+  },
+  "clopidogrel": {
+    "Medicine Name": "Clopidogrel",
+    "Category": "Diuretic",
+    "Dosage": "250 mg",
+    "Price ($)": 130.7
+  },
+  "omeprazole": {
+    "Medicine Name": "Omeprazole",
+    "Category": "Proton Pump Inhibitor",
+    "Dosage": "850 mg",
+    "Price ($)": 81.49
+  },
+  "lisinopril combo": {
+    "Medicine Name": "Lisinopril Combo",
+    "Category": "Antifungal",
+    "Dosage": "650 mg",
+    "Price ($)": 139.98
+  },
+  "lipitor max": {
+    "Medicine Name": "Lipitor Max",
+    "Category": "Antihypertensive",
+    "Dosage": "500 mg",
+    "Price ($)": 77.43
+  },
+  "bupropion forte": {
+    "Medicine Name": "Bupropion Forte",
+    "Category": "Antidepressant",
+    "Dosage": "5 mL",
+    "Price ($)": 66.51
+  },
+  "albuterol plus": {
+    "Medicine Name": "Albuterol Plus",
+    "Category": "Bronchodilator",
+    "Dosage": "850 mg",
+    "Price ($)": 22.49
+  },
+  "sertraline": {
+    "Medicine Name": "Sertraline",
+    "Category": "Antidepressant",
+    "Dosage": "50 mg",
+    "Price ($)": 244.07
+  },
+  "lisinopril xr": {
+    "Medicine Name": "Lisinopril XR",
+    "Category": "Statin",
+    "Dosage": "10 mg",
+    "Price ($)": 60.34
+  },
+  "prednisone ultra": {
+    "Medicine Name": "Prednisone Ultra",
+    "Category": "Antidepressant",
+    "Dosage": "5 mg",
+    "Price ($)": 163.78
+  },
+  "citalopram plus": {
+    "Medicine Name": "Citalopram Plus",
+    "Category": "Statin",
+    "Dosage": "500 mg",
+    "Price ($)": 228.79
+  },
+  "carvedilol sodium": {
+    "Medicine Name": "Carvedilol Sodium",
+    "Category": "Antidiabetic",
+    "Dosage": "50 mg",
+    "Price ($)": 59.53
+  },
+  "lipitor ds": {
+    "Medicine Name": "Lipitor DS",
+    "Category": "Antidiabetic",
+    "Dosage": "50 mg",
+    "Price ($)": 243.91
+  },
+  "lisinopril ultra": {
+    "Medicine Name": "Lisinopril Ultra",
+    "Category": "Antifungal",
+    "Dosage": "20 mg",
+    "Price ($)": 43.37
+  },
+  "hydrochlorothiazide forte": {
+    "Medicine Name": "Hydrochlorothiazide Forte",
+    "Category": "Antidiabetic",
+    "Dosage": "100 mg",
+    "Price ($)": 150.14
+  },
+  "acetaminophen active": {
+    "Medicine Name": "Acetaminophen Active",
+    "Category": "Antihypertensive",
+    "Dosage": "10 mg",
+    "Price ($)": 26.53
+  },
+  "ibuprofen active": {
+    "Medicine Name": "Ibuprofen Active",
+    "Category": "Antiviral",
+    "Dosage": "10 mg",
+    "Price ($)": 10.37
+  },
+  "omeprazole forte": {
+    "Medicine Name": "Omeprazole Forte",
+    "Category": "Antihistamine",
+    "Dosage": "100 mg",
+    "Price ($)": 85.67
+  },
+  "hydrochlorothiazide xr": {
+    "Medicine Name": "Hydrochlorothiazide XR",
+    "Category": "Anticoagulant",
+    "Dosage": "1000 mg",
+    "Price ($)": 93.69
+  },
+  "duloxetine plus": {
+    "Medicine Name": "Duloxetine Plus",
+    "Category": "Proton Pump Inhibitor",
+    "Dosage": "650 mg",
+    "Price ($)": 183.75
+  },
+  "acetaminophen max": {
+    "Medicine Name": "Acetaminophen Max",
+    "Category": "Statin",
+    "Dosage": "500 mg",
+    "Price ($)": 84.45
+  },
+  "metoprolol max": {
+    "Medicine Name": "Metoprolol Max",
+    "Category": "Proton Pump Inhibitor",
+    "Dosage": "50 mg",
+    "Price ($)": 13.75
+  },
+  "duloxetine ds": {
+    "Medicine Name": "Duloxetine DS",
+    "Category": "Antihistamine",
+    "Dosage": "20 mg",
+    "Price ($)": 169.73
+  },
+  "tamsulosin max": {
+    "Medicine Name": "Tamsulosin Max",
+    "Category": "Antidepressant",
+    "Dosage": "1000 mg",
+    "Price ($)": 37.69
+  },
+  "metoprolol hcl": {
+    "Medicine Name": "Metoprolol HCL",
+    "Category": "Antidepressant",
+    "Dosage": "10 mg",
+    "Price ($)": 47.54
+  },
+  "losartan": {
+    "Medicine Name": "Losartan",
+    "Category": "Diuretic",
+    "Dosage": "5 mL",
+    "Price ($)": 99.47
+  },
+  "metoprolol": {
+    "Medicine Name": "Metoprolol",
+    "Category": "Antihypertensive",
+    "Dosage": "5 mg",
+    "Price ($)": 37.81
+  },
+  "amoxicillin combo": {
+    "Medicine Name": "Amoxicillin Combo",
+    "Category": "Statin",
+    "Dosage": "250 mg",
+    "Price ($)": 132.69
+  },
+  "gabapentin sodium": {
+    "Medicine Name": "Gabapentin Sodium",
+    "Category": "Proton Pump Inhibitor",
+    "Dosage": "5 mg",
+    "Price ($)": 231.76
+  },
+  "losartan ultra": {
+    "Medicine Name": "Losartan Ultra",
+    "Category": "Statin",
+    "Dosage": "850 mg",
+    "Price ($)": 108.89
+  },
+  "fluoxetine max": {
+    "Medicine Name": "Fluoxetine Max",
+    "Category": "Beta-Blocker",
+    "Dosage": "50 mg",
+    "Price ($)": 148.37
+  },
+  "rosuvastatin ultra": {
+    "Medicine Name": "Rosuvastatin Ultra",
+    "Category": "Antiviral",
+    "Dosage": "5 mL",
+    "Price ($)": 42.73
+  },
+  "clopidogrel sodium": {
+    "Medicine Name": "Clopidogrel Sodium",
+    "Category": "Antidiabetic",
+    "Dosage": "10 mg",
+    "Price ($)": 207.56
+  },
+  "omeprazole max": {
+    "Medicine Name": "Omeprazole Max",
+    "Category": "Beta-Blocker",
+    "Dosage": "850 mg",
+    "Price ($)": 24.21
+  },
+  "metformin ultra": {
+    "Medicine Name": "Metformin Ultra",
+    "Category": "Antifungal",
+    "Dosage": "1000 mg",
+    "Price ($)": 50.61
+  },
+  "metformin max": {
+    "Medicine Name": "Metformin Max",
+    "Category": "Antifungal",
+    "Dosage": "250 mg",
+    "Price ($)": 209.78
+  },
+  "amoxicillin forte": {
+    "Medicine Name": "Amoxicillin Forte",
+    "Category": "Corticosteroid",
+    "Dosage": "250 mg",
+    "Price ($)": 117.4
+  },
+  "meloxicam forte": {
+    "Medicine Name": "Meloxicam Forte",
+    "Category": "Corticosteroid",
+    "Dosage": "10 mL",
+    "Price ($)": 222.77
+  },
+  "levothyroxine ultra": {
+    "Medicine Name": "Levothyroxine Ultra",
+    "Category": "Bronchodilator",
+    "Dosage": "20 mg",
+    "Price ($)": 141.21
+  },
+  "gabapentin combo": {
+    "Medicine Name": "Gabapentin Combo",
+    "Category": "Beta-Blocker",
+    "Dosage": "1000 mg",
+    "Price ($)": 141.83
+  },
+  "losartan forte": {
+    "Medicine Name": "Losartan Forte",
+    "Category": "Antidepressant",
+    "Dosage": "5 mg",
+    "Price ($)": 110.72
+  },
+  "omeprazole xr": {
+    "Medicine Name": "Omeprazole XR",
+    "Category": "Antifungal",
+    "Dosage": "1000 mg",
+    "Price ($)": 46.38
+  },
+  "azithromycin hcl": {
+    "Medicine Name": "Azithromycin HCL",
+    "Category": "Antidiabetic",
+    "Dosage": "100 mg",
+    "Price ($)": 68.25
+  },
+  "lipitor": {
+    "Medicine Name": "Lipitor",
+    "Category": "Antidiabetic",
+    "Dosage": "50 mg",
+    "Price ($)": 64.91
+  },
+  "amoxicillin hcl": {
+    "Medicine Name": "Amoxicillin HCL",
+    "Category": "Proton Pump Inhibitor",
+    "Dosage": "500 mg",
+    "Price ($)": 192.91
+  },
+  "acetaminophen": {
+    "Medicine Name": "Acetaminophen",
+    "Category": "Antiviral",
+    "Dosage": "10 mg",
+    "Price ($)": 8.38
+  },
+  "bupropion active": {
+    "Medicine Name": "Bupropion Active",
+    "Category": "Antifungal",
+    "Dosage": "1000 mg",
+    "Price ($)": 70.28
+  },
+  "levothyroxine plus": {
+    "Medicine Name": "Levothyroxine Plus",
+    "Category": "Antifungal",
+    "Dosage": "5 mg",
+    "Price ($)": 104.96
+  },
+  "omeprazole sodium": {
+    "Medicine Name": "Omeprazole Sodium",
+    "Category": "Bronchodilator",
+    "Dosage": "500 mg",
+    "Price ($)": 26.49
+  },
+  "amoxicillin active": {
+    "Medicine Name": "Amoxicillin Active",
+    "Category": "Antihypertensive",
+    "Dosage": "250 mg",
+    "Price ($)": 134.35
+  },
+  "levothyroxine": {
+    "Medicine Name": "Levothyroxine",
+    "Category": "Antidepressant",
+    "Dosage": "250 mg",
+    "Price ($)": 161.5
+  },
+  "valsartan xr": {
+    "Medicine Name": "Valsartan XR",
+    "Category": "Diuretic",
+    "Dosage": "5 mL",
+    "Price ($)": 130.4
+  },
+  "ibuprofen sodium": {
+    "Medicine Name": "Ibuprofen Sodium",
+    "Category": "Analgesic",
+    "Dosage": "5 mg",
+    "Price ($)": 220.1
+  },
+  "sertraline hcl": {
+    "Medicine Name": "Sertraline HCL",
+    "Category": "Antidiabetic",
+    "Dosage": "5 mL",
+    "Price ($)": 184.81
+  },
+  "tamsulosin forte": {
+    "Medicine Name": "Tamsulosin Forte",
+    "Category": "Anticoagulant",
+    "Dosage": "5 mg",
+    "Price ($)": 130.27
+  },
+  "rosuvastatin combo": {
+    "Medicine Name": "Rosuvastatin Combo",
+    "Category": "Analgesic",
+    "Dosage": "500 mg",
+    "Price ($)": 16.05
+  },
+  "gabapentin xr": {
+    "Medicine Name": "Gabapentin XR",
+    "Category": "Bronchodilator",
+    "Dosage": "5 mL",
+    "Price ($)": 56.83
+  },
+  "clopidogrel hcl": {
+    "Medicine Name": "Clopidogrel HCL",
+    "Category": "Antifungal",
+    "Dosage": "1000 mg",
+    "Price ($)": 113.07
+  },
+  "pantoprazole max": {
+    "Medicine Name": "Pantoprazole Max",
+    "Category": "Statin",
+    "Dosage": "100 mg",
+    "Price ($)": 17.77
+  },
+  "lisinopril ds": {
+    "Medicine Name": "Lisinopril DS",
+    "Category": "Proton Pump Inhibitor",
+    "Dosage": "20 mg",
+    "Price ($)": 212.35
+  },
+  "valsartan forte": {
+    "Medicine Name": "Valsartan Forte",
+    "Category": "Antibiotic",
+    "Dosage": "850 mg",
+    "Price ($)": 228.87
+  },
+  "metoprolol combo": {
+    "Medicine Name": "Metoprolol Combo",
+    "Category": "Anticoagulant",
+    "Dosage": "1000 mg",
+    "Price ($)": 11.54
+  },
+  "atorvastatin sodium": {
+    "Medicine Name": "Atorvastatin Sodium",
+    "Category": "Antidepressant",
+    "Dosage": "10 mg",
+    "Price ($)": 80.6
+  },
+  "citalopram active": {
+    "Medicine Name": "Citalopram Active",
+    "Category": "Statin",
+    "Dosage": "5 mg",
+    "Price ($)": 9.97
+  },
+  "metoprolol ultra": {
+    "Medicine Name": "Metoprolol Ultra",
+    "Category": "Antihypertensive",
+    "Dosage": "650 mg",
+    "Price ($)": 98.99
+  },
+  "meloxicam plus": {
+    "Medicine Name": "Meloxicam Plus",
+    "Category": "Anticoagulant",
+    "Dosage": "10 mg",
+    "Price ($)": 183.38
+  },
+  "rosuvastatin forte": {
+    "Medicine Name": "Rosuvastatin Forte",
+    "Category": "Antidepressant",
+    "Dosage": "1000 mg",
+    "Price ($)": 173.02
+  },
+  "tamsulosin ds": {
+    "Medicine Name": "Tamsulosin DS",
+    "Category": "Beta-Blocker",
+    "Dosage": "10 mg",
+    "Price ($)": 188.65
+  },
+  "sertraline forte": {
+    "Medicine Name": "Sertraline Forte",
+    "Category": "Statin",
+    "Dosage": "650 mg",
+    "Price ($)": 43.4
+  },
+  "duloxetine combo": {
+    "Medicine Name": "Duloxetine Combo",
+    "Category": "Antidiabetic",
+    "Dosage": "5 mL",
+    "Price ($)": 184.53
+  },
+  "albuterol forte": {
+    "Medicine Name": "Albuterol Forte",
+    "Category": "Analgesic",
+    "Dosage": "50 mg",
+    "Price ($)": 152.25
+  },
+  "pantoprazole combo": {
+    "Medicine Name": "Pantoprazole Combo",
+    "Category": "Statin",
+    "Dosage": "10 mL",
+    "Price ($)": 136.92
+  },
+  "bupropion sodium": {
+    "Medicine Name": "Bupropion Sodium",
+    "Category": "Beta-Blocker",
+    "Dosage": "5 mg",
+    "Price ($)": 66.56
+  },
+  "bupropion ds": {
+    "Medicine Name": "Bupropion DS",
+    "Category": "Anticoagulant",
+    "Dosage": "1000 mg",
+    "Price ($)": 60.34
+  },
+  "carvedilol": {
+    "Medicine Name": "Carvedilol",
+    "Category": "Antihypertensive",
+    "Dosage": "650 mg",
+    "Price ($)": 50.6
+  },
+  "valsartan sodium": {
+    "Medicine Name": "Valsartan Sodium",
+    "Category": "Antidepressant",
+    "Dosage": "500 mg",
+    "Price ($)": 153.01
+  },
+  "amoxicillin max": {
+    "Medicine Name": "Amoxicillin Max",
+    "Category": "Corticosteroid",
+    "Dosage": "850 mg",
+    "Price ($)": 93.89
+  },
+  "duloxetine sodium": {
+    "Medicine Name": "Duloxetine Sodium",
+    "Category": "Beta-Blocker",
+    "Dosage": "20 mg",
+    "Price ($)": 90.28
+  },
+  "pantoprazole active": {
+    "Medicine Name": "Pantoprazole Active",
+    "Category": "Antiviral",
+    "Dosage": "850 mg",
+    "Price ($)": 212.45
+  },
+  "losartan hcl": {
+    "Medicine Name": "Losartan HCL",
+    "Category": "Antihistamine",
+    "Dosage": "650 mg",
+    "Price ($)": 229.84
+  },
+  "gabapentin max": {
+    "Medicine Name": "Gabapentin Max",
+    "Category": "Antidiabetic",
+    "Dosage": "100 mg",
+    "Price ($)": 239.38
+  },
+  "rosuvastatin xr": {
+    "Medicine Name": "Rosuvastatin XR",
+    "Category": "Antiviral",
+    "Dosage": "5 mL",
+    "Price ($)": 68.94
+  },
+  "sertraline max": {
+    "Medicine Name": "Sertraline Max",
+    "Category": "Antihistamine",
+    "Dosage": "5 mL",
+    "Price ($)": 71.23
+  },
+  "azithromycin sodium": {
+    "Medicine Name": "Azithromycin Sodium",
+    "Category": "Antiviral",
+    "Dosage": "250 mg",
+    "Price ($)": 139.0
+  },
+  "prednisone forte": {
+    "Medicine Name": "Prednisone Forte",
+    "Category": "Antiviral",
+    "Dosage": "10 mL",
+    "Price ($)": 50.37
+  },
+  "losartan max": {
+    "Medicine Name": "Losartan Max",
+    "Category": "Proton Pump Inhibitor",
+    "Dosage": "500 mg",
+    "Price ($)": 138.44
+  },
+  "clopidogrel combo": {
+    "Medicine Name": "Clopidogrel Combo",
+    "Category": "Anticoagulant",
+    "Dosage": "1000 mg",
+    "Price ($)": 10.57
+  },
+  "metformin sodium": {
+    "Medicine Name": "Metformin Sodium",
+    "Category": "Antihypertensive",
+    "Dosage": "50 mg",
+    "Price ($)": 100.0
+  },
+  "clopidogrel forte": {
+    "Medicine Name": "Clopidogrel Forte",
+    "Category": "Antihistamine",
+    "Dosage": "10 mL",
+    "Price ($)": 57.81
+  },
+  "fluoxetine hcl": {
+    "Medicine Name": "Fluoxetine HCL",
+    "Category": "Antibiotic",
+    "Dosage": "5 mg",
+    "Price ($)": 5.51
+  },
+  "meloxicam hcl": {
+    "Medicine Name": "Meloxicam HCL",
+    "Category": "Anticoagulant",
+    "Dosage": "10 mL",
+    "Price ($)": 39.83
+  },
+  "clopidogrel ds": {
+    "Medicine Name": "Clopidogrel DS",
+    "Category": "Antibiotic",
+    "Dosage": "10 mg",
+    "Price ($)": 44.8
+  },
+  "lipitor forte": {
+    "Medicine Name": "Lipitor Forte",
+    "Category": "Antihistamine",
+    "Dosage": "5 mg",
+    "Price ($)": 157.06
+  },
+  "amoxicillin plus": {
+    "Medicine Name": "Amoxicillin Plus",
+    "Category": "Antidiabetic",
+    "Dosage": "100 mg",
+    "Price ($)": 232.74
+  },
+  "lipitor xr": {
+    "Medicine Name": "Lipitor XR",
+    "Category": "Antidepressant",
+    "Dosage": "5 mL",
+    "Price ($)": 165.29
+  },
+  "escitalopram hcl": {
+    "Medicine Name": "Escitalopram HCL",
+    "Category": "Antihistamine",
+    "Dosage": "100 mg",
+    "Price ($)": 154.61
+  },
+  "azithromycin plus": {
+    "Medicine Name": "Azithromycin Plus",
+    "Category": "Antifungal",
+    "Dosage": "500 mg",
+    "Price ($)": 92.66
+  },
+  "atorvastatin combo": {
+    "Medicine Name": "Atorvastatin Combo",
+    "Category": "Antidiabetic",
+    "Dosage": "1000 mg",
+    "Price ($)": 202.3
+  },
+  "albuterol xr": {
+    "Medicine Name": "Albuterol XR",
+    "Category": "Corticosteroid",
+    "Dosage": "5 mL",
+    "Price ($)": 54.24
+  },
+  "atorvastatin xr": {
+    "Medicine Name": "Atorvastatin XR",
+    "Category": "Proton Pump Inhibitor",
+    "Dosage": "850 mg",
+    "Price ($)": 194.47
+  },
+  "acetaminophen xr": {
+    "Medicine Name": "Acetaminophen XR",
+    "Category": "Corticosteroid",
+    "Dosage": "500 mg",
+    "Price ($)": 131.13
+  },
+  "tamsulosin xr": {
+    "Medicine Name": "Tamsulosin XR",
+    "Category": "Proton Pump Inhibitor",
+    "Dosage": "50 mg",
+    "Price ($)": 50.35
+  },
+  "albuterol combo": {
+    "Medicine Name": "Albuterol Combo",
+    "Category": "Antihypertensive",
+    "Dosage": "850 mg",
+    "Price ($)": 226.97
+  },
+  "acetaminophen forte": {
+    "Medicine Name": "Acetaminophen Forte",
+    "Category": "Bronchodilator",
+    "Dosage": "650 mg",
+    "Price ($)": 4.89
+  },
+  "citalopram combo": {
+    "Medicine Name": "Citalopram Combo",
+    "Category": "Antihypertensive",
+    "Dosage": "100 mg",
+    "Price ($)": 221.55
+  },
+  "carvedilol active": {
+    "Medicine Name": "Carvedilol Active",
+    "Category": "Anticoagulant",
+    "Dosage": "500 mg",
+    "Price ($)": 8.49
+  },
+  "pantoprazole sodium": {
+    "Medicine Name": "Pantoprazole Sodium",
+    "Category": "Statin",
+    "Dosage": "500 mg",
+    "Price ($)": 221.38
+  },
+  "montelukast ultra": {
+    "Medicine Name": "Montelukast Ultra",
+    "Category": "Antihypertensive",
+    "Dosage": "50 mg",
+    "Price ($)": 20.59
+  },
+  "duloxetine active": {
+    "Medicine Name": "Duloxetine Active",
+    "Category": "Statin",
+    "Dosage": "500 mg",
+    "Price ($)": 240.14
+  },
+  "montelukast sodium": {
+    "Medicine Name": "Montelukast Sodium",
+    "Category": "Bronchodilator",
+    "Dosage": "500 mg",
+    "Price ($)": 114.05
+  },
+  "bupropion hcl": {
+    "Medicine Name": "Bupropion HCL",
+    "Category": "Statin",
+    "Dosage": "850 mg",
+    "Price ($)": 41.46
+  },
+  "clopidogrel max": {
+    "Medicine Name": "Clopidogrel Max",
+    "Category": "Antifungal",
+    "Dosage": "100 mg",
+    "Price ($)": 240.4
+  },
+  "losartan ds": {
+    "Medicine Name": "Losartan DS",
+    "Category": "Diuretic",
+    "Dosage": "850 mg",
+    "Price ($)": 5.49
+  },
+  "acetaminophen combo": {
+    "Medicine Name": "Acetaminophen Combo",
+    "Category": "Antiviral",
+    "Dosage": "1000 mg",
+    "Price ($)": 49.43
+  },
+  "prednisone sodium": {
+    "Medicine Name": "Prednisone Sodium",
+    "Category": "Corticosteroid",
+    "Dosage": "5 mL",
+    "Price ($)": 31.03
+  },
+  "fluoxetine ultra": {
+    "Medicine Name": "Fluoxetine Ultra",
+    "Category": "Anticoagulant",
+    "Dosage": "5 mg",
+    "Price ($)": 230.58
+  },
+  "fluoxetine xr": {
+    "Medicine Name": "Fluoxetine XR",
+    "Category": "Anticoagulant",
+    "Dosage": "5 mg",
+    "Price ($)": 26.6
+  },
+  "atorvastatin plus": {
+    "Medicine Name": "Atorvastatin Plus",
+    "Category": "Antibiotic",
+    "Dosage": "1000 mg",
+    "Price ($)": 202.8
+  },
+  "hydrochlorothiazide combo": {
+    "Medicine Name": "Hydrochlorothiazide Combo",
+    "Category": "Bronchodilator",
+    "Dosage": "5 mL",
+    "Price ($)": 236.77
+  },
+  "metformin active": {
+    "Medicine Name": "Metformin Active",
+    "Category": "Statin",
+    "Dosage": "20 mg",
+    "Price ($)": 103.73
+  },
+  "losartan xr": {
+    "Medicine Name": "Losartan XR",
+    "Category": "Antifungal",
+    "Dosage": "100 mg",
+    "Price ($)": 25.33
+  },
+  "amoxicillin xr": {
+    "Medicine Name": "Amoxicillin XR",
+    "Category": "Antidepressant",
+    "Dosage": "100 mg",
+    "Price ($)": 164.75
+  },
+  "lisinopril max": {
+    "Medicine Name": "Lisinopril Max",
+    "Category": "Corticosteroid",
+    "Dosage": "650 mg",
+    "Price ($)": 60.38
+  },
+  "metformin xr": {
+    "Medicine Name": "Metformin XR",
+    "Category": "Proton Pump Inhibitor",
+    "Dosage": "5 mg",
+    "Price ($)": 228.47
+  },
+  "amoxicillin ds": {
+    "Medicine Name": "Amoxicillin DS",
+    "Category": "Bronchodilator",
+    "Dosage": "500 mg",
+    "Price ($)": 242.44
+  },
+  "acetaminophen sodium": {
+    "Medicine Name": "Acetaminophen Sodium",
+    "Category": "Antidiabetic",
+    "Dosage": "250 mg",
+    "Price ($)": 220.29
+  },
+  "valsartan ultra": {
+    "Medicine Name": "Valsartan Ultra",
+    "Category": "Anticoagulant",
+    "Dosage": "850 mg",
+    "Price ($)": 91.53
+  },
+  "prednisone plus": {
+    "Medicine Name": "Prednisone Plus",
+    "Category": "Diuretic",
+    "Dosage": "850 mg",
+    "Price ($)": 59.35
+  },
+  "hydrochlorothiazide hcl": {
+    "Medicine Name": "Hydrochlorothiazide HCL",
+    "Category": "Antihistamine",
+    "Dosage": "250 mg",
+    "Price ($)": 50.99
+  },
+  "metoprolol ds": {
+    "Medicine Name": "Metoprolol DS",
+    "Category": "Beta-Blocker",
+    "Dosage": "850 mg",
+    "Price ($)": 229.76
+  },
+  "meloxicam ds": {
+    "Medicine Name": "Meloxicam DS",
+    "Category": "Antiviral",
+    "Dosage": "20 mg",
+    "Price ($)": 96.86
+  },
+  "amoxicillin ultra": {
+    "Medicine Name": "Amoxicillin Ultra",
+    "Category": "Proton Pump Inhibitor",
+    "Dosage": "500 mg",
+    "Price ($)": 86.54
+  },
+  "rosuvastatin hcl": {
+    "Medicine Name": "Rosuvastatin HCL",
+    "Category": "Anticoagulant",
+    "Dosage": "20 mg",
+    "Price ($)": 232.33
+  },
+  "hydrochlorothiazide max": {
+    "Medicine Name": "Hydrochlorothiazide Max",
+    "Category": "Bronchodilator",
+    "Dosage": "50 mg",
+    "Price ($)": 196.44
+  },
+  "escitalopram sodium": {
+    "Medicine Name": "Escitalopram Sodium",
+    "Category": "Antidepressant",
+    "Dosage": "10 mg",
+    "Price ($)": 12.05
+  },
+  "losartan plus": {
+    "Medicine Name": "Losartan Plus",
+    "Category": "Antibiotic",
+    "Dosage": "5 mg",
+    "Price ($)": 14.38
+  },
+  "metformin plus": {
+    "Medicine Name": "Metformin Plus",
+    "Category": "Antihistamine",
+    "Dosage": "500 mg",
+    "Price ($)": 218.73
+  },
+  "metformin combo": {
+    "Medicine Name": "Metformin Combo",
+    "Category": "Antihistamine",
+    "Dosage": "500 mg",
+    "Price ($)": 120.81
+  },
+  "montelukast active": {
+    "Medicine Name": "Montelukast Active",
+    "Category": "Beta-Blocker",
+    "Dosage": "250 mg",
+    "Price ($)": 194.76
+  },
+  "prednisone ds": {
+    "Medicine Name": "Prednisone DS",
+    "Category": "Corticosteroid",
+    "Dosage": "5 mL",
+    "Price ($)": 188.15
+  },
+  "meloxicam ultra": {
+    "Medicine Name": "Meloxicam Ultra",
+    "Category": "Proton Pump Inhibitor",
+    "Dosage": "650 mg",
+    "Price ($)": 208.96
+  },
+  "amoxicillin sodium": {
+    "Medicine Name": "Amoxicillin Sodium",
+    "Category": "Antidiabetic",
+    "Dosage": "20 mg",
+    "Price ($)": 179.07
+  },
+  "metoprolol sodium": {
+    "Medicine Name": "Metoprolol Sodium",
+    "Category": "Antidiabetic",
+    "Dosage": "850 mg",
+    "Price ($)": 240.35
+  },
+  "hydrochlorothiazide active": {
+    "Medicine Name": "Hydrochlorothiazide Active",
+    "Category": "Antidiabetic",
+    "Dosage": "10 mL",
+    "Price ($)": 6.78
+  },
+  "lipitor combo": {
+    "Medicine Name": "Lipitor Combo",
+    "Category": "Diuretic",
+    "Dosage": "250 mg",
+    "Price ($)": 52.88
+  },
+  "valsartan hcl": {
+    "Medicine Name": "Valsartan HCL",
+    "Category": "Proton Pump Inhibitor",
+    "Dosage": "100 mg",
+    "Price ($)": 126.2
+  },
+  "prednisone active": {
+    "Medicine Name": "Prednisone Active",
+    "Category": "Beta-Blocker",
+    "Dosage": "1000 mg",
+    "Price ($)": 136.19
+  },
+  "carvedilol xr": {
+    "Medicine Name": "Carvedilol XR",
+    "Category": "Analgesic",
+    "Dosage": "850 mg",
+    "Price ($)": 185.95
+  },
+  "sertraline plus": {
+    "Medicine Name": "Sertraline Plus",
+    "Category": "Corticosteroid",
+    "Dosage": "650 mg",
+    "Price ($)": 45.52
+  },
+  "albuterol sodium": {
+    "Medicine Name": "Albuterol Sodium",
+    "Category": "Anticoagulant",
+    "Dosage": "50 mg",
+    "Price ($)": 212.23
+  },
+  "ibuprofen ds": {
+    "Medicine Name": "Ibuprofen DS",
+    "Category": "Antifungal",
+    "Dosage": "250 mg",
+    "Price ($)": 17.27
+  },
+  "montelukast xr": {
+    "Medicine Name": "Montelukast XR",
+    "Category": "Corticosteroid",
+    "Dosage": "10 mg",
+    "Price ($)": 231.23
+  },
+  "tamsulosin ultra": {
+    "Medicine Name": "Tamsulosin Ultra",
+    "Category": "Antifungal",
+    "Dosage": "500 mg",
+    "Price ($)": 87.66
+  },
+  "escitalopram plus": {
+    "Medicine Name": "Escitalopram Plus",
+    "Category": "Beta-Blocker",
+    "Dosage": "10 mg",
+    "Price ($)": 200.1
+  },
+  "bupropion xr": {
+    "Medicine Name": "Bupropion XR",
+    "Category": "Corticosteroid",
+    "Dosage": "50 mg",
+    "Price ($)": 29.06
+  },
+  "acetaminophen ultra": {
+    "Medicine Name": "Acetaminophen Ultra",
+    "Category": "Analgesic",
+    "Dosage": "500 mg",
+    "Price ($)": 130.36
+  },
+  "citalopram sodium": {
+    "Medicine Name": "Citalopram Sodium",
+    "Category": "Beta-Blocker",
+    "Dosage": "10 mL",
+    "Price ($)": 158.26
+  },
+  "levothyroxine max": {
+    "Medicine Name": "Levothyroxine Max",
+    "Category": "Statin",
+    "Dosage": "5 mL",
+    "Price ($)": 214.8
+  },
+  "citalopram ultra": {
+    "Medicine Name": "Citalopram Ultra",
+    "Category": "Statin",
+    "Dosage": "20 mg",
+    "Price ($)": 100.26
+  },
+  "levothyroxine combo": {
+    "Medicine Name": "Levothyroxine Combo",
+    "Category": "Antidiabetic",
+    "Dosage": "1000 mg",
+    "Price ($)": 114.13
+  },
+  "hydrochlorothiazide plus": {
+    "Medicine Name": "Hydrochlorothiazide Plus",
+    "Category": "Analgesic",
+    "Dosage": "1000 mg",
+    "Price ($)": 160.94
+  },
+  "bupropion max": {
+    "Medicine Name": "Bupropion Max",
+    "Category": "Antidiabetic",
+    "Dosage": "50 mg",
+    "Price ($)": 140.76
+  },
+  "azithromycin xr": {
+    "Medicine Name": "Azithromycin XR",
+    "Category": "Proton Pump Inhibitor",
+    "Dosage": "20 mg",
+    "Price ($)": 185.66
+  },
+  "carvedilol ds": {
+    "Medicine Name": "Carvedilol DS",
+    "Category": "Statin",
+    "Dosage": "100 mg",
+    "Price ($)": 210.51
+  },
+  "gabapentin ds": {
+    "Medicine Name": "Gabapentin DS",
+    "Category": "Anticoagulant",
+    "Dosage": "10 mL",
+    "Price ($)": 96.95
+  },
+  "lisinopril plus": {
+    "Medicine Name": "Lisinopril Plus",
+    "Category": "Corticosteroid",
+    "Dosage": "100 mg",
+    "Price ($)": 192.82
+  },
+  "bupropion plus": {
+    "Medicine Name": "Bupropion Plus",
+    "Category": "Antihistamine",
+    "Dosage": "10 mL",
+    "Price ($)": 74.02
+  },
+  "sertraline ultra": {
+    "Medicine Name": "Sertraline Ultra",
+    "Category": "Antibiotic",
+    "Dosage": "10 mg",
+    "Price ($)": 152.22
+  },
+  "levothyroxine forte": {
+    "Medicine Name": "Levothyroxine Forte",
+    "Category": "Antiviral",
+    "Dosage": "5 mL",
+    "Price ($)": 153.46
+  },
+  "lipitor plus": {
+    "Medicine Name": "Lipitor Plus",
+    "Category": "Antifungal",
+    "Dosage": "5 mL",
+    "Price ($)": 44.18
+  },
+  "pantoprazole plus": {
+    "Medicine Name": "Pantoprazole Plus",
+    "Category": "Antiviral",
+    "Dosage": "250 mg",
+    "Price ($)": 187.19
+  },
+  "sertraline xr": {
+    "Medicine Name": "Sertraline XR",
+    "Category": "Bronchodilator",
+    "Dosage": "1000 mg",
+    "Price ($)": 118.11
+  },
+  "levothyroxine sodium": {
+    "Medicine Name": "Levothyroxine Sodium",
+    "Category": "Antidepressant",
+    "Dosage": "5 mg",
+    "Price ($)": 192.76
+  },
+  "metoprolol plus": {
+    "Medicine Name": "Metoprolol Plus",
+    "Category": "Antiviral",
+    "Dosage": "250 mg",
+    "Price ($)": 25.66
+  },
+  "valsartan active": {
+    "Medicine Name": "Valsartan Active",
+    "Category": "Antihypertensive",
+    "Dosage": "250 mg",
+    "Price ($)": 243.24
+  },
+  "levothyroxine xr": {
+    "Medicine Name": "Levothyroxine XR",
+    "Category": "Anticoagulant",
+    "Dosage": "850 mg",
+    "Price ($)": 95.1
+  },
+  "sertraline active": {
+    "Medicine Name": "Sertraline Active",
+    "Category": "Antihypertensive",
+    "Dosage": "20 mg",
+    "Price ($)": 8.04
+  },
+  "montelukast forte": {
+    "Medicine Name": "Montelukast Forte",
+    "Category": "Antifungal",
+    "Dosage": "5 mL",
+    "Price ($)": 29.23
+  },
+  "metformin forte": {
+    "Medicine Name": "Metformin Forte",
+    "Category": "Antiviral",
+    "Dosage": "1000 mg",
+    "Price ($)": 155.19
+  },
+  "omeprazole active": {
+    "Medicine Name": "Omeprazole Active",
+    "Category": "Proton Pump Inhibitor",
+    "Dosage": "10 mL",
+    "Price ($)": 186.23
+  },
+  "rosuvastatin ds": {
+    "Medicine Name": "Rosuvastatin DS",
+    "Category": "Antifungal",
+    "Dosage": "5 mg",
+    "Price ($)": 198.88
+  },
+  "escitalopram forte": {
+    "Medicine Name": "Escitalopram Forte",
+    "Category": "Antifungal",
+    "Dosage": "1000 mg",
+    "Price ($)": 52.33
+  },
+  "duloxetine hcl": {
+    "Medicine Name": "Duloxetine HCL",
+    "Category": "Antifungal",
+    "Dosage": "850 mg",
+    "Price ($)": 204.02
+  },
+  "lisinopril active": {
+    "Medicine Name": "Lisinopril Active",
+    "Category": "Antibiotic",
+    "Dosage": "650 mg",
+    "Price ($)": 222.56
+  },
+  "montelukast plus": {
+    "Medicine Name": "Montelukast Plus",
+    "Category": "Antifungal",
+    "Dosage": "20 mg",
+    "Price ($)": 150.35
+  },
+  "valsartan ds": {
+    "Medicine Name": "Valsartan DS",
+    "Category": "Beta-Blocker",
+    "Dosage": "50 mg",
+    "Price ($)": 70.12
+  },
+  "losartan sodium": {
+    "Medicine Name": "Losartan Sodium",
+    "Category": "Antidiabetic",
+    "Dosage": "1000 mg",
+    "Price ($)": 39.18
+  },
+  "prednisone hcl": {
+    "Medicine Name": "Prednisone HCL",
+    "Category": "Anticoagulant",
+    "Dosage": "850 mg",
+    "Price ($)": 65.13
+  },
+  "rosuvastatin sodium": {
+    "Medicine Name": "Rosuvastatin Sodium",
+    "Category": "Statin",
+    "Dosage": "500 mg",
+    "Price ($)": 21.51
+  },
+  "azithromycin max": {
+    "Medicine Name": "Azithromycin Max",
+    "Category": "Antidiabetic",
+    "Dosage": "1000 mg",
+    "Price ($)": 133.47
+  },
+  "citalopram max": {
+    "Medicine Name": "Citalopram Max",
+    "Category": "Proton Pump Inhibitor",
+    "Dosage": "10 mg",
+    "Price ($)": 244.88
+  },
+  "pantoprazole ultra": {
+    "Medicine Name": "Pantoprazole Ultra",
+    "Category": "Antidepressant",
+    "Dosage": "5 mL",
+    "Price ($)": 10.21
+  },
+  "ibuprofen forte": {
+    "Medicine Name": "Ibuprofen Forte",
+    "Category": "Beta-Blocker",
+    "Dosage": "10 mL",
+    "Price ($)": 175.06
+  },
+  "pantoprazole forte": {
+    "Medicine Name": "Pantoprazole Forte",
+    "Category": "Statin",
+    "Dosage": "50 mg",
+    "Price ($)": 70.97
+  },
+  "meloxicam sodium": {
+    "Medicine Name": "Meloxicam Sodium",
+    "Category": "Antihistamine",
+    "Dosage": "50 mg",
+    "Price ($)": 128.88
+  },
+  "carvedilol max": {
+    "Medicine Name": "Carvedilol Max",
+    "Category": "Antiviral",
+    "Dosage": "650 mg",
+    "Price ($)": 65.83
+  },
+  "losartan active": {
+    "Medicine Name": "Losartan Active",
+    "Category": "Analgesic",
+    "Dosage": "250 mg",
+    "Price ($)": 105.58
+  },
+  "montelukast hcl": {
+    "Medicine Name": "Montelukast HCL",
+    "Category": "Proton Pump Inhibitor",
+    "Dosage": "20 mg",
+    "Price ($)": 31.93
+  },
+  "metoprolol active": {
+    "Medicine Name": "Metoprolol Active",
+    "Category": "Beta-Blocker",
+    "Dosage": "100 mg",
+    "Price ($)": 199.6
+  },
+  "duloxetine ultra": {
+    "Medicine Name": "Duloxetine Ultra",
+    "Category": "Antiviral",
+    "Dosage": "20 mg",
+    "Price ($)": 144.29
+  },
+  "lisinopril hcl": {
+    "Medicine Name": "Lisinopril HCL",
+    "Category": "Antiviral",
+    "Dosage": "250 mg",
+    "Price ($)": 223.91
+  },
+  "meloxicam max": {
+    "Medicine Name": "Meloxicam Max",
+    "Category": "Antihistamine",
+    "Dosage": "50 mg",
+    "Price ($)": 9.87
+  },
+  "tamsulosin combo": {
+    "Medicine Name": "Tamsulosin Combo",
+    "Category": "Bronchodilator",
+    "Dosage": "500 mg",
+    "Price ($)": 179.65
+  },
+  "atorvastatin forte": {
+    "Medicine Name": "Atorvastatin Forte",
+    "Category": "Antiviral",
+    "Dosage": "20 mg",
+    "Price ($)": 224.1
+  },
+  "metformin ds": {
+    "Medicine Name": "Metformin DS",
+    "Category": "Bronchodilator",
+    "Dosage": "850 mg",
+    "Price ($)": 110.13
+  },
+  "ibuprofen plus": {
+    "Medicine Name": "Ibuprofen Plus",
+    "Category": "Antidepressant",
+    "Dosage": "100 mg",
+    "Price ($)": 117.24
+  },
+  "albuterol max": {
+    "Medicine Name": "Albuterol Max",
+    "Category": "Bronchodilator",
+    "Dosage": "850 mg",
+    "Price ($)": 200.94
+  },
+  "azithromycin ultra": {
+    "Medicine Name": "Azithromycin Ultra",
+    "Category": "Statin",
+    "Dosage": "650 mg",
+    "Price ($)": 91.87
+  },
+  "fluoxetine forte": {
+    "Medicine Name": "Fluoxetine Forte",
+    "Category": "Analgesic",
+    "Dosage": "1000 mg",
+    "Price ($)": 193.12
+  },
+  "omeprazole ds": {
+    "Medicine Name": "Omeprazole DS",
+    "Category": "Corticosteroid",
+    "Dosage": "1000 mg",
+    "Price ($)": 145.42
+  },
+  "prednisone xr": {
+    "Medicine Name": "Prednisone XR",
+    "Category": "Diuretic",
+    "Dosage": "5 mL",
+    "Price ($)": 231.22
+  },
+  "clopidogrel active": {
+    "Medicine Name": "Clopidogrel Active",
+    "Category": "Corticosteroid",
+    "Dosage": "20 mg",
+    "Price ($)": 126.34
+  },
+  "acetaminophen ds": {
+    "Medicine Name": "Acetaminophen DS",
+    "Category": "Antihistamine",
+    "Dosage": "10 mg",
+    "Price ($)": 222.38
+  },
+  "fluoxetine plus": {
+    "Medicine Name": "Fluoxetine Plus",
+    "Category": "Corticosteroid",
+    "Dosage": "10 mg",
+    "Price ($)": 151.98
+  },
+  "montelukast ds": {
+    "Medicine Name": "Montelukast DS",
+    "Category": "Antihypertensive",
+    "Dosage": "20 mg",
+    "Price ($)": 131.73
+  },
+  "clopidogrel plus": {
+    "Medicine Name": "Clopidogrel Plus",
+    "Category": "Analgesic",
+    "Dosage": "20 mg",
+    "Price ($)": 113.07
+  },
+  "atorvastatin hcl": {
+    "Medicine Name": "Atorvastatin HCL",
+    "Category": "Diuretic",
+    "Dosage": "100 mg",
+    "Price ($)": 169.57
+  },
+  "meloxicam combo": {
+    "Medicine Name": "Meloxicam Combo",
+    "Category": "Corticosteroid",
+    "Dosage": "20 mg",
+    "Price ($)": 216.05
+  },
+  "metoprolol forte": {
+    "Medicine Name": "Metoprolol Forte",
+    "Category": "Statin",
+    "Dosage": "10 mL",
+    "Price ($)": 108.19
+  },
+  "albuterol active": {
+    "Medicine Name": "Albuterol Active",
+    "Category": "Analgesic",
+    "Dosage": "50 mg",
+    "Price ($)": 66.9
+  },
+  "escitalopram max": {
+    "Medicine Name": "Escitalopram Max",
+    "Category": "Corticosteroid",
+    "Dosage": "100 mg",
+    "Price ($)": 27.71
+  },
+  "sertraline sodium": {
+    "Medicine Name": "Sertraline Sodium",
+    "Category": "Bronchodilator",
+    "Dosage": "100 mg",
+    "Price ($)": 156.22
+  },
+  "duloxetine forte": {
+    "Medicine Name": "Duloxetine Forte",
+    "Category": "Anticoagulant",
+    "Dosage": "1000 mg",
+    "Price ($)": 213.34
+  },
+  "rosuvastatin plus": {
+    "Medicine Name": "Rosuvastatin Plus",
+    "Category": "Antihypertensive",
+    "Dosage": "100 mg",
+    "Price ($)": 104.43
+  },
+  "ibuprofen xr": {
+    "Medicine Name": "Ibuprofen XR",
+    "Category": "Antihypertensive",
+    "Dosage": "500 mg",
+    "Price ($)": 16.55
+  },
+  "valsartan plus": {
+    "Medicine Name": "Valsartan Plus",
+    "Category": "Proton Pump Inhibitor",
+    "Dosage": "5 mL",
+    "Price ($)": 49.56
+  },
+  "fluoxetine combo": {
+    "Medicine Name": "Fluoxetine Combo",
+    "Category": "Antiviral",
+    "Dosage": "650 mg",
+    "Price ($)": 158.45
+  },
+  "pantoprazole hcl": {
+    "Medicine Name": "Pantoprazole HCL",
+    "Category": "Proton Pump Inhibitor",
+    "Dosage": "250 mg",
+    "Price ($)": 225.15
+  },
+  "atorvastatin ds": {
+    "Medicine Name": "Atorvastatin DS",
+    "Category": "Anticoagulant",
+    "Dosage": "20 mg",
+    "Price ($)": 178.23
+  },
+  "fluoxetine sodium": {
+    "Medicine Name": "Fluoxetine Sodium",
+    "Category": "Antihistamine",
+    "Dosage": "250 mg",
+    "Price ($)": 29.88
+  },
+  "azithromycin ds": {
+    "Medicine Name": "Azithromycin DS",
+    "Category": "Proton Pump Inhibitor",
+    "Dosage": "100 mg",
+    "Price ($)": 137.54
+  },
+  "carvedilol hcl": {
+    "Medicine Name": "Carvedilol HCL",
+    "Category": "Diuretic",
+    "Dosage": "10 mL",
+    "Price ($)": 54.33
+  },
+  "atorvastatin ultra": {
+    "Medicine Name": "Atorvastatin Ultra",
+    "Category": "Diuretic",
+    "Dosage": "100 mg",
+    "Price ($)": 55.78
+  },
+  "ibuprofen ultra": {
+    "Medicine Name": "Ibuprofen Ultra",
+    "Category": "Antihypertensive",
+    "Dosage": "5 mg",
+    "Price ($)": 180.61
+  },
+  "lisinopril forte": {
+    "Medicine Name": "Lisinopril Forte",
+    "Category": "Proton Pump Inhibitor",
+    "Dosage": "850 mg",
+    "Price ($)": 34.68
+  },
+  "rosuvastatin active": {
+    "Medicine Name": "Rosuvastatin Active",
+    "Category": "Antiviral",
+    "Dosage": "850 mg",
+    "Price ($)": 196.42
+  },
+  "levothyroxine active": {
+    "Medicine Name": "Levothyroxine Active",
+    "Category": "Analgesic",
+    "Dosage": "250 mg",
+    "Price ($)": 243.02
+  },
+  "omeprazole combo": {
+    "Medicine Name": "Omeprazole Combo",
+    "Category": "Statin",
+    "Dosage": "5 mL",
+    "Price ($)": 242.09
+  },
+  "pantoprazole ds": {
+    "Medicine Name": "Pantoprazole DS",
+    "Category": "Bronchodilator",
+    "Dosage": "10 mg",
+    "Price ($)": 199.15
+  },
+  "hydrochlorothiazide sodium": {
+    "Medicine Name": "Hydrochlorothiazide Sodium",
+    "Category": "Antihistamine",
+    "Dosage": "500 mg",
+    "Price ($)": 160.75
+  },
+  "albuterol ultra": {
+    "Medicine Name": "Albuterol Ultra",
+    "Category": "Diuretic",
+    "Dosage": "850 mg",
+    "Price ($)": 25.65
+  },
+  "albuterol ds": {
+    "Medicine Name": "Albuterol DS",
+    "Category": "Beta-Blocker",
+    "Dosage": "100 mg",
+    "Price ($)": 160.9
+  },
+  "escitalopram combo": {
+    "Medicine Name": "Escitalopram Combo",
+    "Category": "Beta-Blocker",
+    "Dosage": "1000 mg",
+    "Price ($)": 225.01
+  },
+  "lipitor hcl": {
+    "Medicine Name": "Lipitor HCL",
+    "Category": "Bronchodilator",
+    "Dosage": "20 mg",
+    "Price ($)": 223.03
+  },
+  "metoprolol xr": {
+    "Medicine Name": "Metoprolol XR",
+    "Category": "Antidepressant",
+    "Dosage": "500 mg",
+    "Price ($)": 42.74
+  },
+  "clopidogrel xr": {
+    "Medicine Name": "Clopidogrel XR",
+    "Category": "Antihistamine",
+    "Dosage": "250 mg",
+    "Price ($)": 54.75
+  },
+  "escitalopram active": {
+    "Medicine Name": "Escitalopram Active",
+    "Category": "Beta-Blocker",
+    "Dosage": "500 mg",
+    "Price ($)": 164.13
+  },
+  "albuterol hcl": {
+    "Medicine Name": "Albuterol HCL",
+    "Category": "Antidepressant",
+    "Dosage": "250 mg",
+    "Price ($)": 184.79
+  },
+  "citalopram xr": {
+    "Medicine Name": "Citalopram XR",
+    "Category": "Beta-Blocker",
+    "Dosage": "20 mg",
+    "Price ($)": 101.84
+  },
+  "atorvastatin max": {
+    "Medicine Name": "Atorvastatin Max",
+    "Category": "Antibiotic",
+    "Dosage": "50 mg",
+    "Price ($)": 35.21
+  },
+  "gabapentin plus": {
+    "Medicine Name": "Gabapentin Plus",
+    "Category": "Anticoagulant",
+    "Dosage": "5 mL",
+    "Price ($)": 80.27
+  },
+  "montelukast max": {
+    "Medicine Name": "Montelukast Max",
+    "Category": "Antibiotic",
+    "Dosage": "100 mg",
+    "Price ($)": 137.01
+  },
+  "prednisone max": {
+    "Medicine Name": "Prednisone Max",
+    "Category": "Statin",
+    "Dosage": "850 mg",
+    "Price ($)": 121.53
+  },
+  "lisinopril sodium": {
+    "Medicine Name": "Lisinopril Sodium",
+    "Category": "Bronchodilator",
+    "Dosage": "250 mg",
+    "Price ($)": 148.53
+  },
+  "omeprazole hcl": {
+    "Medicine Name": "Omeprazole HCL",
+    "Category": "Analgesic",
+    "Dosage": "50 mg",
+    "Price ($)": 15.86
+  },
+  "levothyroxine ds": {
+    "Medicine Name": "Levothyroxine DS",
+    "Category": "Anticoagulant",
+    "Dosage": "850 mg",
+    "Price ($)": 213.53
+  },
+  "meloxicam active": {
+    "Medicine Name": "Meloxicam Active",
+    "Category": "Antiviral",
+    "Dosage": "10 mg",
+    "Price ($)": 86.11
+  },
+  "valsartan max": {
+    "Medicine Name": "Valsartan Max",
+    "Category": "Corticosteroid",
+    "Dosage": "650 mg",
+    "Price ($)": 187.21
+  },
+  "hydrochlorothiazide ultra": {
+    "Medicine Name": "Hydrochlorothiazide Ultra",
+    "Category": "Antihypertensive",
+    "Dosage": "1000 mg",
+    "Price ($)": 84.89
+  },
+  "sertraline combo": {
+    "Medicine Name": "Sertraline Combo",
+    "Category": "Bronchodilator",
+    "Dosage": "500 mg",
+    "Price ($)": 6.45
+  },
+  "fluoxetine ds": {
+    "Medicine Name": "Fluoxetine DS",
+    "Category": "Antiviral",
+    "Dosage": "100 mg",
+    "Price ($)": 135.18
+  },
+  "acetaminophen hcl": {
+    "Medicine Name": "Acetaminophen HCL",
+    "Category": "Analgesic",
+    "Dosage": "100 mg",
+    "Price ($)": 171.47
+  }
+}

@@ -552,6 +552,7 @@
                             <th>Medicine Name</th>
                             <th>Category</th>
                             <th>Dosage</th>
+                            <th>Quantity</th>
                             <th>Price</th>
                         </tr>
                     </thead>
@@ -634,7 +635,6 @@
         </section>
     </main>
     <script>
-        const meds = ["Dolo 650", "Pan 40", "Limcee", "Azee 500", "Telma 40", "Metformin", "Okacet", "Zincovit", "Vikas Drops", "Calpol", "Allegra", "Taxim-O", "Montina-L", "Combiflam", "Becosules", "Thyronorm", "Augmentin", "Zifi 200", "Liv 52", "Shelcal"];
         let dChart, pChart;
 
         let hardcodedAlertsHtml = '';
@@ -679,28 +679,36 @@
             const sName = document.querySelector('#scan-name');
             const sTable = document.querySelector('#scan-table tbody');
 
-            // 1. Keep filling your dropdown and mock scan elements from your meds array
-            meds.forEach((m, i) => {
-                if (sName) sName.innerHTML += `<option>${m}</option>`;
-                if (i < 8 && sTable) {
-                    sTable.innerHTML += `<tr><td>#BT-0${i}</td><td>${m}</td><td>100</td><td><span class="tag tag-success">VERIFIED</span></td></tr>`;
-                    const isExp = i % 2 === 0;
-                    hardcodedAlertsHtml += `<tr><td><span class="tag ${isExp ? 'tag-danger' : 'tag-warning'}">${isExp ? 'EXPIRY' : 'LOW STOCK'}</span></td><td>${m}</td><td>Critical</td><td><button onclick="openOrderModal('alert-cell-${i}')" id="alert-cell-${i}" style="background:var(--accent); color:white; border:none; padding:5px 10px; border-radius:4px; cursor:pointer;">Order</button></td></tr>`;
-                }
-            });
-
-            // 2. Fetch live data from your real dataset database for the inventory grid
+            // Fetch live data from the real medicine dataset and use it for the inventory grid and dropdown
             try {
                 const response = await fetch('http://localhost:3000/api/medicines');
                 if (!response.ok) throw new Error("Could not reach backend dataset API");
 
                 const datasetItems = await response.json();
 
+                if (sName) {
+                    sName.innerHTML = '';
+                    datasetItems.slice(0, 40).forEach(item => {
+                        sName.innerHTML += `<option value="${item['Medicine Name'] || 'Unknown'}">${item['Medicine Name'] || 'Unknown'}</option>`;
+                    });
+                }
+
+                if (sTable) {
+                    sTable.innerHTML = '';
+                    datasetItems.slice(0, 8).forEach((item, i) => {
+                        const medicineName = item['Medicine Name'] || 'Unknown';
+                        const stockQty = Math.floor(Math.random() * 300) + 20;
+                        sTable.innerHTML += `<tr><td>#BT-0${i + 1}</td><td>${medicineName}</td><td>${stockQty}</td><td><span class="tag tag-success">VERIFIED</span></td></tr>`;
+                        const isExp = i % 2 === 0;
+                        hardcodedAlertsHtml += `<tr><td><span class="tag ${isExp ? 'tag-danger' : 'tag-warning'}">${isExp ? 'EXPIRY' : 'LOW STOCK'}</span></td><td>${medicineName}</td><td>Critical</td><td><button onclick="openOrderModal('alert-cell-${i}')" id="alert-cell-${i}" style="background:var(--accent); color:white; border:none; padding:5px 10px; border-radius:4px; cursor:pointer;">Order</button></td></tr>`;
+                    });
+                }
+
                 if (mTable) {
                     mTable.innerHTML = ''; // Clear out any hardcoded remnants
 
                     if (datasetItems.length === 0) {
-                        mTable.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:15px; color:#64748b;">No medicine records found. Ensure your database is running.</td></tr>`;
+                        mTable.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:15px; color:#64748b;">No medicine records found. Ensure your database is running.</td></tr>`;
                         return;
                     }
 
@@ -708,6 +716,7 @@
                     datasetItems.forEach(item => {
                         // Correctly extract price by matching the exact key name "Price ($)" from your CSV
                         const rawPrice = item["Price ($)"] || item.Price || 0;
+                        const quantity = item["No. of Units"] || item.Quantity || 0;
 
                         mTable.innerHTML += `
                     <tr>
@@ -715,6 +724,7 @@
             <td>${item["Medicine Name"] || 'Unknown'}</td>
             <td><span class="tag tag-success" style="background:#e0f2fe; color:#0369a1; padding:2px 8px; border-radius:4px;">${item["Category"] || 'General'}</span></td>
             <td>${item["Dosage"] || '-'}</td>
+            <td>${quantity}</td>
             <td>$${parseFloat(rawPrice).toFixed(2)}</td>
         </tr>
     `;
