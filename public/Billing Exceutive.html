@@ -539,7 +539,9 @@
                                 <th>ID No</th>
                                 <th>Medicine Name</th>
                                 <th>Category</th>
-                                <th>Quantity</th>
+                                <th>Original Stock</th>
+                                <th>Sold Qty</th>
+                                <th>Current Stock</th>
                             </tr>
                         </thead>
                         <tbody></tbody>
@@ -584,12 +586,14 @@
                     datasetItems.forEach((item, i) => {
                         const name = item["Medicine Name"] || 'Unknown';
                         const rawPrice = item["Price ($)"] || item.Price || 15;
+                        const stockVal = parseInt(item["No. of Units"] || item.Quantity || 0, 10) || 0;
                         inventory.push({
                             id: item["Medicine ID"] || `MED-${1000 + i}`,
                             name: name,
                             cat: item["Category"] || 'General',
-                            stock: parseInt(item["No. of Units"] || item.Quantity || 0, 10) || 0,
-                            expiry: expiryDates[name] || "2026-12-31",
+                            stock: stockVal,
+                            initialStock: stockVal,
+                            expiry: item["Expiry Date"] || "2026-12-31",
                             price: parseFloat(rawPrice) || 15
                         });
                     });
@@ -719,7 +723,12 @@
             // Medicines Menu: Inventory Master (Updated live)
             document.querySelector('#med-table tbody').innerHTML = inventory.map(m => `
                 <tr class="${m.stock < 100 ? 'low-stock-row' : ''}">
-                    <td>${m.id}</td><td><b>${m.name}</b> ${m.stock < 100 ? '<small>(Low Stock)</small>' : ''}</td><td>${m.cat}</td><td>${m.stock}</td>
+                    <td>${m.id}</td>
+                    <td><b>${m.name}</b> ${m.stock < 100 ? '<small>(Low Stock)</small>' : ''}</td>
+                    <td>${m.cat}</td>
+                    <td>${m.initialStock}</td>
+                    <td>${m.initialStock - m.stock}</td>
+                    <td>${m.stock}</td>
                 </tr>
             `).join('');
 

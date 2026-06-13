@@ -689,6 +689,7 @@
         }
 
         let activeMedicines = [];
+        let meds = [];
 
         async function init() {
             initProfile();
@@ -716,9 +717,11 @@
                     name: item["Medicine Name"] || 'Unknown',
                     quantity: parseInt(item["No. of Units"] || item.Quantity || 0, 10) || 0
                 }));
+                meds = activeMedicines.map(m => m.name);
             } catch (err) {
                 console.error("Error loading medicines:", err);
                 activeMedicines = [];
+                meds = [];
             }
 
             // Populate stock-in, stock-out, prediction tables
