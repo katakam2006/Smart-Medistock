@@ -357,7 +357,7 @@
             z-index: 2000;
         }
 
-        #confirm-modal {
+        #order-quantity-modal {
             display: none;
             position: fixed;
             inset: 0;
@@ -367,12 +367,69 @@
             justify-content: center;
         }
 
-        .modal-box {
+        .order-modal-content {
             background: white;
-            padding: 2rem;
-            border-radius: 12px;
-            text-align: center;
-            width: 350px;
+            padding: 2.5rem;
+            border-radius: 15px;
+            width: 400px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .order-modal-content h3 {
+            color: var(--text-main);
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+        }
+
+        .order-modal-content p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+        }
+
+        .order-modal-content label {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+
+        .order-modal-content input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #e0e7ff;
+            border-radius: 8px;
+            outline: none;
+            background: #f8faff;
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+        }
+
+        .order-modal-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .order-modal-buttons button {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 0.85rem;
+        }
+
+        .order-modal-buttons .btn-cancel {
+            background: #e0e5f2;
+            color: var(--text-main);
+        }
+
+        .order-modal-buttons .btn-submit {
+            background: var(--primary);
+            color: white;
         }
 
         @keyframes fadeIn {
@@ -392,15 +449,16 @@
 
     <div id="toast">Action Successful</div>
 
-    <div id="confirm-modal">
-        <div class="modal-box">
-            <h3 id="modal-title" style="color: var(--text-main); font-size: 1.2rem; font-weight: bold; margin-bottom: 10px;">Action Confirmation</h3>
-            <p id="modal-desc" style="margin: 15px 0; color: var(--text-muted); font-size: 0.9rem;">Are you sure?</p>
-            <div style="display:flex; gap:10px;">
-                <button onclick="closeModal()"
-                    style="flex:1; padding:10px; border:none; border-radius:6px; cursor:pointer; background: #e0e5f2; color: var(--text-main); font-weight: bold;">No</button>
-                <button id="modal-confirm-btn"
-                    style="flex:1; padding:10px; border:none; border-radius:6px; background:var(--primary); color:white; cursor:pointer; font-weight: bold;">Yes</button>
+    <!-- Order Quantity Modal -->
+    <div id="order-quantity-modal">
+        <div class="order-modal-content">
+            <h3>📦 Place Medicine Order</h3>
+            <p id="order-medicine-name" style="font-weight: bold; color: var(--primary);">Medicine: -</p>
+            <label for="order-quantity">Quantity to Order (units)</label>
+            <input type="number" id="order-quantity" placeholder="Enter quantity" min="1" />
+            <div class="order-modal-buttons">
+                <button class="btn-cancel" onclick="closeOrderModal()">Cancel</button>
+                <button class="btn-submit" onclick="submitOrder()">✅ Place Order</button>
             </div>
         </div>
     </div>
@@ -474,7 +532,9 @@
                             <div>
                                 <p class="forecast-label">AI Live Forecast</p>
                             </div>
-                            <button class="btn" onclick="showSection('prediction', document.getElementById('m-prediction'))">View All Forecast</button>
+                            <button class="btn"
+                                onclick="showSection('prediction', document.getElementById('m-prediction'))">View All
+                                Forecast</button>
                         </div>
                         <div class="forecast-list">
                             <div class="forecast-item"><span>Paracetamol 500mg</span><strong>+1,200 units</strong></div>
@@ -504,41 +564,60 @@
                     <p>Welcome back, Venkatesh!</p>
                     <h2>Stock In (Manual Entries)</h2>
                 </div>
-                
+
                 <!-- Manual Entry Form -->
                 <div class="table-container" style="margin-bottom: 20px; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.02);">
-                    <h3 style="color: var(--text-main); font-size: 1.1rem; margin-bottom: 15px; font-weight: bold;">Manual Medicine Entry</h3>
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin-bottom: 15px;">
+                    <h3 style="color: var(--text-main); font-size: 1.1rem; margin-bottom: 15px; font-weight: bold;">
+                        Manual Medicine Entry</h3>
+                    <div
+                        style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin-bottom: 15px;">
                         <div>
-                            <label style="display:block; font-size:0.7rem; font-weight:700; color:var(--text-main); margin-bottom:5px; text-transform:uppercase;">Medicine Name</label>
-                            <input type="text" id="manualName" list="medSuggestions" oninput="handleMedicineNameInput(this.value)" placeholder="e.g. Paracetamol" style="width:100%; padding:10px 12px; border:1px solid #e0e7ff; border-radius:8px; outline:none; background:#f8faff; font-size: 0.85rem;">
+                            <label
+                                style="display:block; font-size:0.7rem; font-weight:700; color:var(--text-main); margin-bottom:5px; text-transform:uppercase;">Medicine
+                                Name</label>
+                            <input type="text" id="manualName" list="medSuggestions"
+                                oninput="handleMedicineNameInput(this.value)" placeholder="e.g. Paracetamol"
+                                style="width:100%; padding:10px 12px; border:1px solid #e0e7ff; border-radius:8px; outline:none; background:#f8faff; font-size: 0.85rem;">
                             <datalist id="medSuggestions"></datalist>
                         </div>
                         <div>
-                            <label style="display:block; font-size:0.7rem; font-weight:700; color:var(--text-main); margin-bottom:5px; text-transform:uppercase;">Dose</label>
-                            <input type="text" id="manualDose" placeholder="e.g. 500mg" style="width:100%; padding:10px 12px; border:1px solid #e0e7ff; border-radius:8px; outline:none; background:#f8faff; font-size: 0.85rem;">
+                            <label
+                                style="display:block; font-size:0.7rem; font-weight:700; color:var(--text-main); margin-bottom:5px; text-transform:uppercase;">Dose</label>
+                            <input type="text" id="manualDose" placeholder="e.g. 500mg"
+                                style="width:100%; padding:10px 12px; border:1px solid #e0e7ff; border-radius:8px; outline:none; background:#f8faff; font-size: 0.85rem;">
                         </div>
                         <div>
-                            <label style="display:block; font-size:0.7rem; font-weight:700; color:var(--text-main); margin-bottom:5px; text-transform:uppercase;">Expiry Date</label>
-                            <input type="date" id="manualExpiry" style="width:100%; padding:10px 12px; border:1px solid #e0e7ff; border-radius:8px; outline:none; background:#f8faff; font-size: 0.85rem;">
+                            <label
+                                style="display:block; font-size:0.7rem; font-weight:700; color:var(--text-main); margin-bottom:5px; text-transform:uppercase;">Expiry
+                                Date</label>
+                            <input type="date" id="manualExpiry"
+                                style="width:100%; padding:10px 12px; border:1px solid #e0e7ff; border-radius:8px; outline:none; background:#f8faff; font-size: 0.85rem;">
                         </div>
                         <div>
-                            <label style="display:block; font-size:0.7rem; font-weight:700; color:var(--text-main); margin-bottom:5px; text-transform:uppercase;">Price ($)</label>
-                            <input type="number" id="manualPrice" placeholder="e.g. 4.99" step="0.01" min="0" style="width:100%; padding:10px 12px; border:1px solid #e0e7ff; border-radius:8px; outline:none; background:#f8faff; font-size: 0.85rem;">
+                            <label
+                                style="display:block; font-size:0.7rem; font-weight:700; color:var(--text-main); margin-bottom:5px; text-transform:uppercase;">Price
+                                ($)</label>
+                            <input type="number" id="manualPrice" placeholder="e.g. 4.99" step="0.01" min="0"
+                                style="width:100%; padding:10px 12px; border:1px solid #e0e7ff; border-radius:8px; outline:none; background:#f8faff; font-size: 0.85rem;">
                         </div>
                         <div>
-                            <label style="display:block; font-size:0.7rem; font-weight:700; color:var(--text-main); margin-bottom:5px; text-transform:uppercase;">Quantity</label>
-                            <input type="number" id="manualQty" placeholder="e.g. 100" min="1" style="width:100%; padding:10px 12px; border:1px solid #e0e7ff; border-radius:8px; outline:none; background:#f8faff; font-size: 0.85rem;">
+                            <label
+                                style="display:block; font-size:0.7rem; font-weight:700; color:var(--text-main); margin-bottom:5px; text-transform:uppercase;">Quantity</label>
+                            <input type="number" id="manualQty" placeholder="e.g. 100" min="1"
+                                style="width:100%; padding:10px 12px; border:1px solid #e0e7ff; border-radius:8px; outline:none; background:#f8faff; font-size: 0.85rem;">
                         </div>
                     </div>
                     <div style="display: flex; justify-content: flex-end;">
-                        <button class="btn" onclick="addMedicineManually()" style="padding: 10px 20px; font-size: 0.85rem;"><i class="fas fa-plus" style="margin-right: 5px;"></i> Add Medicine</button>
+                        <button class="btn" onclick="addMedicineManually()"
+                            style="padding: 10px 20px; font-size: 0.85rem;"><i class="fas fa-plus"
+                                style="margin-right: 5px;"></i> Add Medicine</button>
                     </div>
                 </div>
 
                 <!-- Newly Added Medicines Table -->
                 <div class="table-container">
-                    <h3 style="color: var(--text-main); font-size: 1.1rem; margin-bottom: 15px; font-weight: bold;">Newly Added Medicines</h3>
+                    <h3 style="color: var(--text-main); font-size: 1.1rem; margin-bottom: 15px; font-weight: bold;">
+                        Newly Added Medicines</h3>
                     <table class="data-table" id="stockInTable">
                         <thead>
                             <tr>
@@ -588,7 +667,7 @@
                             <tr>
                                 <th>Issue</th>
                                 <th>Medicine</th>
-                                <th>Quantity</th>
+                                <th>Status</th>
                                 <th>Priority</th>
                                 <th>Action</th>
                             </tr>
@@ -665,6 +744,8 @@
     <script>
         let activeMedicines = [];
         let meds = [];
+        let currentAlertId = null;
+        let currentMedicineName = null;
 
         function initProfile() {
             const stored = localStorage.getItem('stockerProfile');
@@ -675,13 +756,11 @@
                 document.getElementById('display-role').innerText = profile.role || 'Stocker';
                 document.getElementById('display-avatar').src = `https://ui-avatars.com/api/?name=${encodeURIComponent(profile.name || profile.username)}&background=4318FF&color=fff`;
 
-                // Pre-fill Profile Section
                 document.getElementById('input-name').value = profile.name || '';
                 document.getElementById('input-username').value = profile.username || '';
                 document.getElementById('input-email').value = profile.email || '';
                 document.getElementById('input-role').value = profile.role || 'Stocker';
 
-                // Update welcome text in all page headers
                 document.querySelectorAll('.page-header p').forEach(p => {
                     p.innerText = `Welcome back, ${firstName}!`;
                 });
@@ -700,7 +779,6 @@
 
             localStorage.setItem('stockerProfile', JSON.stringify(profile));
 
-            // Sync with main userAccount and smartMediStockUsers
             const userAcc = JSON.parse(localStorage.getItem('userAccount')) || {};
             if (userAcc.username === profile.username) {
                 userAcc.name = profile.name;
@@ -718,7 +796,7 @@
             }
 
             initProfile();
-            showToast('Profile Updated Successfully!');
+            showToast('✅ Profile Updated Successfully!');
             document.getElementById('input-pass').value = '';
         }
 
@@ -756,19 +834,14 @@
                 console.error("Error loading medicines from API:", err);
             }
 
-            // Load manually added medicines from localStorage
             const manualMeds = JSON.parse(localStorage.getItem('manualMedicines') || '[]');
-
-            // Clone apiMedicines to activeMedicines
             activeMedicines = apiMedicines.map(m => ({ ...m }));
 
-            // Process manual medicines chronologically (oldest to newest) to calculate before/after quantities
             const stockMap = {};
             activeMedicines.forEach(m => {
                 stockMap[m.name.toLowerCase()] = m.quantity;
             });
 
-            // manualMeds are stored with newest at start, so iterate backwards (oldest to newest)
             const chronologicalManual = [];
             for (let i = manualMeds.length - 1; i >= 0; i--) {
                 const med = manualMeds[i];
@@ -777,7 +850,6 @@
                 const qtyAdded = parseInt(med.quantity, 10) || 0;
                 const qtyAfter = qtyBefore + qtyAdded;
 
-                // Update running stock
                 stockMap[nameKey] = qtyAfter;
 
                 chronologicalManual.push({
@@ -786,13 +858,10 @@
                     qtyAfter: qtyAfter
                 });
             }
-            // Reverse chronologicalManual to restore newest-first order
             chronologicalManual.reverse();
 
-            // Store calculated quantities on manualMeds for rendering
             localStorage.setItem('calculatedManualMedicines', JSON.stringify(chronologicalManual));
 
-            // Update activeMedicines quantities using final stockMap
             const processedNames = new Set();
             activeMedicines.forEach(m => {
                 const nameKey = m.name.toLowerCase();
@@ -802,7 +871,6 @@
                 processedNames.add(nameKey);
             });
 
-            // Add any completely new manual medicines to activeMedicines
             manualMeds.forEach(med => {
                 const nameKey = med.name.toLowerCase();
                 if (!processedNames.has(nameKey)) {
@@ -819,62 +887,54 @@
 
             meds = activeMedicines.map(m => m.name);
 
-            // Update datalist suggestions with unique medicine names
             const datalist = document.getElementById('medSuggestions');
             if (datalist) {
                 const uniqueNames = Array.from(new Set(activeMedicines.map(m => m.name)));
                 datalist.innerHTML = uniqueNames.map(name => `<option value="${name}"></option>`).join('');
             }
 
-            // Populate stock-in table (only manual medicines)
             renderManualMedicines();
 
-            // Populate stock-out and prediction tables using activeMedicines
             if (activeMedicines.length > 0) {
                 activeMedicines.forEach((m, i) => {
                     const stock = Math.max(1, m.quantity || 0);
                     const displayName = m.dose && m.dose !== '-' ? `${m.name} (${m.dose})` : m.name;
-                    so.innerHTML += `<tr><td>${displayName}</td><td>${stock}</td><td><span class="badge ${stock < 50 ? 'bg-red' : 'bg-green'}">${stock < 50 ? 'Low' : 'OK'}</span></td><td><button class="btn" style="padding:4px 10px" onclick="generateBill('${m.name}')">Bill</button></td></tr>`;
+                    so.innerHTML += `<tr><td>${displayName}</td><td>${stock}</td><td><span class="badge ${stock < 50 ? 'bg-red' : 'bg-green'}">${stock < 50 ? 'Low' : 'OK'}</span></td><td><button class="btn" onclick="generateBill('${displayName}')">Bill</button></td></tr>`;
                     pr.innerHTML += `<tr><td>${m.name}</td><td>Rising</td><td>${stock + 150}</td></tr>`;
                 });
             }
 
-            // Load active alerts from database
             try {
                 const alertsRes = await fetch('http://localhost:3000/api/alerts/active');
                 if (!alertsRes.ok) throw new Error("Could not fetch alerts");
                 const alerts = await alertsRes.json();
 
                 alerts.forEach(alt => {
-                    const isPending = alt.status === 'Pending' || alt.status === 'Critical' || alt.status === 'Ordered';
+                    const isPending = alt.status === 'Pending' || alt.status === 'Critical';
                     const priorityClass = alt.alert_type === 'EXPIRY' ? 'bg-red' : 'bg-yellow';
                     const priorityName = alt.alert_type === 'EXPIRY' ? 'High' : 'Medium';
-                    
+
                     let actionHtml = '';
                     if (isPending) {
-                        actionHtml = `<button class="btn" style="padding:4px 10px" onclick="resolveAlert(this, ${alt.id})">Resolve</button>`;
+                        actionHtml = `<button class="btn" style="padding:4px 10px" onclick="openOrderModal(${alt.id}, '${alt.medicine_name}')">🔔 Resolve</button>`;
+                    } else if (alt.status === 'Ordered') {
+                        actionHtml = `<span class="badge bg-green">📦 ORDERED</span>`;
                     } else {
-                        actionHtml = `<span class="badge bg-green">${alt.status.toUpperCase()}</span>`;
+                        actionHtml = `<span class="badge bg-green">✅ RESOLVED</span>`;
                     }
 
                     al.innerHTML += `
                         <tr id="alert-row-${alt.id}">
                             <td>${alt.alert_type}</td>
                             <td><b>${alt.medicine_name}</b></td>
-                            <td>${alt.status} <small>(by ${alt.triggered_by || 'system'})</small></td>
+                            <td><span class="badge ${alt.status === 'Ordered' ? 'bg-yellow' : (isPending ? 'bg-red' : 'bg-green')}">${alt.status}</span></td>
                             <td><span class="badge ${priorityClass}">${priorityName}</span></td>
                             <td>${actionHtml}</td>
                         </tr>
                     `;
                 });
             } catch (err) {
-                console.error("Error loading alerts, using fallback data:", err);
-                if (activeMedicines.length > 0) {
-                    activeMedicines.slice(0, 10).forEach((m, i) => {
-                        const alertQty = Math.max(1, (m.quantity || 0));
-                        al.innerHTML += `<tr><td>${i % 2 === 0 ? 'Expiring Soon' : 'Shortage'}</td><td>${m.name}</td><td>${alertQty} Units</td><td><span class="badge ${i % 4 === 0 ? 'bg-red' : 'bg-yellow'}">High</span></td><td><button class="btn" style="padding:4px 10px" onclick="resolveOffline(this)">Resolve</button></td></tr>`;
-                    });
-                }
+                console.error("Error loading alerts:", err);
             }
         }
 
@@ -892,7 +952,7 @@
             document.querySelectorAll('.view-section').forEach(v => v.classList.remove('active'));
             const targetSection = document.getElementById(id);
             if (targetSection) targetSection.classList.add('active');
-            
+
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
             if (el) el.classList.add('active');
             document.getElementById('viewSearch').value = '';
@@ -945,7 +1005,7 @@
             const qty = document.getElementById('manualQty').value.trim();
 
             if (!name || !dose || !expiry || !price || !qty) {
-                showToast("Please fill in all fields");
+                showToast("❌ Please fill in all fields");
                 return;
             }
 
@@ -957,23 +1017,19 @@
                 quantity: parseInt(qty, 10)
             };
 
-            // Retrieve existing manual medicines from localStorage
             let manualMeds = JSON.parse(localStorage.getItem('manualMedicines') || '[]');
-            manualMeds.unshift(newMed); // Add at the beginning
+            manualMeds.unshift(newMed);
             localStorage.setItem('manualMedicines', JSON.stringify(manualMeds));
 
-            // Clear inputs
             document.getElementById('manualName').value = '';
             document.getElementById('manualDose').value = '';
             document.getElementById('manualExpiry').value = '';
             document.getElementById('manualPrice').value = '';
             document.getElementById('manualQty').value = '';
 
-            // Update UI
             updateDash('IN', `${name} (${dose})`, qty);
-            showToast(`Added: ${name}`);
+            showToast(`✅ Added: ${name}`);
 
-            // Reload medicines so they show up in other lists
             loadMedicinesAndAlerts();
         }
 
@@ -982,12 +1038,12 @@
             manualMeds.splice(index, 1);
             localStorage.setItem('manualMedicines', JSON.stringify(manualMeds));
             loadMedicinesAndAlerts();
-            showToast("Medicine Removed");
+            showToast("🗑️ Medicine Removed");
         }
 
         function generateBill(m) {
-            updateDash('OUT', m, 1); 
-            showToast(`Billed ${m}`);
+            updateDash('OUT', m, 1);
+            showToast(`💳 Billed ${m}`);
             showSection('dashboard', document.getElementById('m-dashboard'));
         }
 
@@ -999,90 +1055,121 @@
             }
         }
 
-        function resolveOffline(btn) { 
-            btn.closest('tr').remove(); 
-            showToast("Alert Resolved"); 
+        // ✅ ORDER MODAL FUNCTIONS (FIXED!)
+        function openOrderModal(alertId, medicineName) {
+            currentAlertId = alertId;
+            currentMedicineName = medicineName;
+            document.getElementById('order-medicine-name').innerText = `Medicine: ${medicineName}`;
+            document.getElementById('order-quantity').value = '';
+            document.getElementById('order-quantity').focus();
+            document.getElementById('order-quantity-modal').style.display = 'flex';
         }
 
-        async function resolveAlert(btn, alertId) {
-            document.getElementById('modal-title').innerText = "Resolve Alert Confirmation";
-            document.getElementById('modal-desc').innerText = "Are you sure you want to mark this inventory shortage/expiry alert as resolved?";
-            document.getElementById('confirm-modal').style.display = 'flex';
-            document.getElementById('modal-confirm-btn').onclick = async () => {
-                closeModal();
-                btn.disabled = true;
-                btn.innerText = "Resolving...";
+        function closeOrderModal() {
+            document.getElementById('order-quantity-modal').style.display = 'none';
+            currentAlertId = null;
+            currentMedicineName = null;
+        }
 
-                try {
-                    const response = await fetch(`http://localhost:3000/api/alerts/${alertId}`, {
-                        method: 'PUT',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({ status: 'Resolved' })
-                    });
+        async function submitOrder() {
+            const quantity = document.getElementById('order-quantity').value;
 
-                    if (response.ok) {
-                        showToast("Alert Resolved");
-                        await loadMedicinesAndAlerts();
-                    } else {
-                        btn.disabled = false;
-                        btn.innerText = "Resolve";
-                        alert("Failed to update status on server.");
-                    }
-                } catch (err) {
-                    console.error("Error resolving alert:", err);
-                    btn.disabled = false;
-                    btn.innerText = "Resolve";
-                    alert("Error connecting to server.");
+            if (!quantity || parseInt(quantity) <= 0) {
+                showToast('❌ Please enter a valid quantity');
+                return;
+            }
+
+            try {
+                // Place the order
+                const orderResponse = await fetch('http://localhost:3000/api/orders/place', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        medicine_name: currentMedicineName,
+                        quantity_requested: parseInt(quantity),
+                        vendor_id: 1
+                    })
+                });
+
+                if (!orderResponse.ok) {
+                    throw new Error('Failed to place order');
                 }
-            };
-        }
 
-        function handleLogout() {
-            const name = document.getElementById('display-name').innerText;
-            document.getElementById('modal-title').innerText = "Logout Confirmation";
-            document.getElementById('modal-desc').innerText = `Are you sure you want to end your current session, ${name}?`;
-            document.getElementById('confirm-modal').style.display = 'flex';
-            document.getElementById('modal-confirm-btn').onclick = () => {
-                localStorage.removeItem('stockerProfile');
-                document.body.classList.add('logout-active');
-                setTimeout(() => window.location.href = 'index.html', 800);
-            };
-        }
+                const orderData = await orderResponse.json();
 
-        function closeModal() {
-            document.getElementById('confirm-modal').style.display = 'none';
+                // Update alert status to "Ordered"
+                await fetch(`http://localhost:3000/api/alerts/${currentAlertId}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ status: 'Ordered' })
+                });
+
+                showToast('✅ Order placed successfully! Vendor will see it soon!');
+                closeOrderModal();
+
+                // IMMEDIATELY REFRESH ALERTS TO SHOW RESOLVED STATUS
+                await loadMedicinesAndAlerts();
+
+            } catch (err) {
+                console.error('Error placing order:', err);
+                showToast('❌ Failed to place order. Please try again.');
+            }
         }
 
         function showToast(msg) {
             const t = document.getElementById('toast');
-            if (t) {
-                t.innerText = msg; 
-                t.style.display = 'block';
-                setTimeout(() => t.style.display = 'none', 2000);
-            }
+            t.innerText = msg;
+            t.style.display = 'block';
+            setTimeout(() => t.style.display = 'none', 3000);
         }
 
         function renderCharts() {
-            new Chart(document.getElementById('mainChart'), { 
-                type: 'line', 
-                data: { 
-                    labels: ['09:00', '10:00', '11:00', '12:00', '13:00'], 
-                    datasets: [{ label: 'Flow', data: [10, 30, 20, 45, 25], borderColor: '#4318FF', tension: 0.4 }] 
-                } 
-            });
+            const mainCtx = document.getElementById('mainChart');
+            if (mainCtx) {
+                new Chart(mainCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                        datasets: [{
+                            label: 'Medicines Sold',
+                            data: [65, 59, 80, 81, 56, 55, 40],
+                            backgroundColor: '#4318FF',
+                            borderRadius: 5
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: { legend: { display: false } },
+                        scales: { y: { beginAtZero: true } }
+                    }
+                });
+            }
 
-            // Prevent blank page crash if arrays are empty or still loading from API
-            const finalLabels = activeMedicines.length > 0 ? activeMedicines.map(m => m.name).slice(0, 8) : ['A', 'B', 'C', 'D', 'E'];
-            
-            new Chart(document.getElementById('predBarChart'), { 
-                type: 'bar', 
-                data: { 
-                    labels: finalLabels, 
-                    datasets: [{ label: 'Forecast', data: [300, 450, 200, 500, 350, 400, 150, 280], backgroundColor: '#4318FF' }] 
-                } 
-            });
+            const predCtx = document.getElementById('predBarChart');
+            if (predCtx) {
+                new Chart(predCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Medicine A', 'Medicine B', 'Medicine C', 'Medicine D'],
+                        datasets: [{
+                            label: 'Predicted Demand',
+                            data: [500, 450, 600, 350],
+                            backgroundColor: ['#4318FF', '#05cd99', '#ffb547', '#ee5d50'],
+                            borderRadius: 5
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: { legend: { display: false } },
+                        scales: { y: { beginAtZero: true } }
+                    }
+                });
+            }
+        }
+
+        function handleLogout() {
+            document.body.classList.add('logout-active');
+            setTimeout(() => location.href = 'index.html', 500);
         }
     </script>
 </body>

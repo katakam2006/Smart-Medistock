@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,88 +15,362 @@
             --text-muted: #a3aed0;
             --white: #ffffff;
             --red: #ee5d50;
+            --green: #05cd99;
+            --yellow: #ffb547;
         }
-        * { margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI', sans-serif; }
-        body { display: flex; background: var(--bg-light); height: 100vh; overflow: hidden; color: var(--text-main); }
-        
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        body {
+            display: flex;
+            background: var(--bg-light);
+            height: 100vh;
+            overflow: hidden;
+            color: var(--text-main);
+        }
+
         /* Layout structures */
-        .sidebar { width: 260px; background: var(--sidebar-dark); color: white; padding: 1.5rem; display: flex; flex-direction: column; }
-        .brand { display: flex; align-items: center; gap: 10px; margin-bottom: 2.5rem; }
-        .brand h1 { font-size: 1.2rem; }
-        .nav-item { display: flex; align-items: center; gap: 12px; padding: 12px; border-radius: 10px; cursor: pointer; color: var(--text-muted); font-weight: 600; margin-bottom: 5px; }
-        .nav-item.active { background: rgba(255,255,255,0.1); color: white; border-right: 4px solid var(--primary); }
-        
-        .wrapper { flex-grow: 1; display: flex; flex-direction: column; overflow-y: auto; }
-        .top-header { background: white; padding: 1rem 2rem; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
-        .main-content { padding: 2rem; }
-        
-        .view-section { display: none; }
-        .view-section.active { display: block; }
+        .sidebar {
+            width: 260px;
+            background: var(--sidebar-dark);
+            color: white;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+        }
 
-        .table-container { background: white; padding: 1.5rem; border-radius: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.02); margin-bottom: 20px; }
-        .data-table { width: 100%; border-collapse: collapse; text-align: left; }
-        .data-table th { padding: 12px; color: var(--text-muted); font-size: 0.75rem; text-transform: uppercase; border-bottom: 1px solid #eee; }
-        .data-table td { padding: 15px 12px; font-size: 0.9rem; border-bottom: 1px solid #fafafa; font-weight: 600; }
-        
-        .btn { padding: 10px 20px; border-radius: 8px; border: none; cursor: pointer; font-weight: bold; color: white; font-size: 0.8rem; background: var(--primary); }
-        .btn-accept { background: var(--primary); margin-right: 5px; padding: 6px 12px; font-size: 0.75rem; }
-        .btn-deny { background: var(--red); padding: 6px 12px; font-size: 0.75rem; }
-        .badge { padding: 4px 8px; border-radius: 6px; font-size: 0.75rem; font-weight: bold; }
-        .bg-green { background: #e6fffa; color: var(--primary); }
-        .bg-red { background: #fff5f5; color: var(--red); }
-        .bg-yellow { background: #fffbf0; color: #ffb547; }
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 2.5rem;
+        }
 
-        input { width: 100%; padding: 12px; border: 1px solid #e0e5f2; border-radius: 10px; outline: none; background: #f9fbff; font-weight: 600; color: var(--text-main); }
-        input[readonly] { background: #e2e8f0; cursor: not-allowed; }
-        label { display: block; font-size: 0.75rem; font-weight: 700; color: var(--text-main); margin-bottom: 6px; text-transform: uppercase; }
-        
-        #toast { position: fixed; bottom: 25px; right: 25px; background: #0b1437; color: white; padding: 12px 25px; border-radius: 10px; display: none; z-index: 2000; }
+        .brand h1 {
+            font-size: 1.2rem;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            border-radius: 10px;
+            cursor: pointer;
+            color: var(--text-muted);
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .nav-item.active {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border-right: 4px solid var(--primary);
+        }
+
+        .wrapper {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+
+        .top-header {
+            background: white;
+            padding: 1rem 2rem;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .main-content {
+            padding: 2rem;
+        }
+
+        .view-section {
+            display: none;
+        }
+
+        .view-section.active {
+            display: block;
+        }
+
+        .table-container {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+            margin-bottom: 20px;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        .data-table th {
+            padding: 12px;
+            color: var(--text-muted);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            border-bottom: 1px solid #eee;
+        }
+
+        .data-table td {
+            padding: 15px 12px;
+            font-size: 0.9rem;
+            border-bottom: 1px solid #fafafa;
+            font-weight: 600;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            color: white;
+            font-size: 0.8rem;
+            background: var(--primary);
+        }
+
+        .btn-accept {
+            background: var(--primary);
+            margin-right: 5px;
+            padding: 6px 12px;
+            font-size: 0.75rem;
+        }
+
+        .btn-deny {
+            background: var(--red);
+            padding: 6px 12px;
+            font-size: 0.75rem;
+        }
+
+        .badge {
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: bold;
+        }
+
+        .bg-green {
+            background: #e6fffa;
+            color: var(--primary);
+        }
+
+        .bg-red {
+            background: #fff5f5;
+            color: var(--red);
+        }
+
+        .bg-yellow {
+            background: #fffbf0;
+            color: #ffb547;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #e0e5f2;
+            border-radius: 10px;
+            outline: none;
+            background: #f9fbff;
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        input[readonly] {
+            background: #e2e8f0;
+            cursor: not-allowed;
+        }
+
+        label {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 6px;
+            text-transform: uppercase;
+        }
+
+        #toast {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            background: #0b1437;
+            color: white;
+            padding: 12px 25px;
+            border-radius: 10px;
+            display: none;
+            z-index: 2000;
+        }
+
+        .page-header {
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #eef2f6;
+        }
+
+        .page-header h2 {
+            color: var(--text-main);
+            font-size: 1.8rem;
+        }
+
+        .page-header p {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            font-weight: bold;
+        }
+
+        .status-pending {
+            background: #fffbf0;
+            color: #ffb547;
+        }
+
+        .status-accepted {
+            background: #f0fff4;
+            color: #05cd99;
+        }
+
+        .status-denied {
+            background: #fff5f5;
+            color: #ee5d50;
+        }
+
+        .refresh-btn {
+            background: var(--primary);
+            color: white;
+            padding: 8px 15px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.75rem;
+            margin-bottom: 15px;
+        }
     </style>
 </head>
+
 <body onload="initVendorPortal()">
 
-    <div id="toast">Changes Saved Successfully</div>
+    <div id="toast">Action Successful</div>
 
     <aside class="sidebar">
-        <div class="brand"><h1>Vendor Dashboard</h1></div>
+        <div class="brand">
+            <h1>🏥 Vendor Portal</h1>
+        </div>
         <nav style="flex-grow:1;">
-            <div class="nav-item active" id="n-orders" onclick="showSection('orders-section', this)"><i class="fas fa-truck"></i> Incoming Orders</div>
-            <div class="nav-item" id="n-profile" onclick="showSection('profile-section', this)"><i class="fas fa-user-cog"></i> Profile Settings</div>
+            <div class="nav-item active" id="n-orders" onclick="showSection('orders-section', this)"><i
+                    class="fas fa-truck"></i> Incoming Orders</div>
+            <div class="nav-item" id="n-history" onclick="showSection('history-section', this)"><i
+                    class="fas fa-history"></i> Order History</div>
+            <div class="nav-item" id="n-profile" onclick="showSection('profile-section', this)"><i
+                    class="fas fa-user-cog"></i> Profile</div>
         </nav>
-        <div class="nav-item" onclick="location.href='index.html'" style="color:var(--red)"><i class="fas fa-sign-out-alt"></i> Logout</div>
+        <div class="nav-item" onclick="location.href='index.html'"
+            style="color:var(--red); border-top: 1px solid rgba(255,255,255,0.1); padding-top: 15px; margin-top: auto;">
+            <i class="fas fa-sign-out-alt"></i> Logout</div>
     </aside>
 
     <div class="wrapper">
         <header class="top-header">
-            <h2 id="view-title">Client Restock Orders Pipeline</h2>
+            <h2 id="view-title">📋 Incoming Orders</h2>
             <div style="display: flex; align-items: center; gap: 12px;">
-                <div style="text-align: right;"><b id="header-vendor-name">External Vendor</b><br><small style="color: var(--primary); font-weight: bold;">SUPPLIER</small></div>
-                <img id="vendor-avatar" src="https://ui-avatars.com/api/?name=Vendor&background=05cd99&color=fff" style="width: 38px; border-radius: 10px;">
+                <div style="text-align: right;"><b id="header-vendor-name">External Vendor</b><br><small
+                        style="color: var(--primary); font-weight: bold;">SUPPLIER</small></div>
+                <img id="vendor-avatar" src="https://ui-avatars.com/api/?name=Vendor&background=05cd99&color=fff"
+                    style="width: 38px; border-radius: 10px;">
             </div>
         </header>
-        
+
         <main class="main-content">
+            <!-- INCOMING ORDERS SECTION -->
             <section id="orders-section" class="view-section active">
+                <div class="page-header">
+                    <p>Real-time order notifications from facilities</p>
+                    <h2>Incoming Orders Pipeline</h2>
+                </div>
+
                 <div class="table-container">
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                        <h3 style="color: var(--text-main); font-size: 1.1rem;">New Orders</h3>
+                        <button class="refresh-btn" onclick="fetchIncomingOrders()">
+                            <i class="fas fa-sync-alt"></i> Refresh Now
+                        </button>
+                    </div>
                     <table class="data-table">
                         <thead>
                             <tr>
                                 <th>Order ID</th>
-                                <th>Facility Requesting</th>
-                                <th>Medicine Description</th>
-                                <th>Requested Quantity</th>
-                                <th>Current Status</th>
-                                <th>Operations Panel</th>
+                                <th>Medicine</th>
+                                <th>Qty Requested</th>
+                                <th>Placed At</th>
+                                <th>Status</th>
+                                <th>Action</th>
                             </tr>
                         </thead>
                         <tbody id="vendorOrderBody">
-                            <tr><td colspan="6" style="text-align:center; padding:2rem; color:var(--text-muted);">Awaiting network database polling links...</td></tr>
+                            <tr>
+                                <td colspan="6" style="text-align:center; padding:2rem; color:var(--text-muted);"><i
+                                        class="fas fa-spinner fa-spin"></i> Fetching orders...</td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
             </section>
 
+            <!-- ORDER HISTORY SECTION -->
+            <section id="history-section" class="view-section">
+                <div class="page-header">
+                    <p>View all orders you have responded to</p>
+                    <h2>Order History</h2>
+                </div>
+
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Order ID</th>
+                                <th>Medicine</th>
+                                <th>Quantity</th>
+                                <th>Placed At</th>
+                                <th>Your Response</th>
+                                <th>Responded At</th>
+                            </tr>
+                        </thead>
+                        <tbody id="historyBody">
+                            <tr>
+                                <td colspan="6" style="text-align:center; padding:2rem; color:var(--text-muted);">
+                                    Loading history...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- PROFILE SECTION -->
             <section id="profile-section" class="view-section">
+                <div class="page-header">
+                    <p>Account Management</p>
+                    <h2>Vendor Profile Settings</h2>
+                </div>
                 <div class="table-container" style="max-width: 600px;">
                     <div style="margin-bottom: 1.2rem;">
                         <label>Company / Vendor Name</label>
@@ -110,29 +385,31 @@
                         <input type="email" id="vendor-input-email">
                     </div>
                     <div style="margin: 20px 0; border-top: 1px solid #eee; padding-top: 20px;">
-                        <h4 style="margin-bottom:15px; color:var(--text-main);">Security Verification</h4>
+                        <h4 style="margin-bottom:15px; color:var(--text-main);">Security</h4>
                         <div style="margin-bottom: 1.2rem;">
                             <label>Update Portal Password</label>
-                            <input type="password" id="vendor-input-pass" placeholder="Leave blank to preserve current credentials">
+                            <input type="password" id="vendor-input-pass"
+                                placeholder="Leave blank to preserve current credentials">
                         </div>
                     </div>
-                    <button class="btn" onclick="saveVendorProfile()">Update Vendor Framework</button>
+                    <button class="btn" onclick="saveVendorProfile()" style="width: 100%;">Update Profile</button>
                 </div>
             </section>
         </main>
     </div>
 
     <script>
+        let autoRefreshInterval = null;
+
         function initVendorProfile() {
             const stored = localStorage.getItem('vendorProfile') || localStorage.getItem('userAccount');
             if (stored) {
                 const profile = JSON.parse(stored);
                 const name = profile.name || profile.username || 'External Vendor';
-                
+
                 document.getElementById('header-vendor-name').innerText = name;
                 document.getElementById('vendor-avatar').src = `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=05cd99&color=fff`;
-                
-                // Set fields
+
                 document.getElementById('vendor-input-name').value = name;
                 document.getElementById('vendor-input-username').value = profile.username || 'vendor';
                 document.getElementById('vendor-input-email').value = profile.email || 'supplier@medistock.com';
@@ -153,25 +430,30 @@
             localStorage.setItem('userAccount', JSON.stringify(profile));
 
             initVendorProfile();
-            showToast("Vendor Profile Settings Synced!");
+            showToast("✅ Profile Updated Successfully!");
             document.getElementById('vendor-input-pass').value = '';
         }
 
         function showSection(sectionId, element) {
             document.querySelectorAll('.view-section').forEach(s => s.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-            
+
             document.getElementById(sectionId).classList.add('active');
             element.classList.add('active');
-            
-            document.getElementById('view-title').innerText = sectionId === 'orders-section' ? 
-                "Client Restock Orders Pipeline" : "Vendor Account Settings";
+
+            document.getElementById('view-title').innerText = sectionId === 'orders-section' ?
+                "📋 Incoming Orders" : sectionId === 'history-section' ? "📜 Order History" : "👤 Profile Settings";
+
+            if (sectionId === 'history-section') {
+                loadOrderHistory();
+            }
         }
 
-        async function initVendorPortal() {
+        function initVendorPortal() {
             initVendorProfile();
-            await fetchIncomingOrders();
-            setInterval(fetchIncomingOrders, 4000);
+            fetchIncomingOrders();
+            // Auto-refresh every 3 seconds
+            autoRefreshInterval = setInterval(fetchIncomingOrders, 3000);
         }
 
         async function fetchIncomingOrders() {
@@ -181,39 +463,73 @@
                 if (!response.ok) return;
                 const orders = await response.json();
 
-                if(orders.length === 0) {
-                    tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:2rem; color:var(--text-muted);">No inbound order transmissions detected.</td></tr>`;
+                // Filter only pending orders
+                const pendingOrders = orders.filter(o => o.status === 'Pending');
+
+                if (pendingOrders.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:2rem; color:var(--text-muted);">✅ No pending orders at the moment</td></tr>`;
                     return;
                 }
 
                 tbody.innerHTML = '';
-                orders.forEach(order => {
-                    let actionsHtml = '';
-                    let statusBadgeClass = 'bg-yellow';
-                    
-                    if (order.status === 'Pending') {
-                        actionsHtml = `
-                            <button class="btn btn-accept" onclick="respondToOrder(${order.order_id}, 'Accepted')">Accept</button>
-                            <button class="btn btn-deny" onclick="respondToOrder(${order.order_id}, 'Denied')">Deny</button>
-                        `;
-                    } else {
-                        statusBadgeClass = order.status === 'Accepted' ? 'bg-green' : 'bg-red';
-                        actionsHtml = `<span class="badge ${statusBadgeClass}">${order.status.toUpperCase()}</span>`;
-                    }
+                pendingOrders.forEach(order => {
+                    const placedTime = new Date(order.created_at).toLocaleString();
 
                     tbody.innerHTML += `
-                        <tr>
-                            <td style="color:var(--primary)">#ORD-${order.order_id}</td>
-                            <td>${order.facility_type || 'Hospital Base'}</td>
+                        <tr style="background: #f0fff4;">
+                            <td style="color:var(--primary); font-weight: bold;">#ORD-${order.order_id}</td>
                             <td><b>${order.medicine_name}</b></td>
-                            <td>${order.quantity_requested || 500} Units</td>
-                            <td><span class="badge ${statusBadgeClass}">${order.status}</span></td>
-                            <td>${actionsHtml}</td>
+                            <td><span class="badge bg-yellow">${order.quantity_requested} Units</span></td>
+                            <td><small>${placedTime}</small></td>
+                            <td><span class="status-badge status-pending">🕐 Pending</span></td>
+                            <td>
+                                <button class="btn btn-accept" onclick="respondToOrder(${order.order_id}, 'Accepted')">✅ Accept</button>
+                                <button class="btn btn-deny" onclick="respondToOrder(${order.order_id}, 'Denied')">❌ Deny</button>
+                            </td>
                         </tr>
                     `;
                 });
             } catch (err) {
-                console.error("Linkage loss to backend:", err);
+                console.error("Error fetching orders:", err);
+                tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color: var(--red); padding:2rem;"><i class="fas fa-exclamation-circle"></i> Connection Error</td></tr>`;
+            }
+        }
+
+        async function loadOrderHistory() {
+            const tbody = document.getElementById('historyBody');
+            try {
+                const response = await fetch('http://localhost:3000/api/orders/executive/status');
+                if (!response.ok) return;
+                const orders = await response.json();
+
+                // Filter only responded orders
+                const respondedOrders = orders.filter(o => o.status !== 'Pending');
+
+                if (respondedOrders.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:2rem; color:var(--text-muted);">No order history yet</td></tr>`;
+                    return;
+                }
+
+                tbody.innerHTML = '';
+                respondedOrders.forEach(order => {
+                    const placedTime = new Date(order.created_at).toLocaleString();
+                    const updatedTime = new Date(order.updated_at).toLocaleString();
+                    const statusClass = order.status === 'Accepted' ? 'status-accepted' : 'status-denied';
+                    const statusIcon = order.status === 'Accepted' ? '✅' : '❌';
+
+                    tbody.innerHTML += `
+                        <tr>
+                            <td style="color:var(--primary); font-weight: bold;">#ORD-${order.order_id}</td>
+                            <td><b>${order.medicine_name}</b></td>
+                            <td>${order.quantity_requested} Units</td>
+                            <td><small>${placedTime}</small></td>
+                            <td><span class="status-badge ${statusClass}">${statusIcon} ${order.status}</span></td>
+                            <td><small>${updatedTime}</small></td>
+                        </tr>
+                    `;
+                });
+            } catch (err) {
+                console.error("Error loading history:", err);
             }
         }
 
@@ -224,15 +540,31 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ status: statusDecision })
                 });
-                if (response.ok) fetchIncomingOrders();
-            } catch (err) { console.error(err); }
+
+                if (response.ok) {
+                    showToast(`✅ Order ${statusDecision}!`);
+                    await fetchIncomingOrders();
+                } else {
+                    showToast('❌ Error updating order');
+                }
+            } catch (err) {
+                console.error(err);
+                showToast('❌ Failed to respond to order');
+            }
         }
 
         function showToast(msg) {
             const t = document.getElementById('toast');
-            t.innerText = msg; t.style.display = 'block';
-            setTimeout(() => t.style.display = 'none', 2000);
+            t.innerText = msg;
+            t.style.display = 'block';
+            setTimeout(() => t.style.display = 'none', 3000);
         }
+
+        // Cleanup on page leave
+        window.onbeforeunload = () => {
+            if (autoRefreshInterval) clearInterval(autoRefreshInterval);
+        };
     </script>
 </body>
+
 </html>
