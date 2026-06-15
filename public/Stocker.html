@@ -502,23 +502,54 @@
             <section id="stockin" class="view-section">
                 <div class="page-header">
                     <p>Welcome back, Venkatesh!</p>
-                    <h2>Stock In (Purchase Entries)</h2>
+                    <h2>Stock In (Manual Entries)</h2>
                 </div>
-                <div class="table-container">
-                    <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 15px;">
-                        <input type="text" id="hardwareScannerInput"
-                            placeholder="Click here and scan barcode with device..."
-                            style="flex-grow: 1; padding: 12px; border: 1px solid #e0e7ff; border-radius: 8px; outline: none; background: #f8faff;"
-                            onkeyup="handleHardwareScan(event)">
-                        <button class="btn" onclick="simulateScan()">Simulate Scan</button>
+                
+                <!-- Manual Entry Form -->
+                <div class="table-container" style="margin-bottom: 20px; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.02);">
+                    <h3 style="color: var(--text-main); font-size: 1.1rem; margin-bottom: 15px; font-weight: bold;">Manual Medicine Entry</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin-bottom: 15px;">
+                        <div>
+                            <label style="display:block; font-size:0.7rem; font-weight:700; color:var(--text-main); margin-bottom:5px; text-transform:uppercase;">Medicine Name</label>
+                            <input type="text" id="manualName" list="medSuggestions" oninput="handleMedicineNameInput(this.value)" placeholder="e.g. Paracetamol" style="width:100%; padding:10px 12px; border:1px solid #e0e7ff; border-radius:8px; outline:none; background:#f8faff; font-size: 0.85rem;">
+                            <datalist id="medSuggestions"></datalist>
+                        </div>
+                        <div>
+                            <label style="display:block; font-size:0.7rem; font-weight:700; color:var(--text-main); margin-bottom:5px; text-transform:uppercase;">Dose</label>
+                            <input type="text" id="manualDose" placeholder="e.g. 500mg" style="width:100%; padding:10px 12px; border:1px solid #e0e7ff; border-radius:8px; outline:none; background:#f8faff; font-size: 0.85rem;">
+                        </div>
+                        <div>
+                            <label style="display:block; font-size:0.7rem; font-weight:700; color:var(--text-main); margin-bottom:5px; text-transform:uppercase;">Expiry Date</label>
+                            <input type="date" id="manualExpiry" style="width:100%; padding:10px 12px; border:1px solid #e0e7ff; border-radius:8px; outline:none; background:#f8faff; font-size: 0.85rem;">
+                        </div>
+                        <div>
+                            <label style="display:block; font-size:0.7rem; font-weight:700; color:var(--text-main); margin-bottom:5px; text-transform:uppercase;">Price ($)</label>
+                            <input type="number" id="manualPrice" placeholder="e.g. 4.99" step="0.01" min="0" style="width:100%; padding:10px 12px; border:1px solid #e0e7ff; border-radius:8px; outline:none; background:#f8faff; font-size: 0.85rem;">
+                        </div>
+                        <div>
+                            <label style="display:block; font-size:0.7rem; font-weight:700; color:var(--text-main); margin-bottom:5px; text-transform:uppercase;">Quantity</label>
+                            <input type="number" id="manualQty" placeholder="e.g. 100" min="1" style="width:100%; padding:10px 12px; border:1px solid #e0e7ff; border-radius:8px; outline:none; background:#f8faff; font-size: 0.85rem;">
+                        </div>
                     </div>
+                    <div style="display: flex; justify-content: flex-end;">
+                        <button class="btn" onclick="addMedicineManually()" style="padding: 10px 20px; font-size: 0.85rem;"><i class="fas fa-plus" style="margin-right: 5px;"></i> Add Medicine</button>
+                    </div>
+                </div>
+
+                <!-- Newly Added Medicines Table -->
+                <div class="table-container">
+                    <h3 style="color: var(--text-main); font-size: 1.1rem; margin-bottom: 15px; font-weight: bold;">Newly Added Medicines</h3>
                     <table class="data-table" id="stockInTable">
                         <thead>
                             <tr>
-                                <th>Invoice</th>
-                                <th>Medicine</th>
-                                <th>Batch</th>
-                                <th>Qty</th>
+                                <th>Medicine Name</th>
+                                <th>Dose</th>
+                                <th>Expiry Date</th>
+                                <th>Price</th>
+                                <th>Qty Before</th>
+                                <th>Qty Added</th>
+                                <th>Qty After</th>
+                                <th>Action</th>
                             </tr>
                         </thead>
                         <tbody id="siBody"></tbody>
@@ -632,6 +663,9 @@
     </div>
 
     <script>
+        let activeMedicines = [];
+        let meds = [];
+
         function initProfile() {
             const stored = localStorage.getItem('stockerProfile');
             if (stored) {
@@ -688,9 +722,6 @@
             document.getElementById('input-pass').value = '';
         }
 
-        let activeMedicines = [];
-        let meds = [];
-
         async function init() {
             initProfile();
             await loadMedicinesAndAlerts();
@@ -708,29 +739,105 @@
             al.innerHTML = '';
             pr.innerHTML = '';
 
+            let apiMedicines = [];
             try {
                 const response = await fetch('http://localhost:3000/api/medicines');
                 if (!response.ok) throw new Error("Could not reach backend dataset API");
 
                 const datasetItems = await response.json();
-                activeMedicines = datasetItems.map(item => ({
+                apiMedicines = datasetItems.map(item => ({
                     name: item["Medicine Name"] || 'Unknown',
-                    quantity: parseInt(item["No. of Units"] || item.Quantity || 0, 10) || 0
+                    quantity: parseInt(item["No. of Units"] || item.Quantity || 0, 10) || 0,
+                    dose: item["Dosage"] || '-',
+                    price: parseFloat(item["Price ($)"] || item.Price || 0).toFixed(2),
+                    expiry: '2028-12-31'
                 }));
-                meds = activeMedicines.map(m => m.name);
             } catch (err) {
-                console.error("Error loading medicines:", err);
-                activeMedicines = [];
-                meds = [];
+                console.error("Error loading medicines from API:", err);
             }
 
-            // Populate stock-in, stock-out, prediction tables
-            activeMedicines.forEach((m, i) => {
-                const stock = Math.max(1, m.quantity || 0);
-                si.innerHTML += `<tr><td>#INV-${100 + i}</td><td>${m.name}</td><td>B-${500 + i}</td><td>${stock}</td></tr>`;
-                so.innerHTML += `<tr><td>${m.name}</td><td>${stock}</td><td><span class="badge ${stock < 50 ? 'bg-red' : 'bg-green'}">${stock < 50 ? 'Low' : 'OK'}</span></td><td><button class="btn" style="padding:4px 10px" onclick="generateBill('${m.name}')">Bill</button></td></tr>`;
-                pr.innerHTML += `<tr><td>${m.name}</td><td>Rising</td><td>${stock + 150}</td></tr>`;
+            // Load manually added medicines from localStorage
+            const manualMeds = JSON.parse(localStorage.getItem('manualMedicines') || '[]');
+
+            // Clone apiMedicines to activeMedicines
+            activeMedicines = apiMedicines.map(m => ({ ...m }));
+
+            // Process manual medicines chronologically (oldest to newest) to calculate before/after quantities
+            const stockMap = {};
+            activeMedicines.forEach(m => {
+                stockMap[m.name.toLowerCase()] = m.quantity;
             });
+
+            // manualMeds are stored with newest at start, so iterate backwards (oldest to newest)
+            const chronologicalManual = [];
+            for (let i = manualMeds.length - 1; i >= 0; i--) {
+                const med = manualMeds[i];
+                const nameKey = med.name.toLowerCase();
+                const qtyBefore = stockMap[nameKey] || 0;
+                const qtyAdded = parseInt(med.quantity, 10) || 0;
+                const qtyAfter = qtyBefore + qtyAdded;
+
+                // Update running stock
+                stockMap[nameKey] = qtyAfter;
+
+                chronologicalManual.push({
+                    ...med,
+                    qtyBefore: qtyBefore,
+                    qtyAfter: qtyAfter
+                });
+            }
+            // Reverse chronologicalManual to restore newest-first order
+            chronologicalManual.reverse();
+
+            // Store calculated quantities on manualMeds for rendering
+            localStorage.setItem('calculatedManualMedicines', JSON.stringify(chronologicalManual));
+
+            // Update activeMedicines quantities using final stockMap
+            const processedNames = new Set();
+            activeMedicines.forEach(m => {
+                const nameKey = m.name.toLowerCase();
+                if (stockMap[nameKey] !== undefined) {
+                    m.quantity = stockMap[nameKey];
+                }
+                processedNames.add(nameKey);
+            });
+
+            // Add any completely new manual medicines to activeMedicines
+            manualMeds.forEach(med => {
+                const nameKey = med.name.toLowerCase();
+                if (!processedNames.has(nameKey)) {
+                    activeMedicines.unshift({
+                        name: med.name,
+                        quantity: stockMap[nameKey] || med.quantity,
+                        dose: med.dose,
+                        price: med.price,
+                        expiry: med.expiry
+                    });
+                    processedNames.add(nameKey);
+                }
+            });
+
+            meds = activeMedicines.map(m => m.name);
+
+            // Update datalist suggestions with unique medicine names
+            const datalist = document.getElementById('medSuggestions');
+            if (datalist) {
+                const uniqueNames = Array.from(new Set(activeMedicines.map(m => m.name)));
+                datalist.innerHTML = uniqueNames.map(name => `<option value="${name}"></option>`).join('');
+            }
+
+            // Populate stock-in table (only manual medicines)
+            renderManualMedicines();
+
+            // Populate stock-out and prediction tables using activeMedicines
+            if (activeMedicines.length > 0) {
+                activeMedicines.forEach((m, i) => {
+                    const stock = Math.max(1, m.quantity || 0);
+                    const displayName = m.dose && m.dose !== '-' ? `${m.name} (${m.dose})` : m.name;
+                    so.innerHTML += `<tr><td>${displayName}</td><td>${stock}</td><td><span class="badge ${stock < 50 ? 'bg-red' : 'bg-green'}">${stock < 50 ? 'Low' : 'OK'}</span></td><td><button class="btn" style="padding:4px 10px" onclick="generateBill('${m.name}')">Bill</button></td></tr>`;
+                    pr.innerHTML += `<tr><td>${m.name}</td><td>Rising</td><td>${stock + 150}</td></tr>`;
+                });
+            }
 
             // Load active alerts from database
             try {
@@ -761,67 +868,141 @@
                     `;
                 });
             } catch (err) {
-                console.error("Error loading alerts:", err);
-                activeMedicines.slice(0, 10).forEach((m, i) => {
-                    const alertQty = Math.max(1, (m.quantity || 0));
-                    al.innerHTML += `<tr><td>${i % 2 === 0 ? 'Expiring Soon' : 'Shortage'}</td><td>${m.name}</td><td>${alertQty} Units</td><td><span class="badge ${i % 4 === 0 ? 'bg-red' : 'bg-yellow'}">High</span></td><td><button class="btn" style="padding:4px 10px" onclick="resolveOffline(this)">Resolve</button></td></tr>`;
-                });
+                console.error("Error loading alerts, using fallback data:", err);
+                if (activeMedicines.length > 0) {
+                    activeMedicines.slice(0, 10).forEach((m, i) => {
+                        const alertQty = Math.max(1, (m.quantity || 0));
+                        al.innerHTML += `<tr><td>${i % 2 === 0 ? 'Expiring Soon' : 'Shortage'}</td><td>${m.name}</td><td>${alertQty} Units</td><td><span class="badge ${i % 4 === 0 ? 'bg-red' : 'bg-yellow'}">High</span></td><td><button class="btn" style="padding:4px 10px" onclick="resolveOffline(this)">Resolve</button></td></tr>`;
+                    });
+                }
             }
         }
 
         function filterTable() {
             const val = document.getElementById('viewSearch').value.toLowerCase();
             const active = document.querySelector('.view-section.active');
-            active.querySelectorAll('tbody tr').forEach(row => {
-                row.style.display = row.innerText.toLowerCase().includes(val) ? '' : 'none';
-            });
+            if (active) {
+                active.querySelectorAll('tbody tr').forEach(row => {
+                    row.style.display = row.innerText.toLowerCase().includes(val) ? '' : 'none';
+                });
+            }
         }
 
         function showSection(id, el) {
             document.querySelectorAll('.view-section').forEach(v => v.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
+            const targetSection = document.getElementById(id);
+            if (targetSection) targetSection.classList.add('active');
+            
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
             if (el) el.classList.add('active');
             document.getElementById('viewSearch').value = '';
             filterTable();
         }
 
-        function handleHardwareScan(event) {
-            if (event.key === 'Enter') {
-                const code = event.target.value.trim();
-                if (code) {
-                    // Find a matching medicine or use the raw code
-                    const m = meds.find(x => x.toLowerCase().includes(code.toLowerCase())) || `Item (${code})`;
-                    const q = 1;
+        function renderManualMedicines() {
+            const si = document.getElementById('siBody');
+            if (!si) return;
+            si.innerHTML = '';
+            const manualMeds = JSON.parse(localStorage.getItem('calculatedManualMedicines') || '[]');
+            if (manualMeds.length === 0) {
+                si.innerHTML = `<tr><td colspan="8" style="text-align: center; color: var(--text-muted); padding: 15px;">No manual medicines added yet.</td></tr>`;
+                return;
+            }
+            manualMeds.forEach((m, idx) => {
+                si.innerHTML += `
+                    <tr>
+                        <td><b>${m.name}</b></td>
+                        <td>${m.dose || '-'}</td>
+                        <td>${m.expiry || '-'}</td>
+                        <td>$${m.price || '0.00'}</td>
+                        <td>${m.qtyBefore !== undefined ? m.qtyBefore : 0}</td>
+                        <td>${m.quantity || 0}</td>
+                        <td>${m.qtyAfter !== undefined ? m.qtyAfter : 0}</td>
+                        <td>
+                            <button class="btn" style="background: var(--red); padding: 4px 10px;" onclick="deleteManualMedicine(${idx})">
+                                <i class="fas fa-trash"></i> Delete
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
 
-                    // Add to Stock In table dynamically
-                    const si = document.getElementById('siBody');
-                    si.insertAdjacentHTML('afterbegin', `<tr><td>#INV-${Math.floor(Math.random() * 1000)}</td><td>${m}</td><td>B-SCAN</td><td>${q}</td></tr>`);
-
-                    updateDash('IN', m, q);
-                    showToast(`Scanned: ${m}`);
-                }
-                event.target.value = ''; // clear for next scan
+        function handleMedicineNameInput(val) {
+            if (!val) return;
+            const match = activeMedicines.find(m => m.name.toLowerCase() === val.toLowerCase());
+            if (match) {
+                document.getElementById('manualDose').value = match.dose || '';
+                document.getElementById('manualPrice').value = match.price || '';
             }
         }
 
-        function simulateScan() {
-            const m = meds[Math.floor(Math.random() * 25)], q = Math.floor(Math.random() * 50) + 10;
-            updateDash('IN', m, q); showToast(`Simulated Scan: ${m}`);
+        function addMedicineManually() {
+            const name = document.getElementById('manualName').value.trim();
+            const dose = document.getElementById('manualDose').value.trim();
+            const expiry = document.getElementById('manualExpiry').value.trim();
+            const price = document.getElementById('manualPrice').value.trim();
+            const qty = document.getElementById('manualQty').value.trim();
+
+            if (!name || !dose || !expiry || !price || !qty) {
+                showToast("Please fill in all fields");
+                return;
+            }
+
+            const newMed = {
+                name: name,
+                dose: dose,
+                expiry: expiry,
+                price: parseFloat(price).toFixed(2),
+                quantity: parseInt(qty, 10)
+            };
+
+            // Retrieve existing manual medicines from localStorage
+            let manualMeds = JSON.parse(localStorage.getItem('manualMedicines') || '[]');
+            manualMeds.unshift(newMed); // Add at the beginning
+            localStorage.setItem('manualMedicines', JSON.stringify(manualMeds));
+
+            // Clear inputs
+            document.getElementById('manualName').value = '';
+            document.getElementById('manualDose').value = '';
+            document.getElementById('manualExpiry').value = '';
+            document.getElementById('manualPrice').value = '';
+            document.getElementById('manualQty').value = '';
+
+            // Update UI
+            updateDash('IN', `${name} (${dose})`, qty);
+            showToast(`Added: ${name}`);
+
+            // Reload medicines so they show up in other lists
+            loadMedicinesAndAlerts();
+        }
+
+        function deleteManualMedicine(index) {
+            let manualMeds = JSON.parse(localStorage.getItem('manualMedicines') || '[]');
+            manualMeds.splice(index, 1);
+            localStorage.setItem('manualMedicines', JSON.stringify(manualMeds));
+            loadMedicinesAndAlerts();
+            showToast("Medicine Removed");
         }
 
         function generateBill(m) {
-            updateDash('OUT', m, 1); showToast(`Billed ${m}`);
+            updateDash('OUT', m, 1); 
+            showToast(`Billed ${m}`);
             showSection('dashboard', document.getElementById('m-dashboard'));
         }
 
         function updateDash(type, item, qty) {
             const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
             const table = document.getElementById(type === 'IN' ? 'dashInBody' : 'dashOutBody');
-            table.insertAdjacentHTML('afterbegin', `<tr style="background:#f0f7ff"><td>${time}</td><td>${item}</td><td>${qty}</td></tr>`);
+            if (table) {
+                table.insertAdjacentHTML('afterbegin', `<tr style="background:#f0f7ff"><td>${time}</td><td>${item}</td><td>${qty}</td></tr>`);
+            }
         }
 
-        function resolveOffline(btn) { btn.closest('tr').remove(); showToast("Alert Resolved"); }
+        function resolveOffline(btn) { 
+            btn.closest('tr').remove(); 
+            showToast("Alert Resolved"); 
+        }
 
         async function resolveAlert(btn, alertId) {
             document.getElementById('modal-title').innerText = "Resolve Alert Confirmation";
@@ -876,13 +1057,32 @@
 
         function showToast(msg) {
             const t = document.getElementById('toast');
-            t.innerText = msg; t.style.display = 'block';
-            setTimeout(() => t.style.display = 'none', 2000);
+            if (t) {
+                t.innerText = msg; 
+                t.style.display = 'block';
+                setTimeout(() => t.style.display = 'none', 2000);
+            }
         }
 
         function renderCharts() {
-            new Chart(document.getElementById('mainChart'), { type: 'line', data: { labels: ['09:00', '10:00', '11:00', '12:00', '13:00'], datasets: [{ label: 'Flow', data: [10, 30, 20, 45, 25], borderColor: '#4318FF', tension: 0.4 }] } });
-            new Chart(document.getElementById('predBarChart'), { type: 'bar', data: { labels: activeMedicines.length > 0 ? activeMedicines.map(m => m.name).slice(0, 8) : meds.slice(0, 8), datasets: [{ label: 'Forecast', data: [300, 450, 200, 500, 350, 400, 150, 280], backgroundColor: '#4318FF' }] } });
+            new Chart(document.getElementById('mainChart'), { 
+                type: 'line', 
+                data: { 
+                    labels: ['09:00', '10:00', '11:00', '12:00', '13:00'], 
+                    datasets: [{ label: 'Flow', data: [10, 30, 20, 45, 25], borderColor: '#4318FF', tension: 0.4 }] 
+                } 
+            });
+
+            // Prevent blank page crash if arrays are empty or still loading from API
+            const finalLabels = activeMedicines.length > 0 ? activeMedicines.map(m => m.name).slice(0, 8) : ['A', 'B', 'C', 'D', 'E'];
+            
+            new Chart(document.getElementById('predBarChart'), { 
+                type: 'bar', 
+                data: { 
+                    labels: finalLabels, 
+                    datasets: [{ label: 'Forecast', data: [300, 450, 200, 500, 350, 400, 150, 280], backgroundColor: '#4318FF' }] 
+                } 
+            });
         }
     </script>
 </body>

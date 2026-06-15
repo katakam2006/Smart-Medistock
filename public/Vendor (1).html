@@ -1,677 +1,238 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Smart Medistock | Supplier Portal</title>
+    <title>Vendor Portal - Smart MediStock</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        /* --- CSS STYLES --- */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        :root {
+            --primary: #05cd99;
+            --bg-light: #f4f7fe;
+            --sidebar-dark: #0b1437;
+            --text-main: #1b2559;
+            --text-muted: #a3aed0;
+            --white: #ffffff;
+            --red: #ee5d50;
         }
+        * { margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI', sans-serif; }
+        body { display: flex; background: var(--bg-light); height: 100vh; overflow: hidden; color: var(--text-main); }
+        
+        /* Layout structures */
+        .sidebar { width: 260px; background: var(--sidebar-dark); color: white; padding: 1.5rem; display: flex; flex-direction: column; }
+        .brand { display: flex; align-items: center; gap: 10px; margin-bottom: 2.5rem; }
+        .brand h1 { font-size: 1.2rem; }
+        .nav-item { display: flex; align-items: center; gap: 12px; padding: 12px; border-radius: 10px; cursor: pointer; color: var(--text-muted); font-weight: 600; margin-bottom: 5px; }
+        .nav-item.active { background: rgba(255,255,255,0.1); color: white; border-right: 4px solid var(--primary); }
+        
+        .wrapper { flex-grow: 1; display: flex; flex-direction: column; overflow-y: auto; }
+        .top-header { background: white; padding: 1rem 2rem; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
+        .main-content { padding: 2rem; }
+        
+        .view-section { display: none; }
+        .view-section.active { display: block; }
 
-        body {
-            display: flex;
-            background-color: #f4f7fe;
-            height: 100vh;
-            overflow: hidden;
-        }
+        .table-container { background: white; padding: 1.5rem; border-radius: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.02); margin-bottom: 20px; }
+        .data-table { width: 100%; border-collapse: collapse; text-align: left; }
+        .data-table th { padding: 12px; color: var(--text-muted); font-size: 0.75rem; text-transform: uppercase; border-bottom: 1px solid #eee; }
+        .data-table td { padding: 15px 12px; font-size: 0.9rem; border-bottom: 1px solid #fafafa; font-weight: 600; }
+        
+        .btn { padding: 10px 20px; border-radius: 8px; border: none; cursor: pointer; font-weight: bold; color: white; font-size: 0.8rem; background: var(--primary); }
+        .btn-accept { background: var(--primary); margin-right: 5px; padding: 6px 12px; font-size: 0.75rem; }
+        .btn-deny { background: var(--red); padding: 6px 12px; font-size: 0.75rem; }
+        .badge { padding: 4px 8px; border-radius: 6px; font-size: 0.75rem; font-weight: bold; }
+        .bg-green { background: #e6fffa; color: var(--primary); }
+        .bg-red { background: #fff5f5; color: var(--red); }
+        .bg-yellow { background: #fffbf0; color: #ffb547; }
 
-        /* --- SIDEBAR --- */
-        .sidebar {
-            width: 280px;
-            background: #0b1437;
-            display: flex;
-            flex-direction: column;
-            padding: 2.5rem 1.2rem;
-            z-index: 10;
-            color: white;
-            box-shadow: 4px 0px 20px rgba(0, 0, 0, 0.1);
-        }
-
-        .brand {
-            padding: 0 0.5rem 3rem;
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-        }
-
-        .brand-logo-row {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .sidebar-logo {
-            width: 40px;
-            height: 40px;
-            object-fit: contain;
-            border-radius: 8px;
-        }
-
-        .brand h1 {
-            color: #ffffff;
-            font-size: 1.3rem;
-            font-weight: 800;
-            letter-spacing: -0.5px;
-        }
-
-        .brand p {
-            font-size: 0.65rem;
-            color: #707ebe;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            margin-left: 52px;
-            margin-top: -5px;
-        }
-
-        .nav-menu {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            flex-grow: 1;
-        }
-
-        .nav-item {
-            display: flex;
-            align-items: center;
-            padding: 14px 18px;
-            text-decoration: none;
-            color: #a3aed0;
-            font-weight: 600;
-            border-radius: 12px;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-
-        .nav-item:hover {
-            background: rgba(255, 255, 255, 0.05);
-            color: #ffffff;
-        }
-
-        .nav-item.active {
-            background: #4318FF;
-            color: white;
-            box-shadow: 0 10px 20px rgba(67, 24, 255, 0.3);
-        }
-
-        .logout-btn {
-            margin-top: auto;
-            color: #ff8077;
-            background: rgba(238, 93, 80, 0.05);
-            border: 1px solid rgba(238, 93, 80, 0.1);
-        }
-
-        /* --- MAIN WRAPPER --- */
-        .wrapper {
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-            position: relative;
-        }
-
-        /* --- HEADER --- */
-        .top-header {
-            background: white;
-            display: flex;
-            flex-direction: column;
-            padding: 1.5rem 2.5rem;
-            border-bottom: 1px solid #e2e8f0;
-        }
-
-        .header-top-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .search-container {
-            width: 450px;
-        }
-
-        .search-container input {
-            width: 100%;
-            padding: 12px 20px;
-            background: #f4f7fe;
-            border: 1px solid #e2e8f0;
-            border-radius: 14px;
-            outline: none;
-        }
-
-        .header-right-actions {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-        }
-
-        .notification-container {
-            position: relative;
-            cursor: pointer;
-        }
-
-        .notification-icon {
-            font-size: 1.3rem;
-            color: #a3aed0;
-            background: #f4f7fe;
-            width: 40px;
-            height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 10px;
-        }
-
-        .notif-badge {
-            position: absolute;
-            top: -5px;
-            right: -5px;
-            background: #ee5d50;
-            color: white;
-            font-size: 0.65rem;
-            padding: 2px 6px;
-            border-radius: 50%;
-            border: 2px solid white;
-        }
-
-        .user-meta {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding-left: 20px;
-            border-left: 1px solid #f1f5f9;
-        }
-
-        .profile-thumb {
-            width: 45px;
-            height: 45px;
-            background: #4318FF;
-            border-radius: 12px;
-            overflow: hidden;
-        }
-
-        .profile-thumb img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .role-badge {
-            font-size: 0.7rem;
-            font-weight: 800;
-            color: #4318FF;
-            text-transform: uppercase;
-            background: rgba(67, 24, 255, 0.1);
-            padding: 2px 8px;
-            border-radius: 5px;
-        }
-
-        /* --- NOTIFICATION TOASTS --- */
-        .toast {
-            position: fixed;
-            top: 20px;
-            right: -400px;
-            color: white;
-            padding: 15px 25px;
-            border-radius: 12px;
-            font-weight: 600;
-            transition: 0.5s ease;
-            z-index: 1000;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .toast.success {
-            background: #05cd99;
-            box-shadow: 0 10px 20px rgba(5, 205, 153, 0.3);
-        }
-
-        .toast.danger {
-            background: #ee5d50;
-            box-shadow: 0 10px 20px rgba(238, 93, 80, 0.3);
-        }
-
-        /* --- CONTENT --- */
-        .main-content {
-            padding: 2rem 2.5rem;
-            overflow-y: auto;
-            flex-grow: 1;
-        }
-
-        .view-section {
-            display: none;
-            animation: slideUp 0.4s ease;
-        }
-
-        .view-section.active {
-            display: block;
-        }
-
-        @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(15px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .card {
-            background: white;
-            border-radius: 20px;
-            padding: 1.5rem;
-            margin-bottom: 1.2rem;
-            border: 1px solid #f1f5f9;
-            border-left: 5px solid transparent;
-            transition: 0.3s;
-        }
-
-        .hosp-name {
-            font-size: 1.1rem;
-            color: #1b2559;
-            margin-bottom: 5px;
-            display: flex;
-            align-items: center;
-        }
-
-        .med-details {
-            color: #a3aed0;
-            font-size: 0.9rem;
-            margin-top: 4px;
-        }
-
-        .status-label {
-            font-weight: 700;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            text-transform: uppercase;
-        }
-
-        .btn-action {
-            border: none;
-            padding: 8px 16px;
-            border-radius: 10px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-
-        .btn-accept {
-            background: #e6f9f4;
-            color: #05cd99;
-        }
-
-        .btn-accept:hover {
-            background: #05cd99;
-            color: white;
-        }
-
-        .btn-deny {
-            background: #fff2f1;
-            color: #ee5d50;
-        }
-
-        .btn-deny:hover {
-            background: #ee5d50;
-            color: white;
-        }
-
-        /* --- FORMS --- */
-        .form-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 20px;
-            margin-top: 20px;
-        }
-
-        .form-group {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .form-group label {
-            font-weight: 600;
-            color: #1b2559;
-            font-size: 0.9rem;
-        }
-
-        .form-group input,
-        .form-group select,
-        .form-group textarea {
-            padding: 12px 16px;
-            border: 1px solid #e2e8f0;
-            border-radius: 12px;
-            outline: none;
-            background: #f4f7fe;
-        }
+        input { width: 100%; padding: 12px; border: 1px solid #e0e5f2; border-radius: 10px; outline: none; background: #f9fbff; font-weight: 600; color: var(--text-main); }
+        input[readonly] { background: #e2e8f0; cursor: not-allowed; }
+        label { display: block; font-size: 0.75rem; font-weight: 700; color: var(--text-main); margin-bottom: 6px; text-transform: uppercase; }
+        
+        #toast { position: fixed; bottom: 25px; right: 25px; background: #0b1437; color: white; padding: 12px 25px; border-radius: 10px; display: none; z-index: 2000; }
     </style>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
+<body onload="initVendorPortal()">
 
-<body>
-    <div id="toast-success" class="toast success">✅ Order Accepted Successfully!</div>
-    <div id="toast-deny" class="toast danger">❌ Order Has Been Denied!</div>
-    <div id="toast-profile" class="toast success">✅ Profile Updated Successfully!</div>
+    <div id="toast">Changes Saved Successfully</div>
 
     <aside class="sidebar">
-        <div class="brand">
-            <div class="brand-logo-row">
-                <img src="logformedistock.png" alt="Logo" class="sidebar-logo">
-                <h1>Smart Medistock</h1>
-            </div>
-            <p>Supplier Portal</p>
-        </div>
-        <nav class="nav-menu">
-            <div class="nav-item active" onclick="showSection('orders', this)">Orders</div>
-            <div class="nav-item" onclick="showSection('profile', this)">Account Settings</div>
-            <div class="nav-item logout-btn" onclick="handleLogout()">Logout</div>
+        <div class="brand"><h1>Vendor Dashboard</h1></div>
+        <nav style="flex-grow:1;">
+            <div class="nav-item active" id="n-orders" onclick="showSection('orders-section', this)"><i class="fas fa-truck"></i> Incoming Orders</div>
+            <div class="nav-item" id="n-profile" onclick="showSection('profile-section', this)"><i class="fas fa-user-cog"></i> Profile Settings</div>
         </nav>
+        <div class="nav-item" onclick="location.href='index.html'" style="color:var(--red)"><i class="fas fa-sign-out-alt"></i> Logout</div>
     </aside>
 
     <div class="wrapper">
         <header class="top-header">
-            <div class="header-top-row">
-                <div class="search-container"><input type="text" id="searchInput" onkeyup="filterSearch()"
-                        placeholder="Search Hospital or Medicine..."></div>
-                <div class="header-right-actions">
-                    <div id="current-date" style="font-size: 0.85rem; color: #a3aed0;"></div>
-                    <div class="notification-container" onclick="showOrdersWithNew()">
-                        <div class="notification-icon">🔔</div>
-                        <span class="notif-badge" id="main-badge">0</span>
-                    </div>
-                    <div class="user-meta">
-                        <div class="user-details">
-                            <p id="display-name" style="font-weight: 700; color: #1b2559;">Vendor</p>
-                            <span class="role-badge" id="display-role">Supplier</span>
-                        </div>
-                        <div class="profile-thumb"><img
-                                src="https://ui-avatars.com/api/?name=Vendor&background=4318FF&color=fff"></div>
-                    </div>
-                </div>
+            <h2 id="view-title">Client Restock Orders Pipeline</h2>
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <div style="text-align: right;"><b id="header-vendor-name">External Vendor</b><br><small style="color: var(--primary); font-weight: bold;">SUPPLIER</small></div>
+                <img id="vendor-avatar" src="https://ui-avatars.com/api/?name=Vendor&background=05cd99&color=fff" style="width: 38px; border-radius: 10px;">
             </div>
         </header>
-
+        
         <main class="main-content">
-            <section id="orders" class="view-section active">
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 20px;">
-                    <h2 style="color: #1b2559;">Incoming Stock Orders</h2>
-                </div>
-                <div id="order-list" class="card"
-                    style="padding: 1.5rem; border-radius: 20px; border-left: none; overflow-x: auto;">
-                    <table style="width: 100%; border-collapse: collapse; text-align: left;">
+            <section id="orders-section" class="view-section active">
+                <div class="table-container">
+                    <table class="data-table">
                         <thead>
-                            <tr style="border-bottom: 2px solid #e2e8f0;">
-                                <th
-                                    style="padding: 12px; color: #a3aed0; font-weight: 600; font-size: 0.85rem; text-transform: uppercase;">
-                                    Order ID</th>
-                                <th
-                                    style="padding: 12px; color: #a3aed0; font-weight: 600; font-size: 0.85rem; text-transform: uppercase;">
-                                    Medicine Name</th>
-                                <th
-                                    style="padding: 12px; color: #a3aed0; font-weight: 600; font-size: 0.85rem; text-transform: uppercase;">
-                                    Quantity Requested</th>
-                                <th
-                                    style="padding: 12px; color: #a3aed0; font-weight: 600; font-size: 0.85rem; text-transform: uppercase;">
-                                    Status</th>
-                                <th
-                                    style="padding: 12px; color: #a3aed0; font-weight: 600; font-size: 0.85rem; text-transform: uppercase; text-align: center;">
-                                    Actions</th>
+                            <tr>
+                                <th>Order ID</th>
+                                <th>Facility Requesting</th>
+                                <th>Medicine Description</th>
+                                <th>Requested Quantity</th>
+                                <th>Current Status</th>
+                                <th>Operations Panel</th>
                             </tr>
                         </thead>
-                        <tbody id="orders-table-body">
+                        <tbody id="vendorOrderBody">
+                            <tr><td colspan="6" style="text-align:center; padding:2rem; color:var(--text-muted);">Awaiting network database polling links...</td></tr>
                         </tbody>
                     </table>
                 </div>
             </section>
 
-            <section id="profile" class="view-section">
-                <h2 style="color: #1b2559; margin-bottom: 5px;">Account Settings</h2>
-                <p style="color: #a3aed0; font-size: 0.9rem;">Manage your master profile configurations securely</p>
-
-                <div class="card" style="margin-top: 25px; border-radius: 24px;">
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label>Full Name</label>
-                            <input type="text" id="input-name" placeholder="John Doe">
-                        </div>
-                        <div class="form-group">
-                            <label>Username</label>
-                            <input type="text" id="input-username" readonly
-                                style="background-color: #e2e8f0; cursor: not-allowed;">
-                        </div>
-                        <div class="form-group">
-                            <label>Email Address</label>
-                            <input type="email" id="input-email" placeholder="vendor@smartmedistock.com">
-                        </div>
-                        <div class="form-group">
-                            <label>Account Password</label>
-                            <input type="password" id="input-pass" placeholder="•••••••• (Leave blank to keep current)">
-                        </div>
-                        <div class="form-group" style="grid-column: span 2;">
-                            <label>Registered Office Address</label>
-                            <textarea id="input-address" rows="3" placeholder="Enter corporate location..."></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label>System Access Privilege</label>
-                            <select id="input-role" disabled style="background-color: #e2e8f0; cursor: not-allowed;">
-                                <option value="Vendor">Vendor</option>
-                                <option value="Supplier">Supplier</option>
-                            </select>
+            <section id="profile-section" class="view-section">
+                <div class="table-container" style="max-width: 600px;">
+                    <div style="margin-bottom: 1.2rem;">
+                        <label>Company / Vendor Name</label>
+                        <input type="text" id="vendor-input-name">
+                    </div>
+                    <div style="margin-bottom: 1.2rem;">
+                        <label>Username Handle</label>
+                        <input type="text" id="vendor-input-username" readonly>
+                    </div>
+                    <div style="margin-bottom: 1.2rem;">
+                        <label>Contact Email Address</label>
+                        <input type="email" id="vendor-input-email">
+                    </div>
+                    <div style="margin: 20px 0; border-top: 1px solid #eee; padding-top: 20px;">
+                        <h4 style="margin-bottom:15px; color:var(--text-main);">Security Verification</h4>
+                        <div style="margin-bottom: 1.2rem;">
+                            <label>Update Portal Password</label>
+                            <input type="password" id="vendor-input-pass" placeholder="Leave blank to preserve current credentials">
                         </div>
                     </div>
-                    <div style="margin-top: 30px; display: flex; justify-content: flex-end;">
-                        <button class="btn-action btn-accept" onclick="saveProfileChanges()"
-                            style="padding: 14px 28px; border-radius: 12px;">Save Profile Configuration</button>
-                    </div>
+                    <button class="btn" onclick="saveVendorProfile()">Update Vendor Framework</button>
                 </div>
             </section>
         </main>
     </div>
 
     <script>
-        window.onload = function () {
-            const today = new Date();
-            const options = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' };
-            document.getElementById('current-date').innerText = today.toLocaleDateString('en-US', options);
-
-            const storedProfile = localStorage.getItem('supplierProfile') || localStorage.getItem('userAccount');
-            if (storedProfile) {
-                const profile = JSON.parse(storedProfile);
-                const name = profile.name || profile.username || 'Vendor';
-                document.getElementById('display-name').innerText = name;
-                if (profile.name) {
-                    document.getElementById('input-name').value = profile.name;
-                }
-                if (profile.username) {
-                    document.getElementById('input-username').value = profile.username;
-                }
-                if (profile.email) {
-                    document.getElementById('input-email').value = profile.email;
-                }
-                if (profile.address) {
-                    document.getElementById('input-address').value = profile.address;
-                }
-
-                const roleSelect = document.getElementById('input-role');
-                let optionExists = Array.from(roleSelect.options).some(opt => opt.value === profile.role);
-                if (!optionExists && profile.role) {
-                    let opt = document.createElement('option');
-                    opt.value = profile.role;
-                    opt.text = profile.role;
-                    roleSelect.add(opt);
-                }
-                if (profile.role) {
-                    document.getElementById('display-role').innerText = profile.role;
-                    document.getElementById('input-role').value = profile.role;
-                }
-
-                const avatarImg = document.querySelector('.profile-thumb img');
-                if (avatarImg) {
-                    avatarImg.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=4318FF&color=fff`;
-                }
+        function initVendorProfile() {
+            const stored = localStorage.getItem('vendorProfile') || localStorage.getItem('userAccount');
+            if (stored) {
+                const profile = JSON.parse(stored);
+                const name = profile.name || profile.username || 'External Vendor';
+                
+                document.getElementById('header-vendor-name').innerText = name;
+                document.getElementById('vendor-avatar').src = `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=05cd99&color=fff`;
+                
+                // Set fields
+                document.getElementById('vendor-input-name').value = name;
+                document.getElementById('vendor-input-username').value = profile.username || 'vendor';
+                document.getElementById('vendor-input-email').value = profile.email || 'supplier@medistock.com';
             }
-            loadPendingOrders();
-            setInterval(loadPendingOrders, 5000);
+        }
+
+        function saveVendorProfile() {
+            const stored = localStorage.getItem('vendorProfile') || localStorage.getItem('userAccount');
+            if (!stored) return;
+            const profile = JSON.parse(stored);
+
+            profile.name = document.getElementById('vendor-input-name').value;
+            profile.email = document.getElementById('vendor-input-email').value;
+            const newPass = document.getElementById('vendor-input-pass').value;
+            if (newPass) profile.password = newPass;
+
+            localStorage.setItem('vendorProfile', JSON.stringify(profile));
+            localStorage.setItem('userAccount', JSON.stringify(profile));
+
+            initVendorProfile();
+            showToast("Vendor Profile Settings Synced!");
+            document.getElementById('vendor-input-pass').value = '';
         }
 
         function showSection(sectionId, element) {
-            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
-            element.classList.add('active');
-            document.querySelectorAll('.view-section').forEach(sec => sec.classList.remove('active'));
+            document.querySelectorAll('.view-section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            
             document.getElementById(sectionId).classList.add('active');
+            element.classList.add('active');
+            
+            document.getElementById('view-title').innerText = sectionId === 'orders-section' ? 
+                "Client Restock Orders Pipeline" : "Vendor Account Settings";
         }
 
-        function showOrdersWithNew() {
-            showSection('orders', document.querySelector('.nav-menu .nav-item'));
+        async function initVendorPortal() {
+            initVendorProfile();
+            await fetchIncomingOrders();
+            setInterval(fetchIncomingOrders, 4000);
         }
 
-        let dynamicPendingOrders = [];
-
-        async function loadPendingOrders() {
+        async function fetchIncomingOrders() {
+            const tbody = document.getElementById('vendorOrderBody');
             try {
-                const response = await fetch('/api/orders/vendor/pending');
+                const response = await fetch('http://localhost:3000/api/orders/executive/status');
                 if (!response.ok) return;
                 const orders = await response.json();
-                dynamicPendingOrders = orders;
 
-                const badge = document.getElementById('main-badge');
-                if (badge) {
-                    badge.innerText = orders.length;
-                }
-
-                const tBody = document.getElementById('orders-table-body');
-                if (!tBody) return;
-
-                if (orders.length === 0) {
-                    tBody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:20px; color:#a3aed0;">No pending purchase orders available</td></tr>`;
+                if(orders.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:2rem; color:var(--text-muted);">No inbound order transmissions detected.</td></tr>`;
                     return;
                 }
 
-                tBody.innerHTML = '';
+                tbody.innerHTML = '';
                 orders.forEach(order => {
-                    const tr = document.createElement('tr');
-                    tr.style.borderBottom = "1px solid #f1f5f9";
-                    tr.id = `order-row-${order.order_id}`;
-                    tr.innerHTML = `
-                        <td style="padding: 16px; font-weight: 700; color: #1b2559;">#ORD-${order.order_id}</td>
-                        <td style="padding: 16px; font-weight: 600; color: #1b2559;">${order.medicine_name}</td>
-                        <td style="padding: 16px; color: #4318FF; font-weight: 700;">${order.quantity_requested} Units</td>
-                        <td style="padding: 16px;" id="status-area-${order.order_id}">
-                            <span class="status-label" style="background: #fffbdf; color: #ffb547;">${order.status}</span>
-                        </td>
-                        <td style="padding: 16px; display: flex; gap: 10px; justify-content: center;" id="action-area-${order.order_id}">
-                            <button class="btn-action btn-accept" onclick="respondToOrder(${order.order_id}, 'Accepted')">Accept</button>
-                            <button class="btn-action btn-deny" onclick="respondToOrder(${order.order_id}, 'Denied')">Deny</button>
-                        </td>
+                    let actionsHtml = '';
+                    let statusBadgeClass = 'bg-yellow';
+                    
+                    if (order.status === 'Pending') {
+                        actionsHtml = `
+                            <button class="btn btn-accept" onclick="respondToOrder(${order.order_id}, 'Accepted')">Accept</button>
+                            <button class="btn btn-deny" onclick="respondToOrder(${order.order_id}, 'Denied')">Deny</button>
+                        `;
+                    } else {
+                        statusBadgeClass = order.status === 'Accepted' ? 'bg-green' : 'bg-red';
+                        actionsHtml = `<span class="badge ${statusBadgeClass}">${order.status.toUpperCase()}</span>`;
+                    }
+
+                    tbody.innerHTML += `
+                        <tr>
+                            <td style="color:var(--primary)">#ORD-${order.order_id}</td>
+                            <td>${order.facility_type || 'Hospital Base'}</td>
+                            <td><b>${order.medicine_name}</b></td>
+                            <td>${order.quantity_requested || 500} Units</td>
+                            <td><span class="badge ${statusBadgeClass}">${order.status}</span></td>
+                            <td>${actionsHtml}</td>
+                        </tr>
                     `;
-                    tBody.appendChild(tr);
                 });
             } catch (err) {
-                console.error("Error loading orders into vendor dashboard:", err);
+                console.error("Linkage loss to backend:", err);
             }
         }
 
-        async function respondToOrder(orderId, status) {
+        async function respondToOrder(orderId, statusDecision) {
             try {
-                const response = await fetch(`/api/orders/vendor/respond/${orderId}`, {
+                const response = await fetch(`http://localhost:3000/api/orders/vendor/respond/${orderId}`, {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ status: status })
+                    body: JSON.stringify({ status: statusDecision })
                 });
-
-                if (response.ok) {
-                    const actionArea = document.getElementById(`action-area-${orderId}`);
-                    const statusArea = document.getElementById(`status-area-${orderId}`);
-
-                    if (status === 'Accepted') {
-                        if (statusArea) statusArea.innerHTML = '<span class="status-label" style="background:#e6f9f4; color:#05cd99;">Accepted</span>';
-                        if (actionArea) actionArea.innerHTML = '—';
-                        showToast('toast-success');
-                    } else {
-                        if (statusArea) statusArea.innerHTML = '<span class="status-label" style="background:#fff2f1; color:#ee5d50;">Denied</span>';
-                        if (actionArea) actionArea.innerHTML = '—';
-                        showToast('toast-deny');
-                    }
-                    setTimeout(loadPendingOrders, 1500);
-                } else {
-                    alert("Failed to update order status.");
-                }
-            } catch (err) {
-                console.error("Error updating order action request:", err);
-                alert("Error connecting to server.");
-            }
+                if (response.ok) fetchIncomingOrders();
+            } catch (err) { console.error(err); }
         }
 
-        function saveProfileChanges() {
-            const stored = localStorage.getItem('supplierProfile') || localStorage.getItem('userAccount');
-            if (!stored) return;
-            const storedProfile = JSON.parse(stored);
-
-            const newName = document.getElementById('input-name').value;
-            const newEmail = document.getElementById('input-email').value;
-            const newAddress = document.getElementById('input-address').value;
-            const newPass = document.getElementById('input-pass').value;
-
-            storedProfile.name = newName;
-            storedProfile.email = newEmail;
-            storedProfile.address = newAddress;
-            localStorage.setItem('supplierProfile', JSON.stringify(storedProfile));
-
-            let allUsers = JSON.parse(localStorage.getItem('smartMediStockUsers') || '{}');
-            if (allUsers[storedProfile.username]) {
-                allUsers[storedProfile.username].name = newName;
-                allUsers[storedProfile.username].email = newEmail;
-                allUsers[storedProfile.username].address = newAddress;
-                if (newPass) allUsers[storedProfile.username].password = newPass;
-                localStorage.setItem('smartMediStockUsers', JSON.stringify(allUsers));
-            }
-
-            document.getElementById('display-name').innerText = newName || storedProfile.username;
-            const avatarImg = document.querySelector('.profile-thumb img');
-            if (avatarImg) {
-                avatarImg.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(newName || storedProfile.username)}&background=4318FF&color=fff`;
-            }
-
-            showToast('toast-profile');
-            document.getElementById('input-pass').value = '';
-        }
-
-        function filterSearch() {
-            let filter = document.getElementById('searchInput').value.toLowerCase();
-            let rows = document.querySelectorAll('#orders-table-body tr');
-            rows.forEach(row => {
-                let text = row.innerText.toLowerCase();
-                row.style.display = text.includes(filter) ? "" : "none";
-            });
-        }
-
-        function handleLogout() {
-            if (confirm("Logout?")) {
-                localStorage.removeItem('supplierProfile');
-                window.location.href = 'index.html';
-            }
-        }
-
-        function showToast(toastId) {
-            const toast = document.getElementById(toastId);
-            if (toast) {
-                toast.style.right = '20px';
-                setTimeout(() => {
-                    toast.style.right = '-400px';
-                }, 3000);
-            }
+        function showToast(msg) {
+            const t = document.getElementById('toast');
+            t.innerText = msg; t.style.display = 'block';
+            setTimeout(() => t.style.display = 'none', 2000);
         }
     </script>
 </body>
-
 </html>
