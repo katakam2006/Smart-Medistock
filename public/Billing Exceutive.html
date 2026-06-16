@@ -1,835 +1,449 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Smart Medistock | Professional Suite</title>
-    <link rel="icon" type="image/png" href="logformedistock.png">
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
-        :root {
-            --sidebar-bg: #0f172a;
-            --main-bg: #f8fafc;
-            --accent: #3b82f6;
-            --text-main: #1e293b;
-            --white: #ffffff;
-            --danger: #ef4444;
-            --warning: #f59e0b;
-            --success: #10b981;
-            --border: #e2e8f0;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Inter', sans-serif;
-        }
-
-        body {
-            display: flex;
-            background-color: var(--main-bg);
-            color: var(--text-main);
-            min-height: 100vh;
-        }
-
-        /* Sidebar */
-        aside {
-            width: 260px;
-            background-color: var(--sidebar-bg);
-            color: white;
-            padding: 1.5rem 1rem;
-            position: fixed;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            z-index: 100;
-        }
-
-        .logo-container {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 1rem;
-            margin-bottom: 2rem;
-            border-bottom: 1px solid #1e293b;
-        }
-
-        .brand-logo {
-            width: 35px;
-            height: 35px;
-        }
-
-        .logo-container h2 {
-            color: var(--accent);
-            font-size: 1.25rem;
-        }
-
-        .menu-list {
-            flex: 1;
-            list-style: none;
-        }
-
-        .menu-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 12px 1rem;
-            margin-bottom: 4px;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: 0.2s;
-            color: #94a3b8;
-            font-size: 0.9rem;
-        }
-
-        .menu-item:hover,
-        .menu-item.active {
-            background-color: #334155;
-            color: white;
-        }
-
-        .menu-item.active {
-            border-left: 4px solid var(--accent);
-        }
-
-        .logout-btn {
-            color: #fca5a5 !important;
-            margin-top: auto;
-            border-top: 1px solid #1e293b;
-            padding-top: 20px;
-        }
-
-        /* Main Content */
-        main {
-            flex: 1;
-            margin-left: 260px;
-            padding: 1.5rem 2rem;
-            max-width: calc(100vw - 260px);
-        }
-
-        .top-nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1rem;
-            background: transparent;
-        }
-
-        .search-wrapper {
-            position: relative;
-            width: 400px;
-        }
-
-        .search-wrapper input {
-            width: 100%;
-            padding: 10px 15px 10px 40px;
-            border-radius: 10px;
-            border: 1px solid var(--border);
-            outline: none;
-            background: white;
-        }
-
-        .search-icon {
-            position: absolute;
-            left: 12px;
-            top: 10px;
-            color: #94a3b8;
-        }
-
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-            background: white;
-            padding: 1.2rem;
-            border-radius: 12px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 1rem;
-            margin-bottom: 2rem;
-        }
-
-        .stat-card {
-            background: var(--white);
-            padding: 1rem;
-            border-radius: 12px;
-            border-left: 4px solid var(--accent);
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
-        }
-
-        .stat-card h4 {
-            font-size: 0.65rem;
-            color: #64748b;
-            text-transform: uppercase;
-        }
-
-        .stat-card .val {
-            font-size: 1.4rem;
-            font-weight: 800;
-            display: block;
-            margin: 5px 0;
-        }
-
-        .stat-link {
-            display: inline-block;
-            margin-top: 4px;
-            color: var(--accent);
-            text-decoration: none;
-            font-size: 0.7rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.04em;
-            cursor: pointer;
-        }
-
-        .card {
-            background: var(--white);
-            border-radius: 12px;
-            padding: 1.5rem;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-            margin-bottom: 1.5rem;
-        }
-
-        .dash-tables-row {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 1.5rem;
-            margin-top: 1rem;
-        }
-
-        .bill-form {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: 1rem;
-            background: #f8fafc;
-            padding: 1.5rem;
-            border-radius: 10px;
-            margin-bottom: 1.5rem;
-            border: 1px solid var(--border);
-        }
-
-        .form-group {
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-        }
-
-        .form-group label {
-            font-size: 0.7rem;
-            font-weight: bold;
-            color: #64748b;
-        }
-
-        .form-group input,
-        .form-group select {
-            padding: 8px;
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            outline: none;
-        }
-
-        .scroll-container {
-            overflow-y: auto;
-            max-height: 400px;
-            border: 1px solid var(--border);
-            border-radius: 8px;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        th {
-            text-align: left;
-            padding: 10px;
-            background: #f8fafc;
-            color: #64748b;
-            font-size: 0.65rem;
-            text-transform: uppercase;
-            position: sticky;
-            top: 0;
-        }
-
-        td {
-            padding: 10px;
-            border-bottom: 1px solid #f1f5f9;
-            font-size: 0.85rem;
-        }
-
-        .low-stock-row {
-            background-color: #fff1f2;
-            color: #991b1b;
-        }
-
-        .btn-prime {
-            background: var(--accent);
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: 600;
-        }
-
-        .btn-intimate {
-            background: #d97706;
-            color: white;
-            border: none;
-            padding: 6px 12px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 0.65rem;
-            font-weight: 700;
-            transition: background 0.2s;
-        }
-        .btn-intimate:hover {
-            background: #b45309;
-        }
-
-        .content-section {
-            display: none;
-        }
-
-        .content-section.active {
-            display: block;
-        }
-
-        #toast {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: #1e293b;
-            color: white;
-            padding: 1rem 2rem;
-            border-radius: 8px;
-            display: none;
-            z-index: 1000;
-        }
-
-        .badge-new {
-            background: #dcfce7;
-            color: #166534;
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-size: 0.7rem;
-            font-weight: bold;
-        }
-
-        #confirm-modal {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 1000;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .modal-box {
-            background: white;
-            padding: 2rem;
-            border-radius: 12px;
-            text-align: center;
-            width: 350px;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smart Medistock | Billing Suite</title>
+  <link rel="icon" type="image/png" href="logformedistock.png">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; font-family:'Inter',sans-serif; }
+    :root {
+      --sidebar-bg: #0f172a; --main-bg: #f8fafc; --accent: #3b82f6;
+      --text-main: #1e293b; --white: #ffffff; --danger: #ef4444;
+      --warning: #f59e0b; --success: #10b981; --border: #e2e8f0;
+    }
+    body { display:flex; background:var(--main-bg); color:var(--text-main); min-height:100vh; }
+    aside {
+      width:260px; background:var(--sidebar-bg); color:white; padding:1.5rem 1rem;
+      position:fixed; height:100vh; display:flex; flex-direction:column; z-index:100;
+    }
+    .logo-container { display:flex; align-items:center; gap:12px; padding:1rem; margin-bottom:2rem; border-bottom:1px solid #1e293b; }
+    .brand-logo { width:35px; height:35px; }
+    .logo-container h2 { color:var(--accent); font-size:1.25rem; }
+    .menu-list { flex:1; list-style:none; }
+    .menu-item {
+      display:flex; align-items:center; gap:12px; padding:12px 1rem; margin-bottom:4px;
+      border-radius:8px; cursor:pointer; transition:0.2s; color:#94a3b8; font-size:0.9rem;
+    }
+    .menu-item:hover, .menu-item.active { background:#334155; color:white; }
+    .menu-item.active { border-left:4px solid var(--accent); }
+    .logout-btn { color:#fca5a5 !important; margin-top:auto; border-top:1px solid #1e293b; padding-top:20px; }
+    main { flex:1; margin-left:260px; padding:1.5rem 2rem; max-width:calc(100vw - 260px); }
+    .top-nav { display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem; background:transparent; }
+    .search-wrapper { position:relative; width:400px; }
+    .search-wrapper input { width:100%; padding:10px 15px 10px 40px; border-radius:10px; border:1px solid var(--border); outline:none; background:white; }
+    .search-icon { position:absolute; left:12px; top:10px; color:#94a3b8; }
+    header { display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem; background:white; padding:1.2rem; border-radius:12px; box-shadow:0 2px 4px rgba(0,0,0,0.02); }
+    .stats-grid { display:grid; grid-template-columns:repeat(5,1fr); gap:1rem; margin-bottom:2rem; }
+    .stat-card { background:var(--white); padding:1rem; border-radius:12px; border-left:4px solid var(--accent); box-shadow:0 2px 4px rgba(0,0,0,0.04); }
+    .stat-card h4 { font-size:0.65rem; color:#64748b; text-transform:uppercase; }
+    .stat-card .val { font-size:1.4rem; font-weight:800; display:block; margin:5px 0; }
+    .stat-link { display:inline-block; margin-top:4px; color:var(--accent); text-decoration:none; font-size:0.7rem; font-weight:700; text-transform:uppercase; cursor:pointer; }
+    .card { background:var(--white); border-radius:12px; padding:1.5rem; box-shadow:0 1px 3px rgba(0,0,0,0.1); margin-bottom:1.5rem; }
+    .dash-tables-row { display:grid; grid-template-columns:repeat(3,1fr); gap:1.5rem; margin-top:1rem; }
+    .bill-form { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:1rem; background:#f8fafc; padding:1.5rem; border-radius:10px; margin-bottom:1.5rem; border:1px solid var(--border); }
+    .form-group { display:flex; flex-direction:column; gap:5px; }
+    .form-group label { font-size:0.7rem; font-weight:bold; color:#64748b; }
+    .form-group input, .form-group select { padding:8px; border:1px solid var(--border); border-radius:6px; outline:none; }
+    .scroll-container { overflow-y:auto; max-height:400px; border:1px solid var(--border); border-radius:8px; }
+    table { width:100%; border-collapse:collapse; }
+    th { text-align:left; padding:10px; background:#f8fafc; color:#64748b; font-size:0.65rem; text-transform:uppercase; position:sticky; top:0; }
+    td { padding:10px; border-bottom:1px solid #f1f5f9; font-size:0.85rem; }
+    .low-stock-row { background:#fff1f2; color:#991b1b; }
+    .btn-prime { background:var(--accent); color:white; border:none; padding:10px 20px; border-radius:6px; cursor:pointer; font-weight:600; }
+    .btn-intimate { background:#d97706; color:white; border:none; padding:6px 12px; border-radius:4px; cursor:pointer; font-size:0.65rem; font-weight:700; transition:background 0.2s; }
+    .btn-intimate:hover { background:#b45309; }
+    .content-section { display:none; }
+    .content-section.active { display:block; }
+    #toast { position:fixed; bottom:20px; right:20px; background:#1e293b; color:white; padding:1rem 2rem; border-radius:8px; display:none; z-index:1000; }
+    .badge-new { background:#dcfce7; color:#166534; padding:2px 6px; border-radius:4px; font-size:0.7rem; font-weight:bold; }
+    #confirm-modal { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:1000; align-items:center; justify-content:center; }
+    .modal-box { background:white; padding:2rem; border-radius:12px; text-align:center; width:350px; }
+    .alert-tabs { display:flex; gap:1rem; margin-bottom:1.5rem; flex-wrap:wrap; }
+    .alert-tab { padding:8px 18px; border-radius:30px; background:#f1f5f9; font-weight:600; font-size:0.8rem; cursor:pointer; border:1px solid transparent; }
+    .alert-tab.active { background:var(--accent); color:white; border-color:var(--accent); }
+    .alert-subsection { display:none; }
+    .alert-subsection.active { display:block; }
+    .view-all-link { color:var(--accent); font-size:0.7rem; font-weight:700; text-transform:uppercase; cursor:pointer; text-decoration:none; }
+  </style>
 </head>
-
 <body>
+  <div id="toast">Action Processed!</div>
+  <div id="confirm-modal"><div class="modal-box"><h3 id="modal-title">Confirmation</h3><p id="modal-desc" style="margin:15px 0;color:#64748b;">Are you sure?</p><div style="display:flex;gap:10px;"><button onclick="closeModal()" style="flex:1;padding:10px;border:none;border-radius:6px;cursor:pointer;">No</button><button id="modal-confirm-btn" style="flex:1;padding:10px;border:none;border-radius:6px;background:var(--accent);color:white;cursor:pointer;">Yes</button></div></div></div>
 
-    <div id="toast">Action Processed!</div>
+  <aside>
+    <div class="logo-container"><img src="logformedistock.png" alt="Logo" class="brand-logo"><h2>MEDISTOCK</h2></div>
+    <ul class="menu-list">
+      <li class="menu-item active" onclick="showSection('dashboard', this)"><i data-lucide="layout-grid"></i> Dashboard</li>
+      <li class="menu-item" onclick="showSection('stock-out', this)"><i data-lucide="package-minus"></i> Stock Out</li>
+      <li class="menu-item" onclick="showSection('medicines', this)"><i data-lucide="database"></i> Medicines</li>
+      <li class="menu-item" onclick="showSection('alerts', this)"><i data-lucide="bell-ring"></i> Alerts</li>
+      <li class="menu-item logout-btn" onclick="handleLogout()"><i data-lucide="log-out"></i> Logout</li>
+    </ul>
+  </aside>
 
-    <div id="confirm-modal">
-        <div class="modal-box">
-            <h3 id="modal-title">Action Confirmation</h3>
-            <p id="modal-desc" style="margin: 15px 0; color: #64748b;">Are you sure?</p>
-            <div style="display:flex; gap:10px;">
-                <button onclick="closeModal()"
-                    style="flex:1; padding:10px; border:none; border-radius:6px; cursor:pointer;">No</button>
-                <button id="modal-confirm-btn"
-                    style="flex:1; padding:10px; border:none; border-radius:6px; background:var(--accent); color:white; cursor:pointer;">Yes</button>
-            </div>
-        </div>
+  <main>
+    <div class="top-nav">
+      <div class="search-wrapper"><i data-lucide="search" class="search-icon" style="width:18px"></i><input type="text" placeholder="Global search..." onkeyup="searchGlobal(this.value)"></div>
     </div>
+    <header>
+      <div><p style="color:#64748b;font-size:0.9rem;">Welcome back,</p><h1 id="page-display-title">Alex Rivera!</h1></div>
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div style="text-align:right"><h4 id="profile-name" style="font-size:0.85rem;">Billing Executive</h4><p style="font-size:0.7rem;color:#64748b;">Billing Department</p></div>
+        <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&q=80&w=100" class="profile-img" style="width:42px;height:42px;border-radius:50%;border:2px solid var(--accent)">
+      </div>
+    </header>
 
-    <aside>
-        <div class="logo-container">
-            <img src="logformedistock.png" alt="Logo" class="brand-logo">
-            <h2>MEDISTOCK</h2>
+    <!-- DASHBOARD -->
+    <section id="dashboard" class="content-section active">
+      <div class="stats-grid">
+        <div class="stat-card"><h4>MEDICINES</h4><span class="val">25</span><a href="javascript:void(0)" class="stat-link" onclick="showSection('medicines')">View All</a></div>
+        <div class="stat-card" style="border-left-color:#8b5cf6"><h4>TOTAL STOCK</h4><span class="val" id="stat-qty">0</span><a href="javascript:void(0)" class="stat-link" onclick="showSection('medicines')">View All</a></div>
+        <div class="stat-card" style="border-left-color:var(--warning)"><h4>LOW STOCK</h4><span class="val" id="stat-low-stock">0</span><a href="javascript:void(0)" class="stat-link" onclick="showSection('alerts')">View All</a></div>
+        <div class="stat-card" style="border-left-color:var(--danger)"><h4>EXPIRIES</h4><span class="val">04</span><a href="javascript:void(0)" class="stat-link" onclick="showSection('alerts')">View All</a></div>
+        <div class="stat-card" style="border-left-color:var(--success)"><h4>DISPATCHED</h4><span class="val" id="stat-so">0</span><a href="javascript:void(0)" class="stat-link" onclick="showSection('stock-out')">View All</a></div>
+      </div>
+
+      <div class="dash-tables-row">
+        <!-- Low Stock -->
+        <div class="card">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+            <h3 style="color:var(--warning);font-size:0.9rem;">Low Stock Items</h3>
+            <div style="display:flex;align-items:center;gap:8px;">
+              <select id="lowStockFilter" onchange="renderAll()" style="padding:4px 8px;border:1px solid #ccc;border-radius:6px;">
+                <option value="75">Below 75</option>
+                <option value="100" selected>Below 100</option>
+                <option value="200">Below 200</option>
+              </select>
+              <a href="javascript:void(0)" class="view-all-link" onclick="showSection('alerts')">View All</a>
+            </div>
+          </div>
+          <table><thead><tr><th>MEDICINE</th><th>STOCK</th><th>ACTION</th></tr></thead><tbody id="dash-low-stock"></tbody></table>
         </div>
-        <ul class="menu-list">
-            <li class="menu-item active" onclick="showSection('dashboard', this)"><i data-lucide="layout-grid"></i>
-                Dashboard</li>
-            <li class="menu-item" onclick="showSection('stock-out', this)"><i data-lucide="package-minus"></i> Stock Out
-            </li>
-            <li class="menu-item" onclick="showSection('medicines', this)"><i data-lucide="database"></i> Medicines</li>
-            <li class="menu-item" onclick="showSection('alerts', this)"><i data-lucide="bell-ring"></i> Alerts</li>
-            <li class="menu-item logout-btn" onclick="handleLogout()"><i data-lucide="log-out"></i> Logout</li>
-        </ul>
-    </aside>
-
-    <main>
-        <div class="top-nav">
-            <div class="search-wrapper">
-                <i data-lucide="search" class="search-icon" style="width:18px"></i>
-                <input type="text" placeholder="Global search..." onkeyup="searchGlobal(this.value)">
+        <!-- Overstock -->
+        <div class="card">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+            <h3 style="color:var(--success);font-size:0.9rem;">Overstock Items</h3>
+            <div style="display:flex;align-items:center;gap:8px;">
+              <select id="overStockFilter" onchange="renderAll()" style="padding:4px 8px;border:1px solid #ccc;border-radius:6px;">
+                <option value="400">Above 400</option>
+                <option value="500" selected>Above 500</option>
+              </select>
+              <a href="javascript:void(0)" class="view-all-link" onclick="showSection('alerts')">View All</a>
             </div>
+          </div>
+          <table><thead><tr><th>MEDICINE</th><th>STOCK</th></tr></thead><tbody id="dash-overstock"></tbody></table>
         </div>
+        <!-- Expiry -->
+        <div class="card">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+            <h3 style="color:var(--danger);font-size:0.9rem;">Upcoming Expiries</h3>
+            <a href="javascript:void(0)" class="view-all-link" onclick="showSection('alerts')">View All</a>
+          </div>
+          <table><thead><tr><th>MEDICINE</th><th>EXP DATE</th><th>ACTION</th></tr></thead><tbody id="dash-expiry"></tbody></table>
+        </div>
+      </div>
 
-        <header>
-            <div class="title-area">
-                <p id="welcome-phrase" style="color: #64748b; font-size: 0.9rem;">Welcome back,</p>
-                <h1 id="page-display-title">Alex Rivera!</h1>
-            </div>
-            <div class="profile-box" style="display:flex; align-items:center; gap:12px;">
-                <div style="text-align:right">
-                    <h4 id="profile-name" style="font-size: 0.85rem;">Billing Executive</h4>
-                    <p style="font-size: 0.7rem; color: #64748b;">Billing Department</p>
-                </div>
-                <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&q=80&w=100"
-                    class="profile-img"
-                    style="width:42px; height:42px; border-radius:50%; border:2px solid var(--accent)">
-            </div>
-        </header>
+      <div class="card">
+        <h3 style="color:var(--success);font-size:0.9rem;margin-bottom:10px;">Recent Dispatches (New Bills)</h3>
+        <table><thead><tr><th>BILL ID</th><th>MEDICINE</th><th>CATEGORY</th><th>QTY</th><th>UNIT PRICE</th><th>TOTAL</th><th>STATUS</th></tr></thead><tbody id="dash-recent-bills"></tbody></table>
+      </div>
+    </section>
 
-        <section id="dashboard" class="content-section active">
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <h4>MEDICINES</h4><span class="val">25</span>
-                    <a href="javascript:void(0)" class="stat-link" onclick="showSection('medicines')">View All</a>
-                </div>
-                <div class="stat-card" style="border-left-color: #8b5cf6">
-                    <h4>TOTAL STOCK</h4><span class="val" id="stat-qty">0</span>
-                    <a href="javascript:void(0)" class="stat-link" onclick="showSection('medicines')">View All</a>
-                </div>
-                <div class="stat-card" style="border-left-color: var(--warning)">
-                    <h4>LOW STOCK</h4><span class="val" id="stat-low-stock">0</span>
-                    <a href="javascript:void(0)" class="stat-link" onclick="showSection('alerts')">View All</a>
-                </div>
-                <div class="stat-card" style="border-left-color: var(--danger)">
-                    <h4>EXPIRIES</h4><span class="val">04</span>
-                    <a href="javascript:void(0)" class="stat-link" onclick="showSection('alerts')">View All</a>
-                </div>
-                <div class="stat-card" style="border-left-color: var(--success)">
-                    <h4>DISPATCHED ITEMS</h4><span class="val" id="stat-so">0</span>
-                    <a href="javascript:void(0)" class="stat-link" onclick="showSection('stock-out')">View All</a>
-                </div>
-            </div>
+    <!-- STOCK OUT -->
+    <section id="stock-out" class="content-section">
+      <div class="card">
+        <h3>Generate Bill & Dispatch</h3>
+        <div class="bill-form">
+          <div class="form-group"><label>Select Medicine</label><select id="bill-med-idx" onchange="fillBillData()"><option value="">-- Choose --</option></select></div>
+          <div class="form-group"><label>Category</label><input type="text" id="bill-cat" readonly></div>
+          <div class="form-group"><label>ID No</label><input type="text" id="bill-id" readonly></div>
+          <div class="form-group"><label>Quantity</label><input type="number" id="bill-qty" placeholder="Enter qty"></div>
+          <div class="form-group" style="justify-content:flex-end;"><button class="btn-prime" onclick="generateBill()">Dispatch Stock</button></div>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+          <h3>Dispatch Registry</h3>
+          <select id="dispatchFilter" onchange="renderAll()" style="padding:6px 10px;border:1px solid #ccc;border-radius:6px;">
+            <option value="daily">Day To Day</option>
+            <option value="weekly">Weekly</option>
+          </select>
+        </div>
+        <div class="scroll-container"><table id="so-table"><thead><tr><th>Bill ID</th><th>Name</th><th>Qty</th><th>Date</th></tr></thead><tbody></tbody></table></div>
+      </div>
+    </section>
 
-            <div class="dash-tables-row">
-                <div class="card">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                        <h3 style="color: var(--warning); font-size: 0.9rem;">Low Stock Items</h3>
-                        <a href="javascript:void(0)" onclick="showSection('alerts')" style="color: var(--accent); font-size: 0.75rem; text-decoration: none; font-weight: 600;">View All</a>
-                    </div>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>MEDICINE</th>
-                                <th>STOCK</th>
-                                <th>ACTION</th>
-                            </tr>
-                        </thead>
-                        <tbody id="dash-low-stock"></tbody>
-                    </table>
-                </div>
-                <div class="card">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                        <h3 style="color: var(--success); font-size: 0.9rem;">Overstock Items</h3>
-                        <a href="javascript:void(0)" onclick="showSection('alerts')" style="color: var(--accent); font-size: 0.75rem; text-decoration: none; font-weight: 600;">View All</a>
-                    </div>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>MEDICINE</th>
-                                <th>STOCK</th>
-                                <th>ACTION</th>
-                            </tr>
-                        </thead>
-                        <tbody id="dash-overstock"></tbody>
-                    </table>
-                </div>
-                <div class="card">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                        <h3 style="color: var(--danger); font-size: 0.9rem;">Upcoming Expiries</h3>
-                        <a href="javascript:void(0)" onclick="showSection('alerts')" style="color: var(--accent); font-size: 0.75rem; text-decoration: none; font-weight: 600;">View All</a>
-                    </div>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>MEDICINE</th>
-                                <th>EXP DATE</th>
-                                <th>ACTION</th>
-                            </tr>
-                        </thead>
-                        <tbody id="dash-expiry"></tbody>
-                    </table>
-                </div>
-            </div>
+    <!-- MEDICINES -->
+    <section id="medicines" class="content-section">
+      <div class="card"><h3>Inventory Master</h3><div class="scroll-container"><table id="med-table"><thead><tr><th>ID No</th><th>Medicine Name</th><th>Category</th><th>Original Stock</th><th>Sold Qty</th><th>Current Stock</th></tr></thead><tbody></tbody></table></div></div>
+    </section>
 
-            <div class="card">
-                <h3 style="color: var(--success); font-size: 0.9rem; margin-bottom: 10px;">Recent Dispatches (New Bills)</h3>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>BILL ID</th>
-                            <th>MEDICINE</th>
-                            <th>CATEGORY</th>
-                            <th>QTY TAKEN</th>
-                            <th>UNIT PRICE</th>
-                            <th>TOTAL AMOUNT</th>
-                            <th>STATUS</th>
-                        </tr>
-                    </thead>
-                    <tbody id="dash-recent-bills"></tbody>
-                </table>
-            </div>
-        </section>
+    <!-- ALERTS with 3 separate tables -->
+    <section id="alerts" class="content-section">
+      <div class="card">
+        <h3 style="margin-bottom:1rem;">System Notifications</h3>
+        <div class="alert-tabs">
+          <span class="alert-tab active" data-tab="low" onclick="switchAlertTab('low')">Low Stock</span>
+          <span class="alert-tab" data-tab="over" onclick="switchAlertTab('over')">Overstock</span>
+          <span class="alert-tab" data-tab="expiry" onclick="switchAlertTab('expiry')">Expiry</span>
+        </div>
+        <!-- Low Stock -->
+        <div id="alert-low" class="alert-subsection active">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+            <h4 style="color:var(--warning);">Low Stock Items</h4>
+            <select id="alertLowFilter" onchange="renderAlertTables()" style="padding:4px 8px;border:1px solid #ccc;border-radius:6px;">
+              <option value="75">Below 75</option>
+              <option value="100" selected>Below 100</option>
+              <option value="200">Below 200</option>
+            </select>
+          </div>
+          <div class="scroll-container"><table><thead><tr><th>Medicine</th><th>Stock</th><th>Action</th></tr></thead><tbody id="alert-low-body"></tbody></table></div>
+        </div>
+        <!-- Overstock -->
+        <div id="alert-over" class="alert-subsection">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+            <h4 style="color:var(--success);">Overstock Items</h4>
+            <select id="alertOverFilter" onchange="renderAlertTables()" style="padding:4px 8px;border:1px solid #ccc;border-radius:6px;">
+              <option value="400">Above 400</option>
+              <option value="500" selected>Above 500</option>
+            </select>
+          </div>
+          <div class="scroll-container"><table><thead><tr><th>Medicine</th><th>Stock</th></tr></thead><tbody id="alert-over-body"></tbody></table></div>
+        </div>
+        <!-- Expiry -->
+        <div id="alert-expiry" class="alert-subsection">
+          <h4 style="color:var(--danger);margin-bottom:10px;">Upcoming Expiries</h4>
+          <div class="scroll-container"><table><thead><tr><th>Medicine</th><th>Expiry Date</th><th>Action</th></tr></thead><tbody id="alert-expiry-body"></tbody></table></div>
+        </div>
+      </div>
+    </section>
+  </main>
 
-        <section id="stock-out" class="content-section">
-            <div class="card">
-                <h3>Generate Bill & Dispatch</h3>
-                <div class="bill-form">
-                    <div class="form-group">
-                        <label>Select Medicine</label>
-                        <select id="bill-med-idx" onchange="fillBillData()">
-                            <option value="">-- Choose --</option>
-                        </select>
-                    </div>
-                    <div class="form-group"><label>Category</label><input type="text" id="bill-cat" readonly></div>
-                    <div class="form-group"><label>ID No</label><input type="text" id="bill-id" readonly></div>
-                    <div class="form-group"><label>Quantity</label><input type="number" id="bill-qty"
-                            placeholder="Enter qty"></div>
-                    <div class="form-group" style="justify-content: flex-end;"><button class="btn-prime"
-                            onclick="generateBill()">Dispatch Stock</button></div>
-                </div>
-                <h3>Dispatch Registry</h3>
-                <div class="scroll-container">
-                    <table id="so-table">
-                        <thead>
-                            <tr>
-                                <th>Bill ID</th>
-                                <th>Name</th>
-                                <th>Qty</th>
-                                <th>Date</th>
-                            </tr>
-                        </thead>
-                        <tbody></tbody>
-                    </table>
-                </div>
-            </div>
-        </section>
+  <script>
+    let inventory = [];
+    let stockouts = [];
 
-        <section id="medicines" class="content-section">
-            <div class="card">
-                <h3>Inventory Master</h3>
-                <div class="scroll-container">
-                    <table id="med-table">
-                        <thead>
-                            <tr>
-                                <th>ID No</th>
-                                <th>Medicine Name</th>
-                                <th>Category</th>
-                                <th>Original Stock</th>
-                                <th>Sold Qty</th>
-                                <th>Current Stock</th>
-                            </tr>
-                        </thead>
-                        <tbody></tbody>
-                    </table>
-                </div>
-            </div>
-        </section>
-
-        <section id="alerts" class="content-section">
-            <div class="card">
-                <h3>System Notifications</h3>
-                <div class="scroll-container">
-                    <table id="alert-table">
-                        <thead>
-                            <tr>
-                                <th>Medicine</th>
-                                <th>Alert Type</th>
-                                <th>Stock</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody></tbody>
-                    </table>
-                </div>
-            </div>
-        </section>
-    </main>
-
-    <script>
-        let inventory = [];
-        let stockouts = [];
-
-        async function init() {
-            initProfile();
-            try {
-                const response = await fetch('http://localhost:3000/api/medicines');
-                if (!response.ok) throw new Error("Could not reach backend dataset API");
-
-                const datasetItems = await response.json();
-                inventory = [];
-                if (datasetItems.length > 0) {
-                    datasetItems.forEach((item, i) => {
-                        const name = item["Medicine Name"] || 'Unknown';
-                        const rawPrice = item["Price ($)"] || item.Price || 15;
-                        const stockVal = parseInt(item["No. of Units"] || item.Quantity || 0, 10) || 0;
-                        inventory.push({
-                            id: item["Medicine ID"] || `MED-${1000 + i}`,
-                            name: name,
-                            cat: item["Category"] || 'General',
-                            stock: stockVal,
-                            initialStock: stockVal,
-                            expiry: item["Expiry Date"] || "2026-12-31",
-                            price: parseFloat(rawPrice) || 15
-                        });
-                    });
-                }
-            } catch (err) {
-                console.error("Error connecting inventory element to backend dataset:", err);
-                inventory = [];
-            }
-
-            renderAll();
-            populateDropdown();
-            lucide.createIcons();
-        }
-
-        function initProfile() {
-            const stored = localStorage.getItem('billingProfile');
-            if (stored) {
-                const profile = JSON.parse(stored);
-                const displayName = profile.name || profile.username;
-                document.getElementById('page-display-title').innerText = `${displayName}!`;
-                document.getElementById('profile-name').innerText = displayName;
-
-                // Update avatar with user initials
-                const avatar = document.querySelector('.profile-box img');
-                if (avatar) {
-                    avatar.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(displayName)}&background=3b82f6&color=fff`;
-                }
-            }
-        }
-
-        function populateDropdown() {
-            const sel = document.getElementById('bill-med-idx');
-            inventory.forEach((m, i) => {
-                const opt = document.createElement('option');
-                opt.value = i; opt.text = m.name;
-                sel.add(opt);
+    async function init() {
+      initProfile();
+      try {
+        const response = await fetch('http://localhost:3000/api/medicines');
+        if (!response.ok) throw new Error("Could not reach backend");
+        const datasetItems = await response.json();
+        inventory = [];
+        if (datasetItems.length > 0) {
+          datasetItems.forEach((item, i) => {
+            const name = item["Medicine Name"] || 'Unknown';
+            const rawPrice = item["Price ($)"] || item.Price || 15;
+            const stockVal = parseInt(item["No. of Units"] || item.Quantity || 0, 10) || 0;
+            inventory.push({
+              id: item["Medicine ID"] || `MED-${1000 + i}`,
+              name: name,
+              cat: item["Category"] || 'General',
+              stock: stockVal,
+              initialStock: stockVal,
+              expiry: item["Expiry Date"] || "2026-12-31",
+              price: parseFloat(rawPrice) || 15
             });
+          });
         }
+      } catch (err) {
+        console.error("Backend error, using fallback data", err);
+        inventory = [
+          { id: 'MED-1001', name: 'Amoxicillin', cat: 'Antibiotic', stock: 120, initialStock: 120, expiry: '2026-08-15', price: 25 },
+          { id: 'MED-1002', name: 'Pantoprazole', cat: 'Antacid', stock: 80, initialStock: 80, expiry: '2026-08-20', price: 18 },
+          { id: 'MED-1003', name: 'Furosemide', cat: 'Diuretic', stock: 45, initialStock: 45, expiry: '2026-09-01', price: 22 },
+          { id: 'MED-1004', name: 'Escitalopram', cat: 'Antidepressant', stock: 30, initialStock: 30, expiry: '2026-07-10', price: 30 },
+          { id: 'MED-1005', name: 'Metformin', cat: 'Antidiabetic', stock: 600, initialStock: 600, expiry: '2027-01-20', price: 12 },
+          { id: 'MED-1006', name: 'Lisinopril', cat: 'Antihypertensive', stock: 450, initialStock: 450, expiry: '2026-12-05', price: 20 },
+          { id: 'MED-1007', name: 'Atorvastatin', cat: 'Cholesterol', stock: 200, initialStock: 200, expiry: '2026-11-11', price: 35 },
+          { id: 'MED-1008', name: 'Omeprazole', cat: 'Antacid', stock: 90, initialStock: 90, expiry: '2026-10-01', price: 16 }
+        ];
+      }
+      renderAll();
+      populateDropdown();
+      lucide.createIcons();
+    }
 
-        function fillBillData() {
-            const idx = document.getElementById('bill-med-idx').value;
-            if (idx !== "") {
-                document.getElementById('bill-cat').value = inventory[idx].cat;
-                document.getElementById('bill-id').value = inventory[idx].id;
-            }
-        }
+    function initProfile() {
+      const stored = localStorage.getItem('billingProfile');
+      if (stored) {
+        const profile = JSON.parse(stored);
+        const displayName = profile.name || profile.username;
+        document.getElementById('page-display-title').innerText = `${displayName}!`;
+        document.getElementById('profile-name').innerText = displayName;
+        const avatar = document.querySelector('.profile-box img');
+        if (avatar) avatar.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(displayName)}&background=3b82f6&color=fff`;
+      }
+    }
 
-        function generateBill() {
-            const idx = document.getElementById('bill-med-idx').value;
-            const qty = parseInt(document.getElementById('bill-qty').value);
+    function populateDropdown() {
+      const sel = document.getElementById('bill-med-idx');
+      sel.innerHTML = '<option value="">-- Choose --</option>';
+      inventory.forEach((m, i) => { const opt = document.createElement('option'); opt.value = i; opt.text = m.name; sel.add(opt); });
+    }
 
-            if (idx === "" || isNaN(qty) || qty <= 0) return alert("Enter a valid quantity");
+    function fillBillData() {
+      const idx = document.getElementById('bill-med-idx').value;
+      if (idx !== "") {
+        document.getElementById('bill-cat').value = inventory[idx].cat;
+        document.getElementById('bill-id').value = inventory[idx].id;
+      }
+    }
 
-            const med = inventory[idx];
-            if (qty > med.stock) return alert(`Insufficient stock! Only ${med.stock} remaining.`);
+    function generateBill() {
+      const idx = document.getElementById('bill-med-idx').value;
+      const qty = parseInt(document.getElementById('bill-qty').value);
+      if (idx === "" || isNaN(qty) || qty <= 0) return alert("Enter a valid quantity");
+      const med = inventory[idx];
+      if (qty > med.stock) return alert(`Insufficient stock! Only ${med.stock} remaining.`);
+      med.stock -= qty;
+      const newBill = {
+        bid: `B-${Math.floor(Math.random() * 9000) + 1000}`,
+        name: med.name,
+        cat: med.cat,
+        qty: qty,
+        price: med.price,
+        total: qty * med.price,
+        date: new Date().toISOString().split('T')[0]
+      };
+      stockouts.unshift(newBill);
+      renderAll();
+      showToast(`Bill ${newBill.bid} generated!`);
+      document.getElementById('bill-qty').value = "";
+    }
 
-            // 1. UPDATE QUANTITY: Logic to decrease overall medicine stock
-            med.stock -= qty;
+    function renderAll() {
+      const lowLimit = parseInt(document.getElementById('lowStockFilter')?.value || 100);
+      const overLimit = parseInt(document.getElementById('overStockFilter')?.value || 500);
+      const lowItems = inventory.filter(m => m.stock < lowLimit);
+      const overItems = inventory.filter(m => m.stock >= overLimit);
+      const expiryNames = ["Amoxicillin", "Pantoprazole", "Furosemide", "Escitalopram"];
+      const expiryItems = inventory.filter(m => expiryNames.includes(m.name));
 
-            // 2. ADD TO DISPATCH: Logic to record the new bill
-            const newBill = {
-                bid: `B-${Math.floor(Math.random() * 9000) + 1000}`,
-                name: med.name,
-                cat: med.cat,
-                qty: qty,
-                price: med.price,
-                total: qty * med.price,
-                date: new Date().toISOString().split('T')[0]
-            };
-            stockouts.unshift(newBill);
+      document.getElementById('stat-qty').innerText = inventory.reduce((a,b) => a + b.stock, 0).toLocaleString();
+      document.getElementById('stat-so').innerText = stockouts.reduce((a,b) => a + b.qty, 0).toLocaleString();
+      document.getElementById('stat-low-stock').innerText = lowItems.length.toString().padStart(2,'0');
 
-            // 3. RE-RENDER UI: Ensures updates are visible across all menus
-            renderAll();
-            showToast(`Bill ${newBill.bid} generated and stock updated!`);
-            document.getElementById('bill-qty').value = "";
-        }
+      // Dashboard recent bills
+      document.getElementById('dash-recent-bills').innerHTML = stockouts.slice(0,5).map(s => `
+        <tr><td>#${s.bid}</td><td><b>${s.name}</b></td><td>${s.cat}</td><td>${s.qty}</td><td>₹${s.price}</td><td>₹${s.total}</td><td><span class="badge-new">Dispatched</span></td></tr>
+      `).join('');
 
-        function renderAll() {
-            const lowStockItems = inventory.filter(m => m.stock < 100);
-            const overstockItems = inventory.filter(m => m.stock >= 350);
-            const expiryMedicines = ["Amoxicillin", "Pantoprazole", "Furosemide", "Escitalopram"];
-            const expiryItems = inventory.filter(m => expiryMedicines.includes(m.name));
+      // Low stock table (dashboard) with action
+      document.getElementById('dash-low-stock').innerHTML = lowItems.slice(0,5).map(m => `
+        <tr><td><b>${m.name}</b></td><td style="color:var(--danger);font-weight:bold;">${m.stock}</td><td><button class="btn-intimate" onclick="intimate(this,'${m.name}','LOW STOCK',${m.stock})">Intimate</button></td></tr>
+      `).join('');
 
-            // Update Statistics
-            document.getElementById('stat-qty').innerText = inventory.reduce((a, b) => a + b.stock, 0).toLocaleString();
-            document.getElementById('stat-so').innerText = stockouts.reduce((a, b) => a + b.qty, 0).toLocaleString();
-            document.getElementById('stat-low-stock').innerText = lowStockItems.length.toString().padStart(2, '0');
+      // Overstock table (dashboard) NO ACTION
+      document.getElementById('dash-overstock').innerHTML = overItems.slice(0,5).map(m => `
+        <tr><td><b>${m.name}</b></td><td style="color:var(--success);font-weight:bold;">${m.stock}</td></tr>
+      `).join('');
 
-            // Dashboard: Recent Bills
-            document.getElementById('dash-recent-bills').innerHTML = stockouts.slice(0, 5).map(s => `
-                <tr>
-                    <td>#${s.bid}</td>
-                    <td><b>${s.name}</b></td>
-                    <td>${s.cat}</td>
-                    <td>${s.qty}</td>
-                    <td>₹${s.price}</td>
-                    <td>₹${s.total}</td>
-                    <td><span class="badge-new">Dispatched</span></td>
-                </tr>
-            `).join('');
+      // Expiry table (dashboard)
+      document.getElementById('dash-expiry').innerHTML = expiryItems.map(m => `
+        <tr><td><b>${m.name}</b></td><td style="color:var(--danger);font-weight:bold;">${m.expiry}</td><td><button class="btn-intimate" onclick="intimate(this,'${m.name}','EXPIRY',${m.stock})">Intimate</button></td></tr>
+      `).join('');
 
-            // Dashboard: Low Stock, Overstock & Expiry
-            document.getElementById('dash-low-stock').innerHTML = lowStockItems.slice(0, 4).map(m => `
-                <tr>
-                    <td><b>${m.name}</b></td>
-                    <td style="color:var(--danger); font-weight:bold;">${m.stock}</td>
-                    <td><button class="btn-intimate" onclick="intimate(this, '${m.name}', 'LOW STOCK', ${m.stock})">Intimate</button></td>
-                </tr>
-            `).join('');
+      // Medicines table
+      document.querySelector('#med-table tbody').innerHTML = inventory.map(m => `
+        <tr class="${m.stock < 100 ? 'low-stock-row' : ''}">
+          <td>${m.id}</td><td><b>${m.name}</b> ${m.stock < 100 ? '<small>(Low Stock)</small>' : ''}</td>
+          <td>${m.cat}</td><td>${m.initialStock}</td><td>${m.initialStock - m.stock}</td><td>${m.stock}</td>
+        </tr>
+      `).join('');
 
-            document.getElementById('dash-overstock').innerHTML = overstockItems.slice(0, 4).map(m => `
-                <tr>
-                    <td><b>${m.name}</b></td>
-                    <td style="color:var(--success); font-weight:bold;">${m.stock}</td>
-                    <td><button class="btn-intimate" onclick="intimate(this, '${m.name}', 'OVERSTOCK', ${m.stock})">Intimate</button></td>
-                </tr>
-            `).join('');
+      // Stock out registry
+      let filteredDispatch = [...stockouts];
+      const mode = document.getElementById('dispatchFilter')?.value || 'daily';
+      if(mode === 'daily'){ const today = new Date().toISOString().split('T')[0]; filteredDispatch = stockouts.filter(s => s.date === today); }
+      else { const now = new Date(); filteredDispatch = stockouts.filter(s => { const d = new Date(s.date); return (now - d) <= 7*24*60*60*1000; }); }
+      document.querySelector('#so-table tbody').innerHTML = filteredDispatch.map(s => `
+        <tr><td>#${s.bid}</td><td><b>${s.name}</b></td><td>${s.qty}</td><td>${s.date}</td></tr>
+      `).join('');
 
-            document.getElementById('dash-expiry').innerHTML = expiryItems.map(m => `
-                <tr>
-                    <td><b>${m.name}</b></td>
-                    <td style="color:var(--danger); font-weight:bold;">${m.expiry}</td>
-                    <td><button class="btn-intimate" onclick="intimate(this, '${m.name}', 'EXPIRY', ${m.stock})">Intimate</button></td>
-                </tr>
-            `).join('');
+      // Render Alert tables (3 separate)
+      renderAlertTables();
+    }
 
-            // Medicines Menu: Inventory Master (Updated live)
-            document.querySelector('#med-table tbody').innerHTML = inventory.map(m => `
-                <tr class="${m.stock < 100 ? 'low-stock-row' : ''}">
-                    <td>${m.id}</td>
-                    <td><b>${m.name}</b> ${m.stock < 100 ? '<small>(Low Stock)</small>' : ''}</td>
-                    <td>${m.cat}</td>
-                    <td>${m.initialStock}</td>
-                    <td>${m.initialStock - m.stock}</td>
-                    <td>${m.stock}</td>
-                </tr>
-            `).join('');
+    function renderAlertTables() {
+      const lowLimit = parseInt(document.getElementById('alertLowFilter')?.value || 100);
+      const overLimit = parseInt(document.getElementById('alertOverFilter')?.value || 500);
+      const lowItems = inventory.filter(m => m.stock < lowLimit);
+      const overItems = inventory.filter(m => m.stock >= overLimit);
+      const expiryNames = ["Amoxicillin", "Pantoprazole", "Furosemide", "Escitalopram"];
+      const expiryItems = inventory.filter(m => expiryNames.includes(m.name));
 
-            // Stock Out Menu: Dispatch Registry (Visible in stockout menu)
-            document.querySelector('#so-table tbody').innerHTML = stockouts.map(s => `
-                <tr><td>#${s.bid}</td><td><b>${s.name}</b></td><td>${s.qty}</td><td>${s.date}</td></tr>
-            `).join('');
+      document.getElementById('alert-low-body').innerHTML = lowItems.map(m => `
+        <tr><td><b>${m.name}</b></td><td style="color:var(--danger);font-weight:bold;">${m.stock}</td><td><button class="btn-intimate" onclick="intimate(this,'${m.name}','LOW STOCK',${m.stock})">Notify</button></td></tr>
+      `).join('');
 
-            // Alerts Menu
-            const alertsList = [];
-            lowStockItems.forEach(m => {
-                alertsList.push({ name: m.name, type: 'Low Stock Alert', color: 'var(--warning)', stock: m.stock, actionType: 'LOW STOCK' });
-            });
-            overstockItems.forEach(m => {
-                alertsList.push({ name: m.name, type: 'Overstock Alert', color: 'var(--success)', stock: m.stock, actionType: 'OVERSTOCK' });
-            });
-            inventory.filter(m => m.expiry < '2026-09-01').forEach(m => {
-                alertsList.push({ name: m.name, type: 'Upcoming Expiry Alert', color: 'var(--danger)', stock: m.stock, actionType: 'EXPIRY', info: `Exp: ${m.expiry}` });
-            });
+      document.getElementById('alert-over-body').innerHTML = overItems.map(m => `
+        <tr><td><b>${m.name}</b></td><td style="color:var(--success);font-weight:bold;">${m.stock}</td></tr>
+      `).join('');
 
-            document.querySelector('#alert-table tbody').innerHTML = alertsList.map(a => `
-                <tr>
-                    <td><b>${a.name}</b></td>
-                    <td><span style="color:${a.color}; font-weight:bold;">${a.type}</span> ${a.info ? `<small>(${a.info})</small>` : ''}</td>
-                    <td>${a.stock}</td>
-                    <td><button class="btn-intimate" onclick="intimate(this, '${a.name}', '${a.actionType}', ${a.stock})">Notify</button></td>
-                </tr>
-            `).join('');
-        }
+      document.getElementById('alert-expiry-body').innerHTML = expiryItems.map(m => `
+        <tr><td><b>${m.name}</b></td><td style="color:var(--danger);font-weight:bold;">${m.expiry}</td><td><button class="btn-intimate" onclick="intimate(this,'${m.name}','EXPIRY',${m.stock})">Notify</button></td></tr>
+      `).join('');
+    }
 
-        function showSection(id, el) {
-            document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
-            document.querySelectorAll('.menu-item').forEach(m => m.classList.remove('active'));
-            if (el) el.classList.add('active');
-            document.getElementById('page-display-title').innerText = id.toUpperCase().replace('-', ' ');
-        }
+    function switchAlertTab(tab) {
+      document.querySelectorAll('.alert-tab').forEach(t => t.classList.remove('active'));
+      document.querySelector(`.alert-tab[data-tab="${tab}"]`).classList.add('active');
+      document.querySelectorAll('.alert-subsection').forEach(s => s.classList.remove('active'));
+      document.getElementById(`alert-${tab}`).classList.add('active');
+    }
 
-        function searchGlobal(val) {
-            const q = val.toLowerCase();
-            document.querySelectorAll('tbody tr').forEach(tr => tr.style.display = tr.innerText.toLowerCase().includes(q) ? '' : 'none');
-        }
+    function showSection(id, el) {
+      document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+      document.querySelectorAll('.menu-item').forEach(m => m.classList.remove('active'));
+      if (el) el.classList.add('active');
+      document.getElementById('page-display-title').innerText = id.toUpperCase().replace('-',' ');
+      if (id === 'alerts') renderAlertTables();
+    }
 
-        function showToast(msg) {
-            const t = document.getElementById('toast');
-            t.innerText = msg; t.style.display = 'block';
-            setTimeout(() => t.style.display = 'none', 3000);
-        }
+    function searchGlobal(val) {
+      const q = val.toLowerCase();
+      document.querySelectorAll('tbody tr').forEach(tr => tr.style.display = tr.innerText.toLowerCase().includes(q) ? '' : 'none');
+    }
 
-        async function intimate(btn, medName, alertType, stockQty) {
-            btn.disabled = true;
-            btn.innerText = "Sending...";
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.innerText = msg; t.style.display = 'block';
+      setTimeout(() => t.style.display = 'none', 3000);
+    }
 
-            const stored = localStorage.getItem('billingProfile');
-            const username = stored ? JSON.parse(stored).username : 'vyshnavi';
+    async function intimate(btn, medName, alertType, stockQty) {
+      btn.disabled = true; btn.innerText = "Sending...";
+      const stored = localStorage.getItem('billingProfile');
+      const profile = stored ? JSON.parse(stored) : {};
+      const username = profile.username || 'vyshnavi';
+      const hospitalName = profile.hospital_name || '';
+      try {
+        const response = await fetch('/api/alerts/intimate', {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ 
+            alert_type: alertType, 
+            medicine_name: medName, 
+            status: 'Pending', 
+            triggered_by: username,
+            hospital_name: hospitalName
+          })
+        });
+        if (response.ok) { btn.innerText = "Sent"; showToast(`${alertType} alert sent for ${medName}!`); }
+        else { btn.disabled = false; btn.innerText = "Intimate"; alert("Failed to send alert."); }
+      } catch(err) { console.error(err); btn.disabled = false; btn.innerText = "Intimate"; alert("Server error."); }
+    }
 
-            try {
-                const response = await fetch('/api/alerts/intimate', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        alert_type: alertType,
-                        medicine_name: medName,
-                        status: 'Pending',
-                        triggered_by: username
-                    })
-                });
-
-                if (response.ok) {
-                    btn.innerText = "Sent";
-                    showToast(`${alertType} alert sent for ${medName}!`);
-                } else {
-                    btn.disabled = false;
-                    btn.innerText = "Intimate";
-                    alert("Failed to send alert to backend server.");
-                }
-            } catch (err) {
-                console.error("Error intimating alert:", err);
-                btn.disabled = false;
-                btn.innerText = "Intimate";
-                alert("Error connecting to server.");
-            }
-        }
-        function handleLogout() {
-            document.getElementById('modal-title').innerText = "Logout Confirmation";
-            document.getElementById('modal-desc').innerText = "Are you sure you want to end your current session?";
-            document.getElementById('confirm-modal').style.display = 'flex';
-            document.getElementById('modal-confirm-btn').onclick = () => {
-                localStorage.removeItem('billingProfile');
-                window.location.href = 'index.html';
-            };
-        }
-
-        function closeModal() {
-            document.getElementById('confirm-modal').style.display = 'none';
-        }
-
-        window.onload = init;
-    </script>
+    function handleLogout() {
+      document.getElementById('modal-title').innerText = "Logout Confirmation";
+      document.getElementById('modal-desc').innerText = "Are you sure you want to end your current session?";
+      document.getElementById('confirm-modal').style.display = 'flex';
+      document.getElementById('modal-confirm-btn').onclick = () => { localStorage.removeItem('billingProfile'); window.location.href = 'index.html'; };
+    }
+    function closeModal() { document.getElementById('confirm-modal').style.display = 'none'; }
+    window.onload = init;
+  </script>
 </body>
-
 </html>

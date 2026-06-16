@@ -333,6 +333,11 @@
                     </div>
 
                     <div class="form-group">
+                        <label class="label">Hospital/Clinic Name<span class="required-star">*</span></label>
+                        <input id="signup-hospital-name" type="text" placeholder="Enter Hospital or Clinic Name" required>
+                    </div>
+
+                    <div class="form-group">
                         <label class="label">Email Address<span class="required-star">*</span></label>
                         <input id="signup-email" type="email" placeholder="email@hospital.com" required>
                     </div>
@@ -429,23 +434,24 @@
             if (e) e.preventDefault();
 
             const username = document.getElementById('signup-username').value.trim();
+            const hospitalName = document.getElementById('signup-hospital-name').value.trim();
             const email = document.getElementById('signup-email').value.trim();
             const pass = document.getElementById('signup-password').value;
             const role = document.getElementById('roleSel').value;
             // FIX 1: Grab the address input string dynamically from the DOM textarea
             const address = document.getElementById('signup-address').value.trim();
 
-            if (!username || !email || !pass || !role || !address) {
+            if (!username || !hospitalName || !email || !pass || !role || !address) {
                 alert('Please fill all fields');
                 return;
             }
 
-            // FIX 2: Switched to secure absolute URL path on port 3000
-            fetch('https://localhost:3000/api/register', {
+            // FIX 2: Switched to HTTP absolute URL path on port 3000 to avoid HTTPS errors
+            fetch('http://localhost:3000/api/register', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 // FIX 3: Sent address data object elements natively through JSON body string
-                body: JSON.stringify({ username, email, password: pass, role, address })
+                body: JSON.stringify({ username, email, password: pass, role, address, hospital_name: hospitalName })
             })
                 .then(res => res.json())
                 .then(data => {

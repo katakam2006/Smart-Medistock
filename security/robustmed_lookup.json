@@ -1,1982 +1,3302 @@
 {
   "gabapentin": {
+    "Medicine ID": "MED-249872",
     "Medicine Name": "Gabapentin",
     "Category": "Antibiotic",
     "Dosage": "50 mg",
-    "Price ($)": 100.0
+    "Price ($)": 100.0,
+    "No. of Units": 742,
+    "Stock Out Units": 106,
+    "Category_Code": 1
   },
   "pantoprazole": {
+    "Medicine ID": "MED-249999",
     "Medicine Name": "Pantoprazole",
     "Category": "Antiviral",
     "Dosage": "10 mg",
-    "Price ($)": 5.79
+    "Price ($)": 5.79,
+    "No. of Units": 399,
+    "Stock Out Units": 25,
+    "Category_Code": 8
   },
   "citalopram hcl": {
+    "Medicine ID": "MED-249381",
     "Medicine Name": "Citalopram HCL",
     "Category": "Analgesic",
     "Dosage": "100 mg",
-    "Price ($)": 201.63
+    "Price ($)": 201.63,
+    "No. of Units": 83,
+    "Stock Out Units": 7,
+    "Category_Code": 0
   },
   "ibuprofen": {
+    "Medicine ID": "MED-249996",
     "Medicine Name": "Ibuprofen",
     "Category": "Antibiotic",
     "Dosage": "20 mg",
-    "Price ($)": 7.0
+    "Price ($)": 7.0,
+    "No. of Units": 102,
+    "Stock Out Units": 11,
+    "Category_Code": 1
   },
   "atorvastatin active": {
+    "Medicine ID": "MED-249929",
     "Medicine Name": "Atorvastatin Active",
     "Category": "Antihistamine",
     "Dosage": "10 mg",
-    "Price ($)": 8.91
+    "Price ($)": 8.91,
+    "No. of Units": 678,
+    "Stock Out Units": 124,
+    "Category_Code": 6
   },
   "omeprazole plus": {
+    "Medicine ID": "MED-249892",
     "Medicine Name": "Omeprazole Plus",
     "Category": "Antidiabetic",
     "Dosage": "100 mg",
-    "Price ($)": 134.09
+    "Price ($)": 134.09,
+    "No. of Units": 390,
+    "Stock Out Units": 73,
+    "Category_Code": 4
   },
   "citalopram forte": {
+    "Medicine ID": "MED-249961",
     "Medicine Name": "Citalopram Forte",
     "Category": "Diuretic",
     "Dosage": "5 mL",
-    "Price ($)": 115.52
+    "Price ($)": 115.52,
+    "No. of Units": 296,
+    "Stock Out Units": 33,
+    "Category_Code": 12
   },
   "escitalopram ultra": {
+    "Medicine ID": "MED-249548",
     "Medicine Name": "Escitalopram Ultra",
     "Category": "Proton Pump Inhibitor",
     "Dosage": "10 mL",
-    "Price ($)": 23.33
+    "Price ($)": 23.33,
+    "No. of Units": 733,
+    "Stock Out Units": 43,
+    "Category_Code": 13
   },
   "gabapentin active": {
+    "Medicine ID": "MED-249922",
     "Medicine Name": "Gabapentin Active",
     "Category": "Corticosteroid",
     "Dosage": "10 mg",
-    "Price ($)": 206.02
+    "Price ($)": 206.02,
+    "No. of Units": 617,
+    "Stock Out Units": 80,
+    "Category_Code": 11
   },
   "carvedilol ultra": {
+    "Medicine ID": "MED-249691",
     "Medicine Name": "Carvedilol Ultra",
     "Category": "Analgesic",
     "Dosage": "50 mg",
-    "Price ($)": 203.29
+    "Price ($)": 203.29,
+    "No. of Units": 120,
+    "Stock Out Units": 6,
+    "Category_Code": 0
   },
   "rosuvastatin": {
+    "Medicine ID": "MED-249950",
     "Medicine Name": "Rosuvastatin",
     "Category": "Proton Pump Inhibitor",
     "Dosage": "10 mg",
-    "Price ($)": 81.84
+    "Price ($)": 81.84,
+    "No. of Units": 675,
+    "Stock Out Units": 134,
+    "Category_Code": 13
   },
   "valsartan": {
+    "Medicine ID": "MED-249935",
     "Medicine Name": "Valsartan",
     "Category": "Diuretic",
     "Dosage": "500 mg",
-    "Price ($)": 226.05
+    "Price ($)": 226.05,
+    "No. of Units": 792,
+    "Stock Out Units": 68,
+    "Category_Code": 12
   },
   "atorvastatin": {
+    "Medicine ID": "MED-249936",
     "Medicine Name": "Atorvastatin",
     "Category": "Bronchodilator",
     "Dosage": "650 mg",
-    "Price ($)": 80.77
+    "Price ($)": 80.77,
+    "No. of Units": 895,
+    "Stock Out Units": 97,
+    "Category_Code": 10
   },
   "fluoxetine": {
+    "Medicine ID": "MED-249836",
     "Medicine Name": "Fluoxetine",
     "Category": "Proton Pump Inhibitor",
     "Dosage": "10 mg",
-    "Price ($)": 218.83
+    "Price ($)": 218.83,
+    "No. of Units": 369,
+    "Stock Out Units": 19,
+    "Category_Code": 13
   },
   "escitalopram xr": {
+    "Medicine ID": "MED-249683",
     "Medicine Name": "Escitalopram XR",
     "Category": "Analgesic",
     "Dosage": "850 mg",
-    "Price ($)": 223.89
+    "Price ($)": 223.89,
+    "No. of Units": 410,
+    "Stock Out Units": 36,
+    "Category_Code": 0
   },
   "lisinopril": {
+    "Medicine ID": "MED-249952",
     "Medicine Name": "Lisinopril",
     "Category": "Bronchodilator",
     "Dosage": "50 mg",
-    "Price ($)": 156.07
+    "Price ($)": 156.07,
+    "No. of Units": 463,
+    "Stock Out Units": 66,
+    "Category_Code": 10
   },
   "omeprazole ultra": {
+    "Medicine ID": "MED-249452",
     "Medicine Name": "Omeprazole Ultra",
     "Category": "Beta-Blocker",
     "Dosage": "5 mg",
-    "Price ($)": 42.52
+    "Price ($)": 42.52,
+    "No. of Units": 953,
+    "Stock Out Units": 101,
+    "Category_Code": 9
   },
   "fluoxetine active": {
+    "Medicine ID": "MED-248259",
     "Medicine Name": "Fluoxetine Active",
     "Category": "Analgesic",
     "Dosage": "20 mg",
-    "Price ($)": 173.32
+    "Price ($)": 173.32,
+    "No. of Units": 862,
+    "Stock Out Units": 122,
+    "Category_Code": 0
   },
   "metformin hcl": {
+    "Medicine ID": "MED-249149",
     "Medicine Name": "Metformin HCL",
     "Category": "Anticoagulant",
     "Dosage": "10 mg",
-    "Price ($)": 178.66
+    "Price ($)": 178.66,
+    "No. of Units": 692,
+    "Stock Out Units": 70,
+    "Category_Code": 2
   },
   "prednisone": {
+    "Medicine ID": "MED-249977",
     "Medicine Name": "Prednisone",
     "Category": "Antiviral",
     "Dosage": "850 mg",
-    "Price ($)": 60.46
+    "Price ($)": 60.46,
+    "No. of Units": 298,
+    "Stock Out Units": 35,
+    "Category_Code": 8
   },
   "lipitor active": {
+    "Medicine ID": "MED-249667",
     "Medicine Name": "Lipitor Active",
     "Category": "Corticosteroid",
     "Dosage": "250 mg",
-    "Price ($)": 181.29
+    "Price ($)": 181.29,
+    "No. of Units": 289,
+    "Stock Out Units": 17,
+    "Category_Code": 11
   },
   "azithromycin": {
+    "Medicine ID": "MED-249965",
     "Medicine Name": "Azithromycin",
     "Category": "Proton Pump Inhibitor",
     "Dosage": "5 mg",
-    "Price ($)": 158.25
+    "Price ($)": 158.25,
+    "No. of Units": 460,
+    "Stock Out Units": 91,
+    "Category_Code": 13
   },
   "bupropion": {
+    "Medicine ID": "MED-249997",
     "Medicine Name": "Bupropion",
     "Category": "Diuretic",
     "Dosage": "100 mg",
-    "Price ($)": 12.48
+    "Price ($)": 12.48,
+    "No. of Units": 750,
+    "Stock Out Units": 38,
+    "Category_Code": 12
   },
   "albuterol": {
+    "Medicine ID": "MED-249910",
     "Medicine Name": "Albuterol",
     "Category": "Proton Pump Inhibitor",
     "Dosage": "5 mL",
-    "Price ($)": 19.26
+    "Price ($)": 19.26,
+    "No. of Units": 134,
+    "Stock Out Units": 24,
+    "Category_Code": 13
   },
   "lipitor sodium": {
+    "Medicine ID": "MED-249852",
     "Medicine Name": "Lipitor Sodium",
     "Category": "Antiviral",
     "Dosage": "1000 mg",
-    "Price ($)": 65.82
+    "Price ($)": 65.82,
+    "No. of Units": 540,
+    "Stock Out Units": 34,
+    "Category_Code": 8
   },
   "tamsulosin sodium": {
+    "Medicine ID": "MED-249701",
     "Medicine Name": "Tamsulosin Sodium",
     "Category": "Antifungal",
     "Dosage": "5 mL",
-    "Price ($)": 47.58
+    "Price ($)": 47.58,
+    "No. of Units": 137,
+    "Stock Out Units": 25,
+    "Category_Code": 5
   },
   "escitalopram ds": {
+    "Medicine ID": "MED-249547",
     "Medicine Name": "Escitalopram DS",
     "Category": "Antiviral",
     "Dosage": "50 mg",
-    "Price ($)": 77.58
+    "Price ($)": 77.58,
+    "No. of Units": 978,
+    "Stock Out Units": 171,
+    "Category_Code": 8
   },
   "amoxicillin": {
+    "Medicine ID": "MED-249974",
     "Medicine Name": "Amoxicillin",
     "Category": "Diuretic",
     "Dosage": "5 mg",
-    "Price ($)": 96.0
+    "Price ($)": 96.0,
+    "No. of Units": 267,
+    "Stock Out Units": 29,
+    "Category_Code": 12
   },
   "azithromycin active": {
+    "Medicine ID": "MED-249490",
     "Medicine Name": "Azithromycin Active",
     "Category": "Corticosteroid",
     "Dosage": "5 mg",
-    "Price ($)": 76.83
+    "Price ($)": 76.83,
+    "No. of Units": 976,
+    "Stock Out Units": 156,
+    "Category_Code": 11
   },
   "carvedilol plus": {
+    "Medicine ID": "MED-249457",
     "Medicine Name": "Carvedilol Plus",
     "Category": "Antiviral",
     "Dosage": "10 mL",
-    "Price ($)": 9.67
+    "Price ($)": 9.67,
+    "No. of Units": 935,
+    "Stock Out Units": 97,
+    "Category_Code": 8
   },
   "prednisone combo": {
+    "Medicine ID": "MED-248850",
     "Medicine Name": "Prednisone Combo",
     "Category": "Antihistamine",
     "Dosage": "10 mL",
-    "Price ($)": 48.87
+    "Price ($)": 48.87,
+    "No. of Units": 584,
+    "Stock Out Units": 80,
+    "Category_Code": 6
   },
   "citalopram ds": {
+    "Medicine ID": "MED-249789",
     "Medicine Name": "Citalopram DS",
     "Category": "Analgesic",
     "Dosage": "50 mg",
-    "Price ($)": 179.52
+    "Price ($)": 179.52,
+    "No. of Units": 476,
+    "Stock Out Units": 95,
+    "Category_Code": 0
   },
   "azithromycin combo": {
+    "Medicine ID": "MED-249090",
     "Medicine Name": "Azithromycin Combo",
     "Category": "Diuretic",
     "Dosage": "10 mg",
-    "Price ($)": 155.41
+    "Price ($)": 155.41,
+    "No. of Units": 322,
+    "Stock Out Units": 22,
+    "Category_Code": 12
   },
   "duloxetine": {
+    "Medicine ID": "MED-249998",
     "Medicine Name": "Duloxetine",
     "Category": "Antiviral",
     "Dosage": "650 mg",
-    "Price ($)": 41.85
+    "Price ($)": 41.85,
+    "No. of Units": 165,
+    "Stock Out Units": 11,
+    "Category_Code": 8
   },
   "clopidogrel ultra": {
+    "Medicine ID": "MED-248732",
     "Medicine Name": "Clopidogrel Ultra",
     "Category": "Analgesic",
     "Dosage": "250 mg",
-    "Price ($)": 14.97
+    "Price ($)": 14.97,
+    "No. of Units": 423,
+    "Stock Out Units": 53,
+    "Category_Code": 0
   },
   "meloxicam xr": {
+    "Medicine ID": "MED-249986",
     "Medicine Name": "Meloxicam XR",
     "Category": "Antidepressant",
     "Dosage": "5 mL",
-    "Price ($)": 158.49
+    "Price ($)": 158.49,
+    "No. of Units": 646,
+    "Stock Out Units": 107,
+    "Category_Code": 3
   },
   "meloxicam": {
+    "Medicine ID": "MED-249975",
     "Medicine Name": "Meloxicam",
     "Category": "Corticosteroid",
     "Dosage": "10 mg",
-    "Price ($)": 212.45
+    "Price ($)": 212.45,
+    "No. of Units": 901,
+    "Stock Out Units": 169,
+    "Category_Code": 11
   },
   "sertraline ds": {
+    "Medicine ID": "MED-249917",
     "Medicine Name": "Sertraline DS",
     "Category": "Anticoagulant",
     "Dosage": "500 mg",
-    "Price ($)": 56.81
+    "Price ($)": 56.81,
+    "No. of Units": 454,
+    "Stock Out Units": 90,
+    "Category_Code": 2
   },
   "tamsulosin active": {
+    "Medicine ID": "MED-248982",
     "Medicine Name": "Tamsulosin Active",
     "Category": "Antidiabetic",
     "Dosage": "10 mL",
-    "Price ($)": 185.95
+    "Price ($)": 185.95,
+    "No. of Units": 55,
+    "Stock Out Units": 6,
+    "Category_Code": 4
   },
   "acetaminophen plus": {
+    "Medicine ID": "MED-249990",
     "Medicine Name": "Acetaminophen Plus",
     "Category": "Beta-Blocker",
     "Dosage": "50 mg",
-    "Price ($)": 72.48
+    "Price ($)": 72.48,
+    "No. of Units": 107,
+    "Stock Out Units": 9,
+    "Category_Code": 9
   },
   "ibuprofen combo": {
+    "Medicine ID": "MED-249926",
     "Medicine Name": "Ibuprofen Combo",
     "Category": "Diuretic",
     "Dosage": "250 mg",
-    "Price ($)": 209.52
+    "Price ($)": 209.52,
+    "No. of Units": 652,
+    "Stock Out Units": 54,
+    "Category_Code": 12
   },
   "bupropion ultra": {
+    "Medicine ID": "MED-249607",
     "Medicine Name": "Bupropion Ultra",
     "Category": "Diuretic",
     "Dosage": "850 mg",
-    "Price ($)": 127.1
+    "Price ($)": 127.1,
+    "No. of Units": 691,
+    "Stock Out Units": 36,
+    "Category_Code": 12
   },
   "bupropion combo": {
+    "Medicine ID": "MED-249953",
     "Medicine Name": "Bupropion Combo",
     "Category": "Antifungal",
     "Dosage": "20 mg",
-    "Price ($)": 174.47
+    "Price ($)": 174.47,
+    "No. of Units": 468,
+    "Stock Out Units": 52,
+    "Category_Code": 5
   },
   "rosuvastatin max": {
+    "Medicine ID": "MED-249959",
     "Medicine Name": "Rosuvastatin Max",
     "Category": "Diuretic",
     "Dosage": "850 mg",
-    "Price ($)": 122.29
+    "Price ($)": 122.29,
+    "No. of Units": 912,
+    "Stock Out Units": 73,
+    "Category_Code": 12
   },
   "azithromycin forte": {
+    "Medicine ID": "MED-249686",
     "Medicine Name": "Azithromycin Forte",
     "Category": "Antibiotic",
     "Dosage": "500 mg",
-    "Price ($)": 127.68
+    "Price ($)": 127.68,
+    "No. of Units": 499,
+    "Stock Out Units": 46,
+    "Category_Code": 1
   },
   "valsartan combo": {
+    "Medicine ID": "MED-249978",
     "Medicine Name": "Valsartan Combo",
     "Category": "Antiviral",
     "Dosage": "850 mg",
-    "Price ($)": 228.37
+    "Price ($)": 228.37,
+    "No. of Units": 460,
+    "Stock Out Units": 84,
+    "Category_Code": 8
   },
   "pantoprazole xr": {
+    "Medicine ID": "MED-249909",
     "Medicine Name": "Pantoprazole XR",
     "Category": "Antihistamine",
     "Dosage": "650 mg",
-    "Price ($)": 157.34
+    "Price ($)": 157.34,
+    "No. of Units": 705,
+    "Stock Out Units": 112,
+    "Category_Code": 6
   },
   "duloxetine max": {
+    "Medicine ID": "MED-249979",
     "Medicine Name": "Duloxetine Max",
     "Category": "Antidepressant",
     "Dosage": "5 mg",
-    "Price ($)": 172.16
+    "Price ($)": 172.16,
+    "No. of Units": 160,
+    "Stock Out Units": 23,
+    "Category_Code": 3
   },
   "metformin": {
+    "Medicine ID": "MED-249963",
     "Medicine Name": "Metformin",
     "Category": "Antifungal",
     "Dosage": "10 mg",
-    "Price ($)": 31.5
+    "Price ($)": 31.5,
+    "No. of Units": 56,
+    "Stock Out Units": 9,
+    "Category_Code": 5
   },
   "levothyroxine hcl": {
+    "Medicine ID": "MED-249675",
     "Medicine Name": "Levothyroxine HCL",
     "Category": "Antidiabetic",
     "Dosage": "5 mL",
-    "Price ($)": 229.77
+    "Price ($)": 229.77,
+    "No. of Units": 901,
+    "Stock Out Units": 152,
+    "Category_Code": 4
   },
   "gabapentin forte": {
+    "Medicine ID": "MED-249939",
     "Medicine Name": "Gabapentin Forte",
     "Category": "Anticoagulant",
     "Dosage": "50 mg",
-    "Price ($)": 216.92
+    "Price ($)": 216.92,
+    "No. of Units": 516,
+    "Stock Out Units": 88,
+    "Category_Code": 2
   },
   "escitalopram": {
+    "Medicine ID": "MED-249788",
     "Medicine Name": "Escitalopram",
     "Category": "Analgesic",
     "Dosage": "850 mg",
-    "Price ($)": 184.78
+    "Price ($)": 184.78,
+    "No. of Units": 538,
+    "Stock Out Units": 91,
+    "Category_Code": 0
   },
   "losartan combo": {
+    "Medicine ID": "MED-248911",
     "Medicine Name": "Losartan Combo",
     "Category": "Antifungal",
     "Dosage": "1000 mg",
-    "Price ($)": 75.81
+    "Price ($)": 75.81,
+    "No. of Units": 621,
+    "Stock Out Units": 113,
+    "Category_Code": 5
   },
   "gabapentin ultra": {
+    "Medicine ID": "MED-249221",
     "Medicine Name": "Gabapentin Ultra",
     "Category": "Diuretic",
     "Dosage": "500 mg",
-    "Price ($)": 220.83
+    "Price ($)": 220.83,
+    "No. of Units": 402,
+    "Stock Out Units": 21,
+    "Category_Code": 12
   },
   "montelukast": {
+    "Medicine ID": "MED-249983",
     "Medicine Name": "Montelukast",
     "Category": "Proton Pump Inhibitor",
     "Dosage": "850 mg",
-    "Price ($)": 236.1
+    "Price ($)": 236.1,
+    "No. of Units": 504,
+    "Stock Out Units": 95,
+    "Category_Code": 13
   },
   "duloxetine xr": {
+    "Medicine ID": "MED-248961",
     "Medicine Name": "Duloxetine XR",
     "Category": "Antibiotic",
     "Dosage": "10 mL",
-    "Price ($)": 50.26
+    "Price ($)": 50.26,
+    "No. of Units": 607,
+    "Stock Out Units": 63,
+    "Category_Code": 1
   },
   "tamsulosin hcl": {
+    "Medicine ID": "MED-249333",
     "Medicine Name": "Tamsulosin HCL",
     "Category": "Beta-Blocker",
     "Dosage": "10 mg",
-    "Price ($)": 97.22
+    "Price ($)": 97.22,
+    "No. of Units": 31,
+    "Stock Out Units": 3,
+    "Category_Code": 9
   },
   "hydrochlorothiazide ds": {
+    "Medicine ID": "MED-249823",
     "Medicine Name": "Hydrochlorothiazide DS",
     "Category": "Proton Pump Inhibitor",
     "Dosage": "1000 mg",
-    "Price ($)": 96.63
+    "Price ($)": 96.63,
+    "No. of Units": 799,
+    "Stock Out Units": 140,
+    "Category_Code": 13
   },
   "montelukast combo": {
+    "Medicine ID": "MED-249679",
     "Medicine Name": "Montelukast Combo",
     "Category": "Antidepressant",
     "Dosage": "5 mg",
-    "Price ($)": 157.44
+    "Price ($)": 157.44,
+    "No. of Units": 673,
+    "Stock Out Units": 114,
+    "Category_Code": 3
   },
   "carvedilol forte": {
+    "Medicine ID": "MED-249770",
     "Medicine Name": "Carvedilol Forte",
     "Category": "Antiviral",
     "Dosage": "5 mL",
-    "Price ($)": 170.31
+    "Price ($)": 170.31,
+    "No. of Units": 758,
+    "Stock Out Units": 70,
+    "Category_Code": 8
   },
   "carvedilol combo": {
+    "Medicine ID": "MED-249971",
     "Medicine Name": "Carvedilol Combo",
     "Category": "Beta-Blocker",
     "Dosage": "5 mL",
-    "Price ($)": 30.35
+    "Price ($)": 30.35,
+    "No. of Units": 808,
+    "Stock Out Units": 112,
+    "Category_Code": 9
   },
   "lipitor ultra": {
+    "Medicine ID": "MED-249265",
     "Medicine Name": "Lipitor Ultra",
     "Category": "Antiviral",
     "Dosage": "10 mg",
-    "Price ($)": 107.78
+    "Price ($)": 107.78,
+    "No. of Units": 859,
+    "Stock Out Units": 67,
+    "Category_Code": 8
   },
   "tamsulosin plus": {
+    "Medicine ID": "MED-249741",
     "Medicine Name": "Tamsulosin Plus",
     "Category": "Antiviral",
     "Dosage": "250 mg",
-    "Price ($)": 222.91
+    "Price ($)": 222.91,
+    "No. of Units": 41,
+    "Stock Out Units": 3,
+    "Category_Code": 8
   },
   "ibuprofen max": {
+    "Medicine ID": "MED-249835",
     "Medicine Name": "Ibuprofen Max",
     "Category": "Antifungal",
     "Dosage": "5 mg",
-    "Price ($)": 187.26
+    "Price ($)": 187.26,
+    "No. of Units": 701,
+    "Stock Out Units": 42,
+    "Category_Code": 5
   },
   "tamsulosin": {
+    "Medicine ID": "MED-249847",
     "Medicine Name": "Tamsulosin",
     "Category": "Analgesic",
     "Dosage": "5 mL",
-    "Price ($)": 66.62
+    "Price ($)": 66.62,
+    "No. of Units": 327,
+    "Stock Out Units": 42,
+    "Category_Code": 0
   },
   "gabapentin hcl": {
+    "Medicine ID": "MED-248513",
     "Medicine Name": "Gabapentin HCL",
     "Category": "Corticosteroid",
     "Dosage": "10 mg",
-    "Price ($)": 164.68
+    "Price ($)": 164.68,
+    "No. of Units": 222,
+    "Stock Out Units": 27,
+    "Category_Code": 11
   },
   "citalopram": {
+    "Medicine ID": "MED-249866",
     "Medicine Name": "Citalopram",
     "Category": "Antibiotic",
     "Dosage": "500 mg",
-    "Price ($)": 190.87
+    "Price ($)": 190.87,
+    "No. of Units": 739,
+    "Stock Out Units": 78,
+    "Category_Code": 1
   },
   "ibuprofen hcl": {
+    "Medicine ID": "MED-249810",
     "Medicine Name": "Ibuprofen HCL",
     "Category": "Statin",
     "Dosage": "50 mg",
-    "Price ($)": 82.18
+    "Price ($)": 82.18,
+    "No. of Units": 633,
+    "Stock Out Units": 69,
+    "Category_Code": 14
   },
   "hydrochlorothiazide": {
+    "Medicine ID": "MED-249993",
     "Medicine Name": "Hydrochlorothiazide",
     "Category": "Antidepressant",
     "Dosage": "10 mg",
-    "Price ($)": 96.06
+    "Price ($)": 96.06,
+    "No. of Units": 182,
+    "Stock Out Units": 11,
+    "Category_Code": 3
   },
   "clopidogrel": {
+    "Medicine ID": "MED-249987",
     "Medicine Name": "Clopidogrel",
     "Category": "Diuretic",
     "Dosage": "250 mg",
-    "Price ($)": 130.7
+    "Price ($)": 130.7,
+    "No. of Units": 341,
+    "Stock Out Units": 61,
+    "Category_Code": 12
   },
   "omeprazole": {
+    "Medicine ID": "MED-249919",
     "Medicine Name": "Omeprazole",
     "Category": "Proton Pump Inhibitor",
     "Dosage": "850 mg",
-    "Price ($)": 81.49
+    "Price ($)": 81.49,
+    "No. of Units": 442,
+    "Stock Out Units": 86,
+    "Category_Code": 13
   },
   "lisinopril combo": {
+    "Medicine ID": "MED-249623",
     "Medicine Name": "Lisinopril Combo",
     "Category": "Antifungal",
     "Dosage": "650 mg",
-    "Price ($)": 139.98
+    "Price ($)": 139.98,
+    "No. of Units": 278,
+    "Stock Out Units": 21,
+    "Category_Code": 5
   },
   "lipitor max": {
+    "Medicine ID": "MED-249473",
     "Medicine Name": "Lipitor Max",
     "Category": "Antihypertensive",
     "Dosage": "500 mg",
-    "Price ($)": 77.43
+    "Price ($)": 77.43,
+    "No. of Units": 317,
+    "Stock Out Units": 30,
+    "Category_Code": 7
   },
   "bupropion forte": {
+    "Medicine ID": "MED-249647",
     "Medicine Name": "Bupropion Forte",
     "Category": "Antidepressant",
     "Dosage": "5 mL",
-    "Price ($)": 66.51
+    "Price ($)": 66.51,
+    "No. of Units": 183,
+    "Stock Out Units": 35,
+    "Category_Code": 3
   },
   "albuterol plus": {
+    "Medicine ID": "MED-249883",
     "Medicine Name": "Albuterol Plus",
     "Category": "Bronchodilator",
     "Dosage": "850 mg",
-    "Price ($)": 22.49
+    "Price ($)": 22.49,
+    "No. of Units": 949,
+    "Stock Out Units": 135,
+    "Category_Code": 10
   },
   "sertraline": {
+    "Medicine ID": "MED-249876",
     "Medicine Name": "Sertraline",
     "Category": "Antidepressant",
     "Dosage": "50 mg",
-    "Price ($)": 244.07
+    "Price ($)": 244.07,
+    "No. of Units": 877,
+    "Stock Out Units": 128,
+    "Category_Code": 3
   },
   "lisinopril xr": {
+    "Medicine ID": "MED-249554",
     "Medicine Name": "Lisinopril XR",
     "Category": "Statin",
     "Dosage": "10 mg",
-    "Price ($)": 60.34
+    "Price ($)": 60.34,
+    "No. of Units": 246,
+    "Stock Out Units": 48,
+    "Category_Code": 14
   },
   "prednisone ultra": {
+    "Medicine ID": "MED-249749",
     "Medicine Name": "Prednisone Ultra",
     "Category": "Antidepressant",
     "Dosage": "5 mg",
-    "Price ($)": 163.78
+    "Price ($)": 163.78,
+    "No. of Units": 297,
+    "Stock Out Units": 35,
+    "Category_Code": 3
   },
   "citalopram plus": {
+    "Medicine ID": "MED-249619",
     "Medicine Name": "Citalopram Plus",
     "Category": "Statin",
     "Dosage": "500 mg",
-    "Price ($)": 228.79
+    "Price ($)": 228.79,
+    "No. of Units": 310,
+    "Stock Out Units": 53,
+    "Category_Code": 14
   },
   "carvedilol sodium": {
+    "Medicine ID": "MED-249980",
     "Medicine Name": "Carvedilol Sodium",
     "Category": "Antidiabetic",
     "Dosage": "50 mg",
-    "Price ($)": 59.53
+    "Price ($)": 59.53,
+    "No. of Units": 50,
+    "Stock Out Units": 9,
+    "Category_Code": 4
   },
   "lipitor ds": {
+    "Medicine ID": "MED-249786",
     "Medicine Name": "Lipitor DS",
     "Category": "Antidiabetic",
     "Dosage": "50 mg",
-    "Price ($)": 243.91
+    "Price ($)": 243.91,
+    "No. of Units": 847,
+    "Stock Out Units": 66,
+    "Category_Code": 4
   },
   "lisinopril ultra": {
+    "Medicine ID": "MED-248545",
     "Medicine Name": "Lisinopril Ultra",
     "Category": "Antifungal",
     "Dosage": "20 mg",
-    "Price ($)": 43.37
+    "Price ($)": 43.37,
+    "No. of Units": 606,
+    "Stock Out Units": 116,
+    "Category_Code": 5
   },
   "hydrochlorothiazide forte": {
+    "Medicine ID": "MED-249870",
     "Medicine Name": "Hydrochlorothiazide Forte",
     "Category": "Antidiabetic",
     "Dosage": "100 mg",
-    "Price ($)": 150.14
+    "Price ($)": 150.14,
+    "No. of Units": 740,
+    "Stock Out Units": 122,
+    "Category_Code": 4
   },
   "acetaminophen active": {
+    "Medicine ID": "MED-249546",
     "Medicine Name": "Acetaminophen Active",
     "Category": "Antihypertensive",
     "Dosage": "10 mg",
-    "Price ($)": 26.53
+    "Price ($)": 26.53,
+    "No. of Units": 224,
+    "Stock Out Units": 21,
+    "Category_Code": 7
   },
   "ibuprofen active": {
+    "Medicine ID": "MED-249387",
     "Medicine Name": "Ibuprofen Active",
     "Category": "Antiviral",
     "Dosage": "10 mg",
-    "Price ($)": 10.37
+    "Price ($)": 10.37,
+    "No. of Units": 30,
+    "Stock Out Units": 2,
+    "Category_Code": 8
   },
   "omeprazole forte": {
+    "Medicine ID": "MED-248772",
     "Medicine Name": "Omeprazole Forte",
     "Category": "Antihistamine",
     "Dosage": "100 mg",
-    "Price ($)": 85.67
+    "Price ($)": 85.67,
+    "No. of Units": 270,
+    "Stock Out Units": 47,
+    "Category_Code": 6
   },
   "hydrochlorothiazide xr": {
+    "Medicine ID": "MED-249945",
     "Medicine Name": "Hydrochlorothiazide XR",
     "Category": "Anticoagulant",
     "Dosage": "1000 mg",
-    "Price ($)": 93.69
+    "Price ($)": 93.69,
+    "No. of Units": 515,
+    "Stock Out Units": 97,
+    "Category_Code": 2
   },
   "duloxetine plus": {
+    "Medicine ID": "MED-249840",
     "Medicine Name": "Duloxetine Plus",
     "Category": "Proton Pump Inhibitor",
     "Dosage": "650 mg",
-    "Price ($)": 183.75
+    "Price ($)": 183.75,
+    "No. of Units": 56,
+    "Stock Out Units": 5,
+    "Category_Code": 13
   },
   "acetaminophen max": {
+    "Medicine ID": "MED-249164",
     "Medicine Name": "Acetaminophen Max",
     "Category": "Statin",
     "Dosage": "500 mg",
-    "Price ($)": 84.45
+    "Price ($)": 84.45,
+    "No. of Units": 444,
+    "Stock Out Units": 49,
+    "Category_Code": 14
   },
   "metoprolol max": {
+    "Medicine ID": "MED-248813",
     "Medicine Name": "Metoprolol Max",
     "Category": "Proton Pump Inhibitor",
     "Dosage": "50 mg",
-    "Price ($)": 13.75
+    "Price ($)": 13.75,
+    "No. of Units": 383,
+    "Stock Out Units": 72,
+    "Category_Code": 13
   },
   "duloxetine ds": {
+    "Medicine ID": "MED-249286",
     "Medicine Name": "Duloxetine DS",
     "Category": "Antihistamine",
     "Dosage": "20 mg",
-    "Price ($)": 169.73
+    "Price ($)": 169.73,
+    "No. of Units": 206,
+    "Stock Out Units": 22,
+    "Category_Code": 6
   },
   "tamsulosin max": {
+    "Medicine ID": "MED-248644",
     "Medicine Name": "Tamsulosin Max",
     "Category": "Antidepressant",
     "Dosage": "1000 mg",
-    "Price ($)": 37.69
+    "Price ($)": 37.69,
+    "No. of Units": 710,
+    "Stock Out Units": 44,
+    "Category_Code": 3
   },
   "metoprolol hcl": {
+    "Medicine ID": "MED-248905",
     "Medicine Name": "Metoprolol HCL",
     "Category": "Antidepressant",
     "Dosage": "10 mg",
-    "Price ($)": 47.54
+    "Price ($)": 47.54,
+    "No. of Units": 795,
+    "Stock Out Units": 82,
+    "Category_Code": 3
   },
   "losartan": {
+    "Medicine ID": "MED-249882",
     "Medicine Name": "Losartan",
     "Category": "Diuretic",
     "Dosage": "5 mL",
-    "Price ($)": 99.47
+    "Price ($)": 99.47,
+    "No. of Units": 584,
+    "Stock Out Units": 85,
+    "Category_Code": 12
   },
   "metoprolol": {
+    "Medicine ID": "MED-249944",
     "Medicine Name": "Metoprolol",
     "Category": "Antihypertensive",
     "Dosage": "5 mg",
-    "Price ($)": 37.81
+    "Price ($)": 37.81,
+    "No. of Units": 47,
+    "Stock Out Units": 9,
+    "Category_Code": 7
   },
   "amoxicillin combo": {
+    "Medicine ID": "MED-249698",
     "Medicine Name": "Amoxicillin Combo",
     "Category": "Statin",
     "Dosage": "250 mg",
-    "Price ($)": 132.69
+    "Price ($)": 132.69,
+    "No. of Units": 762,
+    "Stock Out Units": 148,
+    "Category_Code": 14
   },
   "gabapentin sodium": {
+    "Medicine ID": "MED-249854",
     "Medicine Name": "Gabapentin Sodium",
     "Category": "Proton Pump Inhibitor",
     "Dosage": "5 mg",
-    "Price ($)": 231.76
+    "Price ($)": 231.76,
+    "No. of Units": 104,
+    "Stock Out Units": 17,
+    "Category_Code": 13
   },
   "losartan ultra": {
+    "Medicine ID": "MED-249871",
     "Medicine Name": "Losartan Ultra",
     "Category": "Statin",
     "Dosage": "850 mg",
-    "Price ($)": 108.89
+    "Price ($)": 108.89,
+    "No. of Units": 127,
+    "Stock Out Units": 23,
+    "Category_Code": 14
   },
   "fluoxetine max": {
+    "Medicine ID": "MED-249296",
     "Medicine Name": "Fluoxetine Max",
     "Category": "Beta-Blocker",
     "Dosage": "50 mg",
-    "Price ($)": 148.37
+    "Price ($)": 148.37,
+    "No. of Units": 291,
+    "Stock Out Units": 33,
+    "Category_Code": 9
   },
   "rosuvastatin ultra": {
+    "Medicine ID": "MED-249257",
     "Medicine Name": "Rosuvastatin Ultra",
     "Category": "Antiviral",
     "Dosage": "5 mL",
-    "Price ($)": 42.73
+    "Price ($)": 42.73,
+    "No. of Units": 341,
+    "Stock Out Units": 63,
+    "Category_Code": 8
   },
   "clopidogrel sodium": {
+    "Medicine ID": "MED-249142",
     "Medicine Name": "Clopidogrel Sodium",
     "Category": "Antidiabetic",
     "Dosage": "10 mg",
-    "Price ($)": 207.56
+    "Price ($)": 207.56,
+    "No. of Units": 473,
+    "Stock Out Units": 41,
+    "Category_Code": 4
   },
   "omeprazole max": {
+    "Medicine ID": "MED-249487",
     "Medicine Name": "Omeprazole Max",
     "Category": "Beta-Blocker",
     "Dosage": "850 mg",
-    "Price ($)": 24.21
+    "Price ($)": 24.21,
+    "No. of Units": 928,
+    "Stock Out Units": 130,
+    "Category_Code": 9
   },
   "metformin ultra": {
+    "Medicine ID": "MED-249621",
     "Medicine Name": "Metformin Ultra",
     "Category": "Antifungal",
     "Dosage": "1000 mg",
-    "Price ($)": 50.61
+    "Price ($)": 50.61,
+    "No. of Units": 975,
+    "Stock Out Units": 67,
+    "Category_Code": 5
   },
   "metformin max": {
+    "Medicine ID": "MED-249293",
     "Medicine Name": "Metformin Max",
     "Category": "Antifungal",
     "Dosage": "250 mg",
-    "Price ($)": 209.78
+    "Price ($)": 209.78,
+    "No. of Units": 885,
+    "Stock Out Units": 46,
+    "Category_Code": 5
   },
   "amoxicillin forte": {
+    "Medicine ID": "MED-249668",
     "Medicine Name": "Amoxicillin Forte",
     "Category": "Corticosteroid",
     "Dosage": "250 mg",
-    "Price ($)": 117.4
+    "Price ($)": 117.4,
+    "No. of Units": 776,
+    "Stock Out Units": 70,
+    "Category_Code": 11
   },
   "meloxicam forte": {
+    "Medicine ID": "MED-249388",
     "Medicine Name": "Meloxicam Forte",
     "Category": "Corticosteroid",
     "Dosage": "10 mL",
-    "Price ($)": 222.77
+    "Price ($)": 222.77,
+    "No. of Units": 341,
+    "Stock Out Units": 45,
+    "Category_Code": 11
   },
   "levothyroxine ultra": {
+    "Medicine ID": "MED-249781",
     "Medicine Name": "Levothyroxine Ultra",
     "Category": "Bronchodilator",
     "Dosage": "20 mg",
-    "Price ($)": 141.21
+    "Price ($)": 141.21,
+    "No. of Units": 247,
+    "Stock Out Units": 45,
+    "Category_Code": 10
   },
   "gabapentin combo": {
+    "Medicine ID": "MED-248978",
     "Medicine Name": "Gabapentin Combo",
     "Category": "Beta-Blocker",
     "Dosage": "1000 mg",
-    "Price ($)": 141.83
+    "Price ($)": 141.83,
+    "No. of Units": 267,
+    "Stock Out Units": 27,
+    "Category_Code": 9
   },
   "losartan forte": {
+    "Medicine ID": "MED-249441",
     "Medicine Name": "Losartan Forte",
     "Category": "Antidepressant",
     "Dosage": "5 mg",
-    "Price ($)": 110.72
+    "Price ($)": 110.72,
+    "No. of Units": 367,
+    "Stock Out Units": 35,
+    "Category_Code": 3
   },
   "omeprazole xr": {
+    "Medicine ID": "MED-249232",
     "Medicine Name": "Omeprazole XR",
     "Category": "Antifungal",
     "Dosage": "1000 mg",
-    "Price ($)": 46.38
+    "Price ($)": 46.38,
+    "No. of Units": 955,
+    "Stock Out Units": 67,
+    "Category_Code": 5
   },
   "azithromycin hcl": {
+    "Medicine ID": "MED-249418",
     "Medicine Name": "Azithromycin HCL",
     "Category": "Antidiabetic",
     "Dosage": "100 mg",
-    "Price ($)": 68.25
+    "Price ($)": 68.25,
+    "No. of Units": 323,
+    "Stock Out Units": 50,
+    "Category_Code": 4
   },
   "lipitor": {
+    "Medicine ID": "MED-249954",
     "Medicine Name": "Lipitor",
     "Category": "Antidiabetic",
     "Dosage": "50 mg",
-    "Price ($)": 64.91
+    "Price ($)": 64.91,
+    "No. of Units": 819,
+    "Stock Out Units": 43,
+    "Category_Code": 4
   },
   "amoxicillin hcl": {
+    "Medicine ID": "MED-249748",
     "Medicine Name": "Amoxicillin HCL",
     "Category": "Proton Pump Inhibitor",
     "Dosage": "500 mg",
-    "Price ($)": 192.91
+    "Price ($)": 192.91,
+    "No. of Units": 77,
+    "Stock Out Units": 10,
+    "Category_Code": 13
   },
   "acetaminophen": {
+    "Medicine ID": "MED-249811",
     "Medicine Name": "Acetaminophen",
     "Category": "Antiviral",
     "Dosage": "10 mg",
-    "Price ($)": 8.38
+    "Price ($)": 8.38,
+    "No. of Units": 210,
+    "Stock Out Units": 22,
+    "Category_Code": 8
   },
   "bupropion active": {
+    "Medicine ID": "MED-248616",
     "Medicine Name": "Bupropion Active",
     "Category": "Antifungal",
     "Dosage": "1000 mg",
-    "Price ($)": 70.28
+    "Price ($)": 70.28,
+    "No. of Units": 461,
+    "Stock Out Units": 28,
+    "Category_Code": 5
   },
   "levothyroxine plus": {
+    "Medicine ID": "MED-249830",
     "Medicine Name": "Levothyroxine Plus",
     "Category": "Antifungal",
     "Dosage": "5 mg",
-    "Price ($)": 104.96
+    "Price ($)": 104.96,
+    "No. of Units": 57,
+    "Stock Out Units": 9,
+    "Category_Code": 5
   },
   "omeprazole sodium": {
+    "Medicine ID": "MED-249591",
     "Medicine Name": "Omeprazole Sodium",
     "Category": "Bronchodilator",
     "Dosage": "500 mg",
-    "Price ($)": 26.49
+    "Price ($)": 26.49,
+    "No. of Units": 961,
+    "Stock Out Units": 136,
+    "Category_Code": 10
   },
   "amoxicillin active": {
+    "Medicine ID": "MED-249535",
     "Medicine Name": "Amoxicillin Active",
     "Category": "Antihypertensive",
     "Dosage": "250 mg",
-    "Price ($)": 134.35
+    "Price ($)": 134.35,
+    "No. of Units": 807,
+    "Stock Out Units": 118,
+    "Category_Code": 7
   },
   "levothyroxine": {
+    "Medicine ID": "MED-249982",
     "Medicine Name": "Levothyroxine",
     "Category": "Antidepressant",
     "Dosage": "250 mg",
-    "Price ($)": 161.5
+    "Price ($)": 161.5,
+    "No. of Units": 141,
+    "Stock Out Units": 14,
+    "Category_Code": 3
   },
   "valsartan xr": {
+    "Medicine ID": "MED-248266",
     "Medicine Name": "Valsartan XR",
     "Category": "Diuretic",
     "Dosage": "5 mL",
-    "Price ($)": 130.4
+    "Price ($)": 130.4,
+    "No. of Units": 908,
+    "Stock Out Units": 95,
+    "Category_Code": 12
   },
   "ibuprofen sodium": {
+    "Medicine ID": "MED-249421",
     "Medicine Name": "Ibuprofen Sodium",
     "Category": "Analgesic",
     "Dosage": "5 mg",
-    "Price ($)": 220.1
+    "Price ($)": 220.1,
+    "No. of Units": 20,
+    "Stock Out Units": 2,
+    "Category_Code": 0
   },
   "sertraline hcl": {
+    "Medicine ID": "MED-249036",
     "Medicine Name": "Sertraline HCL",
     "Category": "Antidiabetic",
     "Dosage": "5 mL",
-    "Price ($)": 184.81
+    "Price ($)": 184.81,
+    "No. of Units": 64,
+    "Stock Out Units": 8,
+    "Category_Code": 4
   },
   "tamsulosin forte": {
+    "Medicine ID": "MED-249609",
     "Medicine Name": "Tamsulosin Forte",
     "Category": "Anticoagulant",
     "Dosage": "5 mg",
-    "Price ($)": 130.27
+    "Price ($)": 130.27,
+    "No. of Units": 756,
+    "Stock Out Units": 69,
+    "Category_Code": 2
   },
   "rosuvastatin combo": {
+    "Medicine ID": "MED-249375",
     "Medicine Name": "Rosuvastatin Combo",
     "Category": "Analgesic",
     "Dosage": "500 mg",
-    "Price ($)": 16.05
+    "Price ($)": 16.05,
+    "No. of Units": 12,
+    "Stock Out Units": 2,
+    "Category_Code": 0
   },
   "gabapentin xr": {
+    "Medicine ID": "MED-249966",
     "Medicine Name": "Gabapentin XR",
     "Category": "Bronchodilator",
     "Dosage": "5 mL",
-    "Price ($)": 56.83
+    "Price ($)": 56.83,
+    "No. of Units": 831,
+    "Stock Out Units": 71,
+    "Category_Code": 10
   },
   "clopidogrel hcl": {
+    "Medicine ID": "MED-249758",
     "Medicine Name": "Clopidogrel HCL",
     "Category": "Antifungal",
     "Dosage": "1000 mg",
-    "Price ($)": 113.07
+    "Price ($)": 113.07,
+    "No. of Units": 579,
+    "Stock Out Units": 69,
+    "Category_Code": 5
   },
   "pantoprazole max": {
+    "Medicine ID": "MED-249072",
     "Medicine Name": "Pantoprazole Max",
     "Category": "Statin",
     "Dosage": "100 mg",
-    "Price ($)": 17.77
+    "Price ($)": 17.77,
+    "No. of Units": 165,
+    "Stock Out Units": 22,
+    "Category_Code": 14
   },
   "lisinopril ds": {
+    "Medicine ID": "MED-249084",
     "Medicine Name": "Lisinopril DS",
     "Category": "Proton Pump Inhibitor",
     "Dosage": "20 mg",
-    "Price ($)": 212.35
+    "Price ($)": 212.35,
+    "No. of Units": 464,
+    "Stock Out Units": 78,
+    "Category_Code": 13
   },
   "valsartan forte": {
+    "Medicine ID": "MED-248605",
     "Medicine Name": "Valsartan Forte",
     "Category": "Antibiotic",
     "Dosage": "850 mg",
-    "Price ($)": 228.87
+    "Price ($)": 228.87,
+    "No. of Units": 578,
+    "Stock Out Units": 76,
+    "Category_Code": 1
   },
   "metoprolol combo": {
+    "Medicine ID": "MED-249813",
     "Medicine Name": "Metoprolol Combo",
     "Category": "Anticoagulant",
     "Dosage": "1000 mg",
-    "Price ($)": 11.54
+    "Price ($)": 11.54,
+    "No. of Units": 620,
+    "Stock Out Units": 59,
+    "Category_Code": 2
   },
   "atorvastatin sodium": {
+    "Medicine ID": "MED-249073",
     "Medicine Name": "Atorvastatin Sodium",
     "Category": "Antidepressant",
     "Dosage": "10 mg",
-    "Price ($)": 80.6
+    "Price ($)": 80.6,
+    "No. of Units": 158,
+    "Stock Out Units": 17,
+    "Category_Code": 3
   },
   "citalopram active": {
+    "Medicine ID": "MED-249708",
     "Medicine Name": "Citalopram Active",
     "Category": "Statin",
     "Dosage": "5 mg",
-    "Price ($)": 9.97
+    "Price ($)": 9.97,
+    "No. of Units": 476,
+    "Stock Out Units": 26,
+    "Category_Code": 14
   },
   "metoprolol ultra": {
+    "Medicine ID": "MED-249925",
     "Medicine Name": "Metoprolol Ultra",
     "Category": "Antihypertensive",
     "Dosage": "650 mg",
-    "Price ($)": 98.99
+    "Price ($)": 98.99,
+    "No. of Units": 226,
+    "Stock Out Units": 13,
+    "Category_Code": 7
   },
   "meloxicam plus": {
+    "Medicine ID": "MED-249308",
     "Medicine Name": "Meloxicam Plus",
     "Category": "Anticoagulant",
     "Dosage": "10 mg",
-    "Price ($)": 183.38
+    "Price ($)": 183.38,
+    "No. of Units": 186,
+    "Stock Out Units": 36,
+    "Category_Code": 2
   },
   "rosuvastatin forte": {
+    "Medicine ID": "MED-249636",
     "Medicine Name": "Rosuvastatin Forte",
     "Category": "Antidepressant",
     "Dosage": "1000 mg",
-    "Price ($)": 173.02
+    "Price ($)": 173.02,
+    "No. of Units": 426,
+    "Stock Out Units": 33,
+    "Category_Code": 3
   },
   "tamsulosin ds": {
+    "Medicine ID": "MED-249907",
     "Medicine Name": "Tamsulosin DS",
     "Category": "Beta-Blocker",
     "Dosage": "10 mg",
-    "Price ($)": 188.65
+    "Price ($)": 188.65,
+    "No. of Units": 445,
+    "Stock Out Units": 53,
+    "Category_Code": 9
   },
   "sertraline forte": {
+    "Medicine ID": "MED-249845",
     "Medicine Name": "Sertraline Forte",
     "Category": "Statin",
     "Dosage": "650 mg",
-    "Price ($)": 43.4
+    "Price ($)": 43.4,
+    "No. of Units": 719,
+    "Stock Out Units": 72,
+    "Category_Code": 14
   },
   "duloxetine combo": {
+    "Medicine ID": "MED-249687",
     "Medicine Name": "Duloxetine Combo",
     "Category": "Antidiabetic",
     "Dosage": "5 mL",
-    "Price ($)": 184.53
+    "Price ($)": 184.53,
+    "No. of Units": 867,
+    "Stock Out Units": 156,
+    "Category_Code": 4
   },
   "albuterol forte": {
+    "Medicine ID": "MED-249955",
     "Medicine Name": "Albuterol Forte",
     "Category": "Analgesic",
     "Dosage": "50 mg",
-    "Price ($)": 152.25
+    "Price ($)": 152.25,
+    "No. of Units": 960,
+    "Stock Out Units": 147,
+    "Category_Code": 0
   },
   "pantoprazole combo": {
+    "Medicine ID": "MED-249408",
     "Medicine Name": "Pantoprazole Combo",
     "Category": "Statin",
     "Dosage": "10 mL",
-    "Price ($)": 136.92
+    "Price ($)": 136.92,
+    "No. of Units": 278,
+    "Stock Out Units": 44,
+    "Category_Code": 14
   },
   "bupropion sodium": {
+    "Medicine ID": "MED-248802",
     "Medicine Name": "Bupropion Sodium",
     "Category": "Beta-Blocker",
     "Dosage": "5 mg",
-    "Price ($)": 66.56
+    "Price ($)": 66.56,
+    "No. of Units": 171,
+    "Stock Out Units": 18,
+    "Category_Code": 9
   },
   "bupropion ds": {
+    "Medicine ID": "MED-249889",
     "Medicine Name": "Bupropion DS",
     "Category": "Anticoagulant",
     "Dosage": "1000 mg",
-    "Price ($)": 60.34
+    "Price ($)": 60.34,
+    "No. of Units": 637,
+    "Stock Out Units": 47,
+    "Category_Code": 2
   },
   "carvedilol": {
+    "Medicine ID": "MED-249943",
     "Medicine Name": "Carvedilol",
     "Category": "Antihypertensive",
     "Dosage": "650 mg",
-    "Price ($)": 50.6
+    "Price ($)": 50.6,
+    "No. of Units": 955,
+    "Stock Out Units": 130,
+    "Category_Code": 7
   },
   "valsartan sodium": {
+    "Medicine ID": "MED-248879",
     "Medicine Name": "Valsartan Sodium",
     "Category": "Antidepressant",
     "Dosage": "500 mg",
-    "Price ($)": 153.01
+    "Price ($)": 153.01,
+    "No. of Units": 232,
+    "Stock Out Units": 33,
+    "Category_Code": 3
   },
   "amoxicillin max": {
+    "Medicine ID": "MED-249992",
     "Medicine Name": "Amoxicillin Max",
     "Category": "Corticosteroid",
     "Dosage": "850 mg",
-    "Price ($)": 93.89
+    "Price ($)": 93.89,
+    "No. of Units": 78,
+    "Stock Out Units": 16,
+    "Category_Code": 11
   },
   "duloxetine sodium": {
+    "Medicine ID": "MED-249916",
     "Medicine Name": "Duloxetine Sodium",
     "Category": "Beta-Blocker",
     "Dosage": "20 mg",
-    "Price ($)": 90.28
+    "Price ($)": 90.28,
+    "No. of Units": 66,
+    "Stock Out Units": 12,
+    "Category_Code": 9
   },
   "pantoprazole active": {
+    "Medicine ID": "MED-249860",
     "Medicine Name": "Pantoprazole Active",
     "Category": "Antiviral",
     "Dosage": "850 mg",
-    "Price ($)": 212.45
+    "Price ($)": 212.45,
+    "No. of Units": 446,
+    "Stock Out Units": 74,
+    "Category_Code": 8
   },
   "losartan hcl": {
+    "Medicine ID": "MED-249848",
     "Medicine Name": "Losartan HCL",
     "Category": "Antihistamine",
     "Dosage": "650 mg",
-    "Price ($)": 229.84
+    "Price ($)": 229.84,
+    "No. of Units": 501,
+    "Stock Out Units": 54,
+    "Category_Code": 6
   },
   "gabapentin max": {
+    "Medicine ID": "MED-247084",
     "Medicine Name": "Gabapentin Max",
     "Category": "Antidiabetic",
     "Dosage": "100 mg",
-    "Price ($)": 239.38
+    "Price ($)": 239.38,
+    "No. of Units": 332,
+    "Stock Out Units": 55,
+    "Category_Code": 4
   },
   "rosuvastatin xr": {
+    "Medicine ID": "MED-249064",
     "Medicine Name": "Rosuvastatin XR",
     "Category": "Antiviral",
     "Dosage": "5 mL",
-    "Price ($)": 68.94
+    "Price ($)": 68.94,
+    "No. of Units": 207,
+    "Stock Out Units": 33,
+    "Category_Code": 8
   },
   "sertraline max": {
+    "Medicine ID": "MED-248971",
     "Medicine Name": "Sertraline Max",
     "Category": "Antihistamine",
     "Dosage": "5 mL",
-    "Price ($)": 71.23
+    "Price ($)": 71.23,
+    "No. of Units": 761,
+    "Stock Out Units": 107,
+    "Category_Code": 6
   },
   "azithromycin sodium": {
+    "Medicine ID": "MED-249670",
     "Medicine Name": "Azithromycin Sodium",
     "Category": "Antiviral",
     "Dosage": "250 mg",
-    "Price ($)": 139.0
+    "Price ($)": 139.0,
+    "No. of Units": 736,
+    "Stock Out Units": 45,
+    "Category_Code": 8
   },
   "prednisone forte": {
+    "Medicine ID": "MED-249458",
     "Medicine Name": "Prednisone Forte",
     "Category": "Antiviral",
     "Dosage": "10 mL",
-    "Price ($)": 50.37
+    "Price ($)": 50.37,
+    "No. of Units": 956,
+    "Stock Out Units": 95,
+    "Category_Code": 8
   },
   "losartan max": {
+    "Medicine ID": "MED-249476",
     "Medicine Name": "Losartan Max",
     "Category": "Proton Pump Inhibitor",
     "Dosage": "500 mg",
-    "Price ($)": 138.44
+    "Price ($)": 138.44,
+    "No. of Units": 353,
+    "Stock Out Units": 30,
+    "Category_Code": 13
   },
   "clopidogrel combo": {
+    "Medicine ID": "MED-248872",
     "Medicine Name": "Clopidogrel Combo",
     "Category": "Anticoagulant",
     "Dosage": "1000 mg",
-    "Price ($)": 10.57
+    "Price ($)": 10.57,
+    "No. of Units": 583,
+    "Stock Out Units": 57,
+    "Category_Code": 2
   },
   "metformin sodium": {
+    "Medicine ID": "MED-249283",
     "Medicine Name": "Metformin Sodium",
     "Category": "Antihypertensive",
     "Dosage": "50 mg",
-    "Price ($)": 100.0
+    "Price ($)": 100.0,
+    "No. of Units": 281,
+    "Stock Out Units": 55,
+    "Category_Code": 7
   },
   "clopidogrel forte": {
+    "Medicine ID": "MED-249972",
     "Medicine Name": "Clopidogrel Forte",
     "Category": "Antihistamine",
     "Dosage": "10 mL",
-    "Price ($)": 57.81
+    "Price ($)": 57.81,
+    "No. of Units": 200,
+    "Stock Out Units": 25,
+    "Category_Code": 6
   },
   "fluoxetine hcl": {
+    "Medicine ID": "MED-249014",
     "Medicine Name": "Fluoxetine HCL",
     "Category": "Antibiotic",
     "Dosage": "5 mg",
-    "Price ($)": 5.51
+    "Price ($)": 5.51,
+    "No. of Units": 74,
+    "Stock Out Units": 6,
+    "Category_Code": 1
   },
   "meloxicam hcl": {
+    "Medicine ID": "MED-249906",
     "Medicine Name": "Meloxicam HCL",
     "Category": "Anticoagulant",
     "Dosage": "10 mL",
-    "Price ($)": 39.83
+    "Price ($)": 39.83,
+    "No. of Units": 505,
+    "Stock Out Units": 92,
+    "Category_Code": 2
   },
   "clopidogrel ds": {
+    "Medicine ID": "MED-249794",
     "Medicine Name": "Clopidogrel DS",
     "Category": "Antibiotic",
     "Dosage": "10 mg",
-    "Price ($)": 44.8
+    "Price ($)": 44.8,
+    "No. of Units": 151,
+    "Stock Out Units": 27,
+    "Category_Code": 1
   },
   "lipitor forte": {
+    "Medicine ID": "MED-249861",
     "Medicine Name": "Lipitor Forte",
     "Category": "Antihistamine",
     "Dosage": "5 mg",
-    "Price ($)": 157.06
+    "Price ($)": 157.06,
+    "No. of Units": 67,
+    "Stock Out Units": 4,
+    "Category_Code": 6
   },
   "amoxicillin plus": {
+    "Medicine ID": "MED-249456",
     "Medicine Name": "Amoxicillin Plus",
     "Category": "Antidiabetic",
     "Dosage": "100 mg",
-    "Price ($)": 232.74
+    "Price ($)": 232.74,
+    "No. of Units": 985,
+    "Stock Out Units": 173,
+    "Category_Code": 4
   },
   "lipitor xr": {
+    "Medicine ID": "MED-247863",
     "Medicine Name": "Lipitor XR",
     "Category": "Antidepressant",
     "Dosage": "5 mL",
-    "Price ($)": 165.29
+    "Price ($)": 165.29,
+    "No. of Units": 774,
+    "Stock Out Units": 65,
+    "Category_Code": 3
   },
   "escitalopram hcl": {
+    "Medicine ID": "MED-249713",
     "Medicine Name": "Escitalopram HCL",
     "Category": "Antihistamine",
     "Dosage": "100 mg",
-    "Price ($)": 154.61
+    "Price ($)": 154.61,
+    "No. of Units": 676,
+    "Stock Out Units": 91,
+    "Category_Code": 6
   },
   "azithromycin plus": {
+    "Medicine ID": "MED-249960",
     "Medicine Name": "Azithromycin Plus",
     "Category": "Antifungal",
     "Dosage": "500 mg",
-    "Price ($)": 92.66
+    "Price ($)": 92.66,
+    "No. of Units": 712,
+    "Stock Out Units": 114,
+    "Category_Code": 5
   },
   "atorvastatin combo": {
+    "Medicine ID": "MED-249873",
     "Medicine Name": "Atorvastatin Combo",
     "Category": "Antidiabetic",
     "Dosage": "1000 mg",
-    "Price ($)": 202.3
+    "Price ($)": 202.3,
+    "No. of Units": 896,
+    "Stock Out Units": 166,
+    "Category_Code": 4
   },
   "albuterol xr": {
+    "Medicine ID": "MED-249844",
     "Medicine Name": "Albuterol XR",
     "Category": "Corticosteroid",
     "Dosage": "5 mL",
-    "Price ($)": 54.24
+    "Price ($)": 54.24,
+    "No. of Units": 568,
+    "Stock Out Units": 64,
+    "Category_Code": 11
   },
   "atorvastatin xr": {
+    "Medicine ID": "MED-249801",
     "Medicine Name": "Atorvastatin XR",
     "Category": "Proton Pump Inhibitor",
     "Dosage": "850 mg",
-    "Price ($)": 194.47
+    "Price ($)": 194.47,
+    "No. of Units": 459,
+    "Stock Out Units": 79,
+    "Category_Code": 13
   },
   "acetaminophen xr": {
+    "Medicine ID": "MED-249702",
     "Medicine Name": "Acetaminophen XR",
     "Category": "Corticosteroid",
     "Dosage": "500 mg",
-    "Price ($)": 131.13
+    "Price ($)": 131.13,
+    "No. of Units": 415,
+    "Stock Out Units": 21,
+    "Category_Code": 11
   },
   "tamsulosin xr": {
+    "Medicine ID": "MED-249746",
     "Medicine Name": "Tamsulosin XR",
     "Category": "Proton Pump Inhibitor",
     "Dosage": "50 mg",
-    "Price ($)": 50.35
+    "Price ($)": 50.35,
+    "No. of Units": 848,
+    "Stock Out Units": 103,
+    "Category_Code": 13
   },
   "albuterol combo": {
+    "Medicine ID": "MED-249105",
     "Medicine Name": "Albuterol Combo",
     "Category": "Antihypertensive",
     "Dosage": "850 mg",
-    "Price ($)": 226.97
+    "Price ($)": 226.97,
+    "No. of Units": 133,
+    "Stock Out Units": 25,
+    "Category_Code": 7
   },
   "acetaminophen forte": {
+    "Medicine ID": "MED-249637",
     "Medicine Name": "Acetaminophen Forte",
     "Category": "Bronchodilator",
     "Dosage": "650 mg",
-    "Price ($)": 4.89
+    "Price ($)": 4.89,
+    "No. of Units": 356,
+    "Stock Out Units": 31,
+    "Category_Code": 10
   },
   "citalopram combo": {
+    "Medicine ID": "MED-249299",
     "Medicine Name": "Citalopram Combo",
     "Category": "Antihypertensive",
     "Dosage": "100 mg",
-    "Price ($)": 221.55
+    "Price ($)": 221.55,
+    "No. of Units": 530,
+    "Stock Out Units": 70,
+    "Category_Code": 7
   },
   "carvedilol active": {
+    "Medicine ID": "MED-249862",
     "Medicine Name": "Carvedilol Active",
     "Category": "Anticoagulant",
     "Dosage": "500 mg",
-    "Price ($)": 8.49
+    "Price ($)": 8.49,
+    "No. of Units": 745,
+    "Stock Out Units": 147,
+    "Category_Code": 2
   },
   "pantoprazole sodium": {
+    "Medicine ID": "MED-249747",
     "Medicine Name": "Pantoprazole Sodium",
     "Category": "Statin",
     "Dosage": "500 mg",
-    "Price ($)": 221.38
+    "Price ($)": 221.38,
+    "No. of Units": 389,
+    "Stock Out Units": 25,
+    "Category_Code": 14
   },
   "montelukast ultra": {
+    "Medicine ID": "MED-249887",
     "Medicine Name": "Montelukast Ultra",
     "Category": "Antihypertensive",
     "Dosage": "50 mg",
-    "Price ($)": 20.59
+    "Price ($)": 20.59,
+    "No. of Units": 947,
+    "Stock Out Units": 68,
+    "Category_Code": 7
   },
   "duloxetine active": {
+    "Medicine ID": "MED-249592",
     "Medicine Name": "Duloxetine Active",
     "Category": "Statin",
     "Dosage": "500 mg",
-    "Price ($)": 240.14
+    "Price ($)": 240.14,
+    "No. of Units": 719,
+    "Stock Out Units": 61,
+    "Category_Code": 14
   },
   "montelukast sodium": {
+    "Medicine ID": "MED-249027",
     "Medicine Name": "Montelukast Sodium",
     "Category": "Bronchodilator",
     "Dosage": "500 mg",
-    "Price ($)": 114.05
+    "Price ($)": 114.05,
+    "No. of Units": 596,
+    "Stock Out Units": 35,
+    "Category_Code": 10
   },
   "bupropion hcl": {
+    "Medicine ID": "MED-249237",
     "Medicine Name": "Bupropion HCL",
     "Category": "Statin",
     "Dosage": "850 mg",
-    "Price ($)": 41.46
+    "Price ($)": 41.46,
+    "No. of Units": 174,
+    "Stock Out Units": 10,
+    "Category_Code": 14
   },
   "clopidogrel max": {
+    "Medicine ID": "MED-249673",
     "Medicine Name": "Clopidogrel Max",
     "Category": "Antifungal",
     "Dosage": "100 mg",
-    "Price ($)": 240.4
+    "Price ($)": 240.4,
+    "No. of Units": 789,
+    "Stock Out Units": 135,
+    "Category_Code": 5
   },
   "losartan ds": {
+    "Medicine ID": "MED-248828",
     "Medicine Name": "Losartan DS",
     "Category": "Diuretic",
     "Dosage": "850 mg",
-    "Price ($)": 5.49
+    "Price ($)": 5.49,
+    "No. of Units": 664,
+    "Stock Out Units": 53,
+    "Category_Code": 12
   },
   "acetaminophen combo": {
+    "Medicine ID": "MED-249113",
     "Medicine Name": "Acetaminophen Combo",
     "Category": "Antiviral",
     "Dosage": "1000 mg",
-    "Price ($)": 49.43
+    "Price ($)": 49.43,
+    "No. of Units": 385,
+    "Stock Out Units": 62,
+    "Category_Code": 8
   },
   "prednisone sodium": {
+    "Medicine ID": "MED-249737",
     "Medicine Name": "Prednisone Sodium",
     "Category": "Corticosteroid",
     "Dosage": "5 mL",
-    "Price ($)": 31.03
+    "Price ($)": 31.03,
+    "No. of Units": 276,
+    "Stock Out Units": 19,
+    "Category_Code": 11
   },
   "fluoxetine ultra": {
+    "Medicine ID": "MED-249639",
     "Medicine Name": "Fluoxetine Ultra",
     "Category": "Anticoagulant",
     "Dosage": "5 mg",
-    "Price ($)": 230.58
+    "Price ($)": 230.58,
+    "No. of Units": 767,
+    "Stock Out Units": 88,
+    "Category_Code": 2
   },
   "fluoxetine xr": {
+    "Medicine ID": "MED-248747",
     "Medicine Name": "Fluoxetine XR",
     "Category": "Anticoagulant",
     "Dosage": "5 mg",
-    "Price ($)": 26.6
+    "Price ($)": 26.6,
+    "No. of Units": 793,
+    "Stock Out Units": 127,
+    "Category_Code": 2
   },
   "atorvastatin plus": {
+    "Medicine ID": "MED-249923",
     "Medicine Name": "Atorvastatin Plus",
     "Category": "Antibiotic",
     "Dosage": "1000 mg",
-    "Price ($)": 202.8
+    "Price ($)": 202.8,
+    "No. of Units": 884,
+    "Stock Out Units": 161,
+    "Category_Code": 1
   },
   "hydrochlorothiazide combo": {
+    "Medicine ID": "MED-248671",
     "Medicine Name": "Hydrochlorothiazide Combo",
     "Category": "Bronchodilator",
     "Dosage": "5 mL",
-    "Price ($)": 236.77
+    "Price ($)": 236.77,
+    "No. of Units": 51,
+    "Stock Out Units": 7,
+    "Category_Code": 10
   },
   "metformin active": {
+    "Medicine ID": "MED-249851",
     "Medicine Name": "Metformin Active",
     "Category": "Statin",
     "Dosage": "20 mg",
-    "Price ($)": 103.73
+    "Price ($)": 103.73,
+    "No. of Units": 675,
+    "Stock Out Units": 42,
+    "Category_Code": 14
   },
   "losartan xr": {
+    "Medicine ID": "MED-249467",
     "Medicine Name": "Losartan XR",
     "Category": "Antifungal",
     "Dosage": "100 mg",
-    "Price ($)": 25.33
+    "Price ($)": 25.33,
+    "No. of Units": 583,
+    "Stock Out Units": 52,
+    "Category_Code": 5
   },
   "amoxicillin xr": {
+    "Medicine ID": "MED-249842",
     "Medicine Name": "Amoxicillin XR",
     "Category": "Antidepressant",
     "Dosage": "100 mg",
-    "Price ($)": 164.75
+    "Price ($)": 164.75,
+    "No. of Units": 126,
+    "Stock Out Units": 21,
+    "Category_Code": 3
   },
   "lisinopril max": {
+    "Medicine ID": "MED-249931",
     "Medicine Name": "Lisinopril Max",
     "Category": "Corticosteroid",
     "Dosage": "650 mg",
-    "Price ($)": 60.38
+    "Price ($)": 60.38,
+    "No. of Units": 731,
+    "Stock Out Units": 107,
+    "Category_Code": 11
   },
   "metformin xr": {
+    "Medicine ID": "MED-249509",
     "Medicine Name": "Metformin XR",
     "Category": "Proton Pump Inhibitor",
     "Dosage": "5 mg",
-    "Price ($)": 228.47
+    "Price ($)": 228.47,
+    "No. of Units": 949,
+    "Stock Out Units": 148,
+    "Category_Code": 13
   },
   "amoxicillin ds": {
+    "Medicine ID": "MED-249550",
     "Medicine Name": "Amoxicillin DS",
     "Category": "Bronchodilator",
     "Dosage": "500 mg",
-    "Price ($)": 242.44
+    "Price ($)": 242.44,
+    "No. of Units": 80,
+    "Stock Out Units": 7,
+    "Category_Code": 10
   },
   "acetaminophen sodium": {
+    "Medicine ID": "MED-248109",
     "Medicine Name": "Acetaminophen Sodium",
     "Category": "Antidiabetic",
     "Dosage": "250 mg",
-    "Price ($)": 220.29
+    "Price ($)": 220.29,
+    "No. of Units": 294,
+    "Stock Out Units": 16,
+    "Category_Code": 4
   },
   "valsartan ultra": {
+    "Medicine ID": "MED-249545",
     "Medicine Name": "Valsartan Ultra",
     "Category": "Anticoagulant",
     "Dosage": "850 mg",
-    "Price ($)": 91.53
+    "Price ($)": 91.53,
+    "No. of Units": 306,
+    "Stock Out Units": 16,
+    "Category_Code": 2
   },
   "prednisone plus": {
+    "Medicine ID": "MED-249948",
     "Medicine Name": "Prednisone Plus",
     "Category": "Diuretic",
     "Dosage": "850 mg",
-    "Price ($)": 59.35
+    "Price ($)": 59.35,
+    "No. of Units": 267,
+    "Stock Out Units": 29,
+    "Category_Code": 12
   },
   "hydrochlorothiazide hcl": {
+    "Medicine ID": "MED-249868",
     "Medicine Name": "Hydrochlorothiazide HCL",
     "Category": "Antihistamine",
     "Dosage": "250 mg",
-    "Price ($)": 50.99
+    "Price ($)": 50.99,
+    "No. of Units": 908,
+    "Stock Out Units": 130,
+    "Category_Code": 6
   },
   "metoprolol ds": {
+    "Medicine ID": "MED-249461",
     "Medicine Name": "Metoprolol DS",
     "Category": "Beta-Blocker",
     "Dosage": "850 mg",
-    "Price ($)": 229.76
+    "Price ($)": 229.76,
+    "No. of Units": 926,
+    "Stock Out Units": 139,
+    "Category_Code": 9
   },
   "meloxicam ds": {
+    "Medicine ID": "MED-249933",
     "Medicine Name": "Meloxicam DS",
     "Category": "Antiviral",
     "Dosage": "20 mg",
-    "Price ($)": 96.86
+    "Price ($)": 96.86,
+    "No. of Units": 185,
+    "Stock Out Units": 12,
+    "Category_Code": 8
   },
   "amoxicillin ultra": {
+    "Medicine ID": "MED-249775",
     "Medicine Name": "Amoxicillin Ultra",
     "Category": "Proton Pump Inhibitor",
     "Dosage": "500 mg",
-    "Price ($)": 86.54
+    "Price ($)": 86.54,
+    "No. of Units": 145,
+    "Stock Out Units": 21,
+    "Category_Code": 13
   },
   "rosuvastatin hcl": {
+    "Medicine ID": "MED-249662",
     "Medicine Name": "Rosuvastatin HCL",
     "Category": "Anticoagulant",
     "Dosage": "20 mg",
-    "Price ($)": 232.33
+    "Price ($)": 232.33,
+    "No. of Units": 35,
+    "Stock Out Units": 2,
+    "Category_Code": 2
   },
   "hydrochlorothiazide max": {
+    "Medicine ID": "MED-249973",
     "Medicine Name": "Hydrochlorothiazide Max",
     "Category": "Bronchodilator",
     "Dosage": "50 mg",
-    "Price ($)": 196.44
+    "Price ($)": 196.44,
+    "No. of Units": 108,
+    "Stock Out Units": 20,
+    "Category_Code": 10
   },
   "escitalopram sodium": {
+    "Medicine ID": "MED-249361",
     "Medicine Name": "Escitalopram Sodium",
     "Category": "Antidepressant",
     "Dosage": "10 mg",
-    "Price ($)": 12.05
+    "Price ($)": 12.05,
+    "No. of Units": 487,
+    "Stock Out Units": 48,
+    "Category_Code": 3
   },
   "losartan plus": {
+    "Medicine ID": "MED-249995",
     "Medicine Name": "Losartan Plus",
     "Category": "Antibiotic",
     "Dosage": "5 mg",
-    "Price ($)": 14.38
+    "Price ($)": 14.38,
+    "No. of Units": 802,
+    "Stock Out Units": 91,
+    "Category_Code": 1
   },
   "metformin plus": {
+    "Medicine ID": "MED-249486",
     "Medicine Name": "Metformin Plus",
     "Category": "Antihistamine",
     "Dosage": "500 mg",
-    "Price ($)": 218.73
+    "Price ($)": 218.73,
+    "No. of Units": 991,
+    "Stock Out Units": 98,
+    "Category_Code": 6
   },
   "metformin combo": {
+    "Medicine ID": "MED-249914",
     "Medicine Name": "Metformin Combo",
     "Category": "Antihistamine",
     "Dosage": "500 mg",
-    "Price ($)": 120.81
+    "Price ($)": 120.81,
+    "No. of Units": 502,
+    "Stock Out Units": 72,
+    "Category_Code": 6
   },
   "montelukast active": {
+    "Medicine ID": "MED-249719",
     "Medicine Name": "Montelukast Active",
     "Category": "Beta-Blocker",
     "Dosage": "250 mg",
-    "Price ($)": 194.76
+    "Price ($)": 194.76,
+    "No. of Units": 33,
+    "Stock Out Units": 6,
+    "Category_Code": 9
   },
   "prednisone ds": {
+    "Medicine ID": "MED-249491",
     "Medicine Name": "Prednisone DS",
     "Category": "Corticosteroid",
     "Dosage": "5 mL",
-    "Price ($)": 188.15
+    "Price ($)": 188.15,
+    "No. of Units": 675,
+    "Stock Out Units": 56,
+    "Category_Code": 11
   },
   "meloxicam ultra": {
+    "Medicine ID": "MED-249962",
     "Medicine Name": "Meloxicam Ultra",
     "Category": "Proton Pump Inhibitor",
     "Dosage": "650 mg",
-    "Price ($)": 208.96
+    "Price ($)": 208.96,
+    "No. of Units": 691,
+    "Stock Out Units": 64,
+    "Category_Code": 13
   },
   "amoxicillin sodium": {
+    "Medicine ID": "MED-249940",
     "Medicine Name": "Amoxicillin Sodium",
     "Category": "Antidiabetic",
     "Dosage": "20 mg",
-    "Price ($)": 179.07
+    "Price ($)": 179.07,
+    "No. of Units": 585,
+    "Stock Out Units": 96,
+    "Category_Code": 4
   },
   "metoprolol sodium": {
+    "Medicine ID": "MED-249363",
     "Medicine Name": "Metoprolol Sodium",
     "Category": "Antidiabetic",
     "Dosage": "850 mg",
-    "Price ($)": 240.35
+    "Price ($)": 240.35,
+    "No. of Units": 704,
+    "Stock Out Units": 131,
+    "Category_Code": 4
   },
   "hydrochlorothiazide active": {
+    "Medicine ID": "MED-249771",
     "Medicine Name": "Hydrochlorothiazide Active",
     "Category": "Antidiabetic",
     "Dosage": "10 mL",
-    "Price ($)": 6.78
+    "Price ($)": 6.78,
+    "No. of Units": 133,
+    "Stock Out Units": 21,
+    "Category_Code": 4
   },
   "lipitor combo": {
+    "Medicine ID": "MED-248756",
     "Medicine Name": "Lipitor Combo",
     "Category": "Diuretic",
     "Dosage": "250 mg",
-    "Price ($)": 52.88
+    "Price ($)": 52.88,
+    "No. of Units": 695,
+    "Stock Out Units": 122,
+    "Category_Code": 12
   },
   "valsartan hcl": {
+    "Medicine ID": "MED-249985",
     "Medicine Name": "Valsartan HCL",
     "Category": "Proton Pump Inhibitor",
     "Dosage": "100 mg",
-    "Price ($)": 126.2
+    "Price ($)": 126.2,
+    "No. of Units": 649,
+    "Stock Out Units": 86,
+    "Category_Code": 13
   },
   "prednisone active": {
+    "Medicine ID": "MED-249981",
     "Medicine Name": "Prednisone Active",
     "Category": "Beta-Blocker",
     "Dosage": "1000 mg",
-    "Price ($)": 136.19
+    "Price ($)": 136.19,
+    "No. of Units": 220,
+    "Stock Out Units": 31,
+    "Category_Code": 9
   },
   "carvedilol xr": {
+    "Medicine ID": "MED-249563",
     "Medicine Name": "Carvedilol XR",
     "Category": "Analgesic",
     "Dosage": "850 mg",
-    "Price ($)": 185.95
+    "Price ($)": 185.95,
+    "No. of Units": 147,
+    "Stock Out Units": 18,
+    "Category_Code": 0
   },
   "sertraline plus": {
+    "Medicine ID": "MED-249942",
     "Medicine Name": "Sertraline Plus",
     "Category": "Corticosteroid",
     "Dosage": "650 mg",
-    "Price ($)": 45.52
+    "Price ($)": 45.52,
+    "No. of Units": 384,
+    "Stock Out Units": 60,
+    "Category_Code": 11
   },
   "albuterol sodium": {
+    "Medicine ID": "MED-249412",
     "Medicine Name": "Albuterol Sodium",
     "Category": "Anticoagulant",
     "Dosage": "50 mg",
-    "Price ($)": 212.23
+    "Price ($)": 212.23,
+    "No. of Units": 110,
+    "Stock Out Units": 14,
+    "Category_Code": 2
   },
   "ibuprofen ds": {
+    "Medicine ID": "MED-249820",
     "Medicine Name": "Ibuprofen DS",
     "Category": "Antifungal",
     "Dosage": "250 mg",
-    "Price ($)": 17.27
+    "Price ($)": 17.27,
+    "No. of Units": 956,
+    "Stock Out Units": 53,
+    "Category_Code": 5
   },
   "montelukast xr": {
+    "Medicine ID": "MED-249539",
     "Medicine Name": "Montelukast XR",
     "Category": "Corticosteroid",
     "Dosage": "10 mg",
-    "Price ($)": 231.23
+    "Price ($)": 231.23,
+    "No. of Units": 855,
+    "Stock Out Units": 54,
+    "Category_Code": 11
   },
   "tamsulosin ultra": {
+    "Medicine ID": "MED-249924",
     "Medicine Name": "Tamsulosin Ultra",
     "Category": "Antifungal",
     "Dosage": "500 mg",
-    "Price ($)": 87.66
+    "Price ($)": 87.66,
+    "No. of Units": 501,
+    "Stock Out Units": 92,
+    "Category_Code": 5
   },
   "escitalopram plus": {
+    "Medicine ID": "MED-249587",
     "Medicine Name": "Escitalopram Plus",
     "Category": "Beta-Blocker",
     "Dosage": "10 mg",
-    "Price ($)": 200.1
+    "Price ($)": 200.1,
+    "No. of Units": 906,
+    "Stock Out Units": 119,
+    "Category_Code": 9
   },
   "bupropion xr": {
+    "Medicine ID": "MED-249380",
     "Medicine Name": "Bupropion XR",
     "Category": "Corticosteroid",
     "Dosage": "50 mg",
-    "Price ($)": 29.06
+    "Price ($)": 29.06,
+    "No. of Units": 390,
+    "Stock Out Units": 33,
+    "Category_Code": 11
   },
   "acetaminophen ultra": {
+    "Medicine ID": "MED-248914",
     "Medicine Name": "Acetaminophen Ultra",
     "Category": "Analgesic",
     "Dosage": "500 mg",
-    "Price ($)": 130.36
+    "Price ($)": 130.36,
+    "No. of Units": 794,
+    "Stock Out Units": 98,
+    "Category_Code": 0
   },
   "citalopram sodium": {
+    "Medicine ID": "MED-249780",
     "Medicine Name": "Citalopram Sodium",
     "Category": "Beta-Blocker",
     "Dosage": "10 mL",
-    "Price ($)": 158.26
+    "Price ($)": 158.26,
+    "No. of Units": 91,
+    "Stock Out Units": 7,
+    "Category_Code": 9
   },
   "levothyroxine max": {
+    "Medicine ID": "MED-248424",
     "Medicine Name": "Levothyroxine Max",
     "Category": "Statin",
     "Dosage": "5 mL",
-    "Price ($)": 214.8
+    "Price ($)": 214.8,
+    "No. of Units": 777,
+    "Stock Out Units": 110,
+    "Category_Code": 14
   },
   "citalopram ultra": {
+    "Medicine ID": "MED-249597",
     "Medicine Name": "Citalopram Ultra",
     "Category": "Statin",
     "Dosage": "20 mg",
-    "Price ($)": 100.26
+    "Price ($)": 100.26,
+    "No. of Units": 717,
+    "Stock Out Units": 97,
+    "Category_Code": 14
   },
   "levothyroxine combo": {
+    "Medicine ID": "MED-249464",
     "Medicine Name": "Levothyroxine Combo",
     "Category": "Antidiabetic",
     "Dosage": "1000 mg",
-    "Price ($)": 114.13
+    "Price ($)": 114.13,
+    "No. of Units": 726,
+    "Stock Out Units": 135,
+    "Category_Code": 4
   },
   "hydrochlorothiazide plus": {
+    "Medicine ID": "MED-249122",
     "Medicine Name": "Hydrochlorothiazide Plus",
     "Category": "Analgesic",
     "Dosage": "1000 mg",
-    "Price ($)": 160.94
+    "Price ($)": 160.94,
+    "No. of Units": 329,
+    "Stock Out Units": 42,
+    "Category_Code": 0
   },
   "bupropion max": {
+    "Medicine ID": "MED-249631",
     "Medicine Name": "Bupropion Max",
     "Category": "Antidiabetic",
     "Dosage": "50 mg",
-    "Price ($)": 140.76
+    "Price ($)": 140.76,
+    "No. of Units": 182,
+    "Stock Out Units": 35,
+    "Category_Code": 4
   },
   "azithromycin xr": {
+    "Medicine ID": "MED-249934",
     "Medicine Name": "Azithromycin XR",
     "Category": "Proton Pump Inhibitor",
     "Dosage": "20 mg",
-    "Price ($)": 185.66
+    "Price ($)": 185.66,
+    "No. of Units": 40,
+    "Stock Out Units": 3,
+    "Category_Code": 13
   },
   "carvedilol ds": {
+    "Medicine ID": "MED-249956",
     "Medicine Name": "Carvedilol DS",
     "Category": "Statin",
     "Dosage": "100 mg",
-    "Price ($)": 210.51
+    "Price ($)": 210.51,
+    "No. of Units": 631,
+    "Stock Out Units": 64,
+    "Category_Code": 14
   },
   "gabapentin ds": {
+    "Medicine ID": "MED-249530",
     "Medicine Name": "Gabapentin DS",
     "Category": "Anticoagulant",
     "Dosage": "10 mL",
-    "Price ($)": 96.95
+    "Price ($)": 96.95,
+    "No. of Units": 817,
+    "Stock Out Units": 143,
+    "Category_Code": 2
   },
   "lisinopril plus": {
+    "Medicine ID": "MED-249740",
     "Medicine Name": "Lisinopril Plus",
     "Category": "Corticosteroid",
     "Dosage": "100 mg",
-    "Price ($)": 192.82
+    "Price ($)": 192.82,
+    "No. of Units": 356,
+    "Stock Out Units": 57,
+    "Category_Code": 11
   },
   "bupropion plus": {
+    "Medicine ID": "MED-249828",
     "Medicine Name": "Bupropion Plus",
     "Category": "Antihistamine",
     "Dosage": "10 mL",
-    "Price ($)": 74.02
+    "Price ($)": 74.02,
+    "No. of Units": 588,
+    "Stock Out Units": 52,
+    "Category_Code": 6
   },
   "sertraline ultra": {
+    "Medicine ID": "MED-248049",
     "Medicine Name": "Sertraline Ultra",
     "Category": "Antibiotic",
     "Dosage": "10 mg",
-    "Price ($)": 152.22
+    "Price ($)": 152.22,
+    "No. of Units": 155,
+    "Stock Out Units": 11,
+    "Category_Code": 1
   },
   "levothyroxine forte": {
+    "Medicine ID": "MED-249558",
     "Medicine Name": "Levothyroxine Forte",
     "Category": "Antiviral",
     "Dosage": "5 mL",
-    "Price ($)": 153.46
+    "Price ($)": 153.46,
+    "No. of Units": 936,
+    "Stock Out Units": 51,
+    "Category_Code": 8
   },
   "lipitor plus": {
+    "Medicine ID": "MED-249350",
     "Medicine Name": "Lipitor Plus",
     "Category": "Antifungal",
     "Dosage": "5 mL",
-    "Price ($)": 44.18
+    "Price ($)": 44.18,
+    "No. of Units": 836,
+    "Stock Out Units": 107,
+    "Category_Code": 5
   },
   "pantoprazole plus": {
+    "Medicine ID": "MED-248201",
     "Medicine Name": "Pantoprazole Plus",
     "Category": "Antiviral",
     "Dosage": "250 mg",
-    "Price ($)": 187.19
+    "Price ($)": 187.19,
+    "No. of Units": 342,
+    "Stock Out Units": 67,
+    "Category_Code": 8
   },
   "sertraline xr": {
+    "Medicine ID": "MED-249111",
     "Medicine Name": "Sertraline XR",
     "Category": "Bronchodilator",
     "Dosage": "1000 mg",
-    "Price ($)": 118.11
+    "Price ($)": 118.11,
+    "No. of Units": 465,
+    "Stock Out Units": 45,
+    "Category_Code": 10
   },
   "levothyroxine sodium": {
+    "Medicine ID": "MED-248897",
     "Medicine Name": "Levothyroxine Sodium",
     "Category": "Antidepressant",
     "Dosage": "5 mg",
-    "Price ($)": 192.76
+    "Price ($)": 192.76,
+    "No. of Units": 715,
+    "Stock Out Units": 44,
+    "Category_Code": 3
   },
   "metoprolol plus": {
+    "Medicine ID": "MED-250000",
     "Medicine Name": "Metoprolol Plus",
     "Category": "Antiviral",
     "Dosage": "250 mg",
-    "Price ($)": 25.66
+    "Price ($)": 25.66,
+    "No. of Units": 106,
+    "Stock Out Units": 8,
+    "Category_Code": 8
   },
   "valsartan active": {
+    "Medicine ID": "MED-246960",
     "Medicine Name": "Valsartan Active",
     "Category": "Antihypertensive",
     "Dosage": "250 mg",
-    "Price ($)": 243.24
+    "Price ($)": 243.24,
+    "No. of Units": 393,
+    "Stock Out Units": 65,
+    "Category_Code": 7
   },
   "levothyroxine xr": {
+    "Medicine ID": "MED-247802",
     "Medicine Name": "Levothyroxine XR",
     "Category": "Anticoagulant",
     "Dosage": "850 mg",
-    "Price ($)": 95.1
+    "Price ($)": 95.1,
+    "No. of Units": 99,
+    "Stock Out Units": 17,
+    "Category_Code": 2
   },
   "sertraline active": {
+    "Medicine ID": "MED-249886",
     "Medicine Name": "Sertraline Active",
     "Category": "Antihypertensive",
     "Dosage": "20 mg",
-    "Price ($)": 8.04
+    "Price ($)": 8.04,
+    "No. of Units": 231,
+    "Stock Out Units": 29,
+    "Category_Code": 7
   },
   "montelukast forte": {
+    "Medicine ID": "MED-249964",
     "Medicine Name": "Montelukast Forte",
     "Category": "Antifungal",
     "Dosage": "5 mL",
-    "Price ($)": 29.23
+    "Price ($)": 29.23,
+    "No. of Units": 468,
+    "Stock Out Units": 92,
+    "Category_Code": 5
   },
   "metformin forte": {
+    "Medicine ID": "MED-249332",
     "Medicine Name": "Metformin Forte",
     "Category": "Antiviral",
     "Dosage": "1000 mg",
-    "Price ($)": 155.19
+    "Price ($)": 155.19,
+    "No. of Units": 218,
+    "Stock Out Units": 23,
+    "Category_Code": 8
   },
   "omeprazole active": {
+    "Medicine ID": "MED-248866",
     "Medicine Name": "Omeprazole Active",
     "Category": "Proton Pump Inhibitor",
     "Dosage": "10 mL",
-    "Price ($)": 186.23
+    "Price ($)": 186.23,
+    "No. of Units": 376,
+    "Stock Out Units": 71,
+    "Category_Code": 13
   },
   "rosuvastatin ds": {
+    "Medicine ID": "MED-249938",
     "Medicine Name": "Rosuvastatin DS",
     "Category": "Antifungal",
     "Dosage": "5 mg",
-    "Price ($)": 198.88
+    "Price ($)": 198.88,
+    "No. of Units": 61,
+    "Stock Out Units": 7,
+    "Category_Code": 5
   },
   "escitalopram forte": {
+    "Medicine ID": "MED-249957",
     "Medicine Name": "Escitalopram Forte",
     "Category": "Antifungal",
     "Dosage": "1000 mg",
-    "Price ($)": 52.33
+    "Price ($)": 52.33,
+    "No. of Units": 289,
+    "Stock Out Units": 25,
+    "Category_Code": 5
   },
   "duloxetine hcl": {
+    "Medicine ID": "MED-248703",
     "Medicine Name": "Duloxetine HCL",
     "Category": "Antifungal",
     "Dosage": "850 mg",
-    "Price ($)": 204.02
+    "Price ($)": 204.02,
+    "No. of Units": 347,
+    "Stock Out Units": 63,
+    "Category_Code": 5
   },
   "lisinopril active": {
+    "Medicine ID": "MED-249465",
     "Medicine Name": "Lisinopril Active",
     "Category": "Antibiotic",
     "Dosage": "650 mg",
-    "Price ($)": 222.56
+    "Price ($)": 222.56,
+    "No. of Units": 539,
+    "Stock Out Units": 80,
+    "Category_Code": 1
   },
   "montelukast plus": {
+    "Medicine ID": "MED-249904",
     "Medicine Name": "Montelukast Plus",
     "Category": "Antifungal",
     "Dosage": "20 mg",
-    "Price ($)": 150.35
+    "Price ($)": 150.35,
+    "No. of Units": 202,
+    "Stock Out Units": 32,
+    "Category_Code": 5
   },
   "valsartan ds": {
+    "Medicine ID": "MED-249274",
     "Medicine Name": "Valsartan DS",
     "Category": "Beta-Blocker",
     "Dosage": "50 mg",
-    "Price ($)": 70.12
+    "Price ($)": 70.12,
+    "No. of Units": 185,
+    "Stock Out Units": 20,
+    "Category_Code": 9
   },
   "losartan sodium": {
+    "Medicine ID": "MED-249967",
     "Medicine Name": "Losartan Sodium",
     "Category": "Antidiabetic",
     "Dosage": "1000 mg",
-    "Price ($)": 39.18
+    "Price ($)": 39.18,
+    "No. of Units": 291,
+    "Stock Out Units": 34,
+    "Category_Code": 4
   },
   "prednisone hcl": {
+    "Medicine ID": "MED-249822",
     "Medicine Name": "Prednisone HCL",
     "Category": "Anticoagulant",
     "Dosage": "850 mg",
-    "Price ($)": 65.13
+    "Price ($)": 65.13,
+    "No. of Units": 226,
+    "Stock Out Units": 17,
+    "Category_Code": 2
   },
   "rosuvastatin sodium": {
+    "Medicine ID": "MED-249291",
     "Medicine Name": "Rosuvastatin Sodium",
     "Category": "Statin",
     "Dosage": "500 mg",
-    "Price ($)": 21.51
+    "Price ($)": 21.51,
+    "No. of Units": 864,
+    "Stock Out Units": 170,
+    "Category_Code": 14
   },
   "azithromycin max": {
+    "Medicine ID": "MED-249560",
     "Medicine Name": "Azithromycin Max",
     "Category": "Antidiabetic",
     "Dosage": "1000 mg",
-    "Price ($)": 133.47
+    "Price ($)": 133.47,
+    "No. of Units": 809,
+    "Stock Out Units": 66,
+    "Category_Code": 4
   },
   "citalopram max": {
+    "Medicine ID": "MED-249918",
     "Medicine Name": "Citalopram Max",
     "Category": "Proton Pump Inhibitor",
     "Dosage": "10 mg",
-    "Price ($)": 244.88
+    "Price ($)": 244.88,
+    "No. of Units": 971,
+    "Stock Out Units": 114,
+    "Category_Code": 13
   },
   "pantoprazole ultra": {
+    "Medicine ID": "MED-249912",
     "Medicine Name": "Pantoprazole Ultra",
     "Category": "Antidepressant",
     "Dosage": "5 mL",
-    "Price ($)": 10.21
+    "Price ($)": 10.21,
+    "No. of Units": 981,
+    "Stock Out Units": 179,
+    "Category_Code": 3
   },
   "ibuprofen forte": {
+    "Medicine ID": "MED-249003",
     "Medicine Name": "Ibuprofen Forte",
     "Category": "Beta-Blocker",
     "Dosage": "10 mL",
-    "Price ($)": 175.06
+    "Price ($)": 175.06,
+    "No. of Units": 860,
+    "Stock Out Units": 156,
+    "Category_Code": 9
   },
   "pantoprazole forte": {
+    "Medicine ID": "MED-249988",
     "Medicine Name": "Pantoprazole Forte",
     "Category": "Statin",
     "Dosage": "50 mg",
-    "Price ($)": 70.97
+    "Price ($)": 70.97,
+    "No. of Units": 860,
+    "Stock Out Units": 64,
+    "Category_Code": 14
   },
   "meloxicam sodium": {
+    "Medicine ID": "MED-249706",
     "Medicine Name": "Meloxicam Sodium",
     "Category": "Antihistamine",
     "Dosage": "50 mg",
-    "Price ($)": 128.88
+    "Price ($)": 128.88,
+    "No. of Units": 722,
+    "Stock Out Units": 140,
+    "Category_Code": 6
   },
   "carvedilol max": {
+    "Medicine ID": "MED-249492",
     "Medicine Name": "Carvedilol Max",
     "Category": "Antiviral",
     "Dosage": "650 mg",
-    "Price ($)": 65.83
+    "Price ($)": 65.83,
+    "No. of Units": 260,
+    "Stock Out Units": 35,
+    "Category_Code": 8
   },
   "losartan active": {
+    "Medicine ID": "MED-249160",
     "Medicine Name": "Losartan Active",
     "Category": "Analgesic",
     "Dosage": "250 mg",
-    "Price ($)": 105.58
+    "Price ($)": 105.58,
+    "No. of Units": 798,
+    "Stock Out Units": 105,
+    "Category_Code": 0
   },
   "montelukast hcl": {
+    "Medicine ID": "MED-249782",
     "Medicine Name": "Montelukast HCL",
     "Category": "Proton Pump Inhibitor",
     "Dosage": "20 mg",
-    "Price ($)": 31.93
+    "Price ($)": 31.93,
+    "No. of Units": 113,
+    "Stock Out Units": 15,
+    "Category_Code": 13
   },
   "metoprolol active": {
+    "Medicine ID": "MED-249827",
     "Medicine Name": "Metoprolol Active",
     "Category": "Beta-Blocker",
     "Dosage": "100 mg",
-    "Price ($)": 199.6
+    "Price ($)": 199.6,
+    "No. of Units": 981,
+    "Stock Out Units": 58,
+    "Category_Code": 9
   },
   "duloxetine ultra": {
+    "Medicine ID": "MED-249649",
     "Medicine Name": "Duloxetine Ultra",
     "Category": "Antiviral",
     "Dosage": "20 mg",
-    "Price ($)": 144.29
+    "Price ($)": 144.29,
+    "No. of Units": 322,
+    "Stock Out Units": 45,
+    "Category_Code": 8
   },
   "lisinopril hcl": {
+    "Medicine ID": "MED-249949",
     "Medicine Name": "Lisinopril HCL",
     "Category": "Antiviral",
     "Dosage": "250 mg",
-    "Price ($)": 223.91
+    "Price ($)": 223.91,
+    "No. of Units": 114,
+    "Stock Out Units": 13,
+    "Category_Code": 8
   },
   "meloxicam max": {
+    "Medicine ID": "MED-249778",
     "Medicine Name": "Meloxicam Max",
     "Category": "Antihistamine",
     "Dosage": "50 mg",
-    "Price ($)": 9.87
+    "Price ($)": 9.87,
+    "No. of Units": 696,
+    "Stock Out Units": 99,
+    "Category_Code": 6
   },
   "tamsulosin combo": {
+    "Medicine ID": "MED-249899",
     "Medicine Name": "Tamsulosin Combo",
     "Category": "Bronchodilator",
     "Dosage": "500 mg",
-    "Price ($)": 179.65
+    "Price ($)": 179.65,
+    "No. of Units": 817,
+    "Stock Out Units": 122,
+    "Category_Code": 10
   },
   "atorvastatin forte": {
+    "Medicine ID": "MED-249994",
     "Medicine Name": "Atorvastatin Forte",
     "Category": "Antiviral",
     "Dosage": "20 mg",
-    "Price ($)": 224.1
+    "Price ($)": 224.1,
+    "No. of Units": 431,
+    "Stock Out Units": 24,
+    "Category_Code": 8
   },
   "metformin ds": {
+    "Medicine ID": "MED-249779",
     "Medicine Name": "Metformin DS",
     "Category": "Bronchodilator",
     "Dosage": "850 mg",
-    "Price ($)": 110.13
+    "Price ($)": 110.13,
+    "No. of Units": 158,
+    "Stock Out Units": 28,
+    "Category_Code": 10
   },
   "ibuprofen plus": {
+    "Medicine ID": "MED-249819",
     "Medicine Name": "Ibuprofen Plus",
     "Category": "Antidepressant",
     "Dosage": "100 mg",
-    "Price ($)": 117.24
+    "Price ($)": 117.24,
+    "No. of Units": 843,
+    "Stock Out Units": 108,
+    "Category_Code": 3
   },
   "albuterol max": {
+    "Medicine ID": "MED-249618",
     "Medicine Name": "Albuterol Max",
     "Category": "Bronchodilator",
     "Dosage": "850 mg",
-    "Price ($)": 200.94
+    "Price ($)": 200.94,
+    "No. of Units": 863,
+    "Stock Out Units": 52,
+    "Category_Code": 10
   },
   "azithromycin ultra": {
+    "Medicine ID": "MED-249318",
     "Medicine Name": "Azithromycin Ultra",
     "Category": "Statin",
     "Dosage": "650 mg",
-    "Price ($)": 91.87
+    "Price ($)": 91.87,
+    "No. of Units": 944,
+    "Stock Out Units": 122,
+    "Category_Code": 14
   },
   "fluoxetine forte": {
+    "Medicine ID": "MED-249645",
     "Medicine Name": "Fluoxetine Forte",
     "Category": "Analgesic",
     "Dosage": "1000 mg",
-    "Price ($)": 193.12
+    "Price ($)": 193.12,
+    "No. of Units": 741,
+    "Stock Out Units": 62,
+    "Category_Code": 0
   },
   "omeprazole ds": {
+    "Medicine ID": "MED-249448",
     "Medicine Name": "Omeprazole DS",
     "Category": "Corticosteroid",
     "Dosage": "1000 mg",
-    "Price ($)": 145.42
+    "Price ($)": 145.42,
+    "No. of Units": 75,
+    "Stock Out Units": 10,
+    "Category_Code": 11
   },
   "prednisone xr": {
+    "Medicine ID": "MED-249867",
     "Medicine Name": "Prednisone XR",
     "Category": "Diuretic",
     "Dosage": "5 mL",
-    "Price ($)": 231.22
+    "Price ($)": 231.22,
+    "No. of Units": 125,
+    "Stock Out Units": 17,
+    "Category_Code": 12
   },
   "clopidogrel active": {
+    "Medicine ID": "MED-247891",
     "Medicine Name": "Clopidogrel Active",
     "Category": "Corticosteroid",
     "Dosage": "20 mg",
-    "Price ($)": 126.34
+    "Price ($)": 126.34,
+    "No. of Units": 267,
+    "Stock Out Units": 39,
+    "Category_Code": 11
   },
   "acetaminophen ds": {
+    "Medicine ID": "MED-249585",
     "Medicine Name": "Acetaminophen DS",
     "Category": "Antihistamine",
     "Dosage": "10 mg",
-    "Price ($)": 222.38
+    "Price ($)": 222.38,
+    "No. of Units": 13,
+    "Stock Out Units": 2,
+    "Category_Code": 6
   },
   "fluoxetine plus": {
+    "Medicine ID": "MED-249735",
     "Medicine Name": "Fluoxetine Plus",
     "Category": "Corticosteroid",
     "Dosage": "10 mg",
-    "Price ($)": 151.98
+    "Price ($)": 151.98,
+    "No. of Units": 758,
+    "Stock Out Units": 103,
+    "Category_Code": 11
   },
   "montelukast ds": {
+    "Medicine ID": "MED-249855",
     "Medicine Name": "Montelukast DS",
     "Category": "Antihypertensive",
     "Dosage": "20 mg",
-    "Price ($)": 131.73
+    "Price ($)": 131.73,
+    "No. of Units": 825,
+    "Stock Out Units": 61,
+    "Category_Code": 7
   },
   "clopidogrel plus": {
+    "Medicine ID": "MED-248824",
     "Medicine Name": "Clopidogrel Plus",
     "Category": "Analgesic",
     "Dosage": "20 mg",
-    "Price ($)": 113.07
+    "Price ($)": 113.07,
+    "No. of Units": 739,
+    "Stock Out Units": 146,
+    "Category_Code": 0
   },
   "atorvastatin hcl": {
+    "Medicine ID": "MED-248662",
     "Medicine Name": "Atorvastatin HCL",
     "Category": "Diuretic",
     "Dosage": "100 mg",
-    "Price ($)": 169.57
+    "Price ($)": 169.57,
+    "No. of Units": 357,
+    "Stock Out Units": 51,
+    "Category_Code": 12
   },
   "meloxicam combo": {
+    "Medicine ID": "MED-249856",
     "Medicine Name": "Meloxicam Combo",
     "Category": "Corticosteroid",
     "Dosage": "20 mg",
-    "Price ($)": 216.05
+    "Price ($)": 216.05,
+    "No. of Units": 525,
+    "Stock Out Units": 62,
+    "Category_Code": 11
   },
   "metoprolol forte": {
+    "Medicine ID": "MED-248217",
     "Medicine Name": "Metoprolol Forte",
     "Category": "Statin",
     "Dosage": "10 mL",
-    "Price ($)": 108.19
+    "Price ($)": 108.19,
+    "No. of Units": 613,
+    "Stock Out Units": 115,
+    "Category_Code": 14
   },
   "albuterol active": {
+    "Medicine ID": "MED-249128",
     "Medicine Name": "Albuterol Active",
     "Category": "Analgesic",
     "Dosage": "50 mg",
-    "Price ($)": 66.9
+    "Price ($)": 66.9,
+    "No. of Units": 104,
+    "Stock Out Units": 13,
+    "Category_Code": 0
   },
   "escitalopram max": {
+    "Medicine ID": "MED-249989",
     "Medicine Name": "Escitalopram Max",
     "Category": "Corticosteroid",
     "Dosage": "100 mg",
-    "Price ($)": 27.71
+    "Price ($)": 27.71,
+    "No. of Units": 865,
+    "Stock Out Units": 104,
+    "Category_Code": 11
   },
   "sertraline sodium": {
+    "Medicine ID": "MED-249329",
     "Medicine Name": "Sertraline Sodium",
     "Category": "Bronchodilator",
     "Dosage": "100 mg",
-    "Price ($)": 156.22
+    "Price ($)": 156.22,
+    "No. of Units": 708,
+    "Stock Out Units": 75,
+    "Category_Code": 10
   },
   "duloxetine forte": {
+    "Medicine ID": "MED-249396",
     "Medicine Name": "Duloxetine Forte",
     "Category": "Anticoagulant",
     "Dosage": "1000 mg",
-    "Price ($)": 213.34
+    "Price ($)": 213.34,
+    "No. of Units": 745,
+    "Stock Out Units": 40,
+    "Category_Code": 2
   },
   "rosuvastatin plus": {
+    "Medicine ID": "MED-249400",
     "Medicine Name": "Rosuvastatin Plus",
     "Category": "Antihypertensive",
     "Dosage": "100 mg",
-    "Price ($)": 104.43
+    "Price ($)": 104.43,
+    "No. of Units": 521,
+    "Stock Out Units": 87,
+    "Category_Code": 7
   },
   "ibuprofen xr": {
+    "Medicine ID": "MED-248786",
     "Medicine Name": "Ibuprofen XR",
     "Category": "Antihypertensive",
     "Dosage": "500 mg",
-    "Price ($)": 16.55
+    "Price ($)": 16.55,
+    "No. of Units": 982,
+    "Stock Out Units": 138,
+    "Category_Code": 7
   },
   "valsartan plus": {
+    "Medicine ID": "MED-248857",
     "Medicine Name": "Valsartan Plus",
     "Category": "Proton Pump Inhibitor",
     "Dosage": "5 mL",
-    "Price ($)": 49.56
+    "Price ($)": 49.56,
+    "No. of Units": 712,
+    "Stock Out Units": 135,
+    "Category_Code": 13
   },
   "fluoxetine combo": {
+    "Medicine ID": "MED-249620",
     "Medicine Name": "Fluoxetine Combo",
     "Category": "Antiviral",
     "Dosage": "650 mg",
-    "Price ($)": 158.45
+    "Price ($)": 158.45,
+    "No. of Units": 669,
+    "Stock Out Units": 71,
+    "Category_Code": 8
   },
   "pantoprazole hcl": {
+    "Medicine ID": "MED-249958",
     "Medicine Name": "Pantoprazole HCL",
     "Category": "Proton Pump Inhibitor",
     "Dosage": "250 mg",
-    "Price ($)": 225.15
+    "Price ($)": 225.15,
+    "No. of Units": 363,
+    "Stock Out Units": 65,
+    "Category_Code": 13
   },
   "atorvastatin ds": {
+    "Medicine ID": "MED-247974",
     "Medicine Name": "Atorvastatin DS",
     "Category": "Anticoagulant",
     "Dosage": "20 mg",
-    "Price ($)": 178.23
+    "Price ($)": 178.23,
+    "No. of Units": 513,
+    "Stock Out Units": 102,
+    "Category_Code": 2
   },
   "fluoxetine sodium": {
+    "Medicine ID": "MED-249970",
     "Medicine Name": "Fluoxetine Sodium",
     "Category": "Antihistamine",
     "Dosage": "250 mg",
-    "Price ($)": 29.88
+    "Price ($)": 29.88,
+    "No. of Units": 322,
+    "Stock Out Units": 37,
+    "Category_Code": 6
   },
   "azithromycin ds": {
+    "Medicine ID": "MED-248383",
     "Medicine Name": "Azithromycin DS",
     "Category": "Proton Pump Inhibitor",
     "Dosage": "100 mg",
-    "Price ($)": 137.54
+    "Price ($)": 137.54,
+    "No. of Units": 788,
+    "Stock Out Units": 52,
+    "Category_Code": 13
   },
   "carvedilol hcl": {
+    "Medicine ID": "MED-249573",
     "Medicine Name": "Carvedilol HCL",
     "Category": "Diuretic",
     "Dosage": "10 mL",
-    "Price ($)": 54.33
+    "Price ($)": 54.33,
+    "No. of Units": 145,
+    "Stock Out Units": 10,
+    "Category_Code": 12
   },
   "atorvastatin ultra": {
+    "Medicine ID": "MED-246249",
     "Medicine Name": "Atorvastatin Ultra",
     "Category": "Diuretic",
     "Dosage": "100 mg",
-    "Price ($)": 55.78
+    "Price ($)": 55.78,
+    "No. of Units": 347,
+    "Stock Out Units": 54,
+    "Category_Code": 12
   },
   "ibuprofen ultra": {
+    "Medicine ID": "MED-249310",
     "Medicine Name": "Ibuprofen Ultra",
     "Category": "Antihypertensive",
     "Dosage": "5 mg",
-    "Price ($)": 180.61
+    "Price ($)": 180.61,
+    "No. of Units": 777,
+    "Stock Out Units": 153,
+    "Category_Code": 7
   },
   "lisinopril forte": {
+    "Medicine ID": "MED-249477",
     "Medicine Name": "Lisinopril Forte",
     "Category": "Proton Pump Inhibitor",
     "Dosage": "850 mg",
-    "Price ($)": 34.68
+    "Price ($)": 34.68,
+    "No. of Units": 45,
+    "Stock Out Units": 9,
+    "Category_Code": 13
   },
   "rosuvastatin active": {
+    "Medicine ID": "MED-249455",
     "Medicine Name": "Rosuvastatin Active",
     "Category": "Antiviral",
     "Dosage": "850 mg",
-    "Price ($)": 196.42
+    "Price ($)": 196.42,
+    "No. of Units": 375,
+    "Stock Out Units": 41,
+    "Category_Code": 8
   },
   "levothyroxine active": {
+    "Medicine ID": "MED-248345",
     "Medicine Name": "Levothyroxine Active",
     "Category": "Analgesic",
     "Dosage": "250 mg",
-    "Price ($)": 243.02
+    "Price ($)": 243.02,
+    "No. of Units": 771,
+    "Stock Out Units": 58,
+    "Category_Code": 0
   },
   "omeprazole combo": {
+    "Medicine ID": "MED-249894",
     "Medicine Name": "Omeprazole Combo",
     "Category": "Statin",
     "Dosage": "5 mL",
-    "Price ($)": 242.09
+    "Price ($)": 242.09,
+    "No. of Units": 231,
+    "Stock Out Units": 45,
+    "Category_Code": 14
   },
   "pantoprazole ds": {
+    "Medicine ID": "MED-248998",
     "Medicine Name": "Pantoprazole DS",
     "Category": "Bronchodilator",
     "Dosage": "10 mg",
-    "Price ($)": 199.15
+    "Price ($)": 199.15,
+    "No. of Units": 193,
+    "Stock Out Units": 20,
+    "Category_Code": 10
   },
   "hydrochlorothiazide sodium": {
+    "Medicine ID": "MED-249877",
     "Medicine Name": "Hydrochlorothiazide Sodium",
     "Category": "Antihistamine",
     "Dosage": "500 mg",
-    "Price ($)": 160.75
+    "Price ($)": 160.75,
+    "No. of Units": 680,
+    "Stock Out Units": 97,
+    "Category_Code": 6
   },
   "albuterol ultra": {
+    "Medicine ID": "MED-249991",
     "Medicine Name": "Albuterol Ultra",
     "Category": "Diuretic",
     "Dosage": "850 mg",
-    "Price ($)": 25.65
+    "Price ($)": 25.65,
+    "No. of Units": 809,
+    "Stock Out Units": 106,
+    "Category_Code": 12
   },
   "albuterol ds": {
+    "Medicine ID": "MED-249440",
     "Medicine Name": "Albuterol DS",
     "Category": "Beta-Blocker",
     "Dosage": "100 mg",
-    "Price ($)": 160.9
+    "Price ($)": 160.9,
+    "No. of Units": 694,
+    "Stock Out Units": 134,
+    "Category_Code": 9
   },
   "escitalopram combo": {
+    "Medicine ID": "MED-249334",
     "Medicine Name": "Escitalopram Combo",
     "Category": "Beta-Blocker",
     "Dosage": "1000 mg",
-    "Price ($)": 225.01
+    "Price ($)": 225.01,
+    "No. of Units": 535,
+    "Stock Out Units": 78,
+    "Category_Code": 9
   },
   "lipitor hcl": {
+    "Medicine ID": "MED-249612",
     "Medicine Name": "Lipitor HCL",
     "Category": "Bronchodilator",
     "Dosage": "20 mg",
-    "Price ($)": 223.03
+    "Price ($)": 223.03,
+    "No. of Units": 721,
+    "Stock Out Units": 86,
+    "Category_Code": 10
   },
   "metoprolol xr": {
+    "Medicine ID": "MED-249103",
     "Medicine Name": "Metoprolol XR",
     "Category": "Antidepressant",
     "Dosage": "500 mg",
-    "Price ($)": 42.74
+    "Price ($)": 42.74,
+    "No. of Units": 184,
+    "Stock Out Units": 18,
+    "Category_Code": 3
   },
   "clopidogrel xr": {
+    "Medicine ID": "MED-249226",
     "Medicine Name": "Clopidogrel XR",
     "Category": "Antihistamine",
     "Dosage": "250 mg",
-    "Price ($)": 54.75
+    "Price ($)": 54.75,
+    "No. of Units": 621,
+    "Stock Out Units": 109,
+    "Category_Code": 6
   },
   "escitalopram active": {
+    "Medicine ID": "MED-249750",
     "Medicine Name": "Escitalopram Active",
     "Category": "Beta-Blocker",
     "Dosage": "500 mg",
-    "Price ($)": 164.13
+    "Price ($)": 164.13,
+    "No. of Units": 720,
+    "Stock Out Units": 97,
+    "Category_Code": 9
   },
   "albuterol hcl": {
+    "Medicine ID": "MED-249468",
     "Medicine Name": "Albuterol HCL",
     "Category": "Antidepressant",
     "Dosage": "250 mg",
-    "Price ($)": 184.79
+    "Price ($)": 184.79,
+    "No. of Units": 136,
+    "Stock Out Units": 20,
+    "Category_Code": 3
   },
   "citalopram xr": {
+    "Medicine ID": "MED-249688",
     "Medicine Name": "Citalopram XR",
     "Category": "Beta-Blocker",
     "Dosage": "20 mg",
-    "Price ($)": 101.84
+    "Price ($)": 101.84,
+    "No. of Units": 615,
+    "Stock Out Units": 75,
+    "Category_Code": 9
   },
   "atorvastatin max": {
+    "Medicine ID": "MED-249572",
     "Medicine Name": "Atorvastatin Max",
     "Category": "Antibiotic",
     "Dosage": "50 mg",
-    "Price ($)": 35.21
+    "Price ($)": 35.21,
+    "No. of Units": 329,
+    "Stock Out Units": 29,
+    "Category_Code": 1
   },
   "gabapentin plus": {
+    "Medicine ID": "MED-249599",
     "Medicine Name": "Gabapentin Plus",
     "Category": "Anticoagulant",
     "Dosage": "5 mL",
-    "Price ($)": 80.27
+    "Price ($)": 80.27,
+    "No. of Units": 440,
+    "Stock Out Units": 84,
+    "Category_Code": 2
   },
   "montelukast max": {
+    "Medicine ID": "MED-249695",
     "Medicine Name": "Montelukast Max",
     "Category": "Antibiotic",
     "Dosage": "100 mg",
-    "Price ($)": 137.01
+    "Price ($)": 137.01,
+    "No. of Units": 39,
+    "Stock Out Units": 6,
+    "Category_Code": 1
   },
   "prednisone max": {
+    "Medicine ID": "MED-249809",
     "Medicine Name": "Prednisone Max",
     "Category": "Statin",
     "Dosage": "850 mg",
-    "Price ($)": 121.53
+    "Price ($)": 121.53,
+    "No. of Units": 180,
+    "Stock Out Units": 33,
+    "Category_Code": 14
   },
   "lisinopril sodium": {
+    "Medicine ID": "MED-249947",
     "Medicine Name": "Lisinopril Sodium",
     "Category": "Bronchodilator",
     "Dosage": "250 mg",
-    "Price ($)": 148.53
+    "Price ($)": 148.53,
+    "No. of Units": 542,
+    "Stock Out Units": 33,
+    "Category_Code": 10
   },
   "omeprazole hcl": {
+    "Medicine ID": "MED-249671",
     "Medicine Name": "Omeprazole HCL",
     "Category": "Analgesic",
     "Dosage": "50 mg",
-    "Price ($)": 15.86
+    "Price ($)": 15.86,
+    "No. of Units": 689,
+    "Stock Out Units": 86,
+    "Category_Code": 0
   },
   "levothyroxine ds": {
+    "Medicine ID": "MED-249502",
     "Medicine Name": "Levothyroxine DS",
     "Category": "Anticoagulant",
     "Dosage": "850 mg",
-    "Price ($)": 213.53
+    "Price ($)": 213.53,
+    "No. of Units": 202,
+    "Stock Out Units": 15,
+    "Category_Code": 2
   },
   "meloxicam active": {
+    "Medicine ID": "MED-248692",
     "Medicine Name": "Meloxicam Active",
     "Category": "Antiviral",
     "Dosage": "10 mg",
-    "Price ($)": 86.11
+    "Price ($)": 86.11,
+    "No. of Units": 55,
+    "Stock Out Units": 8,
+    "Category_Code": 8
   },
   "valsartan max": {
+    "Medicine ID": "MED-248338",
     "Medicine Name": "Valsartan Max",
     "Category": "Corticosteroid",
     "Dosage": "650 mg",
-    "Price ($)": 187.21
+    "Price ($)": 187.21,
+    "No. of Units": 980,
+    "Stock Out Units": 144,
+    "Category_Code": 11
   },
   "hydrochlorothiazide ultra": {
+    "Medicine ID": "MED-249850",
     "Medicine Name": "Hydrochlorothiazide Ultra",
     "Category": "Antihypertensive",
     "Dosage": "1000 mg",
-    "Price ($)": 84.89
+    "Price ($)": 84.89,
+    "No. of Units": 557,
+    "Stock Out Units": 67,
+    "Category_Code": 7
   },
   "sertraline combo": {
+    "Medicine ID": "MED-249123",
     "Medicine Name": "Sertraline Combo",
     "Category": "Bronchodilator",
     "Dosage": "500 mg",
-    "Price ($)": 6.45
+    "Price ($)": 6.45,
+    "No. of Units": 100,
+    "Stock Out Units": 11,
+    "Category_Code": 10
   },
   "fluoxetine ds": {
+    "Medicine ID": "MED-249803",
     "Medicine Name": "Fluoxetine DS",
     "Category": "Antiviral",
     "Dosage": "100 mg",
-    "Price ($)": 135.18
+    "Price ($)": 135.18,
+    "No. of Units": 777,
+    "Stock Out Units": 154,
+    "Category_Code": 8
   },
   "acetaminophen hcl": {
+    "Medicine ID": "MED-249742",
     "Medicine Name": "Acetaminophen HCL",
     "Category": "Analgesic",
     "Dosage": "100 mg",
-    "Price ($)": 171.47
+    "Price ($)": 171.47,
+    "No. of Units": 606,
+    "Stock Out Units": 117,
+    "Category_Code": 0
   }
 }

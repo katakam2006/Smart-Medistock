@@ -38,10 +38,22 @@ async function initializeDatabase() {
                 email VARCHAR(100),
                 password VARCHAR(100) NOT NULL,
                 role VARCHAR(50) NOT NULL,
-                address TEXT
+                address TEXT,
+                hospital_name VARCHAR(100)
             )
         `);
         console.log('MySQL users table verified/created.');
+
+        // Schema migration check for existing tables
+        try {
+            const [columns] = await db.query(`SHOW COLUMNS FROM users LIKE 'hospital_name'`);
+            if (columns.length === 0) {
+                await db.query(`ALTER TABLE users ADD COLUMN hospital_name VARCHAR(100)`);
+                console.log("Migration: Added 'hospital_name' column to users table.");
+            }
+        } catch (migrationErr) {
+            console.error('Error migrating users table schema:', migrationErr.message);
+        }
 
         // 2. Create inventory_alerts table if it doesn't exist
         await db.query(`
@@ -51,10 +63,22 @@ async function initializeDatabase() {
                 medicine_name VARCHAR(100) NOT NULL,
                 status VARCHAR(50) NOT NULL DEFAULT 'Pending',
                 triggered_by VARCHAR(50),
+                hospital_name VARCHAR(100),
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
             )
         `);
         console.log('MySQL inventory_alerts table verified/created.');
+
+        // Schema migration check for inventory_alerts
+        try {
+            const [columns] = await db.query(`SHOW COLUMNS FROM inventory_alerts LIKE 'hospital_name'`);
+            if (columns.length === 0) {
+                await db.query(`ALTER TABLE inventory_alerts ADD COLUMN hospital_name VARCHAR(100)`);
+                console.log("Migration: Added 'hospital_name' column to inventory_alerts table.");
+            }
+        } catch (migrationErr) {
+            console.error('Error migrating inventory_alerts table schema:', migrationErr.message);
+        }
 
         // 3. Create purchase_orders table if it doesn't exist
         await db.query(`
@@ -64,10 +88,22 @@ async function initializeDatabase() {
                 quantity_requested INT NOT NULL,
                 vendor_id INT DEFAULT 1,
                 status ENUM('Pending', 'Accepted', 'Denied') DEFAULT 'Pending',
+                hospital_name VARCHAR(100),
                 updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
             )
         `);
         console.log('MySQL purchase_orders table verified/created.');
+
+        // Schema migration check for purchase_orders
+        try {
+            const [columns] = await db.query(`SHOW COLUMNS FROM purchase_orders LIKE 'hospital_name'`);
+            if (columns.length === 0) {
+                await db.query(`ALTER TABLE purchase_orders ADD COLUMN hospital_name VARCHAR(100)`);
+                console.log("Migration: Added 'hospital_name' column to purchase_orders table.");
+            }
+        } catch (migrationErr) {
+            console.error('Error migrating purchase_orders table schema:', migrationErr.message);
+        }
 
         // 4. Seed a default CEO account if the table is completely empty
         const [rows] = await db.query('SELECT COUNT(*) as count FROM users');
@@ -86,15 +122,15 @@ initializeDatabase();
 
 // API: Register User
 app.post('/api/register', async (req, res) => {
-    const { username, email, password, role, address } = req.body;
+    const { username, email, password, role, address, hospital_name } = req.body;
 
     if (!username || !password || !role) {
         return res.status(400).json({ error: 'Missing mandatory fields' });
     }
 
-    const query = `INSERT INTO users (username, email, password, role, address) VALUES (?, ?, ?, ?, ?)`;
+    const query = `INSERT INTO users (username, email, password, role, address, hospital_name) VALUES (?, ?, ?, ?, ?, ?)`;
     try {
-        const [result] = await db.query(query, [username, email, password, role, address || '']);
+        const [result] = await db.query(query, [username, email, password, role, address || '', hospital_name || '']);
         res.status(201).json({ message: 'User registered successfully!', userId: result.insertId });
     } catch (err) {
         if (err.code === 'ER_DUP_ENTRY') {
@@ -108,7 +144,7 @@ app.post('/api/register', async (req, res) => {
 app.post('/api/login', async (req, res) => {
     const { username, password } = req.body;
 
-    const query = `SELECT username, email, role, address FROM users WHERE username = ? AND password = ?`;
+    const query = `SELECT username, email, role, address, hospital_name FROM users WHERE username = ? AND password = ?`;
     try {
         const [rows] = await db.query(query, [username, password]);
         if (rows.length === 0) {
@@ -123,14 +159,14 @@ app.post('/api/login', async (req, res) => {
 
 // API: Intimate Alert (Create alert)
 app.post('/api/alerts/intimate', async (req, res) => {
-    const { alert_type, medicine_name, status, triggered_by } = req.body;
+    const { alert_type, medicine_name, status, triggered_by, hospital_name } = req.body;
     if (!alert_type || !medicine_name) {
         return res.status(400).json({ error: 'Missing mandatory fields alert_type or medicine_name' });
     }
 
-    const query = `INSERT INTO inventory_alerts (alert_type, medicine_name, status, triggered_by) VALUES (?, ?, ?, ?)`;
+    const query = `INSERT INTO inventory_alerts (alert_type, medicine_name, status, triggered_by, hospital_name) VALUES (?, ?, ?, ?, ?)`;
     try {
-        const [result] = await db.query(query, [alert_type, medicine_name, status || 'Pending', triggered_by || 'Billing Executive']);
+        const [result] = await db.query(query, [alert_type, medicine_name, status || 'Pending', triggered_by || 'Billing Executive', hospital_name || '']);
         res.status(201).json({ message: 'Alert created successfully!', alertId: result.insertId });
     } catch (err) {
         res.status(500).json({ error: err.message });
@@ -139,9 +175,16 @@ app.post('/api/alerts/intimate', async (req, res) => {
 
 // API: Get Active Alerts
 app.get('/api/alerts/active', async (req, res) => {
-    const query = `SELECT * FROM inventory_alerts ORDER BY id DESC`;
+    const hospitalName = req.query.hospital_name;
+    let query = `SELECT * FROM inventory_alerts`;
+    let params = [];
+    if (hospitalName) {
+        query += ` WHERE hospital_name = ?`;
+        params.push(hospitalName);
+    }
+    query += ` ORDER BY id DESC`;
     try {
-        const [rows] = await db.query(query);
+        const [rows] = await db.query(query, params);
         res.json(rows);
     } catch (err) {
         res.status(500).json({ error: err.message });
@@ -150,9 +193,18 @@ app.get('/api/alerts/active', async (req, res) => {
 
 // API: Get Dashboard Counters
 app.get('/api/dashboard/counters', async (req, res) => {
+    const hospitalName = req.query.hospital_name;
+    let lowStockQuery = `SELECT COUNT(*) as count FROM inventory_alerts WHERE alert_type = 'LOW STOCK' AND status = 'Pending'`;
+    let expiryQuery = `SELECT COUNT(*) as count FROM inventory_alerts WHERE alert_type = 'EXPIRY' AND status = 'Pending'`;
+    let params = [];
+    if (hospitalName) {
+        lowStockQuery += ` AND hospital_name = ?`;
+        expiryQuery += ` AND hospital_name = ?`;
+        params.push(hospitalName);
+    }
     try {
-        const [lowStockRows] = await db.query(`SELECT COUNT(*) as count FROM inventory_alerts WHERE alert_type = 'LOW STOCK' AND status = 'Pending'`);
-        const [expiryRows] = await db.query(`SELECT COUNT(*) as count FROM inventory_alerts WHERE alert_type = 'EXPIRY' AND status = 'Pending'`);
+        const [lowStockRows] = await db.query(lowStockQuery, params);
+        const [expiryRows] = await db.query(expiryQuery, params);
         res.json({
             lowStockCount: lowStockRows[0].count,
             expiryCount: expiryRows[0].count
@@ -165,7 +217,26 @@ app.get('/api/dashboard/counters', async (req, res) => {
 // API: Fetch live RobustMed AI prediction rows for the CEO dashboard
 app.get('/api/prediction/forecast', (req, res) => {
     const limit = Math.max(1, Math.min(50, parseInt(req.query.limit || '12', 10)));
-    const pythonCmd = process.platform === 'win32' ? 'python' : 'python3';
+    
+    let pythonCmd = 'python3';
+    if (process.platform === 'win32') {
+        const localAppData = process.env.LOCALAPPDATA;
+        if (localAppData) {
+            const path314 = path.join(localAppData, 'Programs', 'Python', 'Python314', 'python.exe');
+            if (fs.existsSync(path314)) {
+                pythonCmd = path314;
+            } else {
+                const path313 = path.join(localAppData, 'Programs', 'Python', 'Python313', 'python.exe');
+                if (fs.existsSync(path313)) {
+                    pythonCmd = path313;
+                } else {
+                    pythonCmd = 'python';
+                }
+            }
+        } else {
+            pythonCmd = 'python';
+        }
+    }
 
     const child = spawnSync(pythonCmd, ['train_model.py', 'forecast', String(limit)], {
         cwd: __dirname,
@@ -241,14 +312,14 @@ app.put('/api/alerts/:id', async (req, res) => {
 
 // API: Place a new purchase order (Stock-In Executive -> Vendor)
 app.post('/api/orders/place', async (req, res) => {
-    const { medicine_name, quantity_requested, vendor_id } = req.body;
+    const { medicine_name, quantity_requested, vendor_id, hospital_name } = req.body;
     if (!medicine_name || !quantity_requested) {
         return res.status(400).json({ error: 'Missing medicine_name or quantity_requested' });
     }
 
-    const query = `INSERT INTO purchase_orders (medicine_name, quantity_requested, vendor_id, status) VALUES (?, ?, ?, 'Pending')`;
+    const query = `INSERT INTO purchase_orders (medicine_name, quantity_requested, vendor_id, status, hospital_name) VALUES (?, ?, ?, 'Pending', ?)`;
     try {
-        const [result] = await db.query(query, [medicine_name, quantity_requested, vendor_id || 1]);
+        const [result] = await db.query(query, [medicine_name, quantity_requested, vendor_id || 1, hospital_name || '']);
         res.status(201).json({
             message: 'Order placed successfully!',
             orderId: result.insertId,
@@ -257,7 +328,8 @@ app.post('/api/orders/place', async (req, res) => {
                 medicine_name,
                 quantity_requested,
                 vendor_id: vendor_id || 1,
-                status: 'Pending'
+                status: 'Pending',
+                hospital_name: hospital_name || ''
             }
         });
     } catch (err) {
@@ -298,9 +370,16 @@ app.put('/api/orders/vendor/respond/:orderId', async (req, res) => {
 
 // API: Fetch all purchase orders with statuses for the Stock-In Executive tracking list
 app.get('/api/orders/executive/status', async (req, res) => {
-    const query = `SELECT * FROM purchase_orders ORDER BY order_id DESC`;
+    const hospitalName = req.query.hospital_name;
+    let query = `SELECT * FROM purchase_orders`;
+    let params = [];
+    if (hospitalName) {
+        query += ` WHERE hospital_name = ?`;
+        params.push(hospitalName);
+    }
+    query += ` ORDER BY order_id DESC`;
     try {
-        const [rows] = await db.query(query);
+        const [rows] = await db.query(query, params);
         res.json(rows);
     } catch (err) {
         res.status(500).json({ error: err.message });

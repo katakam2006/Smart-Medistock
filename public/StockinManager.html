@@ -752,11 +752,15 @@
 
         async function loadDynamicAlerts() {
             try {
-                const alertsRes = await fetch('http://localhost:3000/api/alerts/active');
+                const stored = localStorage.getItem('stockinProfile');
+                const profile = stored ? JSON.parse(stored) : {};
+                const hospitalName = profile.hospital_name || '';
+
+                const alertsRes = await fetch(`http://localhost:3000/api/alerts/active?hospital_name=${encodeURIComponent(hospitalName)}`);
                 if (!alertsRes.ok) return;
                 const alerts = await alertsRes.json();
 
-                const countersRes = await fetch('http://localhost:3000/api/dashboard/counters');
+                const countersRes = await fetch(`http://localhost:3000/api/dashboard/counters?hospital_name=${encodeURIComponent(hospitalName)}`);
                 if (countersRes.ok) {
                     const counters = await countersRes.json();
                     document.getElementById('count-low-stock').innerText = (26 + counters.lowStockCount).toString();
@@ -814,6 +818,10 @@
 
         async function placeVendorOrder(medName, alertId) {
             try {
+                const stored = localStorage.getItem('stockinProfile');
+                const profile = stored ? JSON.parse(stored) : {};
+                const hospitalName = profile.hospital_name || '';
+
                 // FIXED: Direct address route configured to talk via http channel port 3000
                 const orderResponse = await fetch('http://localhost:3000/api/orders/place', {
                     method: 'POST',
@@ -823,7 +831,8 @@
                     body: JSON.stringify({
                         medicine_name: medName,
                         quantity_requested: 100,
-                        vendor_id: 1
+                        vendor_id: 1,
+                        hospital_name: hospitalName
                     })
                 });
 
@@ -854,8 +863,12 @@
 
         async function loadRecentOrders() {
             try {
+                const stored = localStorage.getItem('stockinProfile');
+                const profile = stored ? JSON.parse(stored) : {};
+                const hospitalName = profile.hospital_name || '';
+
                 // FIXED: Routing pathway links changed to use standard http communication channels
-                const response = await fetch('http://localhost:3000/api/orders/executive/status');
+                const response = await fetch(`http://localhost:3000/api/orders/executive/status?hospital_name=${encodeURIComponent(hospitalName)}`);
                 if (!response.ok) {
                     console.error("Failed to fetch order status logs from server.");
                     return;
