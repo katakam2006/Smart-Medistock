@@ -4,82 +4,117 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Smart MediStock - CEO Dashboard with AI Predictions</title>
+    <title>Smart MediStock - CEO Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
             font-family: 'Inter', sans-serif;
             background-color: #F8FAFC;
             color: #1E293B;
+            display: flex;
+            min-height: 100vh;
         }
 
-        .sidebar-active {
-            background: #2563EB;
-            color: white !important;
+        /* Sidebar Styles */
+        aside {
+            width: 260px;
+            background-color: #0F172A;
+            color: #94A3B8;
+            padding: 1.5rem 1rem;
+            position: fixed;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            z-index: 100;
         }
 
-        .hidden-view {
-            display: none !important;
-        }
-
-        .metric-card {
-            background: white;
-            padding: 16px 24px;
-            border-radius: 12px;
-            border: 1px solid #E2E8F0;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-        }
-
-        ::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: #CBD5E1;
-            border-radius: 10px;
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 1rem;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid #1E293B;
         }
 
         .brand-logo {
-            width: 42px;
-            height: 42px;
-            border-radius: 8px;
+            width: 35px;
+            height: 35px;
             object-fit: contain;
-            background: transparent;
+            border-radius: 8px;
         }
 
-        .title-area {
+        .logo-container h2 {
+            color: #3B82F6;
+            font-size: 1.25rem;
+        }
+
+        .menu-list {
+            flex: 1;
+            list-style: none;
+        }
+
+        .menu-item {
             display: flex;
-            flex-direction: column;
-            gap: 2px;
-        }
-
-        .title-area p {
-            color: #64748b;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 1rem;
+            margin-bottom: 4px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.2s;
+            color: #94A3B8;
             font-size: 0.9rem;
         }
 
-        .title-area h1 {
-            font-size: 1.4rem;
-            font-weight: 800;
-            color: #0F172A;
+        .menu-item:hover,
+        .menu-item.active {
+            background-color: #334155;
+            color: white;
+        }
+
+        .menu-item.active {
+            border-left: 4px solid #3B82F6;
+        }
+
+        .logout-btn {
+            color: #FCA5A5 !important;
+            margin-top: auto;
+            border-top: 1px solid #1E293B;
+            padding-top: 20px;
+        }
+
+        /* Main Content */
+        main {
+            flex: 1;
+            margin-left: 260px;
+            padding: 1.5rem 2rem;
+            width: calc(100% - 260px);
+            max-height: 100vh;
+            overflow-y: auto;
         }
 
         .top-nav {
             display: flex;
-            justify-content: flex-start;
+            justify-content: space-between;
             align-items: center;
-            margin-bottom: 0.75rem;
+            margin-bottom: 1rem;
             background: transparent;
         }
 
         .search-wrapper {
             position: relative;
-            width: 420px;
-            max-width: 100%;
+            width: 400px;
         }
 
         .search-wrapper input {
@@ -88,8 +123,7 @@
             border-radius: 10px;
             border: 1px solid #E2E8F0;
             outline: none;
-            background: #F8FAFC;
-            color: #0F172A;
+            background: white;
         }
 
         .search-icon {
@@ -105,17 +139,45 @@
             align-items: center;
             margin-bottom: 1.5rem;
             background: white;
-            padding: 1rem 1.2rem;
+            padding: 1rem 1.5rem;
             border-radius: 12px;
             border: 1px solid #E2E8F0;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
+        }
+
+        .header-left {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .header-left p {
+            color: #64748B;
+            font-size: 0.9rem;
+        }
+
+        .header-left h1 {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: #0F172A;
+        }
+
+        .hospital-badge {
+            display: inline-block;
+            padding: 4px 14px;
+            background: #DBEAFE;
+            color: #1E40AF;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-top: 4px;
         }
 
         .profile-box {
             display: flex;
             align-items: center;
             gap: 12px;
-            padding: 6px 10px;
+            padding: 6px 12px;
             border: 1px solid #E2E8F0;
             border-radius: 14px;
             background: #F8FAFC;
@@ -125,913 +187,1381 @@
             width: 42px;
             height: 42px;
             border-radius: 9999px;
-            border: 2px solid #2563EB;
+            border: 2px solid #3B82F6;
             object-fit: cover;
         }
 
-        .stock-badge {
-            display: inline-block;
-            padding: 6px 12px;
+        .profile-info {
+            text-align: right;
+        }
+
+        .profile-info h4 {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #0F172A;
+        }
+
+        .profile-info p {
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: #3B82F6;
+            font-weight: 700;
+        }
+
+        /* Content Sections */
+        .content-section {
+            display: none;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid #E2E8F0;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .stat-card h4 {
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            color: #64748B;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+        }
+
+        .stat-card .value {
+            font-size: 1.8rem;
+            font-weight: 800;
+            display: block;
+            margin: 6px 0 10px;
+            color: #0F172A;
+        }
+
+        .stat-card .view-link {
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: #3B82F6;
+            cursor: pointer;
+            text-transform: uppercase;
+        }
+
+        .stat-card.border-warning {
+            border-left: 4px solid #F59E0B;
+        }
+
+        .stat-card.border-danger {
+            border-left: 4px solid #EF4444;
+        }
+
+        .stat-card.border-success {
+            border-left: 4px solid #10B981;
+        }
+
+        .stat-card.border-primary {
+            border-left: 4px solid #3B82F6;
+        }
+
+        /* Dashboard Grid */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 1px solid #E2E8F0;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .card h3 {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: #0F172A;
+            margin-bottom: 1rem;
+        }
+
+        .chart-container {
+            height: 280px;
+            position: relative;
+        }
+
+        /* Forecast Card */
+        .forecast-card {
+            background: linear-gradient(135deg, #EFF6FF 0%, #FFFFFF 100%);
+            border: 1px solid #DBEAFE;
+            border-radius: 12px;
+        }
+
+        .forecast-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: white;
+            border: 1px solid #E5E7EB;
+            border-radius: 8px;
+            padding: 10px 12px;
+            margin-bottom: 8px;
+            font-size: 0.85rem;
+        }
+
+        .forecast-item strong {
+            color: #4F46E5;
+        }
+
+        .forecast-btn {
+            margin-top: 12px;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            background: #4F46E5;
+            color: white;
+            font-weight: 700;
+            cursor: pointer;
+            width: 100%;
+            text-align: center;
+            transition: background 0.2s;
+        }
+
+        .forecast-btn:hover {
+            background: #4338CA;
+        }
+
+        /* Tables */
+        .table-wrapper {
+            overflow-x: auto;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            text-align: left;
+            padding: 10px 12px;
+            background: #F8FAFC;
+            color: #64748B;
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            font-weight: 700;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        td {
+            padding: 10px 12px;
+            border-bottom: 1px solid #F1F5F9;
+            font-size: 0.85rem;
+        }
+
+        .status-badge {
+            padding: 4px 10px;
             border-radius: 20px;
-            font-size: 12px;
+            font-size: 0.7rem;
             font-weight: 600;
         }
 
-        .stock-critical {
-            background-color: rgba(239, 68, 68, 0.1);
+        .status-badge.critical {
+            background: #FEE2E2;
             color: #DC2626;
-            border: 1px solid rgba(239, 68, 68, 0.3);
         }
 
-        .stock-low {
-            background-color: rgba(249, 115, 22, 0.1);
-            color: #EA580C;
-            border: 1px solid rgba(249, 115, 22, 0.3);
+        .status-badge.low {
+            background: #FEF3C7;
+            color: #D97706;
         }
 
-        .stock-normal {
-            background-color: rgba(34, 197, 94, 0.1);
-            color: #16A34A;
-            border: 1px solid rgba(34, 197, 94, 0.3);
+        .status-badge.normal {
+            background: #D1FAE5;
+            color: #059669;
+        }
+
+        .btn-sm {
+            padding: 4px 12px;
+            border-radius: 6px;
+            border: none;
+            font-weight: 600;
+            font-size: 0.7rem;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background: #3B82F6;
+            color: white;
+        }
+
+        .btn-danger {
+            background: #EF4444;
+            color: white;
+        }
+
+        .btn-success {
+            background: #10B981;
+            color: white;
+        }
+
+        /* Alert Tabs */
+        .alert-tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .alert-tab {
+            padding: 8px 18px;
+            border-radius: 30px;
+            background: #F1F5F9;
+            font-weight: 600;
+            font-size: 0.8rem;
+            cursor: pointer;
+            border: 1px solid transparent;
+            transition: 0.2s;
+        }
+
+        .alert-tab.active {
+            background: #3B82F6;
+            color: white;
+            border-color: #3B82F6;
+        }
+
+        .alert-subsection {
+            display: none;
+        }
+
+        .alert-subsection.active {
+            display: block;
+        }
+
+        /* Medicine Grid */
+        .medicine-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+
+        .medicine-card {
+            background: white;
+            border: 1px solid #E2E8F0;
+            border-radius: 8px;
+            padding: 1rem;
+            transition: 0.2s;
+        }
+
+        .medicine-card:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        .medicine-card .name {
+            font-weight: 700;
+            font-size: 0.95rem;
+        }
+
+        .medicine-card .details {
+            font-size: 0.8rem;
+            color: #64748B;
+            margin-top: 4px;
+        }
+
+        .medicine-card .stock {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-top: 8px;
+        }
+
+        .medicine-card .stock.critical {
+            color: #DC2626;
+        }
+
+        .medicine-card .stock.low {
+            color: #D97706;
+        }
+
+        .medicine-card .stock.normal {
+            color: #059669;
+        }
+
+        /* Prediction Table */
+        .prediction-table-container {
+            margin-top: 1.5rem;
+        }
+
+        .prediction-controls {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 1rem;
+        }
+
+        .prediction-controls select {
+            padding: 8px 14px;
+            border: 1px solid #E2E8F0;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            background: white;
+            outline: none;
+        }
+
+        .prediction-controls .btn-refresh {
+            padding: 8px 18px;
+            background: #3B82F6;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.8rem;
+            cursor: pointer;
+        }
+
+        /* Modal */
+        #confirm-modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-box {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            text-align: center;
+            width: 350px;
+        }
+
+        .modal-box h3 {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+        }
+
+        .modal-box p {
+            color: #64748B;
+            margin: 15px 0;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .modal-buttons button {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .modal-buttons .btn-cancel {
+            background: #E2E8F0;
+            color: #0F172A;
+        }
+
+        .modal-buttons .btn-confirm {
+            background: #3B82F6;
+            color: white;
+        }
+
+        #toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #1E293B;
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            display: none;
+            z-index: 2000;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            aside {
+                width: 200px;
+            }
+
+            main {
+                margin-left: 200px;
+                padding: 1rem;
+                width: calc(100% - 200px);
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .search-wrapper {
+                width: 200px;
+            }
         }
     </style>
 </head>
 
-<body class="flex h-screen overflow-hidden">
+<body>
 
-    <aside class="w-64 bg-[#0F172A] text-slate-400 flex flex-col shrink-0 p-4">
-        <div class="flex items-center gap-3 px-2 mb-10">
-            <img src="logformedistock.png" alt="Logo" class="brand-logo"
-                onerror="this.src='https://placehold.co/100x100/2563EB/FFF?text=SM'">
-            <div>
-                <h1 class="text-white font-bold text-sm leading-tight">Smart Medistock</h1>
-                <p class="text-[10px] text-slate-500 uppercase tracking-widest">Medicine Inventory</p>
+    <!-- Toast Notification -->
+    <div id="toast">Action Processed!</div>
+
+    <!-- Confirm Modal -->
+    <div id="confirm-modal">
+        <div class="modal-box">
+            <h3 id="modal-title">Confirmation</h3>
+            <p id="modal-desc">Are you sure?</p>
+            <div class="modal-buttons">
+                <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+                <button class="btn-confirm" id="modal-confirm-btn" onclick="confirmAction()">Confirm</button>
             </div>
         </div>
-        <nav class="flex-1 space-y-2">
-            <a href="javascript:void(0)" id="nav-dashboard" onclick="showView('dashboard-view', this)"
-                class="nav-link sidebar-active flex items-center gap-3 px-4 py-2.5 text-sm font-medium rounded-lg transition-all"><i
-                    class="fas fa-th-large w-5"></i> Dashboard</a>
-            <a href="javascript:void(0)" id="nav-medicines" onclick="showView('medicines-view', this)"
-                class="nav-link flex items-center gap-3 px-4 py-2.5 text-sm font-medium rounded-lg hover:bg-slate-800 transition-all"><i
-                    class="fas fa-pills w-5"></i> Medicines</a>
-            <a href="javascript:void(0)" id="nav-stock-in" onclick="showView('stock-in-view', this)"
-                class="nav-link flex items-center gap-3 px-4 py-2.5 text-sm font-medium rounded-lg hover:bg-slate-800 transition-all"><i
-                    class="fas fa-plus-square w-5"></i> Stock In</a>
-            <a href="javascript:void(0)" id="nav-stock-out" onclick="showView('stock-out-view', this)"
-                class="nav-link flex items-center gap-3 px-4 py-2.5 text-sm font-medium rounded-lg hover:bg-slate-800 transition-all"><i
-                    class="fas fa-minus-square w-5"></i> Stock Out</a>
-            <a href="javascript:void(0)" id="nav-alerts" onclick="showView('alerts-view', this)"
-                class="nav-link flex items-center gap-3 px-4 py-2.5 text-sm font-medium rounded-lg hover:bg-slate-800 transition-all"><i
-                    class="fas fa-exclamation-triangle w-5"></i> Alerts</a>
-            <a href="javascript:void(0)" id="nav-prediction" onclick="showView('prediction-view', this)"
-                class="nav-link flex items-center gap-3 px-4 py-2.5 text-sm font-medium rounded-lg hover:bg-slate-800 transition-all"><i
-                    class="fas fa-brain w-5"></i> AI Prediction <span
-                    class="ml-auto bg-green-500 text-[10px] text-white px-1.5 py-0.5 rounded-full font-bold">New</span></a>
-            <a href="javascript:void(0)" id="nav-reports" onclick="showView('reports-view', this)"
-                class="nav-link flex items-center gap-3 px-4 py-2.5 text-sm font-medium rounded-lg hover:bg-slate-800 transition-all"><i
-                    class="fas fa-file-alt w-5"></i> Reports</a>
-        </nav>
-        <div class="mt-auto border-t border-slate-800 pt-4">
-            <a href="javascript:void(0)" onclick="handleLogout()"
-                class="flex items-center gap-3 px-4 py-2.5 text-sm font-medium rounded-lg hover:bg-red-900/20 text-red-400 transition-all">
-                <i class="fas fa-sign-out-alt w-5"></i> Logout
-            </a>
+    </div>
+
+    <!-- Sidebar -->
+    <aside>
+        <div class="logo-container">
+            <img src="logformedistock.png" alt="Logo" class="brand-logo"
+                onerror="this.src='https://placehold.co/100x100/3B82F6/FFF?text=SM'">
+            <h2>MEDISTOCK</h2>
         </div>
+        <ul class="menu-list">
+            <li class="menu-item active" onclick="showSection('dashboard', this)">
+                <i data-lucide="layout-grid"></i> Dashboard
+            </li>
+            <li class="menu-item" onclick="showSection('medicines', this)">
+                <i data-lucide="pill"></i> Medicines
+            </li>
+            <li class="menu-item" onclick="showSection('alerts', this)">
+                <i data-lucide="bell-ring"></i> Alerts
+            </li>
+            <li class="menu-item" onclick="showSection('orders', this)">
+                <i data-lucide="shopping-cart"></i> Orders
+            </li>
+            <li class="menu-item" onclick="showSection('prediction', this)">
+                <i data-lucide="trending-up"></i> AI Prediction
+            </li>
+            <li class="menu-item" onclick="showSection('staff', this)">
+                <i data-lucide="users"></i> Staff
+            </li>
+            <li class="menu-item logout-btn" onclick="handleLogout()">
+                <i data-lucide="log-out"></i> Logout
+            </li>
+        </ul>
     </aside>
 
-    <main class="flex-1 flex flex-col overflow-hidden">
-        <div class="top-nav px-8 pt-4">
+    <!-- Main Content -->
+    <main>
+        <!-- Top Navigation -->
+        <div class="top-nav">
             <div class="search-wrapper">
-                <i class="fas fa-search search-icon"></i>
-                <input type="text" placeholder="Search dashboard..." />
+                <i data-lucide="search" class="search-icon" style="width:18px; height:18px;"></i>
+                <input type="text" placeholder="Search..." onkeyup="searchGlobal(this.value)">
             </div>
         </div>
 
-        <header class="mx-8 mt-0">
-            <div class="title-area">
+        <!-- Header -->
+        <header>
+            <div class="header-left">
                 <p>Welcome back,</p>
                 <h1 id="page-title">CEO Dashboard</h1>
+                <span id="hospital-badge" class="hospital-badge">🏥 Loading...</span>
             </div>
             <div class="profile-box">
-                <div class="text-right">
-                    <h4 id="ceo-profile-name" class="text-sm font-semibold text-slate-800">CEO</h4>
-                    <p id="ceo-profile-role" class="text-[10px] uppercase tracking-[0.18em] text-blue-600 font-bold">
-                        Chief Executive Officer</p>
+                <div class="profile-info">
+                    <h4 id="ceo-name">CEO</h4>
+                    <p id="ceo-role">Chief Executive Officer</p>
                 </div>
-                <img id="ceo-profile-avatar" src="https://ui-avatars.com/api/?name=CEO&background=2563EB&color=fff"
-                    alt="CEO profile">
+                <img id="ceo-avatar" src="https://ui-avatars.com/api/?name=CEO&background=3B82F6&color=fff" alt="CEO">
             </div>
         </header>
 
-        <div id="dashboard-view" class="content-view flex-1 overflow-y-auto p-8 space-y-8">
-            <div class="grid grid-cols-4 gap-6">
-                <div class="metric-card">
-                    <div class="flex justify-between items-start gap-3">
-                        <div>
-                            <p class="text-[10px] text-blue-600 font-bold uppercase mb-1">Total Medicines</p>
-                            <h3 class="text-2xl font-extrabold">245</h3>
+        <!-- ==================== DASHBOARD ==================== -->
+        <section id="dashboard" class="content-section active">
+            <div class="stats-grid">
+                <div class="stat-card border-primary">
+                    <h4>Total Medicines</h4>
+                    <span class="value" id="stat-total-meds">0</span>
+                    <span class="view-link" onclick="showSection('medicines')">View All →</span>
+                </div>
+                <div class="stat-card border-success">
+                    <h4>Total Stock</h4>
+                    <span class="value" id="stat-total-stock">0</span>
+                    <span class="view-link" onclick="showSection('medicines')">View All →</span>
+                </div>
+                <div class="stat-card border-warning">
+                    <h4>Low Stock Items</h4>
+                    <span class="value" id="stat-low-stock">0</span>
+                    <span class="view-link" onclick="showSection('alerts')">View Alerts →</span>
+                </div>
+                <div class="stat-card border-danger">
+                    <h4>Critical Stock</h4>
+                    <span class="value" id="stat-critical-stock">0</span>
+                    <span class="view-link" onclick="showSection('alerts')">View Alerts →</span>
+                </div>
+            </div>
+
+            <div class="dashboard-grid">
+                <div class="card">
+                    <h3>📊 Stock Overview (Last 7 Days)</h3>
+                    <div class="chart-container">
+                        <canvas id="stockChart"></canvas>
+                    </div>
+                </div>
+                <div class="card forecast-card">
+                    <h3>🤖 AI Forecast</h3>
+                    <div id="forecast-items">
+                        <div class="forecast-item">
+                            <span>Loading predictions...</span>
                         </div>
-                        <button onclick="showView('stock-in-view', document.getElementById('nav-stock-in'))"
-                            class="text-blue-600 text-[10px] font-bold uppercase hover:underline">View All</button>
+                    </div>
+                    <button class="forecast-btn" onclick="showSection('prediction')">
+                        View All Predictions →
+                    </button>
+                </div>
+            </div>
+
+            <div class="dashboard-grid">
+                <div class="card">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                        <h3 style="color:#F59E0B; font-size:0.85rem;">⚠️ Low Stock Items</h3>
+                        <span class="view-link" onclick="showSection('alerts')">View All →</span>
+                    </div>
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Medicine</th>
+                                    <th>Stock</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="dash-low-stock"></tbody>
+                        </table>
                     </div>
                 </div>
-                <div class="metric-card">
-                    <div class="flex justify-between items-start gap-3">
-                        <div>
-                            <p class="text-[10px] text-green-600 font-bold uppercase mb-1">Total Stock</p>
-                            <h3 class="text-2xl font-extrabold">15,230</h3>
-                        </div>
-                        <button onclick="showView('stock-in-view', document.getElementById('nav-stock-in'))"
-                            class="text-blue-600 text-[10px] font-bold uppercase hover:underline">View All</button>
+                <div class="card">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                        <h3 style="color:#EF4444; font-size:0.85rem;">🔥 Critical Stock</h3>
+                        <span class="view-link" onclick="showSection('alerts')">View All →</span>
                     </div>
-                </div>
-                <div class="metric-card border-l-4 border-orange-500">
-                    <div class="flex justify-between items-start gap-3">
-                        <div>
-                            <p class="text-[10px] text-orange-600 font-bold uppercase mb-1">Low Stock</p>
-                            <h3 id="lowStockCount" class="text-2xl font-extrabold">0</h3>
-                        </div>
-                        <button onclick="showView('alerts-view', document.getElementById('nav-alerts'))"
-                            class="text-blue-600 text-[10px] font-bold uppercase hover:underline">View All</button>
-                    </div>
-                </div>
-                <div class="metric-card border-l-4 border-red-500">
-                    <div class="flex justify-between items-start gap-3">
-                        <div>
-                            <p class="text-[10px] text-red-600 font-bold uppercase mb-1">Critical Stock</p>
-                            <h3 id="criticalStockCount" class="text-2xl font-extrabold">0</h3>
-                        </div>
-                        <button onclick="showView('alerts-view', document.getElementById('nav-alerts'))"
-                            class="text-blue-600 text-[10px] font-bold uppercase hover:underline">View All</button>
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Medicine</th>
+                                    <th>Stock</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="dash-critical-stock"></tbody>
+                        </table>
                     </div>
                 </div>
             </div>
 
-            <div class="grid grid-cols-12 gap-8">
-                <div class="col-span-8 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
-                    <h3 class="font-bold text-slate-800 text-sm mb-8">Stock Overview (Last 7 Days)</h3>
-                    <div class="h-[280px]"><canvas id="stockChart"></canvas></div>
-                </div>
-                <div class="col-span-4 bg-indigo-50/50 p-6 rounded-2xl border border-indigo-100 flex flex-col">
-                    <h3 class="font-bold text-indigo-900 text-sm mb-6">AI Forecast</h3>
-                    <div id="forecastItems" class="space-y-3"></div>
-                    <div onclick="showView('prediction-view', document.getElementById('nav-prediction'))"
-                        class="mt-auto p-4 bg-indigo-600 rounded-xl cursor-pointer text-white font-bold text-center hover:bg-indigo-700 transition-all">
-                        View All Predictions</div>
-                </div>
-            </div>
-
-            <div class="grid grid-cols-2 gap-8">
-                <div class="metric-card">
-                    <div class="flex justify-between items-center mb-4">
-                        <h3 class="font-bold text-orange-600 text-xs uppercase">Low Stock Medicines</h3>
-                        <button onclick="showView('alerts-view', document.getElementById('nav-alerts'))"
-                            class="text-blue-600 text-[10px] font-bold uppercase hover:underline">View All</button>
-                    </div>
-                    <div id="lowStockPreview" class="space-y-2 text-xs text-slate-600">
-                        <p>Loading...</p>
-                    </div>
-                </div>
-                <div class="metric-card">
-                    <div class="flex justify-between items-center mb-4">
-                        <h3 class="font-bold text-red-600 text-xs uppercase">Critical Stock</h3>
-                        <button onclick="showView('alerts-view', document.getElementById('nav-alerts'))"
-                            class="text-blue-600 text-[10px] font-bold uppercase hover:underline">View All</button>
-                    </div>
-                    <div id="criticalStockPreview" class="space-y-2 text-xs text-slate-600">
-                        <p>Loading...</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div id="medicines-view" class="content-view flex-1 overflow-y-auto p-8 space-y-8 hidden-view">
-            <div class="flex justify-between items-start">
-                <div class="space-y-4">
-                    <h3 class="text-2xl font-extrabold text-slate-800">Medicines Inventory</h3>
-                    <p class="text-sm text-slate-500">Browse the live medicine catalog from your dataset.</p>
-                </div>
-                <div class="metric-card min-w-[180px]">
-                    <p class="text-[10px] text-blue-600 font-bold uppercase mb-1">Total Medicines</p>
-                    <h3 id="ceo-medicine-count" class="text-xl font-extrabold">0</h3>
-                </div>
-            </div>
-
-            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-                <div class="p-4 bg-slate-50 border-b font-bold text-[10px] text-slate-500 uppercase tracking-widest">
-                    Medicine List</div>
-                <table class="w-full text-left text-sm divide-y divide-slate-100">
-                    <thead class="bg-slate-50/50 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-                        <tr>
-                            <th class="px-8 py-4">Medicine ID</th>
-                            <th class="px-8 py-4">Medicine Name</th>
-                            <th class="px-8 py-4">Category</th>
-                            <th class="px-8 py-4">Dosage</th>
-                            <th class="px-8 py-4">Quantity</th>
-                            <th class="px-8 py-4">Price</th>
-                            <th class="px-8 py-4">Expiry Date</th>
-                        </tr>
-                    </thead>
-                    <tbody id="ceo-medicine-table-body" class="text-slate-600 divide-y divide-slate-50"></tbody>
-                </table>
-            </div>
-        </div>
-
-        <div id="stock-in-view" class="content-view flex-1 overflow-y-auto p-8 space-y-8 hidden-view">
-            <div class="flex justify-between items-start">
-                <div class="space-y-4">
-                    <h3 class="text-2xl font-extrabold text-slate-800">Stock In Analytics</h3>
-                    <select id="stockInInterval" onchange="initStockInChart()"
-                        class="bg-white border border-slate-200 px-4 py-2 rounded-xl text-xs font-bold shadow-sm outline-none">
-                        <option value="weekly">Weekly (Mon-Sun)</option>
-                        <option value="monthly">Monthly View</option>
-                    </select>
-                </div>
-                <div class="flex gap-4">
-                    <div class="metric-card min-w-[160px]">
-                        <p class="text-[10px] text-blue-600 font-bold uppercase mb-1">Items Received</p>
-                        <h3 class="text-xl font-extrabold">1,240</h3>
-                    </div>
-                    <div class="metric-card min-w-[160px]">
-                        <p class="text-[10px] text-blue-600 font-bold uppercase mb-1">Total Batches</p>
-                        <h3 class="text-xl font-extrabold">12</h3>
-                    </div>
-                </div>
-            </div>
-            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
-                <div class="h-[300px]"><canvas id="stockInGrowthChart"></canvas></div>
-            </div>
-        </div>
-
-        <div id="stock-out-view" class="content-view flex-1 overflow-y-auto p-8 space-y-8 hidden-view">
-            <div class="flex justify-between items-start">
-                <div class="space-y-4">
-                    <h3 class="text-2xl font-extrabold text-slate-800">Stock Out Trend</h3>
-                    <select id="stockOutInterval" onchange="initStockOutChart()"
-                        class="bg-white border border-slate-200 px-4 py-2 rounded-xl text-xs font-bold shadow-sm outline-none">
-                        <option value="weekly">Weekly (Mon-Sun)</option>
-                        <option value="monthly">Monthly View</option>
-                    </select>
-                </div>
-                <div class="flex gap-4">
-                    <div class="metric-card min-w-[160px]">
-                        <p class="text-[10px] text-indigo-600 font-bold uppercase mb-1">Items Sold</p>
-                        <h3 class="text-xl font-extrabold">840</h3>
-                    </div>
-                    <div class="metric-card min-w-[160px]">
-                        <p class="text-[10px] text-indigo-600 font-bold uppercase mb-1">Total Revenue</p>
-                        <h3 class="text-xl font-extrabold">₹42,000</h3>
-                    </div>
-                </div>
-            </div>
-            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
-                <div class="h-[300px]"><canvas id="stockOutTrendChart"></canvas></div>
-            </div>
-        </div>
-
-        <div id="alerts-view" class="content-view flex-1 overflow-y-auto p-8 space-y-8 hidden-view">
-            <h3 class="text-2xl font-extrabold text-slate-800">Stock Alerts</h3>
-
-            <!-- Critical Stock Alert -->
-            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden mb-8">
-                <div class="p-4 bg-red-50 font-bold text-red-800 text-xs uppercase flex items-center gap-2">
-                    <i class="fas fa-exclamation-circle"></i>
-                    Critical Stock (Below 20 units)
-                </div>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-sm divide-y divide-slate-100">
-                        <thead class="bg-red-50/50 text-[10px] font-bold text-red-700 uppercase">
+            <div class="card">
+                <h3>📋 Recent Orders</h3>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
                             <tr>
-                                <th class="px-6 py-3 text-left">Medicine ID</th>
-                                <th class="px-6 py-3 text-left">Medicine Name</th>
-                                <th class="px-6 py-3 text-left">Category</th>
-                                <th class="px-6 py-3 text-right">Units Left</th>
-                                <th class="px-6 py-3 text-center">Action</th>
+                                <th>Order ID</th>
+                                <th>Medicine</th>
+                                <th>Qty</th>
+                                <th>Status</th>
+                                <th>Date</th>
                             </tr>
                         </thead>
-                        <tbody id="criticalStockTable" class="text-slate-600 divide-y divide-slate-50">
-                            <tr>
-                                <td colspan="5" class="px-6 py-4 text-center">Loading...</td>
-                            </tr>
-                        </tbody>
+                        <tbody id="dash-recent-orders"></tbody>
                     </table>
                 </div>
             </div>
+        </section>
 
-            <!-- Low Stock Alert -->
-            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-                <div class="p-4 bg-orange-50 font-bold text-orange-800 text-xs uppercase flex items-center gap-2">
-                    <i class="fas fa-warning"></i>
-                    Low Stock (20-50 units)
+        <!-- ==================== MEDICINES ==================== -->
+        <section id="medicines" class="content-section">
+            <div class="card">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+                    <h3>💊 Medicine Inventory</h3>
+                    <span class="view-link" onclick="refreshMedicines()">🔄 Refresh</span>
                 </div>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-sm divide-y divide-slate-100">
-                        <thead class="bg-orange-50/50 text-[10px] font-bold text-orange-700 uppercase">
+                <div class="medicine-grid" id="medicine-grid">
+                    <!-- Medicines will be rendered here -->
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== ALERTS ==================== -->
+        <section id="alerts" class="content-section">
+            <div class="card">
+                <h3 style="margin-bottom:1rem;">🔔 System Alerts</h3>
+                <div class="alert-tabs">
+                    <span class="alert-tab active" onclick="switchAlertTab('critical')">Critical</span>
+                    <span class="alert-tab" onclick="switchAlertTab('low')">Low Stock</span>
+                    <span class="alert-tab" onclick="switchAlertTab('expiry')">Expiry</span>
+                </div>
+
+                <div id="alert-critical" class="alert-subsection active">
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Medicine</th>
+                                    <th>Current Stock</th>
+                                    <th>Threshold</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="alert-critical-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div id="alert-low" class="alert-subsection">
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Medicine</th>
+                                    <th>Current Stock</th>
+                                    <th>Threshold</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="alert-low-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div id="alert-expiry" class="alert-subsection">
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Medicine</th>
+                                    <th>Expiry Date</th>
+                                    <th>Days Left</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="alert-expiry-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== ORDERS ==================== -->
+        <section id="orders" class="content-section">
+            <div class="card">
+                <h3 style="margin-bottom:1rem;">📦 All Orders</h3>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
                             <tr>
-                                <th class="px-6 py-3 text-left">Medicine ID</th>
-                                <th class="px-6 py-3 text-left">Medicine Name</th>
-                                <th class="px-6 py-3 text-left">Category</th>
-                                <th class="px-6 py-3 text-right">Units Left</th>
-                                <th class="px-6 py-3 text-center">Action</th>
+                                <th>Order ID</th>
+                                <th>Medicine</th>
+                                <th>Quantity</th>
+                                <th>Status</th>
+                                <th>Date</th>
                             </tr>
                         </thead>
-                        <tbody id="lowStockTable" class="text-slate-600 divide-y divide-slate-50">
-                            <tr>
-                                <td colspan="5" class="px-6 py-4 text-center">Loading...</td>
-                            </tr>
-                        </tbody>
+                        <tbody id="orders-body"></tbody>
                     </table>
                 </div>
             </div>
-        </div>
+        </section>
 
-        <!-- AI PREDICTION VIEW -->
-        <div id="prediction-view" class="content-view flex-1 overflow-y-auto p-8 space-y-6 hidden-view">
-            <!-- Header with Dropdown -->
-            <div class="flex justify-between items-center mb-2">
-                <div>
-                    <h3 class="text-2xl font-extrabold text-slate-800">AI Demand Forecast</h3>
-                    <p class="text-sm text-slate-500 mt-1">Linear regression-based medicine demand prediction</p>
-                </div>
-                <select id="predictionYearSelect" onchange="handlePeriodChange()"
-                    class="bg-white border-2 border-blue-500 px-6 py-3 rounded-lg text-sm font-bold shadow-md outline-none cursor-pointer">
-                    <option value="past-7">Past 7 Years</option>
-                    <option value="present" selected>Present Year (2026)</option>
-                    <option value="future-1">Future 1 Month</option>
-                    <option value="future-2">Future 2 Months</option>
-                </select>
-            </div>
-
-            <!-- Graph Section -->
-            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
-                <div class="flex justify-between items-center mb-4">
-                    <div>
-                        <h4 class="font-bold text-slate-800 text-lg">Demand Forecast Chart</h4>
-                        <p class="text-xs text-slate-600">X-axis: Medicine Names | Y-axis: Number of Units</p>
-                    </div>
-                    <div class="text-right">
-                        <p class="text-[10px] font-bold text-slate-500 uppercase">Time Period</p>
-                        <p id="timePeriodLabel" class="text-base font-bold text-blue-600">Present Year (2026)</p>
-                    </div>
-                </div>
-                <div style="position: relative; height: 400px; width: 100%;">
-                    <canvas id="demandForecastChart"></canvas>
-                </div>
-            </div>
-
-            <!-- Table Section -->
-            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+        <!-- ==================== PREDICTION ==================== -->
+        <section id="prediction" class="content-section">
+            <div class="card">
                 <div
-                    class="p-4 bg-gradient-to-r from-blue-50 to-indigo-50 border-b font-bold text-[11px] text-slate-700 uppercase tracking-widest">
-                    <i class="fas fa-table mr-2 text-blue-600"></i>Forecast Data Table
+                    style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:1rem;">
+                    <h3>📈 AI Demand Forecast</h3>
+                    <div class="prediction-controls">
+                        <select id="pred-period" onchange="runPrediction()">
+                            <option value="weekly">Weekly</option>
+                            <option value="monthly">Monthly</option>
+                            <option value="quarterly">Quarterly</option>
+                        </select>
+                        <button class="btn-refresh" onclick="runPrediction()">
+                            🔄 Refresh
+                        </button>
+                    </div>
                 </div>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left text-sm divide-y divide-slate-100">
-                        <thead class="bg-slate-50 text-[11px] font-bold text-slate-700 uppercase tracking-wider">
+                <div class="chart-container" style="height:300px;">
+                    <canvas id="predictionChart"></canvas>
+                </div>
+                <div class="prediction-table-container">
+                    <h4 style="margin-bottom:10px;">Prediction Results</h4>
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Medicine</th>
+                                    <th>Current Stock</th>
+                                    <th>Predicted Demand</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="prediction-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== STAFF ==================== -->
+        <section id="staff" class="content-section">
+            <div class="card">
+                <h3 style="margin-bottom:1rem;">👥 Staff Members</h3>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
                             <tr>
-                                <th class="px-6 py-4">Medicine ID</th>
-                                <th class="px-6 py-4">Name</th>
-                                <th class="px-6 py-4">Category</th>
-                                <th class="px-6 py-4">Avg Past 2 Weeks</th>
-                                <th class="px-6 py-4">Present Data</th>
-                                <th class="px-6 py-4">Avg Future 2 Months</th>
-                                <th class="px-6 py-4">Accurate Match</th>
+                                <th>Username</th>
+                                <th>Email</th>
+                                <th>Role</th>
+                                <th>Status</th>
                             </tr>
                         </thead>
-                        <tbody id="predictionTableBody" class="text-slate-600 divide-y divide-slate-50">
-                            <tr>
-                                <td colspan="7" class="px-6 py-4 text-center text-slate-500">Loading data...</td>
-                            </tr>
-                        </tbody>
+                        <tbody id="staff-body"></tbody>
                     </table>
                 </div>
             </div>
-        </div>
-
-        <div id="reports-view" class="content-view flex-1 overflow-y-auto p-8 space-y-8 hidden-view">
-            <div class="flex justify-between items-center mb-8">
-                <h3 class="text-2xl font-extrabold text-slate-800">Inventory Analytics</h3><select id="reportYearSelect"
-                    onchange="updateAllReportCharts()"
-                    class="bg-white border border-slate-200 px-4 py-2 rounded-xl text-xs font-bold shadow-sm outline-none cursor-pointer">
-                    <option value="2025">Year: 2025</option>
-                    <option value="2024">Year: 2024</option>
-                    <option value="2023">Year: 2023</option>
-                </select>
-            </div>
-            <div class="space-y-8">
-                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
-                    <h4 class="font-bold text-slate-700 text-sm mb-4">Stock Overview</h4>
-                    <div class="h-[250px]"><canvas id="reportStockChart"></canvas></div>
-                </div>
-                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
-                    <h4 class="font-bold text-slate-700 text-sm mb-4">Stock In Trend</h4>
-                    <div class="h-[250px]"><canvas id="reportStockInChart"></canvas></div>
-                </div>
-                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
-                    <h4 class="font-bold text-slate-700 text-sm mb-4">Stock Out Trend</h4>
-                    <div class="h-[250px]"><canvas id="reportStockOutChart"></canvas></div>
-                </div>
-            </div>
-        </div>
+        </section>
     </main>
 
+    <script src="https://unpkg.com/lucide@latest"></script>
     <script>
-        let charts = {};
-        let liveMedicines = [];
+        // ============================================
+        // CEO DASHBOARD - WITH sessionStorage
+        // ============================================
+
+        // FIXED: Get hospital context from sessionStorage (tab-specific)
+        const HOSPITAL_NAME = sessionStorage.getItem('hospitalName') || '';
+        const USERNAME = sessionStorage.getItem('username') || 'ceo';
+        const USER_ROLE = sessionStorage.getItem('userRole') || 'CEO';
+
+        // Application State
+        let inventoryData = [];
+        let orders = [];
+        let staffMembers = [];
+        let alertStatus = {};
         let predictionData = [];
-        let lowStockData = [];
-        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-        const weekDays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+        let charts = {};
 
-        const LOW_STOCK_THRESHOLD = 50;
-        const CRITICAL_STOCK_THRESHOLD = 20;
+        // Constants
+        const CRITICAL_THRESHOLD = 20;
+        const LOW_THRESHOLD = 50;
 
-        // Sample Medicines Data (fallback if API fails)
-        const sampleMedicines = [
-            { 'Medicine ID': 'MED001', 'Medicine Name': 'Paracetamol 500mg', 'Category': 'Pain Relief', 'Dosage': '500mg', 'Price ($)': 2.50, 'No. of Units': 15 },
-            { 'Medicine ID': 'MED002', 'Medicine Name': 'Azithromycin 500mg', 'Category': 'Antibiotic', 'Dosage': '500mg', 'Price ($)': 5.75, 'No. of Units': 8 },
-            { 'Medicine ID': 'MED003', 'Medicine Name': 'Amoxicillin 250mg', 'Category': 'Antibiotic', 'Dosage': '250mg', 'Price ($)': 3.25, 'No. of Units': 35 },
-            { 'Medicine ID': 'MED004', 'Medicine Name': 'Cetirizine 10mg', 'Category': 'Antihistamine', 'Dosage': '10mg', 'Price ($)': 1.50, 'No. of Units': 120 },
-            { 'Medicine ID': 'MED005', 'Medicine Name': 'Aspirin 325mg', 'Category': 'Pain Relief', 'Dosage': '325mg', 'Price ($)': 1.20, 'No. of Units': 45 },
-            { 'Medicine ID': 'MED006', 'Medicine Name': 'Ibuprofen 400mg', 'Category': 'Pain Relief', 'Dosage': '400mg', 'Price ($)': 2.10, 'No. of Units': 18 },
-            { 'Medicine ID': 'MED007', 'Medicine Name': 'Metformin 500mg', 'Category': 'Diabetes', 'Dosage': '500mg', 'Price ($)': 4.50, 'No. of Units': 200 },
-            { 'Medicine ID': 'MED008', 'Medicine Name': 'Lisinopril 10mg', 'Category': 'Hypertension', 'Dosage': '10mg', 'Price ($)': 6.20, 'No. of Units': 5 },
-            { 'Medicine ID': 'MED009', 'Medicine Name': 'Omeprazole 20mg', 'Category': 'Gastric', 'Dosage': '20mg', 'Price ($)': 3.80, 'No. of Units': 25 },
-            { 'Medicine ID': 'MED010', 'Medicine Name': 'Vitamin D 1000IU', 'Category': 'Vitamin', 'Dosage': '1000IU', 'Price ($)': 5.00, 'No. of Units': 95 },
-            { 'Medicine ID': 'MED011', 'Medicine Name': 'Atorvastatin 20mg', 'Category': 'Cholesterol', 'Dosage': '20mg', 'Price ($)': 7.50, 'No. of Units': 42 },
-            { 'Medicine ID': 'MED012', 'Medicine Name': 'Loratadine 10mg', 'Category': 'Antihistamine', 'Dosage': '10mg', 'Price ($)': 2.75, 'No. of Units': 12 }
-        ];
+        // ============================================
+        // INITIALIZATION
+        // ============================================
 
-        const reportData = {
-            "2025": {
-                stock: [12000, 13100, 14000, 15230, 14800, 15500, 16000, 15800, 16200, 16500, 17000, 17200],
-                in: [4200, 3800, 5100, 4900, 5230, 4500, 5000, 5500, 5100, 5800, 5400, 6000],
-                out: [800, 900, 1100, 1200, 1150, 1300, 1400, 1350, 1450, 1500, 1600, 1650]
-            },
-            "2024": {
-                stock: [10000, 10500, 11000, 11500, 11200, 11800, 12000, 12200, 12500, 12800, 13000, 13200],
-                in: [3000, 3200, 3100, 3500, 3400, 3600, 3700, 3800, 3900, 4000, 4100, 4200],
-                out: [600, 700, 750, 800, 780, 850, 900, 880, 950, 1000, 1050, 1100]
-            },
-            "2023": {
-                stock: [8000, 8200, 8500, 8700, 8900, 9100, 9300, 9500, 9700, 9900, 10000, 10200],
-                in: [2000, 2100, 2200, 2300, 2400, 2500, 2600, 2700, 2800, 2900, 3000, 3100],
-                out: [400, 450, 500, 550, 520, 600, 650, 630, 700, 750, 800, 850]
-            }
-        };
-
-        // Get Low Stock Data
-        async function getLowStockData() {
-            const items = liveMedicines.length > 0 ? liveMedicines : sampleMedicines;
-            const lowStock = items.filter(item => (item['No. of Units'] || 0) < LOW_STOCK_THRESHOLD);
-            return lowStock.sort((a, b) => (a['No. of Units'] || 0) - (b['No. of Units'] || 0));
-        }
-
-        // Get Critical Stock Data
-        async function getCriticalStockData() {
-            const items = liveMedicines.length > 0 ? liveMedicines : sampleMedicines;
-            const critical = items.filter(item => (item['No. of Units'] || 0) < CRITICAL_STOCK_THRESHOLD);
-            return critical.sort((a, b) => (a['No. of Units'] || 0) - (b['No. of Units'] || 0));
-        }
-
-        // Update Low Stock Display
-        async function updateLowStockDisplay() {
-            lowStockData = await getLowStockData();
-
-            // Update Dashboard Counter
-            document.getElementById('lowStockCount').textContent = lowStockData.length;
-
-            // Update Dashboard Preview
-            const preview = document.getElementById('lowStockPreview');
-            if (lowStockData.length === 0) {
-                preview.innerHTML = '<p class="text-green-600 font-semibold">✓ All medicines in stock</p>';
+        async function init() {
+            // Display hospital badge
+            if (HOSPITAL_NAME) {
+                document.getElementById('hospital-badge').innerText = '🏥 ' + HOSPITAL_NAME;
             } else {
-                preview.innerHTML = lowStockData.slice(0, 3).map(item => `
-                    <div class="flex justify-between items-center p-2 bg-orange-50 rounded">
-                        <span class="font-semibold">${item['Medicine Name']}</span>
-                        <span class="stock-badge stock-low">${item['No. of Units']} units</span>
-                    </div>
-                `).join('');
+                document.getElementById('hospital-badge').innerText = '⚠️ No Hospital Assigned';
             }
 
-            // Update Alerts Table
-            const lowStockTable = document.getElementById('lowStockTable');
-            if (lowStockData.length === 0) {
-                lowStockTable.innerHTML = '<tr><td colspan="5" class="px-6 py-4 text-center text-slate-500">No low stock medicines</td></tr>';
-            } else {
-                lowStockTable.innerHTML = lowStockData.map(item => `
-                    <tr class="hover:bg-orange-50 transition-colors">
-                        <td class="px-6 py-4 font-bold">${item['Medicine ID']}</td>
-                        <td class="px-6 py-4">${item['Medicine Name']}</td>
-                        <td class="px-6 py-4">${item['Category']}</td>
-                        <td class="px-6 py-4 text-right font-bold text-orange-600">${item['No. of Units']} units</td>
-                        <td class="px-6 py-4 text-center">
-                            <button class="bg-blue-600 text-white px-3 py-1 rounded text-xs font-bold hover:bg-blue-700">Order</button>
-                        </td>
-                    </tr>
-                `).join('');
+            // Load profile
+            loadProfile();
+
+            // Load data
+            await loadMedicines();
+            await loadOrders();
+            await loadStaff();
+
+            // Render everything
+            renderDashboard();
+            renderMedicines();
+            renderAlerts();
+            renderOrders();
+            renderStaff();
+            runPrediction();
+
+            // Initialize Lucide icons
+            lucide.createIcons();
+
+            // Initialize charts
+            initStockChart();
+        }
+
+        function loadProfile() {
+            // FIXED: Read from sessionStorage
+            const stored = sessionStorage.getItem('ceoProfile');
+            if (stored) {
+                const profile = JSON.parse(stored);
+                document.getElementById('ceo-name').innerText = profile.name || profile.username || 'CEO';
+                document.getElementById('ceo-role').innerText = profile.role || 'Chief Executive Officer';
+                document.getElementById('ceo-avatar').src =
+                    `https://ui-avatars.com/api/?name=${encodeURIComponent(profile.name || 'CEO')}&background=3B82F6&color=fff`;
             }
         }
 
-        // Update Critical Stock Display
-        async function updateCriticalStockDisplay() {
-            const criticalData = await getCriticalStockData();
+        // ============================================
+        // DATA LOADING
+        // ============================================
 
-            // Update Dashboard Counter
-            document.getElementById('criticalStockCount').textContent = criticalData.length;
+        async function loadMedicines() {
+            try {
+                const response = await fetch('http://localhost:3000/api/medicines');
+                if (!response.ok) throw new Error('Failed to fetch medicines');
+                const data = await response.json();
 
-            // Update Dashboard Preview
-            const preview = document.getElementById('criticalStockPreview');
-            if (criticalData.length === 0) {
-                preview.innerHTML = '<p class="text-green-600 font-semibold">✓ No critical stock</p>';
-            } else {
-                preview.innerHTML = criticalData.slice(0, 3).map(item => `
-                    <div class="flex justify-between items-center p-2 bg-red-50 rounded">
-                        <span class="font-semibold">${item['Medicine Name']}</span>
-                        <span class="stock-badge stock-critical">${item['No. of Units']} units</span>
-                    </div>
-                `).join('');
-            }
-
-            // Update Alerts Table
-            const criticalStockTable = document.getElementById('criticalStockTable');
-            if (criticalData.length === 0) {
-                criticalStockTable.innerHTML = '<tr><td colspan="5" class="px-6 py-4 text-center text-slate-500">No critical stock medicines</td></tr>';
-            } else {
-                criticalStockTable.innerHTML = criticalData.map(item => `
-                    <tr class="hover:bg-red-50 transition-colors">
-                        <td class="px-6 py-4 font-bold">${item['Medicine ID']}</td>
-                        <td class="px-6 py-4">${item['Medicine Name']}</td>
-                        <td class="px-6 py-4">${item['Category']}</td>
-                        <td class="px-6 py-4 text-right font-bold text-red-600">${item['No. of Units']} units</td>
-                        <td class="px-6 py-4 text-center">
-                            <button class="bg-red-600 text-white px-3 py-1 rounded text-xs font-bold hover:bg-red-700">URGENT</button>
-                        </td>
-                    </tr>
-                `).join('');
-            }
-        }
-
-        // Generate AI Prediction Data using Linear Regression
-        async function generatePredictionData() {
-            const items = liveMedicines.length > 0 ? liveMedicines : sampleMedicines;
-            predictionData = items.slice(0, 12).map((item, index) => {
-                const price = parseFloat(item['Price ($)'] || 0);
-                const categoryLen = String(item['Category'] || '').length;
-                const dosageLen = String(item['Dosage'] || '').length;
-
-                const baseValue = (index + 1) * 50 + price * 3 + categoryLen * 8 + dosageLen * 4;
-                const pastAvg = Math.round(baseValue * 0.8);
-                const presentData = Math.round(baseValue);
-                const futureAvg = Math.round(baseValue * 1.2);
-                const accuracy = (85 + (index % 10)).toFixed(1);
-
-                return {
-                    id: item['Medicine ID'] || index + 1,
+                inventoryData = data.map(item => ({
+                    id: item['Medicine ID'] || `MED-${Math.floor(Math.random() * 9000) + 1000}`,
                     name: item['Medicine Name'] || 'Unknown',
                     category: item['Category'] || 'General',
-                    pastAvg: pastAvg,
-                    presentData: presentData,
-                    futureAvg: futureAvg,
-                    accuracy: accuracy
+                    dosage: item['Dosage'] || '-',
+                    stock: parseInt(item['No. of Units'] || item['Quantity'] || 0, 10) || 0,
+                    price: parseFloat(item['Price ($)'] || item['Price'] || 0) || 0,
+                    expiry: item['Expiry Date'] || '2026-12-31',
+                    mfg: item['Manufacture Date'] || '2024-01-01'
+                }));
+
+                console.log(`✅ Loaded ${inventoryData.length} medicines for ${HOSPITAL_NAME}`);
+            } catch (err) {
+                console.error('Error loading medicines:', err);
+                // Fallback data
+                inventoryData = [
+                    { id: 'MED-001', name: 'Paracetamol 500mg', category: 'Pain Relief', dosage: '500mg', stock: 15, price: 2.50, expiry: '2026-12-31', mfg: '2024-01-01' },
+                    { id: 'MED-002', name: 'Amoxicillin 250mg', category: 'Antibiotic', dosage: '250mg', stock: 8, price: 3.25, expiry: '2026-08-15', mfg: '2024-01-01' },
+                    { id: 'MED-003', name: 'Cetirizine 10mg', category: 'Antihistamine', dosage: '10mg', stock: 120, price: 1.50, expiry: '2027-03-20', mfg: '2024-01-01' },
+                    { id: 'MED-004', name: 'Aspirin 325mg', category: 'Pain Relief', dosage: '325mg', stock: 45, price: 1.20, expiry: '2026-09-01', mfg: '2024-01-01' },
+                    { id: 'MED-005', name: 'Ibuprofen 400mg', category: 'Pain Relief', dosage: '400mg', stock: 18, price: 2.10, expiry: '2026-07-10', mfg: '2024-01-01' },
+                    { id: 'MED-006', name: 'Metformin 500mg', category: 'Diabetes', dosage: '500mg', stock: 200, price: 4.50, expiry: '2027-01-20', mfg: '2024-01-01' },
+                    { id: 'MED-007', name: 'Lisinopril 10mg', category: 'Hypertension', dosage: '10mg', stock: 5, price: 6.20, expiry: '2026-11-11', mfg: '2024-01-01' },
+                    { id: 'MED-008', name: 'Omeprazole 20mg', category: 'Gastric', dosage: '20mg', stock: 25, price: 3.80, expiry: '2026-10-01', mfg: '2024-01-01' },
+                    { id: 'MED-009', name: 'Vitamin D 1000IU', category: 'Vitamin', dosage: '1000IU', stock: 95, price: 5.00, expiry: '2027-06-15', mfg: '2024-01-01' },
+                    { id: 'MED-010', name: 'Atorvastatin 20mg', category: 'Cholesterol', dosage: '20mg', stock: 42, price: 7.50, expiry: '2026-12-05', mfg: '2024-01-01' }
+                ];
+            }
+        }
+
+        async function loadOrders() {
+            try {
+                const stored = localStorage.getItem('ceoOrders');
+                if (stored) {
+                    orders = JSON.parse(stored);
+                } else {
+                    orders = [
+                        { id: 'ORD-001', medicine: 'Paracetamol 500mg', quantity: 100, status: 'Completed', date: '2026-06-15', hospital_name: HOSPITAL_NAME },
+                        { id: 'ORD-002', medicine: 'Amoxicillin 250mg', quantity: 50, status: 'Pending', date: '2026-06-16', hospital_name: HOSPITAL_NAME },
+                        { id: 'ORD-003', medicine: 'Ibuprofen 400mg', quantity: 30, status: 'Denied', date: '2026-06-14', hospital_name: HOSPITAL_NAME }
+                    ];
+                    localStorage.setItem('ceoOrders', JSON.stringify(orders));
+                }
+
+                orders = orders.filter(o => o.hospital_name === HOSPITAL_NAME || !o.hospital_name);
+                console.log(`✅ Loaded ${orders.length} orders for ${HOSPITAL_NAME}`);
+            } catch (err) {
+                console.error('Error loading orders:', err);
+            }
+        }
+
+        async function loadStaff() {
+            try {
+                const stored = localStorage.getItem('ceoStaff');
+                if (stored) {
+                    staffMembers = JSON.parse(stored);
+                } else {
+                    staffMembers = [
+                        { username: 'billing_1', email: 'billing@hospital.com', role: 'Billing Executive', status: 'Active' },
+                        { username: 'stockin_1', email: 'stockin@hospital.com', role: 'Stock-In Manager', status: 'Active' }
+                    ];
+                    localStorage.setItem('ceoStaff', JSON.stringify(staffMembers));
+                }
+                console.log(`✅ Loaded ${staffMembers.length} staff members for ${HOSPITAL_NAME}`);
+            } catch (err) {
+                console.error('Error loading staff:', err);
+            }
+        }
+
+        // ============================================
+        // RENDER FUNCTIONS
+        // ============================================
+
+        function renderDashboard() {
+            const totalMeds = inventoryData.length;
+            const totalStock = inventoryData.reduce((sum, m) => sum + m.stock, 0);
+            const lowStock = inventoryData.filter(m => m.stock >= CRITICAL_THRESHOLD && m.stock < LOW_THRESHOLD);
+            const criticalStock = inventoryData.filter(m => m.stock < CRITICAL_THRESHOLD);
+
+            document.getElementById('stat-total-meds').textContent = totalMeds;
+            document.getElementById('stat-total-stock').textContent = totalStock.toLocaleString();
+            document.getElementById('stat-low-stock').textContent = lowStock.length;
+            document.getElementById('stat-critical-stock').textContent = criticalStock.length;
+
+            renderDashboardLowStock(lowStock);
+            renderDashboardCriticalStock(criticalStock);
+            renderDashboardOrders();
+            renderForecast();
+        }
+
+        function renderDashboardLowStock(lowStock) {
+            const tbody = document.getElementById('dash-low-stock');
+            tbody.innerHTML = lowStock.slice(0, 5).map(m => `
+                <tr>
+                    <td><strong>${m.name}</strong></td>
+                    <td style="color:#D97706; font-weight:700;">${m.stock}</td>
+                    <td><button class="btn-sm btn-primary" onclick="placeOrder('${m.name}')">Order</button></td>
+                </tr>
+            `).join('') || '<tr><td colspan="3" style="text-align:center;color:#94A3B8;">No low stock items</td></tr>';
+        }
+
+        function renderDashboardCriticalStock(criticalStock) {
+            const tbody = document.getElementById('dash-critical-stock');
+            tbody.innerHTML = criticalStock.slice(0, 5).map(m => `
+                <tr>
+                    <td><strong>${m.name}</strong></td>
+                    <td style="color:#DC2626; font-weight:700;">${m.stock}</td>
+                    <td><button class="btn-sm btn-danger" onclick="placeOrder('${m.name}')">URGENT</button></td>
+                </tr>
+            `).join('') || '<tr><td colspan="3" style="text-align:center;color:#94A3B8;">No critical stock items</td></tr>';
+        }
+
+        function renderDashboardOrders() {
+            const tbody = document.getElementById('dash-recent-orders');
+            const recentOrders = orders.slice(0, 5);
+
+            tbody.innerHTML = recentOrders.map(order => {
+                let statusClass = 'status-badge normal';
+                if (order.status === 'Pending') statusClass = 'status-badge low';
+                if (order.status === 'Denied') statusClass = 'status-badge critical';
+
+                return `<tr>
+                    <td><strong>#${order.id}</strong></td>
+                    <td>${order.medicine}</td>
+                    <td>${order.quantity}</td>
+                    <td><span class="${statusClass}">${order.status}</span></td>
+                    <td>${order.date}</td>
+                </tr>`;
+            }).join('') || '<tr><td colspan="5" style="text-align:center;color:#94A3B8;">No orders found</td></tr>';
+        }
+
+        function renderForecast() {
+            const container = document.getElementById('forecast-items');
+            const topMeds = inventoryData
+                .sort((a, b) => b.stock - a.stock)
+                .slice(0, 4);
+
+            container.innerHTML = topMeds.map(m => {
+                const predicted = Math.round(m.stock * 1.3 + Math.random() * 50);
+                return `<div class="forecast-item">
+                    <span>${m.name}</span>
+                    <strong>+${predicted} units</strong>
+                </div>`;
+            }).join('');
+        }
+
+        function renderMedicines() {
+            const grid = document.getElementById('medicine-grid');
+
+            grid.innerHTML = inventoryData.map(m => {
+                let stockClass = 'normal';
+                if (m.stock < CRITICAL_THRESHOLD) stockClass = 'critical';
+                else if (m.stock < LOW_THRESHOLD) stockClass = 'low';
+
+                return `<div class="medicine-card">
+                    <div class="name">${m.name}</div>
+                    <div class="details">${m.category} • ${m.dosage}</div>
+                    <div class="details">Exp: ${m.expiry} • $${m.price.toFixed(2)}</div>
+                    <div class="stock ${stockClass}">${m.stock} units</div>
+                </div>`;
+            }).join('');
+        }
+
+        function renderAlerts() {
+            const criticalItems = inventoryData.filter(m => m.stock < CRITICAL_THRESHOLD);
+            const lowItems = inventoryData.filter(m => m.stock >= CRITICAL_THRESHOLD && m.stock < LOW_THRESHOLD);
+            const expiryItems = inventoryData.filter(m => {
+                const expDate = new Date(m.expiry);
+                const today = new Date();
+                const daysDiff = (expDate - today) / (1000 * 60 * 60 * 24);
+                return daysDiff < 180 && daysDiff > 0;
+            });
+
+            document.getElementById('alert-critical-body').innerHTML = criticalItems.map(m => `
+                <tr>
+                    <td><strong>${m.name}</strong></td>
+                    <td style="color:#DC2626; font-weight:700;">${m.stock}</td>
+                    <td>< ${CRITICAL_THRESHOLD}</td>
+                    <td><button class="btn-sm btn-danger" onclick="placeOrder('${m.name}')">Order Now</button></td>
+                </tr>
+            `).join('') || '<tr><td colspan="4" style="text-align:center;color:#94A3B8;">No critical alerts</td></tr>';
+
+            document.getElementById('alert-low-body').innerHTML = lowItems.map(m => `
+                <tr>
+                    <td><strong>${m.name}</strong></td>
+                    <td style="color:#D97706; font-weight:700;">${m.stock}</td>
+                    <td>< ${LOW_THRESHOLD}</td>
+                    <td><button class="btn-sm btn-primary" onclick="placeOrder('${m.name}')">Order</button></td>
+                </tr>
+            `).join('') || '<tr><td colspan="4" style="text-align:center;color:#94A3B8;">No low stock alerts</td></tr>';
+
+            document.getElementById('alert-expiry-body').innerHTML = expiryItems.map(m => {
+                const expDate = new Date(m.expiry);
+                const today = new Date();
+                const daysLeft = Math.ceil((expDate - today) / (1000 * 60 * 60 * 24));
+                return `<tr>
+                    <td><strong>${m.name}</strong></td>
+                    <td>${m.expiry}</td>
+                    <td style="color:#DC2626; font-weight:700;">${daysLeft} days</td>
+                    <td><button class="btn-sm btn-primary" onclick="notifyExpiry('${m.name}')">Notify</button></td>
+                </tr>`;
+            }).join('') || '<tr><td colspan="4" style="text-align:center;color:#94A3B8;">No expiry alerts</td></tr>';
+        }
+
+        function renderOrders() {
+            const tbody = document.getElementById('orders-body');
+
+            tbody.innerHTML = orders.map(order => {
+                let statusClass = 'status-badge normal';
+                if (order.status === 'Pending') statusClass = 'status-badge low';
+                if (order.status === 'Denied') statusClass = 'status-badge critical';
+
+                return `<tr>
+                    <td><strong>#${order.id}</strong></td>
+                    <td>${order.medicine}</td>
+                    <td>${order.quantity}</td>
+                    <td><span class="${statusClass}">${order.status}</span></td>
+                    <td>${order.date}</td>
+                </tr>`;
+            }).join('') || '<tr><td colspan="5" style="text-align:center;color:#94A3B8;">No orders found</td></tr>';
+        }
+
+        function renderStaff() {
+            const tbody = document.getElementById('staff-body');
+
+            tbody.innerHTML = staffMembers.map(m => `
+                <tr>
+                    <td><strong>${m.username}</strong></td>
+                    <td>${m.email}</td>
+                    <td><span class="status-badge normal">${m.role}</span></td>
+                    <td><span class="status-badge normal">${m.status}</span></td>
+                </tr>
+            `).join('') || '<tr><td colspan="4" style="text-align:center;color:#94A3B8;">No staff members</td></tr>';
+        }
+
+        // ============================================
+        // AI PREDICTION
+        // ============================================
+
+        function runPrediction() {
+            const period = document.getElementById('pred-period').value;
+
+            predictionData = inventoryData.map(m => {
+                const baseDemand = m.stock * 0.3 + 50;
+                const multiplier = period === 'weekly' ? 1.2 : period === 'monthly' ? 1.5 : 2.0;
+                const predicted = Math.round(baseDemand * multiplier + Math.random() * 20);
+                const status = predicted > m.stock * 1.5 ? 'Critical' : predicted > m.stock * 1.2 ? 'Moderate' : 'Stable';
+
+                return {
+                    name: m.name,
+                    currentStock: m.stock,
+                    predicted: predicted,
+                    status: status
                 };
             });
-            return predictionData;
+
+            updatePredictionChart();
+            renderPredictionTable();
         }
 
-        async function handlePeriodChange() {
-            const selectedPeriod = document.getElementById('predictionYearSelect').value;
-            const labels = {
-                'past-7': 'Past 7 Years',
-                'present': 'Present Year (2026)',
-                'future-1': 'Future 1 Month',
-                'future-2': 'Future 2 Months'
-            };
-            document.getElementById('timePeriodLabel').textContent = labels[selectedPeriod];
-            await updateDemandForecastChart();
-            updatePredictionTable();
-        }
+        function updatePredictionChart() {
+            const ctx = document.getElementById('predictionChart').getContext('2d');
 
-        async function updateDemandForecastChart() {
-            if (predictionData.length === 0) {
-                await generatePredictionData();
+            if (charts.prediction) {
+                charts.prediction.destroy();
             }
 
-            const ctx = document.getElementById('demandForecastChart').getContext('2d');
-            const labels = predictionData.map(item => item.name);
-            const selectedPeriod = document.getElementById('predictionYearSelect').value;
+            const labels = predictionData.slice(0, 10).map(p => p.name);
+            const currentData = predictionData.slice(0, 10).map(p => p.currentStock);
+            const predictedData = predictionData.slice(0, 10).map(p => p.predicted);
 
-            let data = [];
-            let label = '';
-            let backgroundColor = 'rgba(37, 99, 235, 0.7)';
-            let borderColor = '#2563EB';
-
-            if (selectedPeriod === 'past-7') {
-                data = predictionData.map(item => Math.round(item.pastAvg * 0.6));
-                label = 'Past 7 Years Average';
-                backgroundColor = 'rgba(156, 39, 176, 0.7)';
-                borderColor = '#9C27B0';
-            } else if (selectedPeriod === 'present') {
-                data = predictionData.map(item => item.presentData);
-                label = 'Present Year (2026)';
-                backgroundColor = 'rgba(37, 99, 235, 0.7)';
-                borderColor = '#2563EB';
-            } else if (selectedPeriod === 'future-1') {
-                data = predictionData.map(item => Math.round(item.futureAvg * 0.85));
-                label = 'Future 1 Month';
-                backgroundColor = 'rgba(33, 150, 243, 0.7)';
-                borderColor = '#2196F3';
-            } else if (selectedPeriod === 'future-2') {
-                data = predictionData.map(item => item.futureAvg);
-                label = 'Future 2 Months';
-                backgroundColor = 'rgba(76, 175, 80, 0.7)';
-                borderColor = '#4CAF50';
-            }
-
-            if (charts.demandForecast) {
-                charts.demandForecast.destroy();
-            }
-
-            charts.demandForecast = new Chart(ctx, {
+            charts.prediction = new Chart(ctx, {
                 type: 'bar',
                 data: {
-                    labels,
-                    datasets: [{
-                        label: label,
-                        data: data,
-                        backgroundColor: backgroundColor,
-                        borderColor: borderColor,
-                        borderWidth: 2,
-                        borderRadius: 8,
-                        maxBarThickness: 40
-                    }]
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Current Stock',
+                            data: currentData,
+                            backgroundColor: 'rgba(59, 130, 246, 0.6)',
+                            borderColor: '#3B82F6',
+                            borderWidth: 1
+                        },
+                        {
+                            label: 'Predicted Demand',
+                            data: predictedData,
+                            backgroundColor: 'rgba(239, 68, 68, 0.6)',
+                            borderColor: '#EF4444',
+                            borderWidth: 1
+                        }
+                    ]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    animation: { duration: 750, easing: 'easeInOutQuart' },
                     plugins: {
                         legend: {
                             display: true,
-                            position: 'top',
-                            labels: { font: { weight: 'bold', size: 12 }, color: '#475569', padding: 20 }
+                            position: 'top'
                         }
                     },
                     scales: {
                         y: {
                             beginAtZero: true,
-                            title: { display: true, text: 'Number of Units', color: '#475569', font: { weight: 'bold' } },
-                            ticks: { color: '#64748B' },
-                            grid: { color: 'rgba(148, 163, 184, 0.1)' }
-                        },
-                        x: {
-                            title: { display: true, text: 'Medicine Names', color: '#475569', font: { weight: 'bold' } },
-                            ticks: { color: '#64748B' },
-                            grid: { display: false }
+                            title: {
+                                display: true,
+                                text: 'Units'
+                            }
                         }
                     }
                 }
             });
         }
 
-        function updatePredictionTable() {
-            const tableBody = document.getElementById('predictionTableBody');
-            const selectedPeriod = document.getElementById('predictionYearSelect').value;
+        function renderPredictionTable() {
+            const tbody = document.getElementById('prediction-body');
 
-            tableBody.innerHTML = predictionData.map(item => {
-                let displayValue = item.presentData;
+            tbody.innerHTML = predictionData.slice(0, 10).map(p => {
+                let statusClass = 'status-badge normal';
+                if (p.status === 'Critical') statusClass = 'status-badge critical';
+                else if (p.status === 'Moderate') statusClass = 'status-badge low';
 
-                if (selectedPeriod === 'past-7') {
-                    displayValue = Math.round(item.pastAvg * 0.6);
-                } else if (selectedPeriod === 'present') {
-                    displayValue = item.presentData;
-                } else if (selectedPeriod === 'future-1') {
-                    displayValue = Math.round(item.futureAvg * 0.85);
-                } else if (selectedPeriod === 'future-2') {
-                    displayValue = item.futureAvg;
-                }
-
-                return `
-                    <tr class="hover:bg-blue-50 transition-colors">
-                        <td class="px-6 py-4 font-bold text-slate-800">${item.id}</td>
-                        <td class="px-6 py-4 font-semibold text-slate-800">${item.name}</td>
-                        <td class="px-6 py-4 text-slate-700">${item.category}</td>
-                        <td class="px-6 py-4 font-bold text-purple-600">${item.pastAvg} units</td>
-                        <td class="px-6 py-4 font-bold text-blue-600">${item.presentData} units</td>
-                        <td class="px-6 py-4 font-bold text-green-600">${item.futureAvg} units</td>
-                        <td class="px-6 py-4 font-bold text-indigo-600 bg-indigo-50 rounded">${item.accuracy}%</td>
-                    </tr>
-                `;
+                return `<tr>
+                    <td><strong>${p.name}</strong></td>
+                    <td>${p.currentStock}</td>
+                    <td style="color:#EF4444; font-weight:700;">${p.predicted}</td>
+                    <td><span class="${statusClass}">${p.status}</span></td>
+                </tr>`;
             }).join('');
         }
 
-        function showView(viewId, btn) {
-            document.querySelectorAll('.content-view').forEach(v => v.classList.add('hidden-view'));
-            document.getElementById(viewId).classList.remove('hidden-view');
-            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('sidebar-active'));
-            if (btn) btn.classList.add('sidebar-active');
+        // ============================================
+        // CHARTS
+        // ============================================
 
-            const titleMap = {
-                'dashboard-view': 'CEO Dashboard',
-                'medicines-view': 'Medicines Inventory',
-                'stock-in-view': 'Stock In Analytics',
-                'stock-out-view': 'Stock Out Trend',
-                'alerts-view': 'Stock Alerts',
-                'prediction-view': 'AI Demand Forecast',
-                'reports-view': 'Inventory Analytics'
-            };
-            document.getElementById('page-title').innerText = titleMap[viewId] || 'Dashboard';
-
-            if (viewId === 'dashboard-view') initDashboardChart();
-            if (viewId === 'medicines-view') setTimeout(loadCEOMedicines, 50);
-            if (viewId === 'alerts-view') {
-                setTimeout(async () => {
-                    await updateLowStockDisplay();
-                    await updateCriticalStockDisplay();
-                }, 50);
-            }
-            if (viewId === 'prediction-view') {
-                setTimeout(async () => {
-                    await generatePredictionData();
-                    await updateDemandForecastChart();
-                    updatePredictionTable();
-                }, 50);
-            }
-            if (viewId === 'stock-in-view') setTimeout(initStockInChart, 50);
-            if (viewId === 'stock-out-view') setTimeout(initStockOutChart, 50);
-            if (viewId === 'reports-view') setTimeout(updateAllReportCharts, 50);
-        }
-
-        async function loadLiveMedicines() {
-            try {
-                const response = await fetch('http://localhost:3000/api/medicines');
-                if (!response.ok) throw new Error('Failed to fetch medicine dataset');
-                liveMedicines = await response.json();
-                return liveMedicines;
-            } catch (err) {
-                console.warn('Medicine dataset fetch failed, using sample data:', err);
-                liveMedicines = sampleMedicines;
-                return sampleMedicines;
-            }
-        }
-
-        async function loadLiveForecast(limit = 4) {
-            const items = await loadLiveMedicines();
-            return items.slice(0, limit).map((item, index) => {
-                const price = parseFloat(item['Price ($)'] || 0);
-                const predictedUnits = Math.max(120, Math.round((index + 1) * 70 + price * 8));
-                return {
-                    medicine_name: item['Medicine Name'] || 'Unknown Medicine',
-                    predicted_units: predictedUnits,
-                    category: item['Category'] || 'Dataset'
-                };
-            });
-        }
-
-        function renderForecastCards(items) {
-            const wrapper = document.getElementById('forecastItems');
-            if (!wrapper) return;
-
-            const source = items.slice(0, 4);
-            wrapper.innerHTML = source.map(item => `
-                <div class="bg-white p-3.5 rounded-xl border border-indigo-100 flex justify-between items-center gap-3">
-                    <span class="text-xs font-semibold text-slate-600">${item.medicine_name}</span>
-                    <span class="text-xs font-bold text-indigo-600">+${item.predicted_units} units</span>
-                </div>
-            `).join('');
-        }
-
-        async function loadCEOMedicines() {
-            const tableBody = document.getElementById('ceo-medicine-table-body');
-            const countEl = document.getElementById('ceo-medicine-count');
-            if (!tableBody) return;
-
-            tableBody.innerHTML = '<tr><td colspan="7" class="px-8 py-6 text-center text-slate-500">Loading medicines...</td></tr>';
-
-            try {
-                const items = await loadLiveMedicines();
-                if (countEl) countEl.textContent = items.length;
-
-                if (!items.length) {
-                    tableBody.innerHTML = '<tr><td colspan="7" class="px-8 py-6 text-center text-slate-500">No medicine records found.</td></tr>';
-                    return;
-                }
-
-                tableBody.innerHTML = items.map(item => `
-                    <tr>
-                        <td class="px-8 py-4 font-bold">${item['Medicine ID'] || 'N/A'}</td>
-                        <td class="px-8 py-4">${item['Medicine Name'] || 'Unknown'}</td>
-                        <td class="px-8 py-4">${item['Category'] || 'General'}</td>
-                        <td class="px-8 py-4">${item['Dosage'] || '-'}</td>
-                        <td class="px-8 py-4 font-bold text-slate-700">${item['No. of Units'] || 0}</td>
-                        <td class="px-8 py-4 text-blue-600 font-bold">$${parseFloat(item['Price ($)'] || 0).toFixed(2)}</td>
-                        <td class="px-8 py-4">${item['Expiry Date'] || '-'}</td>
-                    </tr>
-                `).join('');
-            } catch (err) {
-                console.error('CEO medicines fetch failed:', err);
-                tableBody.innerHTML = '<tr><td colspan="7" class="px-8 py-6 text-center text-red-500">Unable to load medicine dataset.</td></tr>';
-            }
-        }
-
-        function initDashboardChart() {
+        function initStockChart() {
             const ctx = document.getElementById('stockChart').getContext('2d');
-            if (charts.dashboard) charts.dashboard.destroy();
-            charts.dashboard = new Chart(ctx, {
+
+            if (charts.stock) {
+                charts.stock.destroy();
+            }
+
+            const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+            const data = days.map(() => {
+                const total = inventoryData.reduce((sum, m) => sum + m.stock, 0);
+                return Math.round(total * (0.85 + Math.random() * 0.3));
+            });
+
+            charts.stock = new Chart(ctx, {
                 type: 'line',
                 data: {
-                    labels: ['05 May', '06 May', '07 May', '08 May', '09 May', '10 May', '11 May'],
+                    labels: days,
                     datasets: [{
-                        data: [14200, 14800, 15000, 14500, 15230, 15600, 15800],
-                        borderColor: '#2563EB',
-                        backgroundColor: 'rgba(37, 99, 235, 0.05)',
+                        label: 'Total Stock',
+                        data: data,
+                        borderColor: '#3B82F6',
+                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
                         fill: true,
-                        tension: 0.4,
-                        pointRadius: 4,
-                        pointBackgroundColor: '#2563EB'
+                        tension: 0.4
                     }]
                 },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { color: '#64748B' }, grid: { color: 'rgba(148, 163, 184, 0.1)' } }, x: { ticks: { color: '#64748B' }, grid: { display: false } } } }
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                color: '#64748B'
+                            },
+                            grid: {
+                                color: 'rgba(148, 163, 184, 0.1)'
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                color: '#64748B'
+                            },
+                            grid: {
+                                display: false
+                            }
+                        }
+                    }
+                }
             });
         }
 
-        function initStockInChart() {
-            const interval = document.getElementById('stockInInterval').value;
-            const labels = interval === 'weekly' ? weekDays : months;
-            const data = interval === 'weekly' ? [150, 230, 180, 310, 290, 200, 150] : reportData["2025"].in;
-            const ctx = document.getElementById('stockInGrowthChart').getContext('2d');
-            if (charts.stockIn) charts.stockIn.destroy();
-            charts.stockIn = new Chart(ctx, {
-                type: 'bar',
-                data: { labels: labels, datasets: [{ data: data, backgroundColor: '#3B82F6', borderRadius: 8 }] },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { color: '#64748B' }, grid: { color: 'rgba(148, 163, 184, 0.1)' } }, x: { ticks: { color: '#64748B' }, grid: { display: false } } } }
+        // ============================================
+        // ACTIONS
+        // ============================================
+
+        function placeOrder(medicineName) {
+            const med = inventoryData.find(m => m.name === medicineName);
+            if (!med) return;
+
+            const qty = prompt(`Enter quantity to order for ${medicineName}:`, '100');
+            if (!qty || isNaN(qty) || parseInt(qty) <= 0) return;
+
+            const order = {
+                id: 'ORD-' + String(Math.floor(Math.random() * 9000) + 1000),
+                medicine: medicineName,
+                quantity: parseInt(qty),
+                status: 'Pending',
+                date: new Date().toISOString().split('T')[0],
+                hospital_name: HOSPITAL_NAME
+            };
+
+            orders.unshift(order);
+            localStorage.setItem('ceoOrders', JSON.stringify(orders));
+            med.stock += parseInt(qty);
+
+            showToast(`✅ Order placed for ${medicineName} (${qty} units)`);
+            renderDashboard();
+            renderMedicines();
+            renderAlerts();
+            renderOrders();
+        }
+
+        function notifyExpiry(medicineName) {
+            showToast(`📢 Notification sent for ${medicineName} expiry`);
+        }
+
+        function refreshMedicines() {
+            loadMedicines().then(() => {
+                renderMedicines();
+                renderDashboard();
+                renderAlerts();
+                showToast('✅ Medicines refreshed');
             });
         }
 
-        function initStockOutChart() {
-            const interval = document.getElementById('stockOutInterval').value;
-            const labels = interval === 'weekly' ? weekDays : months;
-            const data = interval === 'weekly' ? [90, 140, 110, 180, 160, 130, 95] : reportData["2025"].out;
-            const ctx = document.getElementById('stockOutTrendChart').getContext('2d');
-            if (charts.stockOut) charts.stockOut.destroy();
-            charts.stockOut = new Chart(ctx, {
-                type: 'line',
-                data: { labels: labels, datasets: [{ data: data, borderColor: '#6366F1', backgroundColor: 'rgba(99, 102, 241, 0.1)', fill: true, tension: 0.4 }] },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { color: '#64748B' }, grid: { color: 'rgba(148, 163, 184, 0.1)' } }, x: { ticks: { color: '#64748B' }, grid: { display: false } } } }
+        // ============================================
+        // UI HELPERS
+        // ============================================
+
+        function showSection(sectionId, el) {
+            document.querySelectorAll('.content-section').forEach(s => {
+                s.classList.remove('active');
+            });
+            document.getElementById(sectionId).classList.add('active');
+
+            document.querySelectorAll('.menu-item').forEach(m => {
+                m.classList.remove('active');
+            });
+            if (el) el.classList.add('active');
+
+            const titles = {
+                'dashboard': 'CEO Dashboard',
+                'medicines': 'Medicine Inventory',
+                'alerts': 'System Alerts',
+                'orders': 'All Orders',
+                'prediction': 'AI Demand Forecast',
+                'staff': 'Staff Management'
+            };
+            document.getElementById('page-title').textContent = titles[sectionId] || 'Dashboard';
+
+            if (sectionId === 'medicines') renderMedicines();
+            if (sectionId === 'alerts') renderAlerts();
+            if (sectionId === 'orders') renderOrders();
+            if (sectionId === 'staff') renderStaff();
+            if (sectionId === 'prediction') runPrediction();
+        }
+
+        function switchAlertTab(tab) {
+            document.querySelectorAll('.alert-tab').forEach(t => t.classList.remove('active'));
+            document.querySelector(`.alert-tab[onclick*="${tab}"]`)?.classList.add('active');
+            document.querySelectorAll('.alert-subsection').forEach(s => s.classList.remove('active'));
+            document.getElementById(`alert-${tab}`).classList.add('active');
+        }
+
+        function searchGlobal(query) {
+            const q = query.toLowerCase();
+            document.querySelectorAll('tbody tr').forEach(tr => {
+                const text = tr.textContent.toLowerCase();
+                tr.style.display = text.includes(q) ? '' : 'none';
             });
         }
 
-        function updateAllReportCharts() {
-            const year = document.getElementById('reportYearSelect').value;
-            const data = reportData[year];
-            renderReportChart('reportStockChart', data.stock, '#2563EB', 'rgba(37, 99, 235, 0.05)', 'repStock');
-            renderReportChart('reportStockInChart', data.in, '#3B82F6', 'rgba(59, 130, 246, 0.1)', 'repStockIn');
-            renderReportChart('reportStockOutChart', data.out, '#6366F1', 'rgba(99, 102, 241, 0.1)', 'repStockOut');
-        }
-
-        function renderReportChart(id, data, color, bg, key) {
-            const ctx = document.getElementById(id).getContext('2d');
-            if (charts[key]) charts[key].destroy();
-            charts[key] = new Chart(ctx, {
-                type: 'line',
-                data: { labels: months, datasets: [{ data: data, borderColor: color, fill: true, backgroundColor: bg, tension: 0.4 }] },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { color: '#64748B' }, grid: { color: 'rgba(148, 163, 184, 0.1)' } }, x: { ticks: { color: '#64748B' }, grid: { display: false } } } }
-            });
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            toast.textContent = msg;
+            toast.style.display = 'block';
+            setTimeout(() => {
+                toast.style.display = 'none';
+            }, 3000);
         }
 
         function handleLogout() {
-            if (confirm("Are you sure you want to logout?")) {
-                localStorage.removeItem('ceoProfile');
+            document.getElementById('modal-title').textContent = 'Logout Confirmation';
+            document.getElementById('modal-desc').textContent = 'Are you sure you want to logout?';
+            document.getElementById('confirm-modal').style.display = 'flex';
+
+            document.getElementById('modal-confirm-btn').onclick = function () {
+                // FIXED: Clear sessionStorage instead of localStorage
+                sessionStorage.removeItem('ceoProfile');
+                sessionStorage.removeItem('hospitalName');
+                sessionStorage.removeItem('username');
+                sessionStorage.removeItem('userRole');
                 window.location.href = 'index.html';
-            }
+            };
         }
 
-        function initProfile() {
-            const stored = localStorage.getItem('ceoProfile');
-            if (stored) {
-                const profile = JSON.parse(stored);
-                const name = profile.name || profile.username || 'CEO';
-                const role = profile.role || 'Chief Executive Officer';
-
-                const nameLabel = document.getElementById('ceo-profile-name');
-                const roleLabel = document.getElementById('ceo-profile-role');
-                const avatar = document.getElementById('ceo-profile-avatar');
-
-                if (nameLabel) nameLabel.innerText = name;
-                if (roleLabel) roleLabel.innerText = role;
-                if (avatar) avatar.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=2563EB&color=fff`;
-            }
+        function closeModal() {
+            document.getElementById('confirm-modal').style.display = 'none';
         }
 
-        window.onload = async function () {
-            initProfile();
-            initDashboardChart();
-            const forecastItems = await loadLiveForecast(4);
-            renderForecastCards(forecastItems);
-            await updateLowStockDisplay();
-            await updateCriticalStockDisplay();
-        };
+        function confirmAction() { }
+
+        // ============================================
+        // START
+        // ============================================
+
+        window.onload = init;
     </script>
 </body>
 

@@ -64,7 +64,7 @@ async function initializeDatabase() {
                 status VARCHAR(50) NOT NULL DEFAULT 'Pending',
                 triggered_by VARCHAR(50),
                 hospital_name VARCHAR(100),
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             )
         `);
         console.log('MySQL inventory_alerts table verified/created.');
@@ -114,6 +114,22 @@ async function initializeDatabase() {
             `);
             console.log("Default admin account seeded successfully: admin / admin123");
         }
+
+        // 5. Seed sample alerts for testing if none exist
+        const [alertRows] = await db.query('SELECT COUNT(*) as count FROM inventory_alerts');
+        if (alertRows[0].count === 0) {
+            await db.query(`
+                INSERT INTO inventory_alerts (alert_type, medicine_name, status, triggered_by, hospital_name) 
+                VALUES 
+                ('LOW STOCK', 'Gabapentin', 'Pending', 'billing', 'sai hospital'),
+                ('LOW STOCK', 'Citalopram Forte', 'Pending', 'billing', 'sai hospital'),
+                ('LOW STOCK', 'Azithromycin Combo', 'Pending', 'billing', 'sai hospital'),
+                ('EXPIRY', 'Gabapentin', 'Pending', 'billing', 'sai hospital'),
+                ('EXPIRY', 'Pantoprazole', 'Pending', 'billing', 'sai hospital')
+            `);
+            console.log("Sample alerts seeded successfully.");
+        }
+
     } catch (err) {
         console.error('Error setting up database tables:', err.message);
     }
@@ -128,10 +144,19 @@ app.post('/api/register', async (req, res) => {
         return res.status(400).json({ error: 'Missing mandatory fields' });
     }
 
+    // Validate hospital_name for role-based requirements
+    if (['Billing Executive', 'Stock-In Manager', 'Medicine Supplier'].includes(role) && !hospital_name) {
+        return res.status(400).json({ error: 'Hospital name is required for this role' });
+    }
+
     const query = `INSERT INTO users (username, email, password, role, address, hospital_name) VALUES (?, ?, ?, ?, ?, ?)`;
     try {
         const [result] = await db.query(query, [username, email, password, role, address || '', hospital_name || '']);
-        res.status(201).json({ message: 'User registered successfully!', userId: result.insertId });
+        res.status(201).json({
+            message: 'User registered successfully!',
+            userId: result.insertId,
+            hospital_name: hospital_name || ''
+        });
     } catch (err) {
         if (err.code === 'ER_DUP_ENTRY') {
             return res.status(400).json({ error: 'Username already exists' });
@@ -144,80 +169,268 @@ app.post('/api/register', async (req, res) => {
 app.post('/api/login', async (req, res) => {
     const { username, password } = req.body;
 
-    const query = `SELECT username, email, role, address, hospital_name FROM users WHERE username = ? AND password = ?`;
+    const query = `SELECT id, username, email, role, address, hospital_name FROM users WHERE username = ? AND password = ?`;
     try {
         const [rows] = await db.query(query, [username, password]);
         if (rows.length === 0) {
             return res.status(401).json({ error: 'Invalid username or password' });
         }
 
-        res.json({ message: 'Login successful', user: rows[0] });
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
-});
-
-// API: Intimate Alert (Create alert)
-app.post('/api/alerts/intimate', async (req, res) => {
-    const { alert_type, medicine_name, status, triggered_by, hospital_name } = req.body;
-    if (!alert_type || !medicine_name) {
-        return res.status(400).json({ error: 'Missing mandatory fields alert_type or medicine_name' });
-    }
-
-    const query = `INSERT INTO inventory_alerts (alert_type, medicine_name, status, triggered_by, hospital_name) VALUES (?, ?, ?, ?, ?)`;
-    try {
-        const [result] = await db.query(query, [alert_type, medicine_name, status || 'Pending', triggered_by || 'Billing Executive', hospital_name || '']);
-        res.status(201).json({ message: 'Alert created successfully!', alertId: result.insertId });
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
-});
-
-// API: Get Active Alerts
-app.get('/api/alerts/active', async (req, res) => {
-    const hospitalName = req.query.hospital_name;
-    let query = `SELECT * FROM inventory_alerts`;
-    let params = [];
-    if (hospitalName) {
-        query += ` WHERE hospital_name = ?`;
-        params.push(hospitalName);
-    }
-    query += ` ORDER BY id DESC`;
-    try {
-        const [rows] = await db.query(query, params);
-        res.json(rows);
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
-});
-
-// API: Get Dashboard Counters
-app.get('/api/dashboard/counters', async (req, res) => {
-    const hospitalName = req.query.hospital_name;
-    let lowStockQuery = `SELECT COUNT(*) as count FROM inventory_alerts WHERE alert_type = 'LOW STOCK' AND status = 'Pending'`;
-    let expiryQuery = `SELECT COUNT(*) as count FROM inventory_alerts WHERE alert_type = 'EXPIRY' AND status = 'Pending'`;
-    let params = [];
-    if (hospitalName) {
-        lowStockQuery += ` AND hospital_name = ?`;
-        expiryQuery += ` AND hospital_name = ?`;
-        params.push(hospitalName);
-    }
-    try {
-        const [lowStockRows] = await db.query(lowStockQuery, params);
-        const [expiryRows] = await db.query(expiryQuery, params);
         res.json({
-            lowStockCount: lowStockRows[0].count,
-            expiryCount: expiryRows[0].count
+            message: 'Login successful',
+            user: rows[0],
+            hospital_name: rows[0].hospital_name
         });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
 });
 
-// API: Fetch live RobustMed AI prediction rows for the CEO dashboard
+// API: Get Users by Hospital (for admin/CEO)
+app.get('/api/users/hospital/:hospitalName', async (req, res) => {
+    const { hospitalName } = req.params;
+    const query = `SELECT id, username, email, role, address, hospital_name FROM users WHERE hospital_name = ?`;
+    try {
+        const [rows] = await db.query(query, [hospitalName]);
+        res.json(rows);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// ============================================
+// FIXED: Intimate Alert API - Creates alert in database
+// ============================================
+
+app.post('/api/alerts/intimate', async (req, res) => {
+    const { alert_type, medicine_name, status, triggered_by, hospital_name } = req.body;
+
+    console.log('📝 Received alert request:', { alert_type, medicine_name, hospital_name });
+
+    // Enhanced validation
+    if (!alert_type || !medicine_name) {
+        return res.status(400).json({ error: 'Missing mandatory fields alert_type or medicine_name' });
+    }
+
+    if (!hospital_name) {
+        return res.status(400).json({ error: 'Hospital name is required for alert creation' });
+    }
+
+    // Verify that the triggered_by user belongs to this hospital
+    if (triggered_by) {
+        try {
+            const [userCheck] = await db.query(
+                'SELECT role, hospital_name FROM users WHERE username = ?',
+                [triggered_by]
+            );
+            if (userCheck.length === 0) {
+                return res.status(404).json({ error: 'User not found' });
+            }
+            if (userCheck[0].hospital_name !== hospital_name) {
+                return res.status(403).json({ error: 'User does not belong to this hospital' });
+            }
+            if (!['Billing Executive', 'CEO'].includes(userCheck[0].role)) {
+                return res.status(403).json({ error: 'Only Billing Executives and CEO can create alerts' });
+            }
+        } catch (err) {
+            console.error('Error verifying user:', err);
+            return res.status(500).json({ error: 'Error verifying user' });
+        }
+    }
+
+    // Check if alert already exists for this medicine and hospital
+    try {
+        const [existing] = await db.query(
+            `SELECT id FROM inventory_alerts 
+             WHERE medicine_name = ? AND hospital_name = ? AND alert_type = ? AND status = 'Pending'`,
+            [medicine_name, hospital_name, alert_type]
+        );
+
+        if (existing.length > 0) {
+            return res.status(400).json({
+                error: `An active ${alert_type} alert already exists for ${medicine_name}`
+            });
+        }
+    } catch (err) {
+        console.error('Error checking existing alerts:', err);
+    }
+
+    const query = `INSERT INTO inventory_alerts (alert_type, medicine_name, status, triggered_by, hospital_name) VALUES (?, ?, ?, ?, ?)`;
+    try {
+        const [result] = await db.query(query, [alert_type, medicine_name, status || 'Pending', triggered_by || 'Billing Executive', hospital_name]);
+
+        // Get the created alert
+        const [newAlert] = await db.query(
+            `SELECT * FROM inventory_alerts WHERE id = ?`,
+            [result.insertId]
+        );
+
+        console.log(`✅ Alert created: ${alert_type} for ${medicine_name} at ${hospital_name}`);
+        res.status(201).json({
+            message: 'Alert created successfully!',
+            alertId: result.insertId,
+            alert: newAlert[0],
+            hospital_name: hospital_name
+        });
+    } catch (err) {
+        console.error('Error creating alert:', err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// ============================================
+// FIXED: Get Active Alerts - Only shows Pending alerts
+// ============================================
+
+app.get('/api/alerts/active', async (req, res) => {
+    const hospitalName = req.query.hospital_name;
+
+    if (!hospitalName) {
+        return res.status(400).json({ error: 'Hospital name is required' });
+    }
+
+    // Only get PENDING alerts
+    let query = `SELECT * FROM inventory_alerts WHERE hospital_name = ? AND status = 'Pending'`;
+    let params = [hospitalName];
+
+    // Optional: filter by alert type if provided
+    if (req.query.alert_type) {
+        query += ` AND alert_type = ?`;
+        params.push(req.query.alert_type);
+    }
+
+    query += ` ORDER BY created_at DESC`;
+
+    try {
+        const [rows] = await db.query(query, params);
+        console.log(`📊 Retrieved ${rows.length} active pending alerts for ${hospitalName}`);
+        res.json(rows);
+    } catch (err) {
+        console.error('Error fetching alerts:', err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// ============================================
+// Get All Alerts (including resolved) for a hospital
+// ============================================
+
+app.get('/api/alerts/all', async (req, res) => {
+    const hospitalName = req.query.hospital_name;
+
+    if (!hospitalName) {
+        return res.status(400).json({ error: 'Hospital name is required' });
+    }
+
+    const query = `SELECT * FROM inventory_alerts WHERE hospital_name = ? ORDER BY created_at DESC`;
+    try {
+        const [rows] = await db.query(query, [hospitalName]);
+        res.json(rows);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// ============================================
+// Get Dashboard Counters - Only counts Pending alerts
+// ============================================
+
+app.get('/api/dashboard/counters', async (req, res) => {
+    const hospitalName = req.query.hospital_name;
+
+    if (!hospitalName) {
+        return res.status(400).json({ error: 'Hospital name is required' });
+    }
+
+    let lowStockQuery = `SELECT COUNT(*) as count FROM inventory_alerts WHERE alert_type = 'LOW STOCK' AND status = 'Pending' AND hospital_name = ?`;
+    let expiryQuery = `SELECT COUNT(*) as count FROM inventory_alerts WHERE alert_type = 'EXPIRY' AND status = 'Pending' AND hospital_name = ?`;
+
+    try {
+        const [lowStockRows] = await db.query(lowStockQuery, [hospitalName]);
+        const [expiryRows] = await db.query(expiryQuery, [hospitalName]);
+        res.json({
+            lowStockCount: lowStockRows[0].count,
+            expiryCount: expiryRows[0].count,
+            hospital_name: hospitalName
+        });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// ============================================
+// Update Alert Status - Mark as Resolved/Denied
+// ============================================
+
+app.put('/api/alerts/:id', async (req, res) => {
+    const { id } = req.params;
+    const { status, hospital_name, username } = req.body;
+
+    if (!status) {
+        return res.status(400).json({ error: 'Missing status' });
+    }
+
+    try {
+        // Verify the user has permission to update this alert
+        const [alertCheck] = await db.query(
+            'SELECT hospital_name FROM inventory_alerts WHERE id = ?',
+            [id]
+        );
+
+        if (alertCheck.length === 0) {
+            return res.status(404).json({ error: 'Alert not found' });
+        }
+
+        // Check if the user belongs to the same hospital
+        if (hospital_name && alertCheck[0].hospital_name !== hospital_name) {
+            return res.status(403).json({ error: 'You do not have permission to update this alert' });
+        }
+
+        const query = `UPDATE inventory_alerts SET status = ? WHERE id = ?`;
+        await db.query(query, [status, id]);
+
+        console.log(`✅ Alert ${id} updated to ${status}`);
+        res.json({ message: 'Alert status updated successfully!' });
+    } catch (err) {
+        console.error('Error updating alert:', err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// ============================================
+// Delete Alert (for cleanup)
+// ============================================
+
+app.delete('/api/alerts/:id', async (req, res) => {
+    const { id } = req.params;
+    const { hospital_name } = req.body;
+
+    try {
+        const [alertCheck] = await db.query(
+            'SELECT hospital_name FROM inventory_alerts WHERE id = ?',
+            [id]
+        );
+
+        if (alertCheck.length === 0) {
+            return res.status(404).json({ error: 'Alert not found' });
+        }
+
+        if (hospital_name && alertCheck[0].hospital_name !== hospital_name) {
+            return res.status(403).json({ error: 'You do not have permission to delete this alert' });
+        }
+
+        await db.query('DELETE FROM inventory_alerts WHERE id = ?', [id]);
+        res.json({ message: 'Alert deleted successfully!' });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// API: Fetch ML predictions with date range filter
 app.get('/api/prediction/forecast', (req, res) => {
     const limit = Math.max(1, Math.min(50, parseInt(req.query.limit || '12', 10)));
-    
+    const period = req.query.period || 'weekly';
+
     let pythonCmd = 'python3';
     if (process.platform === 'win32') {
         const localAppData = process.env.LOCALAPPDATA;
@@ -293,33 +506,38 @@ app.get('/api/medicines', (req, res) => {
     });
 });
 
-// API: Update Alert Status
-app.put('/api/alerts/:id', async (req, res) => {
-    const { id } = req.params;
-    const { status } = req.body;
-    if (!status) {
-        return res.status(400).json({ error: 'Missing status' });
-    }
-
-    const query = `UPDATE inventory_alerts SET status = ? WHERE id = ?`;
-    try {
-        await db.query(query, [status, id]);
-        res.json({ message: 'Alert status updated successfully!' });
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
-});
-
 // API: Place a new purchase order (Stock-In Executive -> Vendor)
 app.post('/api/orders/place', async (req, res) => {
-    const { medicine_name, quantity_requested, vendor_id, hospital_name } = req.body;
+    const { medicine_name, quantity_requested, vendor_id, hospital_name, placed_by } = req.body;
+
     if (!medicine_name || !quantity_requested) {
         return res.status(400).json({ error: 'Missing medicine_name or quantity_requested' });
     }
 
+    if (!hospital_name) {
+        return res.status(400).json({ error: 'Hospital name is required' });
+    }
+
+    // Verify that the placed_by user belongs to this hospital and has correct role
+    if (placed_by) {
+        const userCheck = await db.query(
+            'SELECT role, hospital_name FROM users WHERE username = ?',
+            [placed_by]
+        );
+        if (userCheck[0].length === 0) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+        if (userCheck[0][0].hospital_name !== hospital_name) {
+            return res.status(403).json({ error: 'User does not belong to this hospital' });
+        }
+        if (!['Stock-In Manager', 'CEO'].includes(userCheck[0][0].role)) {
+            return res.status(403).json({ error: 'Only Stock-In Managers and CEO can place orders' });
+        }
+    }
+
     const query = `INSERT INTO purchase_orders (medicine_name, quantity_requested, vendor_id, status, hospital_name) VALUES (?, ?, ?, 'Pending', ?)`;
     try {
-        const [result] = await db.query(query, [medicine_name, quantity_requested, vendor_id || 1, hospital_name || '']);
+        const [result] = await db.query(query, [medicine_name, quantity_requested, vendor_id || 1, hospital_name]);
         res.status(201).json({
             message: 'Order placed successfully!',
             orderId: result.insertId,
@@ -329,7 +547,7 @@ app.post('/api/orders/place', async (req, res) => {
                 quantity_requested,
                 vendor_id: vendor_id || 1,
                 status: 'Pending',
-                hospital_name: hospital_name || ''
+                hospital_name: hospital_name
             }
         });
     } catch (err) {
@@ -339,9 +557,15 @@ app.post('/api/orders/place', async (req, res) => {
 
 // API: Fetch all pending purchase orders for the Medicine Supplier (Vendor)
 app.get('/api/orders/vendor/pending', async (req, res) => {
-    const query = `SELECT * FROM purchase_orders WHERE status = 'Pending' ORDER BY order_id DESC`;
+    const hospitalName = req.query.hospital_name;
+
+    if (!hospitalName) {
+        return res.status(400).json({ error: 'Hospital name is required' });
+    }
+
+    const query = `SELECT * FROM purchase_orders WHERE status = 'Pending' AND hospital_name = ? ORDER BY order_id DESC`;
     try {
-        const [rows] = await db.query(query);
+        const [rows] = await db.query(query, [hospitalName]);
         res.json(rows);
     } catch (err) {
         res.status(500).json({ error: err.message });
@@ -351,9 +575,25 @@ app.get('/api/orders/vendor/pending', async (req, res) => {
 // API: Update order response (Vendor accept/deny)
 app.put('/api/orders/vendor/respond/:orderId', async (req, res) => {
     const { orderId } = req.params;
-    const { status } = req.body;
+    const { status, hospital_name, username } = req.body;
+
     if (!status || !['Accepted', 'Denied'].includes(status)) {
         return res.status(400).json({ error: 'Invalid or missing status (must be Accepted or Denied)' });
+    }
+
+    // Verify the user has permission to respond to this order
+    const [orderCheck] = await db.query(
+        'SELECT hospital_name FROM purchase_orders WHERE order_id = ?',
+        [orderId]
+    );
+
+    if (orderCheck.length === 0) {
+        return res.status(404).json({ error: 'Order not found' });
+    }
+
+    // Check if the user belongs to the same hospital
+    if (hospital_name && orderCheck[0].hospital_name !== hospital_name) {
+        return res.status(403).json({ error: 'You do not have permission to respond to this order' });
     }
 
     const query = `UPDATE purchase_orders SET status = ? WHERE order_id = ?`;
@@ -371,15 +611,35 @@ app.put('/api/orders/vendor/respond/:orderId', async (req, res) => {
 // API: Fetch all purchase orders with statuses for the Stock-In Executive tracking list
 app.get('/api/orders/executive/status', async (req, res) => {
     const hospitalName = req.query.hospital_name;
-    let query = `SELECT * FROM purchase_orders`;
-    let params = [];
-    if (hospitalName) {
-        query += ` WHERE hospital_name = ?`;
-        params.push(hospitalName);
+
+    if (!hospitalName) {
+        return res.status(400).json({ error: 'Hospital name is required' });
     }
+
+    let query = `SELECT * FROM purchase_orders WHERE hospital_name = ?`;
+    let params = [hospitalName];
+
+    // Optional: filter by status if provided
+    if (req.query.status) {
+        query += ` AND status = ?`;
+        params.push(req.query.status);
+    }
+
     query += ` ORDER BY order_id DESC`;
+
     try {
         const [rows] = await db.query(query, params);
+        res.json(rows);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// API: Get orders for CEO/Admin view
+app.get('/api/orders/all', async (req, res) => {
+    const query = `SELECT * FROM purchase_orders ORDER BY order_id DESC`;
+    try {
+        const [rows] = await db.query(query);
         res.json(rows);
     } catch (err) {
         res.status(500).json({ error: err.message });

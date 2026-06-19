@@ -285,7 +285,8 @@
         </nav>
         <div class="nav-item" onclick="location.href='index.html'"
             style="color:var(--red); border-top: 1px solid rgba(255,255,255,0.1); padding-top: 15px; margin-top: auto;">
-            <i class="fas fa-sign-out-alt"></i> Logout</div>
+            <i class="fas fa-sign-out-alt"></i> Logout
+        </div>
     </aside>
 
     <div class="wrapper">
@@ -402,7 +403,8 @@
         let autoRefreshInterval = null;
 
         function initVendorProfile() {
-            const stored = localStorage.getItem('vendorProfile') || localStorage.getItem('userAccount');
+            // FIXED: Read from sessionStorage
+            const stored = sessionStorage.getItem('vendorProfile') || localStorage.getItem('userAccount');
             if (stored) {
                 const profile = JSON.parse(stored);
                 const name = profile.name || profile.username || 'External Vendor';
@@ -417,7 +419,8 @@
         }
 
         function saveVendorProfile() {
-            const stored = localStorage.getItem('vendorProfile') || localStorage.getItem('userAccount');
+            // FIXED: Read from sessionStorage
+            const stored = sessionStorage.getItem('vendorProfile') || localStorage.getItem('userAccount');
             if (!stored) return;
             const profile = JSON.parse(stored);
 
@@ -426,7 +429,7 @@
             const newPass = document.getElementById('vendor-input-pass').value;
             if (newPass) profile.password = newPass;
 
-            localStorage.setItem('vendorProfile', JSON.stringify(profile));
+            sessionStorage.setItem('vendorProfile', JSON.stringify(profile));
             localStorage.setItem('userAccount', JSON.stringify(profile));
 
             initVendorProfile();

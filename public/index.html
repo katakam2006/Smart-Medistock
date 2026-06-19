@@ -8,7 +8,6 @@
     <link rel="icon" type="image/png" href="logformedistock.png">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        /* BASE STYLES */
         * {
             box-sizing: border-box;
             margin: 0;
@@ -33,7 +32,6 @@
             font-weight: bold;
         }
 
-        /* SIDEBAR SECTION */
         .sidebar {
             display: none;
             width: 40%;
@@ -113,7 +111,6 @@
             letter-spacing: 0.025em;
         }
 
-        /* MAIN FORM SECTION */
         .main-content {
             width: 100%;
             padding: 32px;
@@ -149,7 +146,6 @@
             font-size: 1.125rem;
         }
 
-        /* INPUT STYLES */
         .form-group {
             margin-bottom: 24px;
         }
@@ -197,7 +193,6 @@
             }
         }
 
-        /* BUTTONS & LINKS */
         .btn-submit {
             width: 100%;
             background-color: #000;
@@ -214,6 +209,11 @@
 
         .btn-submit:hover {
             background-color: #1f2937;
+        }
+
+        .btn-submit:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
         }
 
         .link-green {
@@ -252,10 +252,69 @@
             text-align: center;
             color: #4b5563;
         }
+
+        #toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #1e293b;
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            display: none;
+            z-index: 2000;
+            max-width: 400px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        #toast.success {
+            background: #059669;
+        }
+
+        #toast.error {
+            background: #dc2626;
+        }
+
+        #toast.warning {
+            background: #d97706;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+            margin-right: 8px;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .info-box {
+            background: #f0fdf4;
+            border: 1px solid #86efac;
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin-bottom: 20px;
+            font-size: 0.85rem;
+            color: #065f46;
+        }
+
+        .info-box i {
+            margin-right: 8px;
+        }
     </style>
 </head>
 
 <body>
+
+    <div id="toast"></div>
 
     <div class="sidebar">
         <div>
@@ -303,12 +362,13 @@
 
                     <div class="flex-between">
                         <label class="checkbox-group">
-                            <input type="checkbox"> Remember me
+                            <input type="checkbox" id="remember-me"> Remember me
                         </label>
-                        <a href="#" class="link-green">Forgot password?</a>
+                        <a href="#" class="link-green"
+                            onclick="showToast('Contact admin to reset password', 'warning')">Forgot password?</a>
                     </div>
 
-                    <button type="submit" class="btn-submit">Log In</button>
+                    <button type="submit" class="btn-submit" id="login-btn">Log In</button>
                 </form>
 
                 <div class="switch-view">
@@ -320,7 +380,12 @@
                 <h2>Create Account</h2>
                 <p class="sub-heading">Register your facility to start managing stock.</p>
 
-                <form onsubmit="handleSignup(event)">
+                <div id="clinic-owner-info" class="info-box hidden-view">
+                    <i>🏥</i> As a Clinic Owner, you'll have full access to manage inventory, view alerts, and place
+                    orders.
+                </div>
+
+                <form onsubmit="handleSignup(event)" id="signup-form">
                     <div class="grid-2 form-group">
                         <div>
                             <label class="label">Name<span class="required-star">*</span></label>
@@ -334,7 +399,8 @@
 
                     <div class="form-group">
                         <label class="label">Hospital/Clinic Name<span class="required-star">*</span></label>
-                        <input id="signup-hospital-name" type="text" placeholder="Enter Hospital or Clinic Name" required>
+                        <input id="signup-hospital-name" type="text" placeholder="Enter Hospital or Clinic Name"
+                            required>
                     </div>
 
                     <div class="form-group">
@@ -345,7 +411,7 @@
                     <div class="grid-2 form-group">
                         <div>
                             <label class="label">Set Password<span class="required-star">*</span></label>
-                            <input id="signup-password" type="password" placeholder="••••••••" required>
+                            <input id="signup-password" type="password" placeholder="••••••••" required minlength="6">
                         </div>
                         <div>
                             <label class="label">Confirm<span class="required-star">*</span></label>
@@ -378,7 +444,8 @@
                         </div>
                     </div>
 
-                    <button type="submit" class="btn-submit" style="margin-top: 16px;">Create Account</button>
+                    <button type="submit" class="btn-submit" id="signup-btn" style="margin-top: 16px;">Create
+                        Account</button>
                 </form>
 
                 <div class="switch-view">
@@ -389,6 +456,17 @@
     </div>
 
     <script>
+        function showToast(message, type = 'info') {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.className = type;
+            toast.style.display = 'block';
+            clearTimeout(toast._timeout);
+            toast._timeout = setTimeout(() => {
+                toast.style.display = 'none';
+            }, 4000);
+        }
+
         function toggleAuth(view) {
             const loginView = document.getElementById('login-view');
             const signupView = document.getElementById('signup-view');
@@ -400,11 +478,16 @@
                 signupView.classList.remove('hidden-view');
                 leftLogin.classList.add('hidden-view');
                 leftSignup.classList.remove('hidden-view');
+                document.getElementById('signup-btn').disabled = false;
+                document.getElementById('signup-btn').innerHTML = 'Create Account';
+                document.getElementById('clinic-owner-info').classList.add('hidden-view');
             } else {
                 signupView.classList.add('hidden-view');
                 loginView.classList.remove('hidden-view');
                 leftSignup.classList.add('hidden-view');
                 leftLogin.classList.remove('hidden-view');
+                document.getElementById('login-btn').disabled = false;
+                document.getElementById('login-btn').innerHTML = 'Log In';
             }
         }
 
@@ -413,115 +496,298 @@
             const roleSelect = document.getElementById('roleSel');
             roleSelect.innerHTML = '<option value="">Select Role</option>';
 
+            const clinicInfo = document.getElementById('clinic-owner-info');
+            if (category === 'clinic') {
+                clinicInfo.classList.remove('hidden-view');
+            } else {
+                clinicInfo.classList.add('hidden-view');
+            }
+
             const roles = {
-                hospital: ['CEO', 'StockinManager', 'Billing Executive'],
+                hospital: ['CEO', 'Stock In Manager', 'Billing Executive'],
                 clinic: ['Owner', 'Stocker'],
-                store: ['Owner', 'StockinManager', 'Billing Executive'],
+                store: ['Owner', 'Stock In Manager', 'Billing Executive'],
                 supplier: ['Medicine Supplier']
             };
 
             if (category && roles[category]) {
                 roles[category].forEach(role => {
                     let opt = document.createElement('option');
-                    opt.value = role.toLowerCase().replace(/\s/g, '-');
+                    opt.value = role;
                     opt.text = role;
+                    if (role === 'Owner') {
+                        opt.text = '👑 ' + role + ' (Clinic/Store Owner)';
+                    }
                     roleSelect.add(opt);
                 });
             }
         }
 
-        function handleSignup(e) {
-            if (e) e.preventDefault();
+        async function handleSignup(e) {
+            e.preventDefault();
 
+            const name = document.getElementById('signup-name').value.trim();
             const username = document.getElementById('signup-username').value.trim();
             const hospitalName = document.getElementById('signup-hospital-name').value.trim();
             const email = document.getElementById('signup-email').value.trim();
-            const pass = document.getElementById('signup-password').value;
-            const role = document.getElementById('roleSel').value;
-            // FIX 1: Grab the address input string dynamically from the DOM textarea
+            const password = document.getElementById('signup-password').value;
+            const confirm = document.getElementById('signup-confirm').value;
             const address = document.getElementById('signup-address').value.trim();
+            const category = document.getElementById('catSel').value;
+            const role = document.getElementById('roleSel').value;
 
-            if (!username || !hospitalName || !email || !pass || !role || !address) {
-                alert('Please fill all fields');
+            if (!name || !username || !hospitalName || !email || !password || !confirm || !address || !category || !role) {
+                showToast('Please fill all required fields', 'error');
                 return;
             }
 
-            // FIX 2: Switched to HTTP absolute URL path on port 3000 to avoid HTTPS errors
-            fetch('http://localhost:3000/api/register', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                // FIX 3: Sent address data object elements natively through JSON body string
-                body: JSON.stringify({ username, email, password: pass, role, address, hospital_name: hospitalName })
-            })
-                .then(res => res.json())
-                .then(data => {
-                    if (data.error) {
-                        alert(data.error);
-                    } else {
-                        alert('Registration Successful! Please Login.');
-                        toggleAuth('login');
-                    }
-                })
-                .catch(err => console.error('Error during registration:', err));
+            if (password !== confirm) {
+                showToast('Passwords do not match', 'error');
+                return;
+            }
+
+            if (password.length < 6) {
+                showToast('Password must be at least 6 characters', 'error');
+                return;
+            }
+
+            const btn = document.getElementById('signup-btn');
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner"></span> Creating...';
+
+            try {
+                const requestData = {
+                    username,
+                    email,
+                    password,
+                    role: role,
+                    address,
+                    hospital_name: hospitalName
+                };
+
+                console.log('📝 Signup Data:', requestData);
+
+                const response = await fetch('http://localhost:3000/api/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(requestData)
+                });
+
+                const data = await response.json();
+                console.log('📝 Signup Response:', data);
+
+                if (data.error) {
+                    showToast('❌ ' + data.error, 'error');
+                    btn.disabled = false;
+                    btn.innerHTML = 'Create Account';
+                    return;
+                }
+
+                let successMsg = '✅ Registration successful! Please login.';
+                if (role === 'Owner') {
+                    successMsg = '✅ Clinic/Store registered successfully! You can now login as Owner.';
+                }
+
+                showToast(successMsg, 'success');
+                document.getElementById('signup-form').reset();
+
+                setTimeout(() => {
+                    toggleAuth('login');
+                    document.getElementById('login-username').value = username;
+                }, 1500);
+
+            } catch (err) {
+                console.error('Registration error:', err);
+                showToast('❌ Could not connect to server.', 'error');
+            }
+
+            btn.disabled = false;
+            btn.innerHTML = 'Create Account';
         }
 
-        function handleLogin(e) {
-    if (e) e.preventDefault();
+        // ============================================
+        // FIXED: Using sessionStorage instead of localStorage
+        // sessionStorage is TAB-SPECIFIC - prevents cross-tab contamination
+        // ============================================
 
-    const username = document.getElementById('login-username').value.trim();
-    const pass = document.getElementById('login-password').value;
+        async function handleLogin(e) {
+            e.preventDefault();
 
-    if (!username || !pass) {
-        alert('Please fill all fields');
-        return;
-    }
+            const username = document.getElementById('login-username').value.trim();
+            const password = document.getElementById('login-password').value;
+            const rememberMe = document.getElementById('remember-me').checked;
 
-    // FIXED: Changed https to http to match your working server.js standard connection
-    fetch('http://localhost:3000/api/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password: pass })
-    })
-    .then(res => res.json())
-    .then(data => {
-        if (data.error) {
-            alert(data.error);
-        } else {
-            const account = data.user;
-            const userRole = account.role.toLowerCase();
+            if (!username || !password) {
+                showToast('Please enter username and password', 'error');
+                return;
+            }
 
-            // FIXED: Flexible checks matching exact database strings like 'BillingExecutive'
-            if (userRole.includes('vendor') || userRole.includes('supplier')) {
-                localStorage.setItem('supplierProfile', JSON.stringify(account));
-                window.location.href = 'Vendor (1).html';
-            } else if (userRole.includes('stocker')) {
-                localStorage.setItem('stockerProfile', JSON.stringify(account));
-                window.location.href = 'Stocker.html';
-            } else if (userRole.includes('ceo')) {
-                localStorage.setItem('ceoProfile', JSON.stringify(account));
-                window.location.href = 'CEO dashboard.html';
-            } else if (userRole.includes('billing')) {
-                localStorage.setItem('billingProfile', JSON.stringify(account));
-                window.location.href = 'Billing Exceutive.html';
-            } else if (userRole.includes('stockin') || userRole.includes('stock-in')) {
-                localStorage.setItem('stockinProfile', JSON.stringify(account));
-                window.location.href = 'StockinManager.html';
-            } else {
-                alert('Portal for this role (' + account.role + ') is not available yet.');
+            const btn = document.getElementById('login-btn');
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner"></span> Logging in...';
+
+            try {
+                const response = await fetch('http://localhost:3000/api/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+
+                const data = await response.json();
+
+                if (data.error) {
+                    showToast('❌ ' + data.error, 'error');
+                    btn.disabled = false;
+                    btn.innerHTML = 'Log In';
+                    return;
+                }
+
+                const user = data.user;
+                console.log('✅ Login successful:', user);
+                console.log('📋 Role from database:', `"${user.role}"`);
+                console.log('📋 Hospital from database:', `"${user.hospital_name}"`);
+
+                // ============================================
+                // FIX: Use sessionStorage (TAB-SPECIFIC) instead of localStorage
+                // This prevents cross-tab contamination
+                // ============================================
+
+                // Store hospital context in sessionStorage (tab-specific)
+                sessionStorage.setItem('hospitalName', user.hospital_name || '');
+                sessionStorage.setItem('username', user.username);
+                sessionStorage.setItem('userRole', user.role);
+                sessionStorage.setItem('userEmail', user.email || '');
+                sessionStorage.setItem('userAddress', user.address || '');
+
+                // For "Remember Me" feature - store in localStorage (persistent)
+                if (rememberMe) {
+                    localStorage.setItem('rememberedUser', username);
+                } else {
+                    localStorage.removeItem('rememberedUser');
+                }
+
+                // Store role-specific profile in sessionStorage (tab-specific)
+                const userProfile = {
+                    ...user,
+                    name: user.username,
+                    hospital_name: user.hospital_name || ''
+                };
+
+                const roleLower = user.role.toLowerCase();
+                let redirectUrl = '';
+
+                // ============================================
+                // FIXED: Stocker and Stock In Manager are DIFFERENT roles
+                // ============================================
+                if (roleLower === 'stocker') {
+                    // Stocker -> Stocker.html (the code you sent)
+                    sessionStorage.setItem('stockerProfile', JSON.stringify(userProfile));
+                    redirectUrl = 'Stocker.html';
+                    console.log('✅ Matched: Stocker -> Redirecting to Stocker.html');
+                }
+                else if (roleLower.includes('stock in manager') || roleLower.includes('stock-in manager') ||
+                    roleLower.includes('stockinmanager')) {
+                    // Stock In Manager -> StockinManager.html
+                    sessionStorage.setItem('stockinProfile', JSON.stringify(userProfile));
+                    redirectUrl = 'StockinManager.html';
+                    console.log('✅ Matched: Stock In Manager -> Redirecting to StockinManager.html');
+                }
+                else if (roleLower.includes('ceo') || roleLower.includes('chief')) {
+                    sessionStorage.setItem('ceoProfile', JSON.stringify(userProfile));
+                    redirectUrl = 'CEO dashboard.html';
+                    console.log('✅ Matched: CEO');
+                }
+                else if (roleLower.includes('billing') || roleLower.includes('executive')) {
+                    sessionStorage.setItem('billingProfile', JSON.stringify(userProfile));
+                    redirectUrl = 'Billing Exceutive.html';
+                    console.log('✅ Matched: Billing Executive');
+                }
+                else if (roleLower.includes('supplier') || roleLower.includes('vendor')) {
+                    sessionStorage.setItem('supplierProfile', JSON.stringify(userProfile));
+                    redirectUrl = 'Vendor (1).html';
+                    console.log('✅ Matched: Medicine Supplier');
+                }
+                else if (roleLower === 'owner') {
+                    sessionStorage.setItem('ceoProfile', JSON.stringify(userProfile));
+                    redirectUrl = 'CEO dashboard.html';
+                    console.log('✅ Matched: Owner');
+                }
+                else {
+                    showToast(`⚠️ Portal for role "${user.role}" is not available yet.`, 'warning');
+                    console.error('❌ Unknown role:', user.role);
+                    btn.disabled = false;
+                    btn.innerHTML = 'Log In';
+                    return;
+                }
+
+                showToast(`✅ Welcome ${user.username}! Redirecting...`, 'success');
+                console.log(`🚀 Redirecting to: ${redirectUrl}`);
+
+                // Redirect
+                setTimeout(() => {
+                    window.location.href = redirectUrl;
+                }, 1200);
+
+            } catch (err) {
+                console.error('Login error:', err);
+                showToast('❌ Could not connect to server.', 'error');
+                btn.disabled = false;
+                btn.innerHTML = 'Log In';
             }
         }
-    })
-    .catch(err => {
-        console.error('Error during login:', err);
-        alert('Could not connect to the server. Please ensure server.js is running.');
-    });
-}
+
+        // ============================================
+        // INITIALIZATION
+        // ============================================
 
         window.addEventListener('DOMContentLoaded', function () {
-            const stored = localStorage.getItem('userAccount') || localStorage.getItem('supplierAccount');
-            if (stored) {
-                const account = JSON.parse(stored);
-                document.getElementById('login-username').value = account.username;
+            // Load remembered username from localStorage
+            const remembered = localStorage.getItem('rememberedUser');
+            if (remembered) {
+                document.getElementById('login-username').value = remembered;
+                document.getElementById('remember-me').checked = true;
+            }
+
+            // Check if there's an active session in sessionStorage
+            const hospitalName = sessionStorage.getItem('hospitalName');
+            const userRole = sessionStorage.getItem('userRole');
+
+            if (hospitalName && userRole) {
+                console.log(`🔐 Active session: ${userRole} at ${hospitalName}`);
+            }
+
+            updateRoles();
+
+            console.log('🔑 Demo Accounts:');
+            console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+            console.log('🏥 Hospital Roles:');
+            console.log('  📋 CEO:            username: admin,     password: admin123');
+            console.log('  📋 Billing Exec:   username: billing,   password: admin123');
+            console.log('  📋 Stock In Mgr:   username: stockin,   password: admin123');
+            console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+            console.log('🏥 Clinic Roles:');
+            console.log('  👑 Owner:          username: owner,     password: admin123');
+            console.log('  📋 Stocker:        username: stocker,   password: admin123');
+            console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+            console.log('💡 Using sessionStorage - Each tab has its own session');
+            console.log('💡 Company A and Company B data will NOT mix');
+        });
+
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape') {
+                document.getElementById('toast').style.display = 'none';
+            }
+            if (e.ctrlKey && e.shiftKey && e.key === 'S') {
+                e.preventDefault();
+                if (!document.getElementById('login-view').classList.contains('hidden-view')) {
+                    toggleAuth('signup');
+                }
+            }
+            if (e.ctrlKey && e.shiftKey && e.key === 'L') {
+                e.preventDefault();
+                if (!document.getElementById('signup-view').classList.contains('hidden-view')) {
+                    toggleAuth('login');
+                }
             }
         });
     </script>

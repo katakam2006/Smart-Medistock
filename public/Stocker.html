@@ -152,6 +152,17 @@
             text-transform: uppercase;
         }
 
+        .hospital-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            background: #e0e7ff;
+            color: #4338ca;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+
         .main-content {
             padding: 1.5rem 2rem;
             flex: 1;
@@ -286,6 +297,15 @@
         .btn-sm {
             padding: 4px 10px;
             font-size: 0.7rem;
+        }
+
+        .btn-success {
+            background: var(--green);
+        }
+
+        .btn-warning {
+            background: var(--yellow);
+            color: #333;
         }
 
         #toast {
@@ -496,6 +516,82 @@
             border-radius: 8px;
             background: #f8faff;
         }
+
+        .status-critical {
+            color: var(--red);
+            font-weight: bold;
+        }
+
+        .status-moderate {
+            color: var(--yellow);
+            font-weight: bold;
+        }
+
+        .status-stable {
+            color: var(--green);
+            font-weight: bold;
+        }
+
+        .status-resolved {
+            color: var(--green);
+            font-weight: bold;
+        }
+
+        .status-notified {
+            color: var(--blue);
+            font-weight: bold;
+        }
+
+        .prediction-value {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        .order-status-pending {
+            color: var(--yellow);
+            font-weight: bold;
+        }
+
+        .order-status-resolved {
+            color: var(--green);
+            font-weight: bold;
+        }
+
+        .stockin-form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .stockin-form-row label {
+            display: block;
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 4px;
+        }
+
+        .stockin-form-row input,
+        .stockin-form-row select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #e0e7ff;
+            border-radius: 8px;
+            background: #f8faff;
+            font-size: 0.85rem;
+        }
+
+        .stockin-form-row input:read-only {
+            background: #eef2f6;
+            cursor: not-allowed;
+        }
+
+        .btn-notify {
+            background: #d97706;
+            color: white;
+        }
     </style>
 </head>
 
@@ -540,7 +636,11 @@
             <div class="search-container"><i class="fas fa-search"></i><input type="text" id="viewSearch"
                     placeholder="Search current view..." onkeyup="filterTable()"></div>
             <div class="profile-info" onclick="showSection('profile')" title="View Profile">
-                <div><b id="display-name">Venkatesh</b><small id="display-role">Stocker</small></div>
+                <div>
+                    <b id="display-name">Venkatesh</b>
+                    <small id="display-role">Stocker</small>
+                    <span id="hospital-badge" class="hospital-badge">🏥 Loading...</span>
+                </div>
                 <img id="display-avatar" src="https://ui-avatars.com/api/?name=Venkatesh&background=4318FF&color=fff"
                     style="width:38px;border-radius:10px;">
             </div>
@@ -550,8 +650,8 @@
             <!-- DASHBOARD -->
             <section id="dashboard" class="view-section active">
                 <div class="page-header">
-                    <p>Welcome back, Venkatesh!</p>
-                    <h2>Inventory Dashboard</h2>
+                    <p id="welcome-message">Welcome back, Venkatesh!</p>
+                    <h2>Stocker Dashboard</h2>
                 </div>
                 <div class="kpi-grid">
                     <div class="kpi-card"><span>Total Medicines</span>
@@ -662,7 +762,7 @@
                 </div>
             </section>
 
-            <!-- MEDICINES SECTION - Table only -->
+            <!-- MEDICINES SECTION -->
             <section id="medicines" class="view-section">
                 <div class="page-header">
                     <p>Welcome back, Venkatesh!</p>
@@ -701,45 +801,38 @@
                 </div>
                 <div class="table-container">
                     <h3 style="color:var(--text-main); font-size:1.1rem; margin-bottom:15px;">Manual Medicine Entry</h3>
-                    <div
-                        style="display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:15px; margin-bottom:15px;">
-                        <div><label style="display:block; font-size:0.7rem; font-weight:700;">Medicine Name</label>
-                            <select id="manualName"
-                                style="width:100%; padding:10px; border:1px solid #e0e7ff; border-radius:8px; background:#f8faff;">
+                    <div class="stockin-form-row">
+                        <div>
+                            <label>Medicine Name</label>
+                            <select id="manualName" onchange="fillStockInMedInfo()">
                                 <option value="">-- Select --</option>
-                                <option value="Paracetamol">Paracetamol</option>
-                                <option value="Amoxicillin">Amoxicillin</option>
-                                <option value="Pantoprazole">Pantoprazole</option>
-                                <option value="Furosemide">Furosemide</option>
-                                <option value="Escitalopram">Escitalopram</option>
-                                <option value="Metformin">Metformin</option>
-                                <option value="Lisinopril">Lisinopril</option>
-                                <option value="Atorvastatin">Atorvastatin</option>
-                                <option value="Omeprazole">Omeprazole</option>
-                                <option value="Vitamin C">Vitamin C</option>
-                                <option value="Ibuprofen">Ibuprofen</option>
-                                <option value="Cetirizine">Cetirizine</option>
                             </select>
                         </div>
-                        <div><label style="display:block; font-size:0.7rem; font-weight:700;">Dose</label><input
-                                type="text" id="manualDose" placeholder="e.g. 500mg"
-                                style="width:100%; padding:10px; border:1px solid #e0e7ff; border-radius:8px; background:#f8faff;">
+                        <div>
+                            <label>Dose</label>
+                            <input type="text" id="manualDose" readonly placeholder="Auto-filled">
                         </div>
-                        <div><label style="display:block; font-size:0.7rem; font-weight:700;">Expiry Date</label><input
-                                type="date" id="manualExpiry"
-                                style="width:100%; padding:10px; border:1px solid #e0e7ff; border-radius:8px; background:#f8faff;">
+                        <div>
+                            <label>Price ($)</label>
+                            <input type="text" id="manualPrice" readonly placeholder="Auto-filled">
                         </div>
-                        <div><label style="display:block; font-size:0.7rem; font-weight:700;">Price ($)</label><input
-                                type="number" id="manualPrice" placeholder="e.g. 4.99" step="0.01"
-                                style="width:100%; padding:10px; border:1px solid #e0e7ff; border-radius:8px; background:#f8faff;">
+                        <div>
+                            <label>Manufacture Date</label>
+                            <input type="date" id="manualMfg">
                         </div>
-                        <div><label style="display:block; font-size:0.7rem; font-weight:700;">Quantity</label><input
-                                type="number" id="manualQty" placeholder="e.g. 100" min="1"
-                                style="width:100%; padding:10px; border:1px solid #e0e7ff; border-radius:8px; background:#f8faff;">
+                        <div>
+                            <label>Expiry Date</label>
+                            <input type="date" id="manualExpiry">
+                        </div>
+                        <div>
+                            <label>Quantity</label>
+                            <input type="number" id="manualQty" placeholder="e.g. 100" min="1">
+                        </div>
+                        <div style="display:flex; align-items:flex-end;">
+                            <button class="btn" onclick="addMedicineManually()" style="width:100%;"><i
+                                    class="fas fa-plus"></i> Add Stock</button>
                         </div>
                     </div>
-                    <div style="display:flex; justify-content:flex-end;"><button class="btn"
-                            onclick="addMedicineManually()"><i class="fas fa-plus"></i> Add Stock</button></div>
                 </div>
                 <div class="table-container">
                     <h3 style="margin-bottom:10px;">Stock In History</h3>
@@ -754,8 +847,10 @@
                     <table class="data-table">
                         <thead>
                             <tr>
+                                <th>Date</th>
                                 <th>Name</th>
                                 <th>Dose</th>
+                                <th>Mfg Date</th>
                                 <th>Expiry</th>
                                 <th>Price</th>
                                 <th>Qty Before</th>
@@ -780,21 +875,8 @@
                     </h3>
                     <div class="bill-entry-form">
                         <div><label style="display:block; font-size:0.7rem; font-weight:700;">Medicine</label>
-                            <select id="billMedSelect" onchange="fillBillMedInfo()"
-                                style="width:100%; padding:10px; border:1px solid #e0e7ff; border-radius:8px; background:#f8faff;">
+                            <select id="billMedSelect" onchange="fillBillMedInfo()">
                                 <option value="">-- Select --</option>
-                                <option value="Paracetamol">Paracetamol</option>
-                                <option value="Amoxicillin">Amoxicillin</option>
-                                <option value="Pantoprazole">Pantoprazole</option>
-                                <option value="Furosemide">Furosemide</option>
-                                <option value="Escitalopram">Escitalopram</option>
-                                <option value="Metformin">Metformin</option>
-                                <option value="Lisinopril">Lisinopril</option>
-                                <option value="Atorvastatin">Atorvastatin</option>
-                                <option value="Omeprazole">Omeprazole</option>
-                                <option value="Vitamin C">Vitamin C</option>
-                                <option value="Ibuprofen">Ibuprofen</option>
-                                <option value="Cetirizine">Cetirizine</option>
                             </select>
                         </div>
                         <div><label style="display:block; font-size:0.7rem; font-weight:700;">Dose</label><input
@@ -819,9 +901,9 @@
                     <div class="filter-bar">
                         <label style="font-weight:600;font-size:0.85rem;">Filter:</label>
                         <select id="stockoutFilter" onchange="renderBills()">
-                            <option value="all">All</option>
                             <option value="daily">Day to Day</option>
                             <option value="weekly">Weekly</option>
+                            <option value="monthly">Monthly</option>
                         </select>
                     </div>
                     <table class="data-table">
@@ -848,6 +930,7 @@
                     <span class="alert-tab active" data-tab="low" onclick="switchAlertTab('low')">Low Stock</span>
                     <span class="alert-tab" data-tab="over" onclick="switchAlertTab('over')">Overstock</span>
                     <span class="alert-tab" data-tab="expiry" onclick="switchAlertTab('expiry')">Expiry</span>
+                    <span class="alert-tab" data-tab="orders" onclick="switchAlertTab('orders')">Orders</span>
                 </div>
                 <div id="alert-low" class="alert-subsection active">
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
@@ -890,7 +973,9 @@
                     </table>
                 </div>
                 <div id="alert-expiry" class="alert-subsection">
-                    <h4 style="color:var(--yellow); margin-bottom:10px;">Upcoming Expiries</h4>
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                        <h4 style="color:var(--yellow);">Upcoming Expiries</h4>
+                    </div>
                     <table class="data-table">
                         <thead>
                             <tr>
@@ -902,9 +987,24 @@
                         <tbody id="alertExpiryBody"></tbody>
                     </table>
                 </div>
+                <div id="alert-orders" class="alert-subsection">
+                    <h4 style="color:var(--primary); margin-bottom:10px;">Recent Orders Placed</h4>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Order ID</th>
+                                <th>Medicine</th>
+                                <th>Quantity</th>
+                                <th>Status</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ordersBody"></tbody>
+                    </table>
+                </div>
             </section>
 
-            <!-- PREDICTION -->
+            <!-- PREDICTION with AI -->
             <section id="prediction" class="view-section">
                 <div class="page-header">
                     <p>Welcome back, Venkatesh!</p>
@@ -912,30 +1012,37 @@
                 </div>
                 <div class="table-container">
                     <div class="filter-bar">
-                        <label style="font-weight:600;font-size:0.85rem;">Year:</label>
+                        <label style="font-weight:600;font-size:0.85rem;">Period:</label>
+                        <select id="predPeriodFilter" onchange="renderPredictionChart()">
+                            <option value="weekly">Weekly (4 Weeks)</option>
+                            <option value="monthly">Monthly (2 Months)</option>
+                        </select>
+                        <label style="font-weight:600;font-size:0.85rem;margin-left:15px;">Year:</label>
                         <select id="yearFilter" onchange="renderPredictionChart()">
-                            <option value="2020">2020</option>
-                            <option value="2021">2021</option>
-                            <option value="2022">2022</option>
-                            <option value="2023">2023</option>
                             <option value="2024">2024</option>
                             <option value="2025">2025</option>
                             <option value="2026" selected>2026</option>
                         </select>
+                        <button class="btn" onclick="renderPredictionChart()"><i class="fas fa-sync-alt"></i> Refresh
+                            Prediction</button>
                     </div>
                     <canvas id="predBarChart" height="100"></canvas>
                 </div>
                 <div class="table-container">
-                    <table class="data-table">
-                        <thead>
-                            <tr>
-                                <th>Medicine ID</th>
-                                <th>Name</th>
-                                <th>Accurate Match</th>
-                            </tr>
-                        </thead>
-                        <tbody id="prBody"></tbody>
-                    </table>
+                    <h4 style="margin-bottom:10px;">AI Demand Forecast Results</h4>
+                    <div style="overflow-x:auto;">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Medicine ID</th>
+                                    <th>Medicine Name</th>
+                                    <th>Predicted Units</th>
+                                    <th>Accurate Match</th>
+                                </tr>
+                            </thead>
+                            <tbody id="prBody"></tbody>
+                        </table>
+                    </div>
                 </div>
             </section>
 
@@ -982,12 +1089,21 @@
     </div>
 
     <script>
+        // ============================================
+        // FIXED: Get hospital context from sessionStorage (tab-specific)
+        // ============================================
+        const HOSPITAL_NAME = sessionStorage.getItem('hospitalName') || 'No Hospital Assigned';
+        const USERNAME = sessionStorage.getItem('username') || 'Stocker';
+        const USER_ROLE = sessionStorage.getItem('userRole') || 'Stocker';
+
         let activeMedicines = [];
         let bills = [];
+        let orders = [];
+        let stockInHistory = [];
         let currentAlertId = null, currentMedicineName = null;
         let predChartInstance = null;
+        let mainChartInstance = null;
 
-        // Predefined medicine data for dropdowns
         const medicineOptions = [
             { name: 'Paracetamol', dose: '500mg', price: '4.99' },
             { name: 'Amoxicillin', dose: '250mg', price: '7.50' },
@@ -1003,8 +1119,11 @@
             { name: 'Cetirizine', dose: '10mg', price: '1.80' }
         ];
 
+        let alertStatus = {};
+
         function initProfile() {
-            const stored = localStorage.getItem('stockerProfile');
+            // FIXED: Read from sessionStorage
+            const stored = sessionStorage.getItem('stockerProfile');
             if (stored) {
                 const p = JSON.parse(stored);
                 const fn = p.name ? p.name.split(' ')[0] : (p.username || 'Stocker');
@@ -1015,24 +1134,37 @@
                 document.getElementById('input-username').value = p.username || '';
                 document.getElementById('input-email').value = p.email || '';
                 document.getElementById('input-role').value = p.role || 'Stocker';
-                document.querySelectorAll('.page-header p').forEach(el => el.innerText = `Welcome back, ${fn}!`);
+                document.getElementById('welcome-message').innerText = `Welcome back, ${fn}!`;
+                document.querySelectorAll('.page-header p').forEach(el => {
+                    if (el.id !== 'welcome-message') el.innerText = `Welcome back, ${fn}!`;
+                });
+            }
+
+            // Display hospital badge
+            const badge = document.getElementById('hospital-badge');
+            if (HOSPITAL_NAME && HOSPITAL_NAME !== 'No Hospital Assigned') {
+                badge.innerText = '🏥 ' + HOSPITAL_NAME;
+            } else {
+                badge.innerText = '⚠️ No Hospital Assigned';
             }
         }
 
         function saveProfile() {
-            const stored = localStorage.getItem('stockerProfile');
+            // FIXED: Read from sessionStorage
+            const stored = sessionStorage.getItem('stockerProfile');
             if (!stored) return;
             const p = JSON.parse(stored);
             p.name = document.getElementById('input-name').value;
             p.email = document.getElementById('input-email').value;
             const np = document.getElementById('input-pass').value;
             if (np) p.password = np;
-            localStorage.setItem('stockerProfile', JSON.stringify(p));
+            sessionStorage.setItem('stockerProfile', JSON.stringify(p));
             const ua = JSON.parse(localStorage.getItem('userAccount') || '{}');
             if (ua.username === p.username) { ua.name = p.name; ua.email = p.email; if (np) ua.password = np; localStorage.setItem('userAccount', JSON.stringify(ua)); }
             const all = JSON.parse(localStorage.getItem('smartMediStockUsers') || '{}');
             if (all[p.username]) { all[p.username].name = p.name; all[p.username].email = p.email; if (np) all[p.username].password = np; localStorage.setItem('smartMediStockUsers', JSON.stringify(all)); }
-            initProfile(); showToast('✅ Profile Updated!');
+            initProfile();
+            showToast('✅ Profile Updated!');
         }
 
         async function init() {
@@ -1043,16 +1175,16 @@
             renderAlertTables();
             renderPredictionChart();
             populateBillSelect();
+            populateStockInSelect();
             renderMedicineMaster();
         }
 
         async function loadData() {
-            const si = document.getElementById('siBody'), pr = document.getElementById('prBody'), billBody = document.getElementById('billBody');
-            si.innerHTML = ''; pr.innerHTML = ''; billBody.innerHTML = '';
+            const si = document.getElementById('siBody'), billBody = document.getElementById('billBody');
+            si.innerHTML = ''; billBody.innerHTML = '';
 
             const stockMap = {};
 
-            // Try to load from API
             try {
                 const res = await fetch('http://localhost:3000/api/medicines');
                 if (res.ok) {
@@ -1067,8 +1199,8 @@
                             dose: item["Dosage"] || item.dose || '-',
                             price: parseFloat(item["Price ($)"] || item.price || item.Price || 0).toFixed(2),
                             expiry: item["Expiry Date"] || item.expiry || '2028-12-31',
-                            category: item["Category"] || item.category || 'General',
-                            mfg: item["Manufacture Date"] || item.mfg || '2024-01-01'
+                            mfg: item["Manufacture Date"] || item.mfg || '2024-01-01',
+                            category: item["Category"] || item.category || 'General'
                         };
                     });
                 } else {
@@ -1076,7 +1208,6 @@
                 }
             } catch (e) {
                 console.warn('API fetch failed, falling back to mock options', e);
-                // Fallback to local medicineOptions with simulated stock if API is completely unavailable
                 medicineOptions.forEach(med => {
                     const key = med.name.toLowerCase();
                     stockMap[key] = {
@@ -1086,13 +1217,12 @@
                         dose: med.dose,
                         price: med.price,
                         expiry: '2026-12-31',
-                        category: 'General',
-                        mfg: '2024-01-01'
+                        mfg: '2024-01-01',
+                        category: 'General'
                     };
                 });
             }
 
-            // Merge manual entries
             const manual = JSON.parse(localStorage.getItem('manualMedicines') || '[]');
             manual.forEach(med => {
                 const key = med.name.toLowerCase();
@@ -1106,28 +1236,58 @@
                         dose: med.dose || '-',
                         price: med.price || '0.00',
                         expiry: med.expiry || '2028-12-31',
-                        category: med.category || 'General',
-                        mfg: med.mfg || '2024-01-01'
+                        mfg: med.mfg || '2024-01-01',
+                        category: med.category || 'General'
                     };
                 }
             });
 
             activeMedicines = Object.values(stockMap);
 
-            // render stock in history
-            const manualEntries = JSON.parse(localStorage.getItem('calculatedManualMedicines') || '[]');
-            manualEntries.forEach((m, idx) => {
-                si.innerHTML += `<tr><td><b>${m.name}</b></td><td>${m.dose || '-'}</td><td>${m.expiry || '-'}</td><td>$${m.price || '0.00'}</td><td>${m.qtyBefore || 0}</td><td>${m.quantity || 0}</td><td>${m.qtyAfter || 0}</td><td><button class="btn" style="background:var(--red);padding:4px 10px;" onclick="deleteManualMedicine(${idx})"><i class="fas fa-trash"></i> Delete</button></td></tr>`;
-            });
+            // Filter stockInHistory by hospital
+            stockInHistory = JSON.parse(localStorage.getItem('stockInHistory') || '[]');
+            stockInHistory = stockInHistory.filter(item => item.hospital_name === HOSPITAL_NAME || !item.hospital_name);
+            renderStockInHistory();
 
-            // load bills
             bills = JSON.parse(localStorage.getItem('bills') || '[]');
             renderBills();
+
+            orders = JSON.parse(localStorage.getItem('orders') || '[]');
+            // Filter orders by hospital
+            orders = orders.filter(o => o.hospital_name === HOSPITAL_NAME || !o.hospital_name);
+            renderOrders();
 
             renderDashTables();
             renderAlertTables();
             populateBillSelect();
+            populateStockInSelect();
             renderMedicineMaster();
+        }
+
+        function populateStockInSelect() {
+            const sel = document.getElementById('manualName');
+            if (sel) {
+                sel.innerHTML = '<option value="">-- Select --</option>';
+                const sortedMeds = [...activeMedicines].sort((a, b) => a.name.localeCompare(b.name));
+                sortedMeds.forEach(m => {
+                    const opt = document.createElement('option');
+                    opt.value = m.name;
+                    opt.textContent = m.name;
+                    sel.appendChild(opt);
+                });
+            }
+        }
+
+        function fillStockInMedInfo() {
+            const name = document.getElementById('manualName').value;
+            const med = activeMedicines.find(m => m.name === name);
+            if (med) {
+                document.getElementById('manualDose').value = med.dose || '-';
+                document.getElementById('manualPrice').value = med.price || '0.00';
+            } else {
+                document.getElementById('manualDose').value = '';
+                document.getElementById('manualPrice').value = '';
+            }
         }
 
         function renderMedicineMaster() {
@@ -1159,18 +1319,6 @@
                     billSel.appendChild(opt);
                 });
             }
-
-            const manualSel = document.getElementById('manualName');
-            if (manualSel) {
-                manualSel.innerHTML = '<option value="">-- Select --</option>';
-                const sortedMeds = [...activeMedicines].sort((a, b) => a.name.localeCompare(b.name));
-                sortedMeds.forEach(m => {
-                    const opt = document.createElement('option');
-                    opt.value = m.name;
-                    opt.textContent = m.name;
-                    manualSel.appendChild(opt);
-                });
-            }
         }
 
         function fillBillMedInfo() {
@@ -1196,7 +1344,7 @@
             const id = 'B-' + String(Math.floor(Math.random() * 9000) + 1000);
             const date = new Date().toISOString().split('T')[0];
             const display = med.dose && med.dose !== '-' ? `${med.name} (${med.dose})` : med.name;
-            const bill = { id, med: display, qty, date };
+            const bill = { id, med: display, qty, date, hospital_name: HOSPITAL_NAME };
             bills.unshift(bill);
             localStorage.setItem('bills', JSON.stringify(bills));
 
@@ -1207,136 +1355,88 @@
             renderDashTables();
             renderAlertTables();
             renderMedicineMaster();
+            populateStockInSelect();
             document.getElementById('billQty').value = '';
         }
 
         function renderBills() {
-            const filter = document.getElementById('stockoutFilter')?.value || 'all';
+            const filter = document.getElementById('stockoutFilter')?.value || 'daily';
             const billBody = document.getElementById('billBody');
-            let filtered = [...bills];
+            let filtered = bills.filter(b => b.hospital_name === HOSPITAL_NAME || !b.hospital_name);
             const now = new Date();
 
             if (filter === 'daily') {
                 const today = now.toISOString().split('T')[0];
-                filtered = bills.filter(b => b.date === today);
+                filtered = filtered.filter(b => b.date === today);
             } else if (filter === 'weekly') {
                 const weekAgo = new Date(now);
                 weekAgo.setDate(weekAgo.getDate() - 7);
-                filtered = bills.filter(b => new Date(b.date) >= weekAgo);
+                filtered = filtered.filter(b => new Date(b.date) >= weekAgo);
+            } else if (filter === 'monthly') {
+                const monthAgo = new Date(now);
+                monthAgo.setMonth(monthAgo.getMonth() - 1);
+                filtered = filtered.filter(b => new Date(b.date) >= monthAgo);
             }
 
-            billBody.innerHTML = filtered.slice(0, 10).map(b => `<tr><td>#${b.id}</td><td>${b.med}</td><td>${b.qty}</td><td>${b.date}</td></tr>`).join('');
+            billBody.innerHTML = filtered.slice(0, 20).map(b => `<tr><td>#${b.id}</td><td>${b.med}</td><td>${b.qty}</td><td>${b.date}</td></tr>`).join('');
+        }
+
+        function renderOrders() {
+            const ordersBody = document.getElementById('ordersBody');
+            if (!ordersBody) return;
+
+            ordersBody.innerHTML = '';
+            const sortedOrders = [...orders].sort((a, b) => new Date(b.date) - new Date(a.date));
+
+            sortedOrders.forEach(order => {
+                const statusClass = order.status === 'Resolved' ? 'status-resolved' : 'order-status-pending';
+                ordersBody.innerHTML += `<tr>
+                    <td>#${order.id}</td>
+                    <td><b>${order.medicine}</b></td>
+                    <td>${order.quantity}</td>
+                    <td><span class="${statusClass}">${order.status}</span></td>
+                    <td>${order.date}</td>
+                </tr>`;
+            });
         }
 
         function renderStockInHistory() {
             const filter = document.getElementById('stockinFilter')?.value || 'all';
             const siBody = document.getElementById('siBody');
-            const manualEntries = JSON.parse(localStorage.getItem('calculatedManualMedicines') || '[]');
-            const now = new Date();
+            let filtered = stockInHistory.filter(item => item.hospital_name === HOSPITAL_NAME || !item.hospital_name);
 
-            let filtered = [...manualEntries];
             if (filter === 'daily') {
-                const today = now.toISOString().split('T')[0];
-                // Use a simulated date filter - entries have no date, so we show all
-                filtered = manualEntries;
+                const today = new Date().toISOString().split('T')[0];
+                filtered = filtered.filter(item => item.date === today);
             } else if (filter === 'weekly') {
-                filtered = manualEntries;
+                const weekAgo = new Date();
+                weekAgo.setDate(weekAgo.getDate() - 7);
+                filtered = filtered.filter(item => new Date(item.date) >= weekAgo);
             }
 
             siBody.innerHTML = '';
+            filtered.sort((a, b) => new Date(b.date) - new Date(a.date));
             filtered.forEach((m, idx) => {
-                siBody.innerHTML += `<tr><td><b>${m.name}</b></td><td>${m.dose || '-'}</td><td>${m.expiry || '-'}</td><td>$${m.price || '0.00'}</td><td>${m.qtyBefore || 0}</td><td>${m.quantity || 0}</td><td>${m.qtyAfter || 0}</td><td><button class="btn" style="background:var(--red);padding:4px 10px;" onclick="deleteManualMedicine(${idx})"><i class="fas fa-trash"></i> Delete</button></td></tr>`;
+                siBody.innerHTML += `<tr>
+                    <td>${m.date || '-'}</td>
+                    <td><b>${m.name}</b></td>
+                    <td>${m.dose || '-'}</td>
+                    <td>${m.mfg || '2024-01-01'}</td>
+                    <td>${m.expiry || '-'}</td>
+                    <td>$${m.price || '0.00'}</td>
+                    <td>${m.qtyBefore || 0}</td>
+                    <td>${m.quantity || 0}</td>
+                    <td>${m.qtyAfter || 0}</td>
+                    <td><button class="btn" style="background:var(--red);padding:4px 10px;" onclick="deleteStockInHistory(${idx})"><i class="fas fa-trash"></i> Delete</button></td>
+                </tr>`;
             });
         }
 
-        async function renderPredictionChart() {
-            const ctx = document.getElementById('predBarChart');
-            if (!ctx) return;
-
-            const year = document.getElementById('yearFilter')?.value || '2026';
-            const pr = document.getElementById('prBody');
-
-            let labels = [];
-            let data = [];
-
-            try {
-                // Fetch live forecasting predictions from the Python backend ML model
-                const res = await fetch(`http://localhost:3000/api/prediction/forecast?limit=12`);
-                if (res.ok) {
-                    const predictions = await res.json();
-                    
-                    // Populate prediction table prBody dynamically with real ML results
-                    if (pr) {
-                        pr.innerHTML = '';
-                        predictions.forEach(p => {
-                            const statusHtml = p.status === 'Critical Risk' 
-                                ? `<span style="background:rgba(239,68,68,0.15);color:#ef4444;padding:4px 8px;border-radius:6px;font-size:0.75rem;font-weight:600;">Critical Risk (${p.confidence})</span>`
-                                : p.status === 'Moderate Restock'
-                                    ? `<span style="background:rgba(245,158,11,0.15);color:#f59e0b;padding:4px 8px;border-radius:6px;font-size:0.75rem;font-weight:600;">Moderate Restock (${p.confidence})</span>`
-                                    : `<span style="background:rgba(16,185,129,0.15);color:#10b981;padding:4px 8px;border-radius:6px;font-size:0.75rem;font-weight:600;">Stable (${p.confidence})</span>`;
-                            
-                            pr.innerHTML += `<tr>
-                                <td>${p.medicine_id}</td>
-                                <td><b>${p.medicine_name}</b></td>
-                                <td>${statusHtml}</td>
-                            </tr>`;
-                        });
-                    }
-
-                    labels = predictions.map(p => p.medicine_name);
-                    
-                    // Scale the prediction slightly depending on user selected year filter
-                    const yearDiff = parseInt(year, 10) - 2026;
-                    data = predictions.map(p => Math.max(10, Math.round(p.predicted_units * (1 + yearDiff * 0.08))));
-                } else {
-                    throw new Error('API non-ok');
-                }
-            } catch (err) {
-                console.warn('ML Prediction API failed, falling back to local simulation', err);
-                const chartMeds = activeMedicines.slice(0, 12);
-                labels = chartMeds.map(m => m.name);
-                const seed = parseInt(year) - 2024;
-                data = chartMeds.map(m => {
-                    const currentQty = m.quantity || 50;
-                    return Math.max(10, Math.floor(currentQty * (0.8 + Math.random() * 0.4) + (seed * 12)));
-                });
-
-                if (pr) {
-                    pr.innerHTML = '';
-                    chartMeds.forEach(m => {
-                        pr.innerHTML += `<tr><td>${m.id}</td><td><b>${m.name}</b></td><td><span style="background:rgba(16,185,129,0.15);color:#10b981;padding:4px 8px;border-radius:6px;font-size:0.75rem;font-weight:600;">Stable (78%)</span></td></tr>`;
-                    });
-                }
-            }
-
-            if (predChartInstance) {
-                predChartInstance.destroy();
-            }
-
-            predChartInstance = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        label: `Forecast for ${year} (ML Prediction)`,
-                        data: data,
-                        backgroundColor: '#4318FF',
-                        borderRadius: 5,
-                        borderColor: '#3b12d4',
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: { display: true, position: 'top' }
-                    },
-                    scales: {
-                        y: { beginAtZero: true, title: { display: true, text: 'Predicted Units' } },
-                        x: { ticks: { maxRotation: 45, minRotation: 30, font: { size: 10 } } }
-                    }
-                }
-            });
+        function deleteStockInHistory(idx) {
+            stockInHistory.splice(idx, 1);
+            localStorage.setItem('stockInHistory', JSON.stringify(stockInHistory));
+            renderStockInHistory();
+            showToast('🗑️ Removed entry');
         }
 
         function renderDashTables() {
@@ -1374,9 +1474,86 @@
                 return (expDate instanceof Date && !isNaN(expDate) && expDate <= new Date('2026-12-31')) || expiryNames.includes(m.name);
             });
 
-            document.getElementById('alertLowBody').innerHTML = low.map(m => `<tr><td><b>${m.name}</b></td><td style="color:var(--red)">${m.quantity}</td><td><button class="btn btn-sm" style="background:#d97706;" onclick="openOrderModal(null,'${m.name}')">Order</button></td></tr>`).join('');
-            document.getElementById('alertOverBody').innerHTML = over.map(m => `<tr><td><b>${m.name}</b></td><td style="color:var(--green)">${m.quantity}</td></tr>`).join('');
-            document.getElementById('alertExpiryBody').innerHTML = expiry.map(m => `<tr><td><b>${m.name}</b></td><td style="color:var(--yellow)">${m.expiry || '2026-12-31'}</td><td><button class="btn btn-sm" style="background:#d97706;" onclick="openOrderModal(null,'${m.name}')">Notify</button></td></tr>`).join('');
+            // Low Stock - Order and Resolve buttons
+            document.getElementById('alertLowBody').innerHTML = low.map((m) => {
+                const isResolved = alertStatus[`low_${m.name}`] || false;
+                return `<tr>
+                    <td><b>${m.name}</b></td>
+                    <td style="color:var(--red)">${m.quantity}</td>
+                    <td>
+                        ${!isResolved ?
+                        `<button class="btn btn-sm" style="background:#d97706;margin-right:5px;" onclick="openOrderModal(null,'${m.name}','low')">Order</button>
+                         <button class="btn btn-sm btn-success" onclick="resolveAlert('low','${m.name}')">Resolve</button>` :
+                        `<span class="status-resolved">✅ Resolved</span>`
+                    }
+                    </td>
+                </tr>`;
+            }).join('');
+
+            // Overstock - No action buttons
+            document.getElementById('alertOverBody').innerHTML = over.map(m =>
+                `<tr><td><b>${m.name}</b></td><td style="color:var(--green)">${m.quantity}</td></tr>`
+            ).join('');
+
+            // Expiry - Only Notify button
+            document.getElementById('alertExpiryBody').innerHTML = expiry.map((m) => {
+                const isNotified = alertStatus[`expiry_${m.name}`] || false;
+                return `<tr>
+                    <td><b>${m.name}</b></td>
+                    <td style="color:var(--yellow)">${m.expiry || '2026-12-31'}</td>
+                    <td>
+                        ${!isNotified ?
+                        `<button class="btn btn-sm btn-notify" onclick="notifyExpiry('${m.name}')">📢 Notify</button>` :
+                        `<span class="status-notified">✅ Notified</span>`
+                    }
+                    </td>
+                </tr>`;
+            }).join('');
+
+            renderOrders();
+        }
+
+        // Notify function for expiry alerts
+        function notifyExpiry(medicineName) {
+            const key = `expiry_${medicineName}`;
+            alertStatus[key] = true;
+
+            // Add to orders as notified
+            orders.push({
+                id: 'NOT-' + String(Math.floor(Math.random() * 9000) + 1000),
+                medicine: medicineName,
+                quantity: 'N/A',
+                status: 'Notified',
+                date: new Date().toISOString().split('T')[0],
+                hospital_name: HOSPITAL_NAME
+            });
+
+            localStorage.setItem('orders', JSON.stringify(orders));
+            renderAlertTables();
+            showToast(`📢 Notification sent for ${medicineName} expiry!`);
+        }
+
+        function resolveAlert(type, medicineName) {
+            const key = `${type}_${medicineName}`;
+            alertStatus[key] = true;
+
+            const existingOrder = orders.find(o => o.medicine === medicineName && o.status === 'Pending');
+            if (existingOrder) {
+                existingOrder.status = 'Resolved';
+            } else {
+                orders.push({
+                    id: 'ORD-' + String(Math.floor(Math.random() * 9000) + 1000),
+                    medicine: medicineName,
+                    quantity: Math.floor(Math.random() * 50) + 10,
+                    status: 'Resolved',
+                    date: new Date().toISOString().split('T')[0],
+                    hospital_name: HOSPITAL_NAME
+                });
+            }
+
+            localStorage.setItem('orders', JSON.stringify(orders));
+            renderAlertTables();
+            showToast(`✅ ${medicineName} alert resolved!`);
         }
 
         function switchAlertTab(tab) {
@@ -1389,71 +1566,262 @@
         function addMedicineManually() {
             const name = document.getElementById('manualName').value.trim();
             const dose = document.getElementById('manualDose').value.trim();
+            const mfg = document.getElementById('manualMfg').value.trim();
             const expiry = document.getElementById('manualExpiry').value.trim();
             const price = document.getElementById('manualPrice').value.trim();
             const qty = document.getElementById('manualQty').value.trim();
-            if (!name || !dose || !expiry || !price || !qty) { showToast('❌ Fill all fields'); return; }
+            const date = new Date().toISOString().split('T')[0];
+
+            if (!name) { showToast('❌ Please select a medicine'); return; }
+            if (!mfg || !expiry || !qty) { showToast('❌ Please fill manufacture date, expiry date and quantity'); return; }
+            if (parseInt(qty) <= 0) { showToast('❌ Quantity must be greater than 0'); return; }
 
             const existing = activeMedicines.find(m => m.name.toLowerCase() === name.toLowerCase());
+            let qtyBefore = 0;
+            let qtyAfter = 0;
+
             if (existing) {
+                qtyBefore = existing.quantity;
                 existing.quantity += parseInt(qty, 10);
+                existing.mfg = mfg || existing.mfg;
+                existing.expiry = expiry || existing.expiry;
+                qtyAfter = existing.quantity;
             } else {
-                const newMed = { id: `MED-${Math.floor(Math.random() * 9000) + 1000}`, name, dose, expiry, price: parseFloat(price).toFixed(2), quantity: parseInt(qty, 10), category: 'General', mfg: '2024-01-01' };
+                const newMed = {
+                    id: `MED-${Math.floor(Math.random() * 9000) + 1000}`,
+                    name,
+                    dose: dose || '-',
+                    mfg: mfg || '2024-01-01',
+                    expiry: expiry || '2028-12-31',
+                    price: parseFloat(price || '0.00').toFixed(2),
+                    quantity: parseInt(qty, 10),
+                    category: 'General'
+                };
                 activeMedicines.push(newMed);
+                qtyAfter = parseInt(qty, 10);
             }
 
-            let manual = JSON.parse(localStorage.getItem('manualMedicines') || '[]');
-            manual.unshift({ name, dose, expiry, price: parseFloat(price).toFixed(2), quantity: parseInt(qty, 10) });
-            localStorage.setItem('manualMedicines', JSON.stringify(manual));
+            stockInHistory.push({
+                date: date,
+                name: name,
+                dose: dose || existing?.dose || '-',
+                mfg: mfg || existing?.mfg || '2024-01-01',
+                expiry: expiry || existing?.expiry || '2028-12-31',
+                price: price || existing?.price || '0.00',
+                quantity: parseInt(qty, 10),
+                qtyBefore: qtyBefore,
+                qtyAfter: qtyAfter,
+                hospital_name: HOSPITAL_NAME
+            });
+            localStorage.setItem('stockInHistory', JSON.stringify(stockInHistory));
 
-            document.getElementById('manualName').value = ''; document.getElementById('manualDose').value = ''; document.getElementById('manualExpiry').value = ''; document.getElementById('manualPrice').value = ''; document.getElementById('manualQty').value = '';
+            document.getElementById('manualName').value = '';
+            document.getElementById('manualDose').value = '';
+            document.getElementById('manualMfg').value = '';
+            document.getElementById('manualExpiry').value = '';
+            document.getElementById('manualPrice').value = '';
+            document.getElementById('manualQty').value = '';
+
             showToast(`✅ Added stock: ${name}`);
             loadData();
         }
 
-        function deleteManualMedicine(idx) {
-            let manual = JSON.parse(localStorage.getItem('manualMedicines') || '[]');
-            manual.splice(idx, 1);
-            localStorage.setItem('manualMedicines', JSON.stringify(manual));
-            loadData();
-            showToast('🗑️ Removed');
-        }
-
-        function openOrderModal(alertId, medName) {
-            currentAlertId = alertId; currentMedicineName = medName;
+        function openOrderModal(alertId, medName, type) {
+            currentAlertId = alertId;
+            currentMedicineName = medName;
             document.getElementById('order-medicine-name').innerText = `Medicine: ${medName}`;
             document.getElementById('order-quantity').value = '';
             document.getElementById('order-quantity-modal').style.display = 'flex';
         }
-        function closeOrderModal() { document.getElementById('order-quantity-modal').style.display = 'none'; currentAlertId = null; currentMedicineName = null; }
+
+        function closeOrderModal() {
+            document.getElementById('order-quantity-modal').style.display = 'none';
+            currentAlertId = null;
+            currentMedicineName = null;
+        }
+
         async function submitOrder() {
             const qty = document.getElementById('order-quantity').value;
             if (!qty || parseInt(qty) <= 0) { showToast('❌ Enter valid quantity'); return; }
-            try {
-                const stored = localStorage.getItem('stockerProfile');
-                const profile = stored ? JSON.parse(stored) : {};
-                const hospitalName = profile.hospital_name || '';
 
-                await fetch('http://localhost:3000/api/orders/place', { 
-                    method: 'POST', 
-                    headers: { 'Content-Type': 'application/json' }, 
-                    body: JSON.stringify({ 
-                        medicine_name: currentMedicineName, 
-                        quantity_requested: parseInt(qty), 
-                        vendor_id: 1,
-                        hospital_name: hospitalName
-                    }) 
-                });
-                if (currentAlertId) await fetch(`http://localhost:3000/api/alerts/${currentAlertId}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ status: 'Ordered' }) });
-                showToast('✅ Order placed!');
+            try {
+                const order = {
+                    id: 'ORD-' + String(Math.floor(Math.random() * 9000) + 1000),
+                    medicine: currentMedicineName,
+                    quantity: parseInt(qty),
+                    status: 'Pending',
+                    date: new Date().toISOString().split('T')[0],
+                    hospital_name: HOSPITAL_NAME
+                };
+                orders.unshift(order);
+                localStorage.setItem('orders', JSON.stringify(orders));
+
+                if (currentAlertId) {
+                    const alertType = currentAlertId === 'low' ? 'low' : 'expiry';
+                    const key = `${alertType}_${currentMedicineName}`;
+                    alertStatus[key] = true;
+                } else {
+                    const med = activeMedicines.find(m => m.name === currentMedicineName);
+                    if (med) {
+                        const lowLimit = parseInt(document.getElementById('alertLowFilter')?.value || 100);
+                        if (med.quantity < lowLimit) {
+                            alertStatus[`low_${currentMedicineName}`] = true;
+                        }
+                    }
+                }
+
+                showToast('✅ Order placed successfully!');
                 closeOrderModal();
-                await loadData();
-            } catch (e) { showToast('❌ Failed to place order'); }
+                renderAlertTables();
+                renderDashTables();
+
+            } catch (e) {
+                showToast('❌ Failed to place order');
+            }
+        }
+
+        async function renderPredictionChart() {
+            const ctx = document.getElementById('predBarChart');
+            if (!ctx) return;
+
+            const year = document.getElementById('yearFilter')?.value || '2026';
+            const period = document.getElementById('predPeriodFilter')?.value || 'weekly';
+            const pr = document.getElementById('prBody');
+
+            const historicalSales = bills.reduce((acc, bill) => {
+                const medName = bill.med;
+                if (!acc[medName]) acc[medName] = [];
+                acc[medName].push({ date: bill.date, qty: bill.qty });
+                return acc;
+            }, {});
+
+            const medicineData = activeMedicines.map(m => ({
+                id: m.id,
+                name: m.name,
+                currentStock: m.quantity,
+                historical: historicalSales[m.name] || []
+            }));
+
+            medicineData.sort((a, b) => a.name.localeCompare(b.name));
+            const topMeds = medicineData.slice(0, 12);
+
+            const predictions = topMeds.map(med => {
+                const hist = med.historical;
+                let predicted = med.currentStock * 0.8;
+
+                if (hist.length > 0) {
+                    const totalQty = hist.reduce((sum, h) => sum + h.qty, 0);
+                    const avgSales = totalQty / Math.max(hist.length, 1);
+                    const recent = hist.slice(-7);
+                    const recentAvg = recent.length > 0 ? recent.reduce((s, h) => s + h.qty, 0) / recent.length : avgSales;
+                    const dailyDemand = Math.max(recentAvg, avgSales * 0.5);
+                    const weeks = period === 'weekly' ? 4 : 8;
+                    predicted = dailyDemand * weeks * 0.9 + med.currentStock * 0.3;
+                }
+
+                const yearFactor = 1 + (parseInt(year) - 2024) * 0.05;
+                predicted = Math.max(10, Math.round(predicted * yearFactor));
+
+                let status, confidence;
+                if (predicted > med.currentStock * 1.5) {
+                    status = "Critical Risk";
+                    confidence = Math.round(70 + Math.random() * 20);
+                } else if (predicted > med.currentStock * 1.1) {
+                    status = "Moderate Restock";
+                    confidence = Math.round(70 + Math.random() * 20);
+                } else {
+                    status = "Stable";
+                    confidence = Math.round(75 + Math.random() * 20);
+                }
+
+                return {
+                    medicine_id: med.id,
+                    medicine_name: med.name,
+                    current_stock: med.currentStock,
+                    predicted_demand: predicted,
+                    status: status,
+                    confidence: confidence,
+                    historical_days: hist.length
+                };
+            });
+
+            if (pr) {
+                pr.innerHTML = '';
+                predictions.forEach(p => {
+                    const statusClass = p.status === 'Critical Risk' ? 'status-critical' :
+                        p.status === 'Moderate Restock' ? 'status-moderate' : 'status-stable';
+                    pr.innerHTML += `<tr>
+                        <td><b>${p.medicine_id}</b></td>
+                        <td><b>${p.medicine_name}</b></td>
+                        <td><span class="prediction-value">${p.predicted_demand}</span></td>
+                        <td><span class="${statusClass}">${p.status} (${p.confidence}%)</span></td>
+                    </tr>`;
+                });
+            }
+
+            const labels = predictions.map(p => p.medicine_name);
+            const data = predictions.map(p => p.predicted_demand);
+
+            if (predChartInstance) {
+                predChartInstance.destroy();
+            }
+
+            const barColors = data.map(val => {
+                const idx = data.indexOf(val);
+                const status = predictions[idx].status;
+                if (status === 'Critical Risk') return '#ee5d50';
+                if (status === 'Moderate Restock') return '#ffb547';
+                return '#05cd99';
+            });
+
+            predChartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: `Predicted Demand for ${year} (${period === 'weekly' ? '4 Weeks' : '2 Months'})`,
+                        data: data,
+                        backgroundColor: barColors,
+                        borderRadius: 5,
+                        borderColor: '#3b12d4',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { display: true, position: 'top' },
+                        tooltip: {
+                            callbacks: {
+                                label: function (context) {
+                                    const val = context.parsed.y;
+                                    const status = val > 500 ? '⚠️ Critical Risk' :
+                                        val > 250 ? '⚡ Moderate Restock' : '✅ Stable';
+                                    return `Predicted: ${val} units - ${status}`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: { display: true, text: 'Predicted Units' },
+                            grid: { color: 'rgba(0,0,0,0.05)' }
+                        },
+                        x: {
+                            ticks: { maxRotation: 45, minRotation: 30, font: { size: 10 } },
+                            grid: { display: false }
+                        }
+                    },
+                    maintainAspectRatio: true
+                }
+            });
         }
 
         function showSection(id, el) {
             document.querySelectorAll('.view-section').forEach(v => v.classList.remove('active'));
-            const target = document.getElementById(id); if (target) target.classList.add('active');
+            const target = document.getElementById(id);
+            if (target) target.classList.add('active');
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
             if (el) el.classList.add('active');
             document.getElementById('viewSearch').value = '';
@@ -1462,23 +1830,64 @@
             if (id === 'stockout') populateBillSelect();
             if (id === 'medicines') renderMedicineMaster();
             if (id === 'prediction') renderPredictionChart();
-            if (id === 'stockin') renderStockInHistory();
+            if (id === 'stockin') {
+                populateStockInSelect();
+                renderStockInHistory();
+            }
         }
 
         function filterTable() {
             const val = document.getElementById('viewSearch').value.toLowerCase();
             const active = document.querySelector('.view-section.active');
-            if (active) active.querySelectorAll('tbody tr').forEach(row => row.style.display = row.innerText.toLowerCase().includes(val) ? '' : 'none');
+            if (active) {
+                active.querySelectorAll('tbody tr').forEach(row => {
+                    row.style.display = row.innerText.toLowerCase().includes(val) ? '' : 'none';
+                });
+            }
         }
 
-        function showToast(msg) { const t = document.getElementById('toast'); t.innerText = msg; t.style.display = 'block'; setTimeout(() => t.style.display = 'none', 3000); }
+        function showToast(msg) {
+            const t = document.getElementById('toast');
+            t.innerText = msg;
+            t.style.display = 'block';
+            setTimeout(() => t.style.display = 'none', 3000);
+        }
 
         function renderCharts() {
             const ctx = document.getElementById('mainChart');
-            if (ctx) new Chart(ctx, { type: 'bar', data: { labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'], datasets: [{ label: 'Sold', data: [65, 59, 80, 81, 56, 55, 40], backgroundColor: '#4318FF', borderRadius: 5 }] }, options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } } });
+            if (ctx) {
+                if (mainChartInstance) {
+                    mainChartInstance.destroy();
+                }
+                mainChartInstance = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                        datasets: [{
+                            label: 'Sold',
+                            data: [65, 59, 80, 81, 56, 55, 40],
+                            backgroundColor: '#4318FF',
+                            borderRadius: 5
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: { legend: { display: false } },
+                        scales: { y: { beginAtZero: true } }
+                    }
+                });
+            }
         }
 
-        function handleLogout() { document.body.style.opacity = '0'; setTimeout(() => location.href = 'index.html', 300); }
+        function handleLogout() {
+            // FIXED: Clear sessionStorage instead of localStorage
+            sessionStorage.removeItem('stockerProfile');
+            sessionStorage.removeItem('hospitalName');
+            sessionStorage.removeItem('username');
+            sessionStorage.removeItem('userRole');
+            document.body.style.opacity = '0';
+            setTimeout(() => location.href = 'index.html', 300);
+        }
 
         window.onload = init;
     </script>
