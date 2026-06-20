@@ -144,8 +144,13 @@ app.post('/api/register', async (req, res) => {
         return res.status(400).json({ error: 'Missing mandatory fields' });
     }
 
-    // Validate hospital_name for role-based requirements
-    if (['Billing Executive', 'Stock-In Manager', 'Medicine Supplier'].includes(role) && !hospital_name) {
+    // ============================================
+    // FIXED: Only validate hospital_name for roles that need it
+    // Medicine Supplier does NOT need a hospital name
+    // ============================================
+    const rolesRequiringHospital = ['CEO', 'Stock In Manager', 'Billing Executive', 'Owner', 'Stocker'];
+
+    if (rolesRequiringHospital.includes(role) && !hospital_name) {
         return res.status(400).json({ error: 'Hospital name is required for this role' });
     }
 
@@ -199,7 +204,7 @@ app.get('/api/users/hospital/:hospitalName', async (req, res) => {
 });
 
 // ============================================
-// FIXED: Intimate Alert API - Creates alert in database
+// Intimate Alert API - Creates alert in database
 // ============================================
 
 app.post('/api/alerts/intimate', async (req, res) => {
@@ -279,7 +284,7 @@ app.post('/api/alerts/intimate', async (req, res) => {
 });
 
 // ============================================
-// FIXED: Get Active Alerts - Only shows Pending alerts
+// Get Active Alerts - Only shows Pending alerts
 // ============================================
 
 app.get('/api/alerts/active', async (req, res) => {

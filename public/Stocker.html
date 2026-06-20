@@ -25,6 +25,7 @@
             --red: #ee5d50;
             --green: #05cd99;
             --yellow: #ffb547;
+            --blue: #3b82f6;
         }
 
         body {
@@ -231,7 +232,7 @@
 
         .table-container {
             background: white;
-            padding: 1.5rem;
+            padding: 1.2rem;
             border-radius: 20px;
             margin-bottom: 20px;
             overflow-x: auto;
@@ -240,22 +241,22 @@
         .data-table {
             width: 100%;
             border-collapse: collapse;
-            min-width: 600px;
+            min-width: auto;
         }
 
         .data-table th {
             text-align: left;
-            padding: 10px 12px;
+            padding: 6px 8px;
             color: var(--text-muted);
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             text-transform: uppercase;
             border-bottom: 2px solid #f1f1f1;
             white-space: nowrap;
         }
 
         .data-table td {
-            padding: 10px 12px;
-            font-size: 0.82rem;
+            padding: 6px 8px;
+            font-size: 0.78rem;
             border-bottom: 1px solid #fafafa;
             font-weight: 500;
             color: var(--text-main);
@@ -284,19 +285,19 @@
         }
 
         .btn {
-            padding: 6px 14px;
-            border-radius: 8px;
+            padding: 4px 10px;
+            border-radius: 6px;
             border: none;
             cursor: pointer;
             font-weight: bold;
             background: var(--primary);
             color: white;
-            font-size: 0.75rem;
+            font-size: 0.7rem;
         }
 
         .btn-sm {
-            padding: 4px 10px;
-            font-size: 0.7rem;
+            padding: 3px 8px;
+            font-size: 0.65rem;
         }
 
         .btn-success {
@@ -306,6 +307,21 @@
         .btn-warning {
             background: var(--yellow);
             color: #333;
+        }
+
+        .btn-save {
+            background: var(--primary);
+            color: white;
+            padding: 10px 30px;
+            font-size: 0.85rem;
+            border-radius: 8px;
+            transition: 0.2s;
+        }
+
+        .btn-save:hover {
+            background: #3a14e6;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(67, 24, 255, 0.3);
         }
 
         #toast {
@@ -322,7 +338,7 @@
 
         .dashboard-grid {
             display: grid;
-            grid-template-columns: 1.2fr 0.8fr;
+            grid-template-columns: 1.5fr 1fr;
             gap: 20px;
             align-items: start;
             margin-bottom: 20px;
@@ -400,28 +416,68 @@
             display: block;
         }
 
+        /* Order Modal Styles - Floating Box */
         #order-quantity-modal {
             display: none;
             position: fixed;
             inset: 0;
             background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
             z-index: 3000;
             align-items: center;
             justify-content: center;
+            animation: fadeIn 0.3s;
+        }
+
+        #order-quantity-modal.active {
+            display: flex;
         }
 
         .order-modal-content {
             background: white;
             padding: 2.5rem;
-            border-radius: 15px;
-            width: 400px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+            border-radius: 20px;
+            width: 420px;
+            max-width: 90vw;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: slideUp 0.3s ease-out;
         }
 
-        .order-modal-content h3 {
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px) scale(0.95);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .order-modal-content .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .order-modal-content .modal-header h3 {
             color: var(--text-main);
             font-size: 1.3rem;
-            margin-bottom: 10px;
+        }
+
+        .order-modal-content .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #94a3b8;
+            transition: 0.2s;
+        }
+
+        .order-modal-content .modal-close:hover {
+            color: var(--red);
         }
 
         .order-modal-content p {
@@ -430,39 +486,79 @@
             margin-bottom: 20px;
         }
 
+        .order-modal-content .med-name-display {
+            background: #f0f4ff;
+            padding: 10px 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .order-modal-content .med-name-display i {
+            color: var(--primary);
+            font-size: 1.2rem;
+        }
+
+        .order-modal-content .med-name-display span {
+            font-weight: 700;
+            color: var(--text-main);
+            font-size: 1.05rem;
+        }
+
         .order-modal-content label {
             display: block;
             font-size: 0.75rem;
             font-weight: 700;
             color: var(--text-main);
-            margin-bottom: 8px;
+            margin-bottom: 6px;
             text-transform: uppercase;
+            letter-spacing: 0.05em;
         }
 
         .order-modal-content input {
             width: 100%;
-            padding: 12px;
-            border: 1px solid #e0e7ff;
-            border-radius: 8px;
+            padding: 12px 15px;
+            border: 2px solid #e0e7ff;
+            border-radius: 10px;
             outline: none;
             background: #f8faff;
-            font-size: 0.9rem;
-            margin-bottom: 20px;
+            font-size: 0.95rem;
+            margin-bottom: 8px;
+            transition: 0.2s;
+        }
+
+        .order-modal-content input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(67, 24, 255, 0.1);
+        }
+
+        .order-modal-content .stock-info {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-bottom: 18px;
+        }
+
+        .order-modal-content .stock-info strong {
+            color: var(--text-main);
         }
 
         .order-modal-buttons {
             display: flex;
             gap: 10px;
+            margin-top: 5px;
         }
 
         .order-modal-buttons button {
             flex: 1;
             padding: 12px;
             border: none;
-            border-radius: 8px;
+            border-radius: 10px;
             font-weight: bold;
             cursor: pointer;
             font-size: 0.85rem;
+            transition: 0.2s;
         }
 
         .order-modal-buttons .btn-cancel {
@@ -470,9 +566,19 @@
             color: var(--text-main);
         }
 
+        .order-modal-buttons .btn-cancel:hover {
+            background: #d0d5e2;
+        }
+
         .order-modal-buttons .btn-submit {
             background: var(--primary);
             color: white;
+        }
+
+        .order-modal-buttons .btn-submit:hover {
+            background: #3a14e6;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(67, 24, 255, 0.3);
         }
 
         .bill-entry-form {
@@ -542,6 +648,11 @@
             font-weight: bold;
         }
 
+        .status-ordered {
+            color: var(--green);
+            font-weight: bold;
+        }
+
         .prediction-value {
             font-size: 1.1rem;
             font-weight: bold;
@@ -592,17 +703,326 @@
             background: #d97706;
             color: white;
         }
+
+        /* Expiry color coding */
+        .expiry-danger {
+            background: #fef2f2;
+            color: #991b1b;
+            font-weight: 600;
+        }
+
+        .expiry-warning {
+            background: #fffbeb;
+            color: #92400e;
+        }
+
+        .expiry-success {
+            background: #f0fdf4;
+            color: #166534;
+        }
+
+        .expiry-safe {
+            background: transparent;
+        }
+
+        .days-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.65rem;
+            font-weight: 700;
+        }
+
+        .days-badge.danger {
+            background: #fecaca;
+            color: #991b1b;
+        }
+
+        .days-badge.warning {
+            background: #fde68a;
+            color: #92400e;
+        }
+
+        .days-badge.success {
+            background: #a7f3d0;
+            color: #065f46;
+        }
+
+        .filter-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .filter-group label {
+            font-size: 0.65rem;
+            font-weight: 600;
+            color: #64748b;
+        }
+
+        .filter-group select {
+            padding: 3px 6px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 0.65rem;
+        }
+
+        .dash-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .dash-grid .table-container {
+            padding: 1rem;
+        }
+
+        .dash-grid .data-table th,
+        .dash-grid .data-table td {
+            padding: 4px 6px;
+            font-size: 0.72rem;
+        }
+
+        .dash-grid .data-table {
+            min-width: auto;
+        }
+
+        .dash-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .dash-header h4 {
+            font-size: 0.8rem;
+        }
+
+        .dash-header .filter-group {
+            gap: 4px;
+        }
+
+        .dash-header .filter-group select {
+            padding: 2px 4px;
+            font-size: 0.6rem;
+        }
+
+        .dash-header .view-all {
+            font-size: 0.6rem;
+        }
+
+        /* Order button styles */
+        .btn-order {
+            background: #d97706;
+            color: white;
+            transition: 0.2s;
+        }
+
+        .btn-order:hover {
+            background: #b45309;
+            transform: scale(1.02);
+        }
+
+        /* Chart container - Full width */
+        .chart-container {
+            position: relative;
+            height: 300px;
+            width: 100%;
+        }
+
+        .chart-legend-custom {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 10px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .chart-legend-custom .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .chart-legend-custom .legend-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 3px;
+        }
+
+        .chart-legend-custom .legend-dot.green {
+            background: var(--green);
+        }
+
+        .chart-legend-custom .legend-dot.red {
+            background: var(--red);
+        }
+
+        /* Settings styles */
+        .settings-form {
+            max-width: 600px;
+        }
+
+        .settings-form .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .settings-form .form-group label {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .settings-form .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e7ff;
+            border-radius: 10px;
+            outline: none;
+            background: #f8faff;
+            font-size: 0.95rem;
+            transition: 0.2s;
+        }
+
+        .settings-form .form-group input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(67, 24, 255, 0.1);
+        }
+
+        .settings-form .form-group input:read-only {
+            background: #eef2f6;
+            cursor: not-allowed;
+        }
+
+        .settings-form .form-group .helper-text {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        .settings-form .form-divider {
+            border: none;
+            border-top: 2px solid #eef2f6;
+            margin: 1.5rem 0;
+        }
+
+        .settings-form .form-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 1rem;
+        }
+
+        /* Full width chart container */
+        .full-width-chart {
+            width: 100%;
+        }
+
+        .full-width-chart .chart-container {
+            height: 320px;
+        }
+
+        /* Autocomplete styles - FIXED */
+        .autocomplete-container {
+            position: relative;
+            width: 100%;
+        }
+
+        .autocomplete-container input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #e0e7ff;
+            border-radius: 8px;
+            background: #f8faff;
+            font-size: 0.85rem;
+            outline: none;
+            box-sizing: border-box;
+        }
+
+        .autocomplete-container input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(67, 24, 255, 0.1);
+        }
+
+        .autocomplete-dropdown {
+            position: absolute;
+            top: calc(100% + 4px);
+            left: 0;
+            right: 0;
+            background: white;
+            border: 1px solid #e0e7ff;
+            border-radius: 8px;
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 1000;
+            display: none;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            margin: 0;
+            padding: 0;
+        }
+
+        .autocomplete-dropdown.show {
+            display: block;
+        }
+
+        .autocomplete-dropdown .option {
+            padding: 10px 14px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            border-bottom: 1px solid #f1f5f9;
+            transition: background 0.2s;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .autocomplete-dropdown .option:hover {
+            background: #f0f4ff;
+        }
+
+        .autocomplete-dropdown .option:last-child {
+            border-bottom: none;
+        }
+
+        .autocomplete-dropdown .option .highlight {
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .autocomplete-dropdown .no-results {
+            padding: 12px;
+            color: #94a3b8;
+            text-align: center;
+            font-size: 0.85rem;
+        }
     </style>
 </head>
 
 <body>
     <div id="toast">Action Successful</div>
+
+    <!-- Floating Order Modal -->
     <div id="order-quantity-modal">
         <div class="order-modal-content">
-            <h3>📦 Place Medicine Order</h3>
-            <p id="order-medicine-name" style="font-weight:bold;color:var(--primary);">Medicine: -</p>
+            <div class="modal-header">
+                <h3>📦 Place Medicine Order</h3>
+                <button class="modal-close" onclick="closeOrderModal()">&times;</button>
+            </div>
+            <div class="med-name-display">
+                <i class="fas fa-pills"></i>
+                <span id="order-medicine-name">Medicine: -</span>
+            </div>
+            <p>Enter the quantity you need to order for this medicine.</p>
             <label for="order-quantity">Quantity to Order (units)</label>
             <input type="number" id="order-quantity" placeholder="Enter quantity" min="1">
+            <div class="stock-info" id="order-stock-info">Current Stock: <strong>0</strong> units</div>
             <div class="order-modal-buttons">
                 <button class="btn-cancel" onclick="closeOrderModal()">Cancel</button>
                 <button class="btn-submit" onclick="submitOrder()">✅ Place Order</button>
@@ -627,6 +1047,8 @@
             </div>
             <div class="nav-item" id="m-prediction" onclick="showSection('prediction',this)"><i
                     class="fas fa-brain"></i> Prediction</div>
+            <div class="nav-item" id="m-settings" onclick="showSection('settings',this)"><i class="fas fa-cog"></i>
+                Settings</div>
             <div class="nav-item logout-btn" onclick="handleLogout()"><i class="fas fa-sign-out-alt"></i> Logout</div>
         </nav>
     </aside>
@@ -635,7 +1057,7 @@
         <header class="top-header">
             <div class="search-container"><i class="fas fa-search"></i><input type="text" id="viewSearch"
                     placeholder="Search current view..." onkeyup="filterTable()"></div>
-            <div class="profile-info" onclick="showSection('profile')" title="View Profile">
+            <div class="profile-info" onclick="showSection('settings')" title="View Settings">
                 <div>
                     <b id="display-name">Venkatesh</b>
                     <small id="display-role">Stocker</small>
@@ -676,17 +1098,19 @@
                     </div>
                 </div>
 
-                <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:15px; margin-bottom:20px;">
+                <div class="dash-grid">
+                    <!-- Low Stock -->
                     <div class="table-container">
-                        <div
-                            style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                        <div class="dash-header">
                             <h4 style="color:var(--red);">Low Stock</h4>
-                            <div><select id="dashLowFilter" onchange="renderDashTables()"
-                                    style="padding:4px 8px; border:1px solid #ccc; border-radius:6px;">
+                            <div style="display:flex; align-items:center; gap:4px; flex-wrap:wrap;">
+                                <select id="dashLowFilter" onchange="renderDashTables()"
+                                    style="padding:2px 4px; border:1px solid #ccc; border-radius:4px; font-size:0.6rem;">
                                     <option value="75">Below 75</option>
                                     <option value="100" selected>Below 100</option>
                                     <option value="200">Below 200</option>
-                                </select><a class="view-all" style="margin-left:8px;"
+                                </select>
+                                <a class="view-all"
                                     onclick="showSection('alerts',document.getElementById('m-alerts'))">View All</a>
                             </div>
                         </div>
@@ -701,15 +1125,18 @@
                             <tbody id="dashLowBody"></tbody>
                         </table>
                     </div>
+
+                    <!-- Overstock -->
                     <div class="table-container">
-                        <div
-                            style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                        <div class="dash-header">
                             <h4 style="color:var(--green);">Overstock</h4>
-                            <div><select id="dashOverFilter" onchange="renderDashTables()"
-                                    style="padding:4px 8px; border:1px solid #ccc; border-radius:6px;">
+                            <div style="display:flex; align-items:center; gap:4px; flex-wrap:wrap;">
+                                <select id="dashOverFilter" onchange="renderDashTables()"
+                                    style="padding:2px 4px; border:1px solid #ccc; border-radius:4px; font-size:0.6rem;">
                                     <option value="400">Above 400</option>
                                     <option value="500" selected>Above 500</option>
-                                </select><a class="view-all" style="margin-left:8px;"
+                                </select>
+                                <a class="view-all"
                                     onclick="showSection('alerts',document.getElementById('m-alerts'))">View All</a>
                             </div>
                         </div>
@@ -723,18 +1150,31 @@
                             <tbody id="dashOverBody"></tbody>
                         </table>
                     </div>
+
+                    <!-- Expiry -->
                     <div class="table-container">
-                        <div
-                            style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                        <div class="dash-header">
                             <h4 style="color:var(--yellow);">Expiry</h4>
-                            <a class="view-all" onclick="showSection('alerts',document.getElementById('m-alerts'))">View
-                                All</a>
+                            <div style="display:flex; align-items:center; gap:4px; flex-wrap:wrap;">
+                                <div class="filter-group">
+                                    <label>Filter:</label>
+                                    <select id="dashExpiryFilter" onchange="renderDashTables()">
+                                        <option value="all">All</option>
+                                        <option value="expired">Expired</option>
+                                        <option value="critical">0-15 days</option>
+                                        <option value="warning">15-30 days</option>
+                                    </select>
+                                </div>
+                                <a class="view-all"
+                                    onclick="showSection('alerts',document.getElementById('m-alerts'))">View All</a>
+                            </div>
                         </div>
                         <table class="data-table">
                             <thead>
                                 <tr>
                                     <th>Medicine</th>
                                     <th>Exp Date</th>
+                                    <th>Days Left</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -743,17 +1183,37 @@
                     </div>
                 </div>
 
-                <div class="dashboard-grid">
-                    <div class="table-container"><canvas id="mainChart" height="80"></canvas></div>
-                    <div class="table-container forecast-card">
+                <!-- Full Width Chart -->
+                <div class="table-container full-width-chart">
+                    <div
+                        style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:10px;">
+                        <h4 style="font-size:0.9rem; color:var(--text-main);">📊 Weekly Stock Movement</h4>
+                        <div class="chart-legend-custom">
+                            <span class="legend-item">
+                                <span class="legend-dot green"></span> Stock In
+                            </span>
+                            <span class="legend-item">
+                                <span class="legend-dot red"></span> Stock Out
+                            </span>
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="mainChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Forecast Card -->
+                <div class="dashboard-grid" style="grid-template-columns: 1fr;">
+                    <div class="table-container forecast-card" style="grid-column: 1 / -1;">
                         <div class="forecast-header">
                             <div>
                                 <p class="forecast-label">AI Live Forecast</p>
-                            </div><button class="btn"
+                            </div>
+                            <button class="btn"
                                 onclick="showSection('prediction',document.getElementById('m-prediction'))">View All
                                 Forecast</button>
                         </div>
-                        <div class="forecast-list">
+                        <div class="forecast-list" style="grid-template-columns: repeat(3, 1fr);">
                             <div class="forecast-item"><span>Paracetamol 500mg</span><strong>+1,200 units</strong></div>
                             <div class="forecast-item"><span>Amoxicillin 250mg</span><strong>+340 units</strong></div>
                             <div class="forecast-item"><span>Vitamin C</span><strong>+180 units</strong></div>
@@ -783,6 +1243,7 @@
                                     <th>Dosage</th>
                                     <th>Mfg Date</th>
                                     <th>Expiry Date</th>
+                                    <th>Days Left</th>
                                     <th>Price</th>
                                     <th>Units</th>
                                 </tr>
@@ -793,7 +1254,7 @@
                 </div>
             </section>
 
-            <!-- STOCK IN -->
+            <!-- STOCK IN with Autocomplete -->
             <section id="stockin" class="view-section">
                 <div class="page-header">
                     <p>Welcome back, Venkatesh!</p>
@@ -803,10 +1264,14 @@
                     <h3 style="color:var(--text-main); font-size:1.1rem; margin-bottom:15px;">Manual Medicine Entry</h3>
                     <div class="stockin-form-row">
                         <div>
-                            <label>Medicine Name</label>
-                            <select id="manualName" onchange="fillStockInMedInfo()">
-                                <option value="">-- Select --</option>
-                            </select>
+                            <label>Medicine Name (Type to search)</label>
+                            <div class="autocomplete-container">
+                                <input type="text" id="manualNameInput" placeholder="Type medicine name..."
+                                    oninput="filterMedicineOptions(this.value)"
+                                    onfocus="filterMedicineOptions(this.value)">
+                                <div class="autocomplete-dropdown" id="manualAutocompleteDropdown"></div>
+                            </div>
+                            <input type="hidden" id="manualName" value="">
                         </div>
                         <div>
                             <label>Dose</label>
@@ -864,7 +1329,7 @@
                 </div>
             </section>
 
-            <!-- STOCK OUT -->
+            <!-- STOCK OUT with Autocomplete -->
             <section id="stockout" class="view-section">
                 <div class="page-header">
                     <p>Welcome back, Venkatesh!</p>
@@ -874,26 +1339,36 @@
                     <h3 style="color:var(--text-main); font-size:1.1rem; margin-bottom:15px;">Generate Bill / Dispatch
                     </h3>
                     <div class="bill-entry-form">
-                        <div><label style="display:block; font-size:0.7rem; font-weight:700;">Medicine</label>
-                            <select id="billMedSelect" onchange="fillBillMedInfo()">
-                                <option value="">-- Select --</option>
-                            </select>
+                        <div>
+                            <label style="display:block; font-size:0.7rem; font-weight:700;">Medicine (Type to
+                                search)</label>
+                            <div class="autocomplete-container">
+                                <input type="text" id="billMedInput" placeholder="Type medicine name..."
+                                    oninput="filterBillOptions(this.value)" onfocus="filterBillOptions(this.value)">
+                                <div class="autocomplete-dropdown" id="billAutocompleteDropdown"></div>
+                            </div>
+                            <input type="hidden" id="billMedSelect" value="">
                         </div>
-                        <div><label style="display:block; font-size:0.7rem; font-weight:700;">Dose</label><input
-                                type="text" id="billDose" readonly
+                        <div>
+                            <label style="display:block; font-size:0.7rem; font-weight:700;">Dose</label>
+                            <input type="text" id="billDose" readonly
                                 style="width:100%; padding:10px; border:1px solid #e0e7ff; border-radius:8px; background:#eef2f6;">
                         </div>
-                        <div><label style="display:block; font-size:0.7rem; font-weight:700;">Price ($)</label><input
-                                type="text" id="billPrice" readonly
+                        <div>
+                            <label style="display:block; font-size:0.7rem; font-weight:700;">Price ($)</label>
+                            <input type="text" id="billPrice" readonly
                                 style="width:100%; padding:10px; border:1px solid #e0e7ff; border-radius:8px; background:#eef2f6;">
                         </div>
-                        <div><label style="display:block; font-size:0.7rem; font-weight:700;">Quantity</label><input
-                                type="number" id="billQty" placeholder="Qty" min="1"
+                        <div>
+                            <label style="display:block; font-size:0.7rem; font-weight:700;">Quantity</label>
+                            <input type="number" id="billQty" placeholder="Qty" min="1"
                                 style="width:100%; padding:10px; border:1px solid #e0e7ff; border-radius:8px; background:#f8faff;">
                         </div>
-                        <div style="display:flex; align-items:flex-end;"><button class="btn"
-                                onclick="generateBillFromForm()" style="width:100%;"><i class="fas fa-receipt"></i>
-                                Generate Bill</button></div>
+                        <div style="display:flex; align-items:flex-end;">
+                            <button class="btn" onclick="generateBillFromForm()" style="width:100%;">
+                                <i class="fas fa-receipt"></i> Generate Bill
+                            </button>
+                        </div>
                     </div>
                 </div>
                 <div class="table-container">
@@ -975,12 +1450,22 @@
                 <div id="alert-expiry" class="alert-subsection">
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
                         <h4 style="color:var(--yellow);">Upcoming Expiries</h4>
+                        <div class="filter-group">
+                            <label>Filter:</label>
+                            <select id="alertExpiryFilter" onchange="renderAlertTables()">
+                                <option value="all">All</option>
+                                <option value="expired">Expired (&lt;0 days)</option>
+                                <option value="critical">0-15 days</option>
+                                <option value="warning">15-30 days</option>
+                            </select>
+                        </div>
                     </div>
                     <table class="data-table">
                         <thead>
                             <tr>
                                 <th>Medicine</th>
                                 <th>Expiry Date</th>
+                                <th>Days Left</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -1046,7 +1531,67 @@
                 </div>
             </section>
 
-            <!-- PROFILE -->
+            <!-- SETTINGS SECTION -->
+            <section id="settings" class="view-section">
+                <div class="page-header">
+                    <p>Account & System Settings</p>
+                    <h2>Settings</h2>
+                </div>
+                <div class="table-container settings-form">
+                    <form id="settingsForm" onsubmit="saveSettings(event)">
+                        <!-- Hospital Name - Auto-filled -->
+                        <div class="form-group">
+                            <label for="settings-hospital">🏥 Hospital Name</label>
+                            <input type="text" id="settings-hospital" readonly>
+                            <div class="helper-text">This is auto-filled from your hospital assignment</div>
+                        </div>
+
+                        <!-- User Name -->
+                        <div class="form-group">
+                            <label for="settings-username">👤 User Name</label>
+                            <input type="text" id="settings-username" placeholder="Enter your full name">
+                        </div>
+
+                        <!-- Email -->
+                        <div class="form-group">
+                            <label for="settings-email">📧 Email Address</label>
+                            <input type="email" id="settings-email" placeholder="Enter your email address">
+                        </div>
+
+                        <!-- Vendor Name -->
+                        <div class="form-group">
+                            <label for="settings-vendor">🏪 Vendor Name</label>
+                            <input type="text" id="settings-vendor" placeholder="Enter vendor/supplier name">
+                            <div class="helper-text">Primary medicine supplier/vendor</div>
+                        </div>
+
+                        <hr class="form-divider">
+
+                        <!-- Change Password - No current password required -->
+                        <div class="form-group">
+                            <label for="settings-new-password">🔑 New Password</label>
+                            <input type="password" id="settings-new-password" placeholder="Enter new password">
+                            <div class="helper-text">Minimum 6 characters. Leave blank to keep current password.</div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="settings-confirm-password">✅ Confirm New Password</label>
+                            <input type="password" id="settings-confirm-password" placeholder="Confirm new password">
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-save">
+                                <i class="fas fa-save"></i> Save All Changes
+                            </button>
+                            <button type="button" class="btn" style="background:#6b7280;" onclick="resetSettingsForm()">
+                                <i class="fas fa-undo"></i> Reset
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </section>
+
+            <!-- PROFILE (keeping for backward compatibility) -->
             <section id="profile" class="view-section">
                 <div class="page-header">
                     <p>Account Management</p>
@@ -1100,9 +1645,12 @@
         let bills = [];
         let orders = [];
         let stockInHistory = [];
-        let currentAlertId = null, currentMedicineName = null;
+        let currentAlertId = null;
+        let currentMedicineName = null;
+        let currentMedicineStock = 0;
         let predChartInstance = null;
         let mainChartInstance = null;
+        let orderStatus = {};
 
         const medicineOptions = [
             { name: 'Paracetamol', dose: '500mg', price: '4.99' },
@@ -1121,8 +1669,185 @@
 
         let alertStatus = {};
 
+        // Helper functions for expiry
+        function getDaysLeft(expiryDate) {
+            if (!expiryDate || expiryDate === '-') return null;
+            const today = new Date();
+            const exp = new Date(expiryDate);
+            if (isNaN(exp)) return null;
+            const diffTime = exp - today;
+            return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        }
+
+        function getExpiryClass(daysLeft) {
+            if (daysLeft === null) return 'expiry-safe';
+            if (daysLeft < 0) return 'expiry-danger';
+            if (daysLeft <= 15) return 'expiry-warning';
+            if (daysLeft <= 30) return 'expiry-success';
+            return 'expiry-safe';
+        }
+
+        function getDaysBadgeClass(daysLeft) {
+            if (daysLeft === null) return 'success';
+            if (daysLeft < 0) return 'danger';
+            if (daysLeft <= 15) return 'warning';
+            if (daysLeft <= 30) return 'success';
+            return 'success';
+        }
+
+        function filterExpiryItems(items, filterType) {
+            if (filterType === 'all') return items;
+            if (filterType === 'expired') return items.filter(m => m.daysLeft < 0);
+            if (filterType === 'critical') return items.filter(m => m.daysLeft >= 0 && m.daysLeft <= 15);
+            if (filterType === 'warning') return items.filter(m => m.daysLeft > 15 && m.daysLeft <= 30);
+            return items;
+        }
+
+        // ============================================
+        // AUTOCOMPLETE FUNCTIONS
+        // ============================================
+
+        function getMedicineNames() {
+            const names = activeMedicines.map(m => m.name);
+            const extraNames = medicineOptions.map(m => m.name);
+            const allNames = [...new Set([...names, ...extraNames])];
+            return allNames.sort();
+        }
+
+        // Stock In Autocomplete
+        function filterMedicineOptions(searchText) {
+            const dropdown = document.getElementById('manualAutocompleteDropdown');
+            const input = document.getElementById('manualNameInput');
+
+            if (!searchText || searchText.length < 2) {
+                dropdown.classList.remove('show');
+                return;
+            }
+
+            const allNames = getMedicineNames();
+            const filtered = allNames.filter(name =>
+                name.toLowerCase().includes(searchText.toLowerCase())
+            );
+
+            if (filtered.length === 0) {
+                dropdown.innerHTML = `<div class="no-results">No medicines found matching "${searchText}"</div>`;
+                dropdown.classList.add('show');
+                return;
+            }
+
+            dropdown.innerHTML = '';
+            filtered.slice(0, 10).forEach(name => {
+                const option = document.createElement('div');
+                option.className = 'option';
+                const highlighted = name.replace(
+                    new RegExp(searchText, 'gi'),
+                    match => `<span class="highlight">${match}</span>`
+                );
+                option.innerHTML = highlighted;
+                option.onclick = () => selectMedicine(name);
+                dropdown.appendChild(option);
+            });
+            dropdown.classList.add('show');
+        }
+
+        function selectMedicine(name) {
+            document.getElementById('manualNameInput').value = name;
+            document.getElementById('manualName').value = name;
+            document.getElementById('manualAutocompleteDropdown').classList.remove('show');
+            fillStockInMedInfoByName(name);
+        }
+
+        function fillStockInMedInfoByName(name) {
+            const med = activeMedicines.find(m => m.name === name);
+            if (med) {
+                document.getElementById('manualDose').value = med.dose || '-';
+                document.getElementById('manualPrice').value = med.price || '0.00';
+            } else {
+                const defaultMed = medicineOptions.find(m => m.name === name);
+                if (defaultMed) {
+                    document.getElementById('manualDose').value = defaultMed.dose || '-';
+                    document.getElementById('manualPrice').value = defaultMed.price || '0.00';
+                } else {
+                    document.getElementById('manualDose').value = '';
+                    document.getElementById('manualPrice').value = '';
+                }
+            }
+        }
+
+        // Stock Out Autocomplete
+        function filterBillOptions(searchText) {
+            const dropdown = document.getElementById('billAutocompleteDropdown');
+            const input = document.getElementById('billMedInput');
+
+            if (!searchText || searchText.length < 2) {
+                dropdown.classList.remove('show');
+                return;
+            }
+
+            const allNames = getMedicineNames();
+            const filtered = allNames.filter(name =>
+                name.toLowerCase().includes(searchText.toLowerCase())
+            );
+
+            if (filtered.length === 0) {
+                dropdown.innerHTML = `<div class="no-results">No medicines found matching "${searchText}"</div>`;
+                dropdown.classList.add('show');
+                return;
+            }
+
+            dropdown.innerHTML = '';
+            filtered.slice(0, 10).forEach(name => {
+                const option = document.createElement('div');
+                option.className = 'option';
+                const highlighted = name.replace(
+                    new RegExp(searchText, 'gi'),
+                    match => `<span class="highlight">${match}</span>`
+                );
+                option.innerHTML = highlighted;
+                option.onclick = () => selectBillMedicine(name);
+                dropdown.appendChild(option);
+            });
+            dropdown.classList.add('show');
+        }
+
+        function selectBillMedicine(name) {
+            document.getElementById('billMedInput').value = name;
+            document.getElementById('billMedSelect').value = name;
+            document.getElementById('billAutocompleteDropdown').classList.remove('show');
+            fillBillMedInfoByName(name);
+        }
+
+        function fillBillMedInfoByName(name) {
+            const med = activeMedicines.find(m => m.name === name);
+            if (med) {
+                document.getElementById('billDose').value = med.dose || '-';
+                document.getElementById('billPrice').value = med.price || '0.00';
+            } else {
+                const defaultMed = medicineOptions.find(m => m.name === name);
+                if (defaultMed) {
+                    document.getElementById('billDose').value = defaultMed.dose || '-';
+                    document.getElementById('billPrice').value = defaultMed.price || '0.00';
+                } else {
+                    document.getElementById('billDose').value = '';
+                    document.getElementById('billPrice').value = '';
+                }
+            }
+        }
+
+        // Close dropdowns when clicking outside
+        document.addEventListener('click', function (e) {
+            const containers = document.querySelectorAll('.autocomplete-container');
+            containers.forEach(container => {
+                if (container && !container.contains(e.target)) {
+                    const dropdown = container.querySelector('.autocomplete-dropdown');
+                    if (dropdown) {
+                        dropdown.classList.remove('show');
+                    }
+                }
+            });
+        });
+
         function initProfile() {
-            // FIXED: Read from sessionStorage
             const stored = sessionStorage.getItem('stockerProfile');
             if (stored) {
                 const p = JSON.parse(stored);
@@ -1130,6 +1855,11 @@
                 document.getElementById('display-name').innerText = fn;
                 document.getElementById('display-role').innerText = p.role || 'Stocker';
                 document.getElementById('display-avatar').src = `https://ui-avatars.com/api/?name=${encodeURIComponent(p.name || p.username)}&background=4318FF&color=fff`;
+
+                document.getElementById('settings-username').value = p.name || '';
+                document.getElementById('settings-email').value = p.email || '';
+                document.getElementById('settings-vendor').value = p.vendor || '';
+
                 document.getElementById('input-name').value = p.name || '';
                 document.getElementById('input-username').value = p.username || '';
                 document.getElementById('input-email').value = p.email || '';
@@ -1140,17 +1870,86 @@
                 });
             }
 
-            // Display hospital badge
             const badge = document.getElementById('hospital-badge');
+            const settingsHospital = document.getElementById('settings-hospital');
             if (HOSPITAL_NAME && HOSPITAL_NAME !== 'No Hospital Assigned') {
                 badge.innerText = '🏥 ' + HOSPITAL_NAME;
+                settingsHospital.value = HOSPITAL_NAME;
             } else {
                 badge.innerText = '⚠️ No Hospital Assigned';
+                settingsHospital.value = 'No Hospital Assigned';
             }
         }
 
+        function saveSettings(event) {
+            event.preventDefault();
+
+            const username = document.getElementById('settings-username').value;
+            const email = document.getElementById('settings-email').value;
+            const vendor = document.getElementById('settings-vendor').value;
+            const newPass = document.getElementById('settings-new-password').value;
+            const confirmPass = document.getElementById('settings-confirm-password').value;
+
+            if (newPass || confirmPass) {
+                if (newPass !== confirmPass) {
+                    showToast('❌ New passwords do not match!');
+                    return;
+                }
+                if (newPass.length < 6) {
+                    showToast('❌ New password must be at least 6 characters!');
+                    return;
+                }
+            }
+
+            const stored = sessionStorage.getItem('stockerProfile');
+            if (stored) {
+                const p = JSON.parse(stored);
+                p.name = username;
+                p.email = email;
+                p.vendor = vendor;
+                if (newPass) {
+                    p.password = newPass;
+                }
+                sessionStorage.setItem('stockerProfile', JSON.stringify(p));
+
+                const ua = JSON.parse(localStorage.getItem('userAccount') || '{}');
+                if (ua.username === p.username) {
+                    ua.name = username;
+                    ua.email = email;
+                    if (newPass) ua.password = newPass;
+                    localStorage.setItem('userAccount', JSON.stringify(ua));
+                }
+
+                const all = JSON.parse(localStorage.getItem('smartMediStockUsers') || '{}');
+                if (all[p.username]) {
+                    all[p.username].name = username;
+                    all[p.username].email = email;
+                    if (newPass) all[p.username].password = newPass;
+                    localStorage.setItem('smartMediStockUsers', JSON.stringify(all));
+                }
+            }
+
+            document.getElementById('settings-new-password').value = '';
+            document.getElementById('settings-confirm-password').value = '';
+
+            initProfile();
+            showToast('✅ Settings saved successfully!');
+        }
+
+        function resetSettingsForm() {
+            const stored = sessionStorage.getItem('stockerProfile');
+            if (stored) {
+                const p = JSON.parse(stored);
+                document.getElementById('settings-username').value = p.name || '';
+                document.getElementById('settings-email').value = p.email || '';
+                document.getElementById('settings-vendor').value = p.vendor || '';
+            }
+            document.getElementById('settings-new-password').value = '';
+            document.getElementById('settings-confirm-password').value = '';
+            showToast('🔄 Form reset to saved values');
+        }
+
         function saveProfile() {
-            // FIXED: Read from sessionStorage
             const stored = sessionStorage.getItem('stockerProfile');
             if (!stored) return;
             const p = JSON.parse(stored);
@@ -1174,8 +1973,6 @@
             renderDashTables();
             renderAlertTables();
             renderPredictionChart();
-            populateBillSelect();
-            populateStockInSelect();
             renderMedicineMaster();
         }
 
@@ -1244,7 +2041,6 @@
 
             activeMedicines = Object.values(stockMap);
 
-            // Filter stockInHistory by hospital
             stockInHistory = JSON.parse(localStorage.getItem('stockInHistory') || '[]');
             stockInHistory = stockInHistory.filter(item => item.hospital_name === HOSPITAL_NAME || !item.hospital_name);
             renderStockInHistory();
@@ -1253,29 +2049,12 @@
             renderBills();
 
             orders = JSON.parse(localStorage.getItem('orders') || '[]');
-            // Filter orders by hospital
             orders = orders.filter(o => o.hospital_name === HOSPITAL_NAME || !o.hospital_name);
             renderOrders();
 
             renderDashTables();
             renderAlertTables();
-            populateBillSelect();
-            populateStockInSelect();
             renderMedicineMaster();
-        }
-
-        function populateStockInSelect() {
-            const sel = document.getElementById('manualName');
-            if (sel) {
-                sel.innerHTML = '<option value="">-- Select --</option>';
-                const sortedMeds = [...activeMedicines].sort((a, b) => a.name.localeCompare(b.name));
-                sortedMeds.forEach(m => {
-                    const opt = document.createElement('option');
-                    opt.value = m.name;
-                    opt.textContent = m.name;
-                    sel.appendChild(opt);
-                });
-            }
         }
 
         function fillStockInMedInfo() {
@@ -1294,31 +2073,26 @@
             const body = document.getElementById('medMasterBody');
             body.innerHTML = '';
             activeMedicines.forEach((m) => {
-                body.innerHTML += `<tr>
+                const daysLeft = getDaysLeft(m.expiry);
+                const expiryClass = getExpiryClass(daysLeft);
+                const badgeClass = getDaysBadgeClass(daysLeft);
+                let daysText = daysLeft === null ? 'N/A' :
+                    daysLeft < 0 ? 'EXPIRED!' :
+                        daysLeft <= 15 ? `${daysLeft} days (Critical)` :
+                            daysLeft <= 30 ? `${daysLeft} days (Soon)` :
+                                `${daysLeft} days`;
+                body.innerHTML += `<tr class="${expiryClass}">
           <td>${m.id || 'N/A'}</td>
           <td><b>${m.name}</b></td>
           <td>${m.category || 'General'}</td>
           <td>${m.dose || '-'}</td>
           <td>${m.mfg || '2024-01-01'}</td>
           <td>${m.expiry || '2028-12-31'}</td>
+          <td><span class="days-badge ${badgeClass}">${daysText}</span></td>
           <td>$${m.price || '0.00'}</td>
           <td>${m.quantity || 0}</td>
         </tr>`;
             });
-        }
-
-        function populateBillSelect() {
-            const billSel = document.getElementById('billMedSelect');
-            if (billSel) {
-                billSel.innerHTML = '<option value="">-- Select --</option>';
-                const sortedMeds = [...activeMedicines].sort((a, b) => a.name.localeCompare(b.name));
-                sortedMeds.forEach(m => {
-                    const opt = document.createElement('option');
-                    opt.value = m.name;
-                    opt.textContent = m.dose && m.dose !== '-' ? `${m.name} (${m.dose})` : m.name;
-                    billSel.appendChild(opt);
-                });
-            }
         }
 
         function fillBillMedInfo() {
@@ -1355,7 +2129,8 @@
             renderDashTables();
             renderAlertTables();
             renderMedicineMaster();
-            populateStockInSelect();
+            document.getElementById('billMedInput').value = '';
+            document.getElementById('billMedSelect').value = '';
             document.getElementById('billQty').value = '';
         }
 
@@ -1439,27 +2214,144 @@
             showToast('🗑️ Removed entry');
         }
 
+        // ========== ORDER MODAL FUNCTIONS ==========
+        function openOrderModal(medName, currentStock) {
+            currentMedicineName = medName;
+            currentMedicineStock = currentStock || 0;
+
+            document.getElementById('order-medicine-name').innerText = medName;
+            document.getElementById('order-quantity').value = '';
+            document.getElementById('order-stock-info').innerHTML = `Current Stock: <strong>${currentMedicineStock}</strong> units`;
+
+            const modal = document.getElementById('order-quantity-modal');
+            modal.style.display = 'flex';
+            modal.classList.add('active');
+
+            setTimeout(() => document.getElementById('order-quantity').focus(), 100);
+        }
+
+        function closeOrderModal() {
+            const modal = document.getElementById('order-quantity-modal');
+            modal.style.display = 'none';
+            modal.classList.remove('active');
+            currentMedicineName = null;
+            currentMedicineStock = 0;
+        }
+
+        function submitOrder() {
+            const qtyInput = document.getElementById('order-quantity');
+            const qty = parseInt(qtyInput.value);
+
+            if (!currentMedicineName) {
+                showToast('❌ No medicine selected');
+                return;
+            }
+
+            if (!qty || qty <= 0) {
+                showToast('❌ Please enter a valid quantity');
+                qtyInput.focus();
+                return;
+            }
+
+            const order = {
+                id: 'ORD-' + String(Math.floor(Math.random() * 9000) + 1000),
+                medicine: currentMedicineName,
+                quantity: qty,
+                status: 'Pending',
+                date: new Date().toISOString().split('T')[0],
+                hospital_name: HOSPITAL_NAME
+            };
+
+            orders.unshift(order);
+            localStorage.setItem('orders', JSON.stringify(orders));
+
+            orderStatus[`low_${currentMedicineName}`] = true;
+
+            if (alertStatus[`low_${currentMedicineName}`] !== undefined) {
+                alertStatus[`low_${currentMedicineName}`] = true;
+            }
+
+            showToast(`✅ Order placed for ${currentMedicineName} (${qty} units)`);
+
+            closeOrderModal();
+            renderDashTables();
+            renderAlertTables();
+            renderOrders();
+        }
+
+        document.getElementById('order-quantity-modal').addEventListener('click', function (e) {
+            if (e.target === this) {
+                closeOrderModal();
+            }
+        });
+
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape') {
+                closeOrderModal();
+            }
+        });
+
         function renderDashTables() {
             const lowLimit = parseInt(document.getElementById('dashLowFilter').value);
             const overLimit = parseInt(document.getElementById('dashOverFilter').value);
             const low = activeMedicines.filter(m => m.quantity < lowLimit);
             const over = activeMedicines.filter(m => m.quantity >= overLimit);
-            const expiryNames = ['Amoxicillin', 'Pantoprazole', 'Furosemide', 'Escitalopram'];
-            const expiry = activeMedicines.filter(m => {
-                if (!m.expiry || m.expiry === '-') return false;
-                const expDate = new Date(m.expiry);
-                return (expDate instanceof Date && !isNaN(expDate) && expDate <= new Date('2026-12-31')) || expiryNames.includes(m.name);
-            });
+
+            const allExpiryItems = activeMedicines
+                .filter(m => m.expiry && m.expiry !== '-')
+                .map(m => {
+                    const daysLeft = getDaysLeft(m.expiry);
+                    return { ...m, daysLeft };
+                })
+                .sort((a, b) => a.daysLeft - b.daysLeft);
+
+            const dashFilter = document.getElementById('dashExpiryFilter')?.value || 'all';
+            const expiry = filterExpiryItems(allExpiryItems, dashFilter);
 
             document.getElementById('kpi-total-meds').innerText = activeMedicines.length;
             document.getElementById('kpi-total-qty').innerText = activeMedicines.reduce((sum, m) => sum + m.quantity, 0);
             document.getElementById('kpi-low-count').innerText = low.length.toString().padStart(2, '0');
             document.getElementById('kpi-over-count').innerText = over.length.toString().padStart(2, '0');
-            document.getElementById('kpi-expiry-count').innerText = expiry.length.toString().padStart(2, '0');
+            document.getElementById('kpi-expiry-count').innerText = allExpiryItems.filter(m => m.daysLeft <= 30).length.toString().padStart(2, '0');
 
-            document.getElementById('dashLowBody').innerHTML = low.slice(0, 5).map(m => `<tr><td><b>${m.name}</b></td><td style="color:var(--red)">${m.quantity}</td><td><button class="btn btn-sm" style="background:#d97706;" onclick="openOrderModal(null,'${m.name}')">Order</button></td></tr>`).join('');
+            document.getElementById('dashLowBody').innerHTML = low.slice(0, 5).map(m => {
+                const isOrdered = orderStatus[`low_${m.name}`] || false;
+                return `<tr>
+                    <td><b>${m.name}</b></td>
+                    <td style="color:var(--red)">${m.quantity}</td>
+                    <td>
+                        ${!isOrdered ?
+                        `<button class="btn btn-sm btn-order" onclick="openOrderModal('${m.name}', ${m.quantity})">Order</button>` :
+                        `<span class="status-ordered">✅ Ordered</span>`
+                    }
+                    </td>
+                </tr>`;
+            }).join('');
+
             document.getElementById('dashOverBody').innerHTML = over.slice(0, 5).map(m => `<tr><td><b>${m.name}</b></td><td style="color:var(--green)">${m.quantity}</td></tr>`).join('');
-            document.getElementById('dashExpiryBody').innerHTML = expiry.slice(0, 5).map(m => `<tr><td><b>${m.name}</b></td><td style="color:var(--yellow)">${m.expiry || '2026-12-31'}</td><td><button class="btn btn-sm" style="background:#d97706;" onclick="openOrderModal(null,'${m.name}')">Notify</button></td></tr>`).join('');
+
+            document.getElementById('dashExpiryBody').innerHTML = expiry.slice(0, 5).map(m => {
+                const daysLeft = m.daysLeft;
+                const badgeClass = getDaysBadgeClass(daysLeft);
+                const expiryClass = getExpiryClass(daysLeft);
+                let daysText = daysLeft === null ? 'N/A' :
+                    daysLeft < 0 ? 'EXPIRED!' :
+                        daysLeft <= 15 ? `${daysLeft} days` :
+                            daysLeft <= 30 ? `${daysLeft} days` :
+                                `${daysLeft} days`;
+                return `<tr class="${expiryClass}">
+                    <td><b>${m.name}</b></td>
+                    <td style="font-weight:bold;">${m.expiry}</td>
+                    <td><span class="days-badge ${badgeClass}">${daysText}</span></td>
+                    <td><button class="btn btn-sm btn-order" onclick="openOrderModal('${m.name}', ${m.quantity})">Notify</button></td>
+                </tr>`;
+            }).join('');
+
+            if (expiry.length === 0) {
+                document.getElementById('dashExpiryBody').innerHTML = `
+                    <tr><td colspan="4" style="text-align:center;color:#94a3b8;padding:12px;">No medicines match the selected filter</td></tr>
+                `;
+            }
         }
 
         function renderAlertTables() {
@@ -1467,58 +2359,80 @@
             const overLimit = parseInt(document.getElementById('alertOverFilter').value);
             const low = activeMedicines.filter(m => m.quantity < lowLimit);
             const over = activeMedicines.filter(m => m.quantity >= overLimit);
-            const expiryNames = ['Amoxicillin', 'Pantoprazole', 'Furosemide', 'Escitalopram'];
-            const expiry = activeMedicines.filter(m => {
-                if (!m.expiry || m.expiry === '-') return false;
-                const expDate = new Date(m.expiry);
-                return (expDate instanceof Date && !isNaN(expDate) && expDate <= new Date('2026-12-31')) || expiryNames.includes(m.name);
-            });
 
-            // Low Stock - Order and Resolve buttons
+            const allExpiryItems = activeMedicines
+                .filter(m => m.expiry && m.expiry !== '-')
+                .map(m => {
+                    const daysLeft = getDaysLeft(m.expiry);
+                    return { ...m, daysLeft };
+                })
+                .sort((a, b) => a.daysLeft - b.daysLeft);
+
+            const alertFilter = document.getElementById('alertExpiryFilter')?.value || 'all';
+            const expiry = filterExpiryItems(allExpiryItems, alertFilter);
+
             document.getElementById('alertLowBody').innerHTML = low.map((m) => {
                 const isResolved = alertStatus[`low_${m.name}`] || false;
+                const isOrdered = orderStatus[`low_${m.name}`] || false;
+                let actionHtml = '';
+                if (isResolved) {
+                    actionHtml = `<span class="status-resolved">✅ Resolved</span>`;
+                } else if (isOrdered) {
+                    actionHtml = `<span class="status-ordered">✅ Ordered</span>`;
+                } else {
+                    actionHtml = `
+                        <button class="btn btn-sm btn-order" onclick="openOrderModal('${m.name}', ${m.quantity})">Order</button>
+                        <button class="btn btn-sm btn-success" onclick="resolveAlert('low','${m.name}')">Resolve</button>
+                    `;
+                }
                 return `<tr>
                     <td><b>${m.name}</b></td>
                     <td style="color:var(--red)">${m.quantity}</td>
-                    <td>
-                        ${!isResolved ?
-                        `<button class="btn btn-sm" style="background:#d97706;margin-right:5px;" onclick="openOrderModal(null,'${m.name}','low')">Order</button>
-                         <button class="btn btn-sm btn-success" onclick="resolveAlert('low','${m.name}')">Resolve</button>` :
-                        `<span class="status-resolved">✅ Resolved</span>`
-                    }
-                    </td>
+                    <td>${actionHtml}</td>
                 </tr>`;
             }).join('');
 
-            // Overstock - No action buttons
             document.getElementById('alertOverBody').innerHTML = over.map(m =>
                 `<tr><td><b>${m.name}</b></td><td style="color:var(--green)">${m.quantity}</td></tr>`
             ).join('');
 
-            // Expiry - Only Notify button
             document.getElementById('alertExpiryBody').innerHTML = expiry.map((m) => {
                 const isNotified = alertStatus[`expiry_${m.name}`] || false;
-                return `<tr>
+                const daysLeft = m.daysLeft;
+                const badgeClass = getDaysBadgeClass(daysLeft);
+                const expiryClass = getExpiryClass(daysLeft);
+                let daysText = daysLeft === null ? 'N/A' :
+                    daysLeft < 0 ? 'EXPIRED!' :
+                        daysLeft <= 15 ? `${daysLeft} days (Critical)` :
+                            daysLeft <= 30 ? `${daysLeft} days (Soon)` :
+                                `${daysLeft} days`;
+
+                return `<tr class="${expiryClass}">
                     <td><b>${m.name}</b></td>
-                    <td style="color:var(--yellow)">${m.expiry || '2026-12-31'}</td>
+                    <td style="font-weight:bold;">${m.expiry}</td>
+                    <td><span class="days-badge ${badgeClass}">${daysText}</span></td>
                     <td>
                         ${!isNotified ?
-                        `<button class="btn btn-sm btn-notify" onclick="notifyExpiry('${m.name}')">📢 Notify</button>` :
+                        `<button class="btn btn-sm btn-order" onclick="openOrderModal('${m.name}', ${m.quantity})">📢 Notify</button>` :
                         `<span class="status-notified">✅ Notified</span>`
                     }
                     </td>
                 </tr>`;
             }).join('');
 
+            if (expiry.length === 0) {
+                document.getElementById('alertExpiryBody').innerHTML = `
+                    <tr><td colspan="4" style="text-align:center;color:#94a3b8;padding:20px;">No medicines match the selected filter</td></tr>
+                `;
+            }
+
             renderOrders();
         }
 
-        // Notify function for expiry alerts
         function notifyExpiry(medicineName) {
             const key = `expiry_${medicineName}`;
             alertStatus[key] = true;
 
-            // Add to orders as notified
             orders.push({
                 id: 'NOT-' + String(Math.floor(Math.random() * 9000) + 1000),
                 medicine: medicineName,
@@ -1537,6 +2451,10 @@
             const key = `${type}_${medicineName}`;
             alertStatus[key] = true;
 
+            if (type === 'low') {
+                orderStatus[`low_${medicineName}`] = true;
+            }
+
             const existingOrder = orders.find(o => o.medicine === medicineName && o.status === 'Pending');
             if (existingOrder) {
                 existingOrder.status = 'Resolved';
@@ -1553,6 +2471,7 @@
 
             localStorage.setItem('orders', JSON.stringify(orders));
             renderAlertTables();
+            renderDashTables();
             showToast(`✅ ${medicineName} alert resolved!`);
         }
 
@@ -1615,6 +2534,7 @@
             });
             localStorage.setItem('stockInHistory', JSON.stringify(stockInHistory));
 
+            document.getElementById('manualNameInput').value = '';
             document.getElementById('manualName').value = '';
             document.getElementById('manualDose').value = '';
             document.getElementById('manualMfg').value = '';
@@ -1626,58 +2546,122 @@
             loadData();
         }
 
-        function openOrderModal(alertId, medName, type) {
-            currentAlertId = alertId;
-            currentMedicineName = medName;
-            document.getElementById('order-medicine-name').innerText = `Medicine: ${medName}`;
-            document.getElementById('order-quantity').value = '';
-            document.getElementById('order-quantity-modal').style.display = 'flex';
+        function markAsOrdered(medicineName) {
+            openOrderModal(medicineName, 0);
         }
 
-        function closeOrderModal() {
-            document.getElementById('order-quantity-modal').style.display = 'none';
-            currentAlertId = null;
-            currentMedicineName = null;
-        }
+        function renderCharts() {
+            const ctx = document.getElementById('mainChart');
+            if (!ctx) return;
 
-        async function submitOrder() {
-            const qty = document.getElementById('order-quantity').value;
-            if (!qty || parseInt(qty) <= 0) { showToast('❌ Enter valid quantity'); return; }
+            const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
-            try {
-                const order = {
-                    id: 'ORD-' + String(Math.floor(Math.random() * 9000) + 1000),
-                    medicine: currentMedicineName,
-                    quantity: parseInt(qty),
-                    status: 'Pending',
-                    date: new Date().toISOString().split('T')[0],
-                    hospital_name: HOSPITAL_NAME
-                };
-                orders.unshift(order);
-                localStorage.setItem('orders', JSON.stringify(orders));
+            const stockInData = [];
+            const stockOutData = [];
 
-                if (currentAlertId) {
-                    const alertType = currentAlertId === 'low' ? 'low' : 'expiry';
-                    const key = `${alertType}_${currentMedicineName}`;
-                    alertStatus[key] = true;
-                } else {
-                    const med = activeMedicines.find(m => m.name === currentMedicineName);
-                    if (med) {
-                        const lowLimit = parseInt(document.getElementById('alertLowFilter')?.value || 100);
-                        if (med.quantity < lowLimit) {
-                            alertStatus[`low_${currentMedicineName}`] = true;
+            const today = new Date();
+            for (let i = 6; i >= 0; i--) {
+                const date = new Date(today);
+                date.setDate(date.getDate() - i);
+                const dateStr = date.toISOString().split('T')[0];
+
+                const stockInTotal = stockInHistory
+                    .filter(item => item.date === dateStr)
+                    .reduce((sum, item) => sum + (item.quantity || 0), 0);
+
+                const stockOutTotal = bills
+                    .filter(bill => bill.date === dateStr)
+                    .reduce((sum, bill) => sum + (bill.qty || 0), 0);
+
+                stockInData.push(stockInTotal);
+                stockOutData.push(stockOutTotal);
+            }
+
+            if (stockInData.every(v => v === 0) && stockOutData.every(v => v === 0)) {
+                const sampleIn = [45, 60, 35, 55, 70, 40, 50];
+                const sampleOut = [30, 25, 40, 35, 50, 45, 30];
+                stockInData.splice(0, stockInData.length, ...sampleIn);
+                stockOutData.splice(0, stockOutData.length, ...sampleOut);
+            }
+
+            if (mainChartInstance) {
+                mainChartInstance.destroy();
+            }
+
+            mainChartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: days,
+                    datasets: [
+                        {
+                            label: 'Stock In',
+                            data: stockInData,
+                            backgroundColor: '#05cd99',
+                            borderRadius: 4,
+                            borderColor: '#05cd99',
+                            borderWidth: 1,
+                        },
+                        {
+                            label: 'Stock Out',
+                            data: stockOutData,
+                            backgroundColor: '#ee5d50',
+                            borderRadius: 4,
+                            borderColor: '#ee5d50',
+                            borderWidth: 1,
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false,
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function (context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    label += context.parsed.y + ' units';
+                                    return label;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: 'rgba(0,0,0,0.05)'
+                            },
+                            title: {
+                                display: true,
+                                text: 'Units',
+                                font: {
+                                    size: 10
+                                }
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                font: {
+                                    size: 12
+                                }
+                            }
                         }
                     }
                 }
+            });
+        }
 
-                showToast('✅ Order placed successfully!');
-                closeOrderModal();
-                renderAlertTables();
-                renderDashTables();
-
-            } catch (e) {
-                showToast('❌ Failed to place order');
-            }
+        function updateCharts() {
+            renderCharts();
         }
 
         async function renderPredictionChart() {
@@ -1827,12 +2811,13 @@
             document.getElementById('viewSearch').value = '';
             filterTable();
             if (id === 'alerts') renderAlertTables();
-            if (id === 'stockout') populateBillSelect();
             if (id === 'medicines') renderMedicineMaster();
             if (id === 'prediction') renderPredictionChart();
             if (id === 'stockin') {
-                populateStockInSelect();
                 renderStockInHistory();
+            }
+            if (id === 'dashboard') {
+                setTimeout(() => renderCharts(), 100);
             }
         }
 
@@ -1853,34 +2838,7 @@
             setTimeout(() => t.style.display = 'none', 3000);
         }
 
-        function renderCharts() {
-            const ctx = document.getElementById('mainChart');
-            if (ctx) {
-                if (mainChartInstance) {
-                    mainChartInstance.destroy();
-                }
-                mainChartInstance = new Chart(ctx, {
-                    type: 'bar',
-                    data: {
-                        labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-                        datasets: [{
-                            label: 'Sold',
-                            data: [65, 59, 80, 81, 56, 55, 40],
-                            backgroundColor: '#4318FF',
-                            borderRadius: 5
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        plugins: { legend: { display: false } },
-                        scales: { y: { beginAtZero: true } }
-                    }
-                });
-            }
-        }
-
         function handleLogout() {
-            // FIXED: Clear sessionStorage instead of localStorage
             sessionStorage.removeItem('stockerProfile');
             sessionStorage.removeItem('hospitalName');
             sessionStorage.removeItem('username');
@@ -1888,6 +2846,12 @@
             document.body.style.opacity = '0';
             setTimeout(() => location.href = 'index.html', 300);
         }
+
+        const originalLoadData = loadData;
+        loadData = async function () {
+            await originalLoadData();
+            setTimeout(() => renderCharts(), 200);
+        };
 
         window.onload = init;
     </script>

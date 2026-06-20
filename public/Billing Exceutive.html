@@ -203,6 +203,18 @@
       margin-top: 1rem;
     }
 
+    .dash-tables-row .card {
+      display: flex;
+      flex-direction: column;
+      min-height: 300px;
+    }
+
+    .dash-tables-row .card .scroll-container {
+      flex: 1;
+      overflow-y: auto;
+      max-height: 220px;
+    }
+
     .bill-form {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
@@ -232,6 +244,74 @@
       border: 1px solid var(--border);
       border-radius: 6px;
       outline: none;
+    }
+
+    /* Autocomplete styles */
+    .autocomplete-container {
+      position: relative;
+      width: 100%;
+    }
+
+    .autocomplete-container input {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      outline: none;
+      background: white;
+      font-size: 0.85rem;
+    }
+
+    .autocomplete-container input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+
+    .autocomplete-dropdown {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      max-height: 180px;
+      overflow-y: auto;
+      z-index: 1000;
+      display: none;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .autocomplete-dropdown.show {
+      display: block;
+    }
+
+    .autocomplete-dropdown .option {
+      padding: 8px 12px;
+      cursor: pointer;
+      font-size: 0.8rem;
+      border-bottom: 1px solid #f1f5f9;
+      transition: background 0.2s;
+    }
+
+    .autocomplete-dropdown .option:hover {
+      background: #f0f4ff;
+    }
+
+    .autocomplete-dropdown .option:last-child {
+      border-bottom: none;
+    }
+
+    .autocomplete-dropdown .option .highlight {
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    .autocomplete-dropdown .no-results {
+      padding: 12px;
+      color: #94a3b8;
+      text-align: center;
+      font-size: 0.8rem;
     }
 
     .scroll-container {
@@ -294,6 +374,24 @@
       background: #b45309;
     }
 
+    .btn-intimate:disabled {
+      background: #10b981;
+      cursor: default;
+      opacity: 0.8;
+    }
+
+    .btn-intimated {
+      background: #10b981;
+      color: white;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 4px;
+      font-size: 0.65rem;
+      font-weight: 700;
+      cursor: default;
+      opacity: 0.8;
+    }
+
     .btn-order {
       background: var(--accent);
       color: white;
@@ -328,37 +426,34 @@
       background: #dc2626;
     }
 
-    .btn-resolve {
-      background: var(--success);
+    .btn-save {
+      background: var(--accent);
       color: white;
       border: none;
-      padding: 6px 12px;
-      border-radius: 4px;
+      padding: 10px 30px;
+      border-radius: 6px;
       cursor: pointer;
-      font-size: 0.65rem;
-      font-weight: 700;
+      font-weight: 600;
       transition: background 0.2s;
     }
 
-    .btn-resolve:hover {
-      background: #059669;
+    .btn-save:hover {
+      background: #2563eb;
     }
 
-    .btn-notify {
-      background: #d97706;
+    .btn-reset {
+      background: #6b7280;
       color: white;
       border: none;
-      padding: 6px 12px;
-      border-radius: 4px;
+      padding: 10px 30px;
+      border-radius: 6px;
       cursor: pointer;
-      font-size: 0.65rem;
-      font-weight: 700;
+      font-weight: 600;
       transition: background 0.2s;
-      margin-right: 4px;
     }
 
-    .btn-notify:hover {
-      background: #b45309;
+    .btn-reset:hover {
+      background: #4b5563;
     }
 
     .content-section {
@@ -468,6 +563,11 @@
       font-weight: bold;
     }
 
+    .status-intimated {
+      color: var(--success);
+      font-weight: bold;
+    }
+
     /* Order Modal Styles */
     .order-modal-content {
       background: white;
@@ -553,6 +653,150 @@
       font-size: 0.7rem;
       font-weight: 600;
     }
+
+    /* highlight near expiry in medicines table */
+    .expiry-danger {
+      background: #fef2f2;
+      color: #991b1b;
+      font-weight: 600;
+    }
+
+    .expiry-warning {
+      background: #fffbeb;
+      color: #92400e;
+    }
+
+    .expiry-success {
+      background: #f0fdf4;
+      color: #166534;
+    }
+
+    .expiry-safe {
+      background: transparent;
+    }
+
+    /* Days left badge */
+    .days-badge {
+      display: inline-block;
+      padding: 2px 10px;
+      border-radius: 12px;
+      font-size: 0.7rem;
+      font-weight: 700;
+    }
+
+    .days-badge.danger {
+      background: #fecaca;
+      color: #991b1b;
+    }
+
+    .days-badge.warning {
+      background: #fde68a;
+      color: #92400e;
+    }
+
+    .days-badge.success {
+      background: #a7f3d0;
+      color: #065f46;
+    }
+
+    .filter-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .filter-group label {
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: #64748b;
+    }
+
+    .filter-group select {
+      padding: 4px 8px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 0.7rem;
+    }
+
+    /* Settings styles */
+    .settings-container {
+      max-width: 600px;
+    }
+
+    .settings-container .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .settings-container .form-group label {
+      display: block;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .settings-container .form-group input {
+      width: 100%;
+      padding: 12px 15px;
+      border: 2px solid #e0e7ff;
+      border-radius: 10px;
+      outline: none;
+      background: #f8faff;
+      font-size: 0.95rem;
+      transition: 0.2s;
+    }
+
+    .settings-container .form-group input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+
+    .settings-container .form-group input:read-only {
+      background: #eef2f6;
+      cursor: not-allowed;
+    }
+
+    .settings-container .form-group .helper-text {
+      font-size: 0.7rem;
+      color: #64748b;
+      margin-top: 4px;
+    }
+
+    .settings-container .form-divider {
+      border: none;
+      border-top: 2px solid #eef2f6;
+      margin: 1.5rem 0;
+    }
+
+    .settings-container .form-actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 1rem;
+    }
+
+    /* Recent Dispatches header with view link */
+    .recent-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .recent-header h3 {
+      color: var(--success);
+      font-size: 0.9rem;
+    }
+
+    .recent-header .view-link {
+      color: var(--accent);
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      cursor: pointer;
+      text-decoration: none;
+    }
   </style>
 </head>
 
@@ -597,6 +841,7 @@
       </li>
       <li class="menu-item" onclick="showSection('medicines', this)"><i data-lucide="database"></i> Medicines</li>
       <li class="menu-item" onclick="showSection('alerts', this)"><i data-lucide="bell-ring"></i> Alerts</li>
+      <li class="menu-item" onclick="showSection('settings', this)"><i data-lucide="settings"></i> Settings</li>
       <li class="menu-item logout-btn" onclick="handleLogout()"><i data-lucide="log-out"></i> Logout</li>
     </ul>
   </aside>
@@ -626,7 +871,7 @@
     <section id="dashboard" class="content-section active">
       <div class="stats-grid">
         <div class="stat-card">
-          <h4>MEDICINES</h4><span class="val">25</span><a href="javascript:void(0)" class="stat-link"
+          <h4>MEDICINES</h4><span class="val" id="stat-med-count">0</span><a href="javascript:void(0)" class="stat-link"
             onclick="showSection('medicines')">View All</a>
         </div>
         <div class="stat-card" style="border-left-color:#8b5cf6">
@@ -638,8 +883,8 @@
             onclick="showSection('alerts')">View All</a>
         </div>
         <div class="stat-card" style="border-left-color:var(--danger)">
-          <h4>EXPIRIES</h4><span class="val">04</span><a href="javascript:void(0)" class="stat-link"
-            onclick="showSection('alerts')">View All</a>
+          <h4>EXPIRIES</h4><span class="val" id="stat-expiry-count">0</span><a href="javascript:void(0)"
+            class="stat-link" onclick="showSection('alerts')">View All</a>
         </div>
         <div class="stat-card" style="border-left-color:var(--success)">
           <h4>DISPATCHED</h4><span class="val" id="stat-so">0</span><a href="javascript:void(0)" class="stat-link"
@@ -662,16 +907,18 @@
                 All</a>
             </div>
           </div>
-          <table>
-            <thead>
-              <tr>
-                <th>MEDICINE</th>
-                <th>STOCK</th>
-                <th>ACTION</th>
-              </tr>
-            </thead>
-            <tbody id="dash-low-stock"></tbody>
-          </table>
+          <div class="scroll-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>MEDICINE</th>
+                  <th>STOCK</th>
+                  <th>ACTION</th>
+                </tr>
+              </thead>
+              <tbody id="dash-low-stock"></tbody>
+            </table>
+          </div>
         </div>
         <div class="card">
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
@@ -686,36 +933,55 @@
                 All</a>
             </div>
           </div>
-          <table>
-            <thead>
-              <tr>
-                <th>MEDICINE</th>
-                <th>STOCK</th>
-              </tr>
-            </thead>
-            <tbody id="dash-overstock"></tbody>
-          </table>
+          <div class="scroll-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>MEDICINE</th>
+                  <th>STOCK</th>
+                </tr>
+              </thead>
+              <tbody id="dash-overstock"></tbody>
+            </table>
+          </div>
         </div>
         <div class="card">
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
             <h3 style="color:var(--danger);font-size:0.9rem;">Upcoming Expiries</h3>
-            <a href="javascript:void(0)" class="view-all-link" onclick="showSection('alerts')">View All</a>
+            <div class="filter-group">
+              <label>Filter:</label>
+              <select id="dashExpiryFilter" onchange="renderAll()">
+                <option value="all">All</option>
+                <option value="expired">Expired (&lt;0 days)</option>
+                <option value="critical">0-15 days</option>
+                <option value="warning">15-30 days</option>
+              </select>
+              <a href="javascript:void(0)" class="view-all-link" onclick="showSection('alerts')">View
+                All</a>
+            </div>
           </div>
-          <table>
-            <thead>
-              <tr>
-                <th>MEDICINE</th>
-                <th>EXP DATE</th>
-                <th>ACTION</th>
-              </tr>
-            </thead>
-            <tbody id="dash-expiry"></tbody>
-          </table>
+          <div class="scroll-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>MEDICINE</th>
+                  <th>EXP DATE</th>
+                  <th>DAYS LEFT</th>
+                  <th>ACTION</th>
+                </tr>
+              </thead>
+              <tbody id="dash-expiry"></tbody>
+            </table>
+          </div>
         </div>
       </div>
 
       <div class="card">
-        <h3 style="color:var(--success);font-size:0.9rem;margin-bottom:10px;">Recent Dispatches (New Bills)</h3>
+        <div class="recent-header">
+          <h3 style="color:var(--success);font-size:0.9rem;">Recent Dispatches (New Bills)</h3>
+          <a href="javascript:void(0)" class="view-link"
+            onclick="showSection('stock-out', document.getElementById('stock-out-menu'))">View All →</a>
+        </div>
         <table>
           <thead>
             <tr>
@@ -733,14 +999,20 @@
       </div>
     </section>
 
-    <!-- STOCK OUT -->
+    <!-- STOCK OUT with Autocomplete -->
     <section id="stock-out" class="content-section">
       <div class="card">
         <h3>Generate Bill & Dispatch</h3>
         <div class="bill-form">
-          <div class="form-group"><label>Select Medicine</label><select id="bill-med-idx" onchange="fillBillData()">
-              <option value="">-- Choose --</option>
-            </select></div>
+          <div class="form-group">
+            <label>Medicine (Type to search)</label>
+            <div class="autocomplete-container">
+              <input type="text" id="billMedInput" placeholder="Type medicine name..."
+                oninput="filterBillOptions(this.value)" onfocus="filterBillOptions(this.value)">
+              <div class="autocomplete-dropdown" id="billAutocompleteDropdown"></div>
+            </div>
+            <input type="hidden" id="billMedIdx" value="">
+          </div>
           <div class="form-group"><label>Category</label><input type="text" id="bill-cat" readonly></div>
           <div class="form-group"><label>ID No</label><input type="text" id="bill-id" readonly></div>
           <div class="form-group"><label>Quantity</label><input type="number" id="bill-qty" placeholder="Enter qty">
@@ -772,7 +1044,7 @@
       </div>
     </section>
 
-    <!-- MEDICINES -->
+    <!-- MEDICINES with EXPIRY DATE column added -->
     <section id="medicines" class="content-section">
       <div class="card">
         <h3>Inventory Master</h3>
@@ -786,6 +1058,7 @@
                 <th>Original Stock</th>
                 <th>Sold Qty</th>
                 <th>Current Stock</th>
+                <th>Expiry Date</th>
               </tr>
             </thead>
             <tbody></tbody>
@@ -852,13 +1125,25 @@
         </div>
         <!-- Expiry -->
         <div id="alert-expiry" class="alert-subsection">
-          <h4 style="color:var(--danger);margin-bottom:10px;">Upcoming Expiries</h4>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+            <h4 style="color:var(--danger);">Upcoming Expiries</h4>
+            <div class="filter-group">
+              <label>Filter:</label>
+              <select id="alertExpiryFilter" onchange="renderAlertTables()">
+                <option value="all">All</option>
+                <option value="expired">Expired (&lt;0 days)</option>
+                <option value="critical">0-15 days</option>
+                <option value="warning">15-30 days</option>
+              </select>
+            </div>
+          </div>
           <div class="scroll-container">
             <table>
               <thead>
                 <tr>
                   <th>Medicine</th>
                   <th>Expiry Date</th>
+                  <th>Days Left</th>
                   <th>Action</th>
                 </tr>
               </thead>
@@ -886,33 +1171,240 @@
         </div>
       </div>
     </section>
+
+    <!-- SETTINGS SECTION -->
+    <section id="settings" class="content-section">
+      <div class="card settings-container">
+        <h3 style="margin-bottom:1.5rem; color:var(--text-main);">⚙️ Account Settings</h3>
+        <form id="settingsForm" onsubmit="saveSettings(event)">
+          <!-- Hospital Name - Auto-filled -->
+          <div class="form-group">
+            <label for="settings-hospital">🏥 Hospital Name</label>
+            <input type="text" id="settings-hospital" readonly>
+            <div class="helper-text">This is auto-filled from your hospital assignment</div>
+          </div>
+
+          <!-- User Name -->
+          <div class="form-group">
+            <label for="settings-username">👤 User Name</label>
+            <input type="text" id="settings-username" placeholder="Enter your full name">
+          </div>
+
+          <!-- Email -->
+          <div class="form-group">
+            <label for="settings-email">📧 Email Address</label>
+            <input type="email" id="settings-email" placeholder="Enter your email address">
+          </div>
+
+          <hr class="form-divider">
+
+          <!-- New Password -->
+          <div class="form-group">
+            <label for="settings-new-password">🔑 New Password</label>
+            <input type="password" id="settings-new-password" placeholder="Enter new password">
+            <div class="helper-text">Minimum 6 characters. Leave blank to keep current password.</div>
+          </div>
+
+          <!-- Confirm New Password -->
+          <div class="form-group">
+            <label for="settings-confirm-password">✅ Confirm New Password</label>
+            <input type="password" id="settings-confirm-password" placeholder="Confirm new password">
+          </div>
+
+          <div class="form-actions">
+            <button type="submit" class="btn-save">
+              <i class="fas fa-save"></i> Save Changes
+            </button>
+            <button type="button" class="btn-reset" onclick="resetSettingsForm()">
+              <i class="fas fa-undo"></i> Reset
+            </button>
+          </div>
+        </form>
+      </div>
+    </section>
   </main>
 
   <script>
     // ============================================
-    // BILLING EXECUTIVE - UPDATED WITH sessionStorage
+    // BILLING EXECUTIVE - WITH AUTOCOMPLETE
     // ============================================
 
     let inventory = [];
     let stockouts = [];
     let alertStatus = {};
+    let intimateStatus = {};
     let orders = [];
     let pendingOrder = null;
 
-    // FIXED: Get hospital context from sessionStorage (tab-specific)
-    const HOSPITAL_NAME = sessionStorage.getItem('hospitalName') || '';
+    // Get hospital context from sessionStorage with fallback
+    const HOSPITAL_NAME = sessionStorage.getItem('hospitalName') || 'Default Hospital';
     const USERNAME = sessionStorage.getItem('username') || 'billing_exec';
     const USER_ROLE = sessionStorage.getItem('userRole') || 'Billing Executive';
 
-    async function init() {
-      // Display hospital badge
-      if (HOSPITAL_NAME) {
-        document.getElementById('hospital-badge').innerText = '🏥 ' + HOSPITAL_NAME;
-      } else {
-        document.getElementById('hospital-badge').innerText = '⚠️ No Hospital Assigned';
+    // ============================================
+    // AUTOCOMPLETE FUNCTIONS
+    // ============================================
+
+    function getMedicineNames() {
+      return inventory.map(m => m.name).sort();
+    }
+
+    function filterBillOptions(searchText) {
+      const dropdown = document.getElementById('billAutocompleteDropdown');
+      const input = document.getElementById('billMedInput');
+
+      if (!searchText || searchText.length < 2) {
+        dropdown.classList.remove('show');
+        return;
       }
 
+      const allNames = getMedicineNames();
+      const filtered = allNames.filter(name =>
+        name.toLowerCase().includes(searchText.toLowerCase())
+      );
+
+      if (filtered.length === 0) {
+        dropdown.innerHTML = `<div class="no-results">No medicines found matching "${searchText}"</div>`;
+        dropdown.classList.add('show');
+        return;
+      }
+
+      dropdown.innerHTML = '';
+      filtered.slice(0, 10).forEach(name => {
+        const option = document.createElement('div');
+        option.className = 'option';
+        const highlighted = name.replace(
+          new RegExp(searchText, 'gi'),
+          match => `<span class="highlight">${match}</span>`
+        );
+        option.innerHTML = highlighted;
+        option.onclick = () => selectBillMedicine(name);
+        dropdown.appendChild(option);
+      });
+      dropdown.classList.add('show');
+    }
+
+    function selectBillMedicine(name) {
+      document.getElementById('billMedInput').value = name;
+      document.getElementById('billAutocompleteDropdown').classList.remove('show');
+
+      // Find the medicine index
+      const idx = inventory.findIndex(m => m.name === name);
+      if (idx !== -1) {
+        document.getElementById('billMedIdx').value = idx;
+        fillBillData();
+      }
+    }
+
+    // Close dropdown when clicking outside
+    document.addEventListener('click', function (e) {
+      const container = document.querySelector('.autocomplete-container');
+      if (container && !container.contains(e.target)) {
+        const dropdown = document.getElementById('billAutocompleteDropdown');
+        if (dropdown) {
+          dropdown.classList.remove('show');
+        }
+      }
+    });
+
+    // ============================================
+    // SETTINGS FUNCTIONS
+    // ============================================
+
+    function loadSettings() {
+      const stored = sessionStorage.getItem('billingProfile');
+      if (stored) {
+        const profile = JSON.parse(stored);
+        document.getElementById('settings-username').value = profile.name || '';
+        document.getElementById('settings-email').value = profile.email || '';
+      }
+      document.getElementById('settings-hospital').value = HOSPITAL_NAME;
+    }
+
+    function saveSettings(event) {
+      event.preventDefault();
+
+      const username = document.getElementById('settings-username').value;
+      const email = document.getElementById('settings-email').value;
+      const newPass = document.getElementById('settings-new-password').value;
+      const confirmPass = document.getElementById('settings-confirm-password').value;
+
+      if (newPass || confirmPass) {
+        if (newPass !== confirmPass) {
+          showToast('❌ New passwords do not match!');
+          return;
+        }
+        if (newPass.length < 6) {
+          showToast('❌ New password must be at least 6 characters!');
+          return;
+        }
+      }
+
+      const stored = sessionStorage.getItem('billingProfile');
+      let profile = {};
+      if (stored) {
+        profile = JSON.parse(stored);
+      }
+
+      profile.name = username;
+      profile.email = email;
+      if (newPass) {
+        profile.password = newPass;
+      }
+      sessionStorage.setItem('billingProfile', JSON.stringify(profile));
+
+      const ua = JSON.parse(localStorage.getItem('userAccount') || '{}');
+      if (ua.username === profile.username || !ua.username) {
+        ua.name = username;
+        ua.email = email;
+        if (newPass) ua.password = newPass;
+        localStorage.setItem('userAccount', JSON.stringify(ua));
+      }
+
+      const all = JSON.parse(localStorage.getItem('smartMediStockUsers') || '{}');
+      const usernameKey = profile.username || 'billing_exec';
+      if (all[usernameKey]) {
+        all[usernameKey].name = username;
+        all[usernameKey].email = email;
+        if (newPass) all[usernameKey].password = newPass;
+        localStorage.setItem('smartMediStockUsers', JSON.stringify(all));
+      }
+
+      document.getElementById('settings-new-password').value = '';
+      document.getElementById('settings-confirm-password').value = '';
+
       initProfile();
+      showToast('✅ Settings saved successfully!');
+    }
+
+    function resetSettingsForm() {
+      const stored = sessionStorage.getItem('billingProfile');
+      if (stored) {
+        const profile = JSON.parse(stored);
+        document.getElementById('settings-username').value = profile.name || '';
+        document.getElementById('settings-email').value = profile.email || '';
+      }
+      document.getElementById('settings-new-password').value = '';
+      document.getElementById('settings-confirm-password').value = '';
+      showToast('🔄 Form reset to saved values');
+    }
+
+    function initProfile() {
+      const stored = sessionStorage.getItem('billingProfile');
+      if (stored) {
+        const profile = JSON.parse(stored);
+        const displayName = profile.name || profile.username;
+        document.getElementById('page-display-title').innerText = `${displayName}!`;
+        document.getElementById('profile-name').innerText = displayName;
+        const avatar = document.querySelector('.profile-img');
+        if (avatar) avatar.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(displayName)}&background=3b82f6&color=fff`;
+      }
+    }
+
+    async function init() {
+      document.getElementById('hospital-badge').innerText = '🏥 ' + HOSPITAL_NAME;
+      initProfile();
+      loadSettings();
 
       try {
         const response = await fetch('http://localhost:3000/api/medicines');
@@ -951,24 +1443,8 @@
 
       orders = JSON.parse(localStorage.getItem('orders') || '[]');
       renderAll();
-      populateDropdown();
       lucide.createIcons();
-
-      // Load alerts for this hospital
       await loadHospitalAlerts();
-    }
-
-    function initProfile() {
-      // FIXED: Read from sessionStorage
-      const stored = sessionStorage.getItem('billingProfile');
-      if (stored) {
-        const profile = JSON.parse(stored);
-        const displayName = profile.name || profile.username;
-        document.getElementById('page-display-title').innerText = `${displayName}!`;
-        document.getElementById('profile-name').innerText = displayName;
-        const avatar = document.querySelector('.profile-img');
-        if (avatar) avatar.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(displayName)}&background=3b82f6&color=fff`;
-      }
     }
 
     async function loadHospitalAlerts() {
@@ -983,29 +1459,19 @@
       }
     }
 
-    function populateDropdown() {
-      const sel = document.getElementById('bill-med-idx');
-      sel.innerHTML = '<option value="">-- Choose --</option>';
-      inventory.forEach((m, i) => {
-        const opt = document.createElement('option');
-        opt.value = i;
-        opt.text = m.name;
-        sel.add(opt);
-      });
-    }
-
     function fillBillData() {
-      const idx = document.getElementById('bill-med-idx').value;
-      if (idx !== "") {
+      const idx = parseInt(document.getElementById('billMedIdx').value);
+      if (!isNaN(idx) && idx >= 0 && idx < inventory.length) {
         document.getElementById('bill-cat').value = inventory[idx].cat;
         document.getElementById('bill-id').value = inventory[idx].id;
       }
     }
 
     function generateBill() {
-      const idx = document.getElementById('bill-med-idx').value;
+      const idx = parseInt(document.getElementById('billMedIdx').value);
       const qty = parseInt(document.getElementById('bill-qty').value);
-      if (idx === "" || isNaN(qty) || qty <= 0) return alert("Enter a valid quantity");
+      if (isNaN(idx) || idx < 0 || idx >= inventory.length) return alert("Please select a valid medicine");
+      if (isNaN(qty) || qty <= 0) return alert("Enter a valid quantity");
       const med = inventory[idx];
       if (qty > med.stock) return alert(`Insufficient stock! Only ${med.stock} remaining.`);
       med.stock -= qty;
@@ -1022,6 +1488,40 @@
       renderAll();
       showToast(`Bill ${newBill.bid} generated!`);
       document.getElementById('bill-qty').value = "";
+      document.getElementById('billMedInput').value = "";
+      document.getElementById('billMedIdx').value = "";
+      document.getElementById('bill-cat').value = "";
+      document.getElementById('bill-id').value = "";
+    }
+
+    // Helper to get expiry status class based on days left
+    function getExpiryClass(daysLeft) {
+      if (daysLeft < 0) return 'expiry-danger';
+      if (daysLeft <= 15) return 'expiry-warning';
+      if (daysLeft <= 30) return 'expiry-success';
+      return 'expiry-safe';
+    }
+
+    function getDaysLeft(expiryDate) {
+      const today = new Date();
+      const exp = new Date(expiryDate);
+      const diffTime = exp - today;
+      return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    }
+
+    function getDaysBadgeClass(daysLeft) {
+      if (daysLeft < 0) return 'danger';
+      if (daysLeft <= 15) return 'warning';
+      if (daysLeft <= 30) return 'success';
+      return 'success';
+    }
+
+    function filterExpiryItems(items, filterType) {
+      if (filterType === 'all') return items;
+      if (filterType === 'expired') return items.filter(m => m.daysLeft < 0);
+      if (filterType === 'critical') return items.filter(m => m.daysLeft >= 0 && m.daysLeft <= 15);
+      if (filterType === 'warning') return items.filter(m => m.daysLeft > 15 && m.daysLeft <= 30);
+      return items;
     }
 
     function renderAll() {
@@ -1029,41 +1529,125 @@
       const overLimit = parseInt(document.getElementById('overStockFilter')?.value || 500);
       const lowItems = inventory.filter(m => m.stock < lowLimit);
       const overItems = inventory.filter(m => m.stock >= overLimit);
-      const expiryNames = ["Amoxicillin", "Pantoprazole", "Furosemide", "Escitalopram"];
-      const expiryItems = inventory.filter(m => expiryNames.includes(m.name));
 
+      const allExpiryItems = inventory
+        .filter(m => m.expiry)
+        .map(m => {
+          const daysLeft = getDaysLeft(m.expiry);
+          return { ...m, daysLeft };
+        })
+        .sort((a, b) => a.daysLeft - b.daysLeft);
+
+      const dashFilter = document.getElementById('dashExpiryFilter')?.value || 'all';
+      const expiryItems = filterExpiryItems(allExpiryItems, dashFilter);
+
+      // Update stats
+      document.getElementById('stat-med-count').innerText = inventory.length;
       document.getElementById('stat-qty').innerText = inventory.reduce((a, b) => a + b.stock, 0).toLocaleString();
       document.getElementById('stat-so').innerText = stockouts.reduce((a, b) => a + b.qty, 0).toLocaleString();
       document.getElementById('stat-low-stock').innerText = lowItems.length.toString().padStart(2, '0');
+      document.getElementById('stat-expiry-count').innerText = allExpiryItems.filter(m => m.daysLeft <= 30).length.toString().padStart(2, '0');
 
+      // Recent bills
       document.getElementById('dash-recent-bills').innerHTML = stockouts.slice(0, 5).map(s => `
                 <tr><td>#${s.bid}</td><td><b>${s.name}</b></td><td>${s.cat}</td><td>${s.qty}</td><td>₹${s.price}</td><td>₹${s.total}</td><td><span class="badge-new">Dispatched</span></td></tr>
             `).join('');
 
-      document.getElementById('dash-low-stock').innerHTML = lowItems.slice(0, 5).map(m => `
-                <tr><td><b>${m.name}</b></td><td style="color:var(--danger);font-weight:bold;">${m.stock}</td><td><button class="btn-intimate" onclick="intimate(this,'${m.name}','LOW STOCK',${m.stock})">Intimate</button></td></tr>
-            `).join('');
+      // Low stock - show only 5 records
+      document.getElementById('dash-low-stock').innerHTML = lowItems.slice(0, 5).map(m => {
+        const isIntimated = intimateStatus[`low_${m.name}`] || false;
+        return `<tr>
+                    <td><b>${m.name}</b></td>
+                    <td style="color:var(--danger);font-weight:bold;">${m.stock}</td>
+                    <td>
+                        ${!isIntimated ?
+            `<button class="btn-intimate" onclick="handleIntimate(this,'${m.name}','LOW STOCK',${m.stock})">Intimate</button>` :
+            `<span class="status-intimated">✅ Intimated</span>`
+          }
+                    </td>
+                </tr>`;
+      }).join('');
 
+      if (lowItems.length === 0) {
+        document.getElementById('dash-low-stock').innerHTML = `
+                    <tr><td colspan="3" style="text-align:center;color:#94a3b8;padding:20px;">No low stock items</td></tr>
+                `;
+      }
+
+      // Overstock - show only 5 records
       document.getElementById('dash-overstock').innerHTML = overItems.slice(0, 5).map(m => `
                 <tr><td><b>${m.name}</b></td><td style="color:var(--success);font-weight:bold;">${m.stock}</td></tr>
             `).join('');
 
-      document.getElementById('dash-expiry').innerHTML = expiryItems.map(m => `
-                <tr><td><b>${m.name}</b></td><td style="color:var(--danger);font-weight:bold;">${m.expiry}</td><td><button class="btn-intimate" onclick="intimate(this,'${m.name}','EXPIRY',${m.stock})">Intimate</button></td></tr>
-            `).join('');
+      if (overItems.length === 0) {
+        document.getElementById('dash-overstock').innerHTML = `
+                    <tr><td colspan="2" style="text-align:center;color:#94a3b8;padding:20px;">No overstock items</td></tr>
+                `;
+      }
 
-      document.querySelector('#med-table tbody').innerHTML = inventory.map(m => `
-                <tr class="${m.stock < 100 ? 'low-stock-row' : ''}">
-                    <td>${m.id}</td><td><b>${m.name}</b> ${m.stock < 100 ? '<small>(Low Stock)</small>' : ''}</td>
-                    <td>${m.cat}</td><td>${m.initialStock}</td><td>${m.initialStock - m.stock}</td><td>${m.stock}</td>
+      // Expiry - show only 5 records
+      document.getElementById('dash-expiry').innerHTML = expiryItems.slice(0, 5).map(m => {
+        const daysLeft = m.daysLeft;
+        const badgeClass = getDaysBadgeClass(daysLeft);
+        const expiryClass = getExpiryClass(daysLeft);
+        const isIntimated = intimateStatus[`expiry_${m.name}`] || false;
+        let daysText = '';
+        if (daysLeft < 0) {
+          daysText = 'EXPIRED!';
+        } else if (daysLeft <= 15) {
+          daysText = `${daysLeft} days (Critical)`;
+        } else if (daysLeft <= 30) {
+          daysText = `${daysLeft} days (Soon)`;
+        } else {
+          daysText = `${daysLeft} days`;
+        }
+        return `
+                    <tr class="${expiryClass}">
+                        <td><b>${m.name}</b></td>
+                        <td style="font-weight:bold;">${m.expiry}</td>
+                        <td><span class="days-badge ${badgeClass}">${daysText}</span></td>
+                        <td>
+                            ${!isIntimated ?
+            `<button class="btn-intimate" onclick="handleIntimate(this,'${m.name}','EXPIRY',${m.stock})">Intimate</button>` :
+            `<span class="status-intimated">✅ Intimated</span>`
+          }
+                        </td>
+                    </tr>
+                `;
+      }).join('');
+
+      if (expiryItems.length === 0) {
+        document.getElementById('dash-expiry').innerHTML = `
+                    <tr><td colspan="4" style="text-align:center;color:#94a3b8;padding:20px;">No medicines match the selected filter</td></tr>
+                `;
+      }
+
+      // ========== MEDICINES TABLE with EXPIRY DATE column ==========
+      document.querySelector('#med-table tbody').innerHTML = inventory.map(m => {
+        const daysLeft = getDaysLeft(m.expiry);
+        const expiryClass = getExpiryClass(daysLeft);
+        let label = '';
+        if (daysLeft < 0) label = ' (Expired)';
+        else if (daysLeft <= 15) label = ' (Critical - 0-15 days)';
+        else if (daysLeft <= 30) label = ' (Expiring Soon - 15-30 days)';
+        return `
+                <tr class="${m.stock < 100 ? 'low-stock-row' : ''} ${expiryClass}">
+                    <td>${m.id}</td>
+                    <td><b>${m.name}</b> ${m.stock < 100 ? '<small>(Low Stock)</small>' : ''}</td>
+                    <td>${m.cat}</td>
+                    <td>${m.initialStock}</td>
+                    <td>${m.initialStock - m.stock}</td>
+                    <td>${m.stock}</td>
+                    <td>${m.expiry} ${label}</td>
                 </tr>
-            `).join('');
+            `}).join('');
 
+      // Dispatch registry
       let filteredDispatch = [...stockouts];
       const mode = document.getElementById('dispatchFilter')?.value || 'daily';
       if (mode === 'daily') {
-        const today = new Date().toISOString().split('T')[0];
-        filteredDispatch = stockouts.filter(s => s.date === today);
+        const todayStr = new Date().toISOString().split('T')[0];
+        filteredDispatch = stockouts.filter(s => s.date === todayStr);
       } else {
         const now = new Date();
         filteredDispatch = stockouts.filter(s => {
@@ -1083,20 +1667,26 @@
       const overLimit = parseInt(document.getElementById('alertOverFilter')?.value || 500);
       const lowItems = inventory.filter(m => m.stock < lowLimit);
       const overItems = inventory.filter(m => m.stock >= overLimit);
-      const expiryNames = ["Amoxicillin", "Pantoprazole", "Furosemide", "Escitalopram"];
-      const expiryItems = inventory.filter(m => expiryNames.includes(m.name));
+
+      const allExpiryItems = inventory
+        .filter(m => m.expiry)
+        .map(m => {
+          const daysLeft = getDaysLeft(m.expiry);
+          return { ...m, daysLeft };
+        })
+        .sort((a, b) => a.daysLeft - b.daysLeft);
+
+      const alertFilter = document.getElementById('alertExpiryFilter')?.value || 'all';
+      const expiryItems = filterExpiryItems(allExpiryItems, alertFilter);
 
       document.getElementById('alert-low-body').innerHTML = lowItems.map(m => {
-        const status = alertStatus[`low_${m.name}`] || 'pending';
+        const isIntimated = intimateStatus[`low_${m.name}`] || false;
         let actionHtml = '';
-        if (status === 'resolved') {
-          actionHtml = `<span class="status-resolved">✅ Resolved</span>`;
-        } else if (status === 'denied') {
-          actionHtml = `<span class="status-denied">❌ Denied</span>`;
+        if (isIntimated) {
+          actionHtml = `<span class="status-intimated">✅ Intimated</span>`;
         } else {
           actionHtml = `
-                        <button class="btn-order" onclick="openOrderModal('${m.name}')">Order</button>
-                        <button class="btn-deny" onclick="handleLowStockAction('deny','${m.name}')">Deny</button>
+                        <button class="btn-intimate" onclick="handleIntimate(this,'${m.name}','LOW STOCK',${m.stock})">Intimate</button>
                     `;
         }
         return `<tr>
@@ -1106,40 +1696,88 @@
                 </tr>`;
       }).join('');
 
+      if (lowItems.length === 0) {
+        document.getElementById('alert-low-body').innerHTML = `
+                    <tr><td colspan="3" style="text-align:center;color:#94a3b8;padding:20px;">No low stock items</td></tr>
+                `;
+      }
+
       document.getElementById('alert-over-body').innerHTML = overItems.map(m => `
                 <tr><td><b>${m.name}</b></td><td style="color:var(--success);font-weight:bold;">${m.stock}</td></tr>
             `).join('');
 
+      if (overItems.length === 0) {
+        document.getElementById('alert-over-body').innerHTML = `
+                    <tr><td colspan="2" style="text-align:center;color:#94a3b8;padding:20px;">No overstock items</td></tr>
+                `;
+      }
+
       document.getElementById('alert-expiry-body').innerHTML = expiryItems.map(m => {
-        const status = alertStatus[`expiry_${m.name}`] || 'pending';
+        const daysLeft = m.daysLeft;
+        const badgeClass = getDaysBadgeClass(daysLeft);
+        const expiryClass = getExpiryClass(daysLeft);
+        const isIntimated = intimateStatus[`expiry_${m.name}`] || false;
+        let daysText = '';
+        if (daysLeft < 0) {
+          daysText = 'EXPIRED!';
+        } else if (daysLeft <= 15) {
+          daysText = `${daysLeft} days (Critical)`;
+        } else if (daysLeft <= 30) {
+          daysText = `${daysLeft} days (Soon)`;
+        } else {
+          daysText = `${daysLeft} days`;
+        }
+
         let actionHtml = '';
-        if (status === 'resolved') {
-          actionHtml = `<span class="status-resolved">✅ Resolved</span>`;
-        } else if (status === 'notified') {
-          actionHtml = `<span class="status-notified">📢 Notified</span>`;
+        if (isIntimated) {
+          actionHtml = `<span class="status-intimated">✅ Intimated</span>`;
         } else {
           actionHtml = `
-                        <button class="btn-notify" onclick="handleExpiryAction('notify','${m.name}')">Notify</button>
-                        <button class="btn-resolve" onclick="handleExpiryAction('resolve','${m.name}')">Resolve</button>
+                        <button class="btn-intimate" onclick="handleIntimate(this,'${m.name}','EXPIRY',${m.stock})">Intimate</button>
                     `;
         }
-        return `<tr>
+        return `<tr class="${expiryClass}">
                     <td><b>${m.name}</b></td>
-                    <td style="color:var(--danger);font-weight:bold;">${m.expiry}</td>
+                    <td style="font-weight:bold;">${m.expiry}</td>
+                    <td><span class="days-badge ${badgeClass}">${daysText}</span></td>
                     <td>${actionHtml}</td>
                 </tr>`;
       }).join('');
 
+      if (expiryItems.length === 0) {
+        document.getElementById('alert-expiry-body').innerHTML = `
+                    <tr><td colspan="4" style="text-align:center;color:#94a3b8;padding:20px;">No medicines match the selected filter</td></tr>
+                `;
+      }
+
       renderOrdersTable();
+    }
+
+    function handleIntimate(btn, medName, alertType, stockQty) {
+      const key = alertType === 'LOW STOCK' ? `low_${medName}` : `expiry_${medName}`;
+
+      const order = {
+        id: 'INT-' + String(Math.floor(Math.random() * 9000) + 1000),
+        medicine: medName,
+        quantity: 'N/A',
+        status: 'Intimated',
+        date: new Date().toISOString().split('T')[0]
+      };
+      orders.unshift(order);
+      localStorage.setItem('orders', JSON.stringify(orders));
+
+      intimateStatus[key] = true;
+
+      showToast(`✅ ${alertType} intimated for ${medName}`);
+
+      renderAll();
     }
 
     function renderOrdersTable() {
       const ordersBody = document.getElementById('orders-body');
       if (!ordersBody) return;
-
       ordersBody.innerHTML = '';
       const sortedOrders = [...orders].sort((a, b) => new Date(b.date) - new Date(a.date));
-
       sortedOrders.forEach(order => {
         let statusClass = 'status-pending';
         let statusText = order.status || 'Pending';
@@ -1149,6 +1787,8 @@
           statusClass = 'status-denied';
         } else if (statusText === 'Notified') {
           statusClass = 'status-notified';
+        } else if (statusText === 'Intimated') {
+          statusClass = 'status-intimated';
         }
         ordersBody.innerHTML += `<tr>
                     <td>#${order.id}</td>
@@ -1158,7 +1798,6 @@
                     <td>${order.date}</td>
                 </tr>`;
       });
-
       if (sortedOrders.length === 0) {
         ordersBody.innerHTML = `<tr><td colspan="5" style="text-align:center;color:#94a3b8;padding:20px;">No orders placed yet.</td></tr>`;
       }
@@ -1186,7 +1825,6 @@
         showToast('❌ Please enter a valid quantity');
         return;
       }
-
       const order = {
         id: 'ORD-' + String(Math.floor(Math.random() * 9000) + 1000),
         medicine: pendingOrder,
@@ -1196,8 +1834,7 @@
       };
       orders.unshift(order);
       localStorage.setItem('orders', JSON.stringify(orders));
-      alertStatus[`low_${pendingOrder}`] = 'resolved';
-
+      intimateStatus[`low_${pendingOrder}`] = true;
       const med = inventory.find(m => m.name === pendingOrder);
       if (med) {
         const newBill = {
@@ -1211,57 +1848,9 @@
         };
         stockouts.unshift(newBill);
       }
-
       closeOrderModal();
       renderAll();
       showToast(`✅ Order placed for ${pendingOrder}!`);
-    }
-
-    function handleLowStockAction(action, medicineName) {
-      if (action === 'deny') {
-        alertStatus[`low_${medicineName}`] = 'denied';
-        const order = {
-          id: 'ORD-' + String(Math.floor(Math.random() * 9000) + 1000),
-          medicine: medicineName,
-          quantity: 0,
-          status: 'Denied',
-          date: new Date().toISOString().split('T')[0]
-        };
-        orders.unshift(order);
-        localStorage.setItem('orders', JSON.stringify(orders));
-        renderAll();
-        showToast(`❌ Order denied for ${medicineName}`);
-      }
-    }
-
-    function handleExpiryAction(action, medicineName) {
-      if (action === 'notify') {
-        alertStatus[`expiry_${medicineName}`] = 'notified';
-        const order = {
-          id: 'NOT-' + String(Math.floor(Math.random() * 9000) + 1000),
-          medicine: medicineName,
-          quantity: 'N/A',
-          status: 'Notified',
-          date: new Date().toISOString().split('T')[0]
-        };
-        orders.unshift(order);
-        localStorage.setItem('orders', JSON.stringify(orders));
-        renderAll();
-        showToast(`📢 Notification sent for ${medicineName} expiry!`);
-      } else if (action === 'resolve') {
-        alertStatus[`expiry_${medicineName}`] = 'resolved';
-        const order = {
-          id: 'RES-' + String(Math.floor(Math.random() * 9000) + 1000),
-          medicine: medicineName,
-          quantity: 'N/A',
-          status: 'Resolved',
-          date: new Date().toISOString().split('T')[0]
-        };
-        orders.unshift(order);
-        localStorage.setItem('orders', JSON.stringify(orders));
-        renderAll();
-        showToast(`✅ ${medicineName} expiry resolved!`);
-      }
     }
 
     function switchAlertTab(tab) {
@@ -1276,8 +1865,16 @@
       document.getElementById(id).classList.add('active');
       document.querySelectorAll('.menu-item').forEach(m => m.classList.remove('active'));
       if (el) el.classList.add('active');
+
+      // Find the menu item by id if el is not provided
+      if (!el) {
+        const menuItem = document.querySelector(`.menu-item[onclick*="showSection('${id}'"]`);
+        if (menuItem) menuItem.classList.add('active');
+      }
+
       document.getElementById('page-display-title').innerText = id.toUpperCase().replace('-', ' ');
       if (id === 'alerts') renderAlertTables();
+      if (id === 'settings') loadSettings();
     }
 
     function searchGlobal(val) {
@@ -1292,53 +1889,11 @@
       setTimeout(() => t.style.display = 'none', 3000);
     }
 
-    async function intimate(btn, medName, alertType, stockQty) {
-      btn.disabled = true;
-      btn.innerText = "Sending...";
-
-      if (!HOSPITAL_NAME) {
-        showToast('❌ No hospital assigned! Please contact admin.');
-        btn.disabled = false;
-        btn.innerText = "Intimate";
-        return;
-      }
-
-      try {
-        const response = await fetch('/api/alerts/intimate', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            alert_type: alertType,
-            medicine_name: medName,
-            status: 'Pending',
-            triggered_by: USERNAME,
-            hospital_name: HOSPITAL_NAME
-          })
-        });
-
-        if (response.ok) {
-          btn.innerText = "Sent";
-          showToast(`${alertType} alert sent for ${medName} to ${HOSPITAL_NAME}!`);
-        } else {
-          const errorData = await response.json();
-          showToast('❌ Failed: ' + (errorData.error || 'Unknown error'));
-          btn.disabled = false;
-          btn.innerText = "Intimate";
-        }
-      } catch (err) {
-        console.error(err);
-        showToast('❌ Server error');
-        btn.disabled = false;
-        btn.innerText = "Intimate";
-      }
-    }
-
     function handleLogout() {
       document.getElementById('modal-title').innerText = "Logout Confirmation";
       document.getElementById('modal-desc').innerText = "Are you sure you want to end your current session?";
       document.getElementById('confirm-modal').style.display = 'flex';
       document.getElementById('modal-confirm-btn').onclick = () => {
-        // FIXED: Clear sessionStorage instead of localStorage
         sessionStorage.removeItem('billingProfile');
         sessionStorage.removeItem('hospitalName');
         sessionStorage.removeItem('username');

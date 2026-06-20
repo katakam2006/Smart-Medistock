@@ -397,7 +397,7 @@
                         </div>
                     </div>
 
-                    <div class="form-group">
+                    <div class="form-group" id="hospital-name-group">
                         <label class="label">Hospital/Clinic Name<span class="required-star">*</span></label>
                         <input id="signup-hospital-name" type="text" placeholder="Enter Hospital or Clinic Name"
                             required>
@@ -503,6 +503,19 @@
                 clinicInfo.classList.add('hidden-view');
             }
 
+            const hospitalNameGroup = document.getElementById('hospital-name-group');
+            const hospitalNameInput = document.getElementById('signup-hospital-name');
+            if (category === 'supplier') {
+                if (hospitalNameGroup) hospitalNameGroup.classList.add('hidden-view');
+                if (hospitalNameInput) {
+                    hospitalNameInput.removeAttribute('required');
+                    hospitalNameInput.value = '';
+                }
+            } else {
+                if (hospitalNameGroup) hospitalNameGroup.classList.remove('hidden-view');
+                if (hospitalNameInput) hospitalNameInput.setAttribute('required', 'required');
+            }
+
             const roles = {
                 hospital: ['CEO', 'Stock In Manager', 'Billing Executive'],
                 clinic: ['Owner', 'Stocker'],
@@ -536,7 +549,7 @@
             const category = document.getElementById('catSel').value;
             const role = document.getElementById('roleSel').value;
 
-            if (!name || !username || !hospitalName || !email || !password || !confirm || !address || !category || !role) {
+            if (!name || !username || (category !== 'supplier' && !hospitalName) || !email || !password || !confirm || !address || !category || !role) {
                 showToast('Please fill all required fields', 'error');
                 return;
             }
