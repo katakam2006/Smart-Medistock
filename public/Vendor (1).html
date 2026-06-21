@@ -323,13 +323,14 @@
                                 <th>Medicine</th>
                                 <th>Qty Requested</th>
                                 <th>Placed At</th>
+                                <th>Ordered By</th>
                                 <th>Status</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
                         <tbody id="vendorOrderBody">
                             <tr>
-                                <td colspan="6" style="text-align:center; padding:2rem; color:var(--text-muted);"><i
+                                <td colspan="7" style="text-align:center; padding:2rem; color:var(--text-muted);"><i
                                         class="fas fa-spinner fa-spin"></i> Fetching orders...</td>
                             </tr>
                         </tbody>
@@ -352,13 +353,14 @@
                                 <th>Medicine</th>
                                 <th>Quantity</th>
                                 <th>Placed At</th>
+                                <th>Ordered By</th>
                                 <th>Your Response</th>
                                 <th>Responded At</th>
                             </tr>
                         </thead>
                         <tbody id="historyBody">
                             <tr>
-                                <td colspan="6" style="text-align:center; padding:2rem; color:var(--text-muted);">
+                                <td colspan="7" style="text-align:center; padding:2rem; color:var(--text-muted);">
                                     Loading history...</td>
                             </tr>
                         </tbody>
@@ -461,16 +463,25 @@
 
         async function fetchIncomingOrders() {
             const tbody = document.getElementById('vendorOrderBody');
-            try {
-                const response = await fetch('http://localhost:3000/api/orders/executive/status');
-                if (!response.ok) return;
-                const orders = await response.json();
+            const stored = sessionStorage.getItem('vendorProfile') || localStorage.getItem('userAccount');
+            let vendorName = '';
+            if (stored) {
+                const profile = JSON.parse(stored);
+                vendorName = profile.name || profile.username || '';
+            }
 
-                // Filter only pending orders
-                const pendingOrders = orders.filter(o => o.status === 'Pending');
+            if (!vendorName) {
+                tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding:2rem; color:var(--text-muted);">Please set your profile Vendor Name first</td></tr>`;
+                return;
+            }
+
+            try {
+                const response = await fetch(`http://localhost:3000/api/orders/vendor/orders?vendor_name=${encodeURIComponent(vendorName)}&status=Pending`);
+                if (!response.ok) return;
+                const pendingOrders = await response.json();
 
                 if (pendingOrders.length === 0) {
-                    tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:2rem; color:var(--text-muted);">✅ No pending orders at the moment</td></tr>`;
+                    tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding:2rem; color:var(--text-muted);">✅ No pending orders at the moment</td></tr>`;
                     return;
                 }
 
@@ -484,6 +495,7 @@
                             <td><b>${order.medicine_name}</b></td>
                             <td><span class="badge bg-yellow">${order.quantity_requested} Units</span></td>
                             <td><small>${placedTime}</small></td>
+                            <td><b>${order.placed_by || 'Stocker'}</b><br><small style="color:var(--text-muted);">${order.hospital_name || ''}</small></td>
                             <td><span class="status-badge status-pending">🕐 Pending</span></td>
                             <td>
                                 <button class="btn btn-accept" onclick="respondToOrder(${order.order_id}, 'Accepted')">✅ Accept</button>
@@ -494,14 +506,26 @@
                 });
             } catch (err) {
                 console.error("Error fetching orders:", err);
-                tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color: var(--red); padding:2rem;"><i class="fas fa-exclamation-circle"></i> Connection Error</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; color: var(--red); padding:2rem;"><i class="fas fa-exclamation-circle"></i> Connection Error</td></tr>`;
             }
         }
 
         async function loadOrderHistory() {
             const tbody = document.getElementById('historyBody');
+            const stored = sessionStorage.getItem('vendorProfile') || localStorage.getItem('userAccount');
+            let vendorName = '';
+            if (stored) {
+                const profile = JSON.parse(stored);
+                vendorName = profile.name || profile.username || '';
+            }
+
+            if (!vendorName) {
+                tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding:2rem; color:var(--text-muted);">Please set your profile Vendor Name first</td></tr>`;
+                return;
+            }
+
             try {
-                const response = await fetch('http://localhost:3000/api/orders/executive/status');
+                const response = await fetch(`http://localhost:3000/api/orders/vendor/orders?vendor_name=${encodeURIComponent(vendorName)}`);
                 if (!response.ok) return;
                 const orders = await response.json();
 
@@ -509,7 +533,7 @@
                 const respondedOrders = orders.filter(o => o.status !== 'Pending');
 
                 if (respondedOrders.length === 0) {
-                    tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:2rem; color:var(--text-muted);">No order history yet</td></tr>`;
+                    tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding:2rem; color:var(--text-muted);">No order history yet</td></tr>`;
                     return;
                 }
 
@@ -526,6 +550,7 @@
                             <td><b>${order.medicine_name}</b></td>
                             <td>${order.quantity_requested} Units</td>
                             <td><small>${placedTime}</small></td>
+                            <td><b>${order.placed_by || 'Stocker'}</b><br><small style="color:var(--text-muted);">${order.hospital_name || ''}</small></td>
                             <td><span class="status-badge ${statusClass}">${statusIcon} ${order.status}</span></td>
                             <td><small>${updatedTime}</small></td>
                         </tr>

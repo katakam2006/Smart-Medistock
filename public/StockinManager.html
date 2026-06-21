@@ -1531,8 +1531,8 @@
                     <!-- Vendor Name -->
                     <div class="form-group">
                         <label for="settings-vendor">🏪 Vendor Name</label>
-                        <input type="text" id="settings-vendor" placeholder="Enter vendor/supplier name">
-                        <div class="helper-text">Primary medicine supplier/vendor</div>
+                        <input type="text" id="settings-vendor" placeholder="Enter vendor/supplier name" value="">
+                        <button type="button" id="save-vendor-btn" onclick="saveVendorOnly()" class="btn-save" style="margin-top: 8px; padding: 6px 14px; width: auto; font-size: 0.8rem; background-color: var(--accent, #4318FF); color: white; border: none; border-radius: 6px; cursor: pointer; display: block;">Save</button>
                     </div>
 
                     <hr class="form-divider">
@@ -1577,6 +1577,7 @@
         let stockInHistory = [];
         let orders = [];
         let alertStatus = {};
+        let alertIds = {};
         let predictionData = [];
         let predictor = null;
         let pendingOrder = null;
@@ -1666,7 +1667,7 @@
                 const profile = JSON.parse(stored);
                 document.getElementById('settings-username').value = profile.name || '';
                 document.getElementById('settings-email').value = profile.email || '';
-                document.getElementById('settings-vendor').value = profile.vendor || '';
+                document.getElementById('settings-vendor').value = profile.vendor || profile.vendor_name || '';
             }
 
             document.getElementById('settings-hospital').value = HOSPITAL_NAME;
@@ -1677,7 +1678,6 @@
 
             const username = document.getElementById('settings-username').value;
             const email = document.getElementById('settings-email').value;
-            const vendor = document.getElementById('settings-vendor').value;
             const newPass = document.getElementById('settings-new-password').value;
             const confirmPass = document.getElementById('settings-confirm-password').value;
 
@@ -1692,44 +1692,62 @@
                 }
             }
 
-            const stored = sessionStorage.getItem('stockinProfile');
-            let profile = {};
-            if (stored) {
-                profile = JSON.parse(stored);
-            }
+            // Save settings on the backend database
+            fetch('http://localhost:3000/api/user/settings', {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    username: USERNAME,
+                    email: email,
+                    name: username
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.error) {
+                    showToast('❌ Failed to update settings on server: ' + data.error);
+                } else {
+                    const stored = sessionStorage.getItem('stockinProfile');
+                    let profile = {};
+                    if (stored) {
+                        profile = JSON.parse(stored);
+                    }
 
-            profile.name = username;
-            profile.email = email;
-            profile.vendor = vendor;
-            if (newPass) {
-                profile.password = newPass;
-            }
-            sessionStorage.setItem('stockinProfile', JSON.stringify(profile));
+                    profile.name = username;
+                    profile.email = email;
+                    if (newPass) {
+                        profile.password = newPass;
+                    }
+                    sessionStorage.setItem('stockinProfile', JSON.stringify(profile));
 
-            const ua = JSON.parse(localStorage.getItem('userAccount') || '{}');
-            if (ua.username === profile.username || !ua.username) {
-                ua.name = username;
-                ua.email = email;
-                ua.vendor = vendor;
-                if (newPass) ua.password = newPass;
-                localStorage.setItem('userAccount', JSON.stringify(ua));
-            }
+                    const ua = JSON.parse(localStorage.getItem('userAccount') || '{}');
+                    if (ua.username === profile.username || !ua.username) {
+                        ua.name = username;
+                        ua.email = email;
+                        if (newPass) ua.password = newPass;
+                        localStorage.setItem('userAccount', JSON.stringify(ua));
+                    }
 
-            const all = JSON.parse(localStorage.getItem('smartMediStockUsers') || '{}');
-            const usernameKey = profile.username || 'stockin_manager';
-            if (all[usernameKey]) {
-                all[usernameKey].name = username;
-                all[usernameKey].email = email;
-                all[usernameKey].vendor = vendor;
-                if (newPass) all[usernameKey].password = newPass;
-                localStorage.setItem('smartMediStockUsers', JSON.stringify(all));
-            }
+                    const all = JSON.parse(localStorage.getItem('smartMediStockUsers') || '{}');
+                    const usernameKey = profile.username || 'stockin_manager';
+                    if (all[usernameKey]) {
+                        all[usernameKey].name = username;
+                        all[usernameKey].email = email;
+                        if (newPass) all[usernameKey].password = newPass;
+                        localStorage.setItem('smartMediStockUsers', JSON.stringify(all));
+                    }
 
-            document.getElementById('settings-new-password').value = '';
-            document.getElementById('settings-confirm-password').value = '';
+                    document.getElementById('settings-new-password').value = '';
+                    document.getElementById('settings-confirm-password').value = '';
 
-            initProfile();
-            showToast('✅ Settings saved successfully!');
+                    initProfile();
+                    showToast('✅ Settings saved successfully!');
+                }
+            })
+            .catch(err => {
+                console.error('Error saving settings:', err);
+                showToast('❌ Failed to save settings to server');
+            });
         }
 
         function resetSettingsForm() {
@@ -1743,6 +1761,33 @@
             document.getElementById('settings-new-password').value = '';
             document.getElementById('settings-confirm-password').value = '';
             showToast('🔄 Form reset to saved values');
+        }
+
+        function saveVendorOnly() {
+            const vendorVal = document.getElementById('settings-vendor').value;
+            const stored = sessionStorage.getItem('stockinProfile');
+            if (stored) {
+                const profile = JSON.parse(stored);
+                profile.vendor = vendorVal;
+                profile.vendor_name = vendorVal;
+                sessionStorage.setItem('stockinProfile', JSON.stringify(profile));
+
+                const ua = JSON.parse(localStorage.getItem('userAccount') || '{}');
+                if (ua.username === profile.username || !ua.username) {
+                    ua.vendor = vendorVal;
+                    ua.vendor_name = vendorVal;
+                    localStorage.setItem('userAccount', JSON.stringify(ua));
+                }
+
+                const all = JSON.parse(localStorage.getItem('smartMediStockUsers') || '{}');
+                const usernameKey = profile.username || 'stockin_manager';
+                if (all[usernameKey]) {
+                    all[usernameKey].vendor = vendorVal;
+                    all[usernameKey].vendor_name = vendorVal;
+                    localStorage.setItem('smartMediStockUsers', JSON.stringify(all));
+                }
+            }
+            showToast('✅ Vendor Name saved successfully!');
         }
 
         // ============================================
@@ -2086,8 +2131,10 @@
                     alerts.forEach(alert => {
                         if (alert.alert_type === 'LOW STOCK') {
                             alertStatus[`low_${alert.medicine_name}`] = 'pending';
+                            alertIds[`low_${alert.medicine_name}`] = alert.id;
                         } else if (alert.alert_type === 'EXPIRY') {
                             alertStatus[`expiry_${alert.medicine_name}`] = 'pending';
+                            alertIds[`expiry_${alert.medicine_name}`] = alert.id;
                         }
                     });
                     renderAlertTables();
@@ -2162,6 +2209,7 @@
             renderAlertTables();
             renderCharts();
             loadOrders();
+            setInterval(loadOrders, 5000);
             loadStockInHistory();
             loadHospitalAlerts();
 
@@ -2575,55 +2623,104 @@
                 return;
             }
 
-            // Mark as resolved in alertStatus
-            if (alertStatus[`low_${pendingOrder}`]) {
-                alertStatus[`low_${pendingOrder}`] = 'resolved';
-            }
-            if (alertStatus[`expiry_${pendingOrder}`]) {
-                alertStatus[`expiry_${pendingOrder}`] = 'resolved';
-            }
+            // Get vendor name from settings or profile
+            const profile = JSON.parse(sessionStorage.getItem('stockinProfile') || '{}');
+            const vendorName = document.getElementById('settings-vendor')?.value || profile.vendor || profile.vendor_name || '';
 
-            // Create order
-            const order = {
-                id: 'ORD-' + String(Math.floor(Math.random() * 9000) + 1000),
-                medicine: pendingOrder,
-                quantity: qty,
-                status: 'Resolved',
-                date: new Date().toISOString().split('T')[0],
-                hospital_name: HOSPITAL_NAME
-            };
+            // Send order to server
+            fetch('http://localhost:3000/api/orders/place', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    medicine_name: pendingOrder,
+                    quantity_requested: qty,
+                    hospital_name: HOSPITAL_NAME,
+                    vendor_name: vendorName,
+                    placed_by: USERNAME
+                })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        showToast('❌ ' + data.error);
+                        return;
+                    }
 
-            orders.unshift(order);
-            localStorage.setItem('stockOrders', JSON.stringify(orders));
+                    const medName = pendingOrder;
 
-            // Add to stock in history
-            const med = inventoryData.find(m => m.name === pendingOrder);
-            if (med) {
-                const date = new Date().toISOString().split('T')[0];
-                stockInHistory.unshift({
-                    date: date,
-                    name: pendingOrder,
-                    dose: med.dose || '-',
-                    mfg: med.mfg || '2024-01-01',
-                    expiry: med.expiry || '2028-12-31',
-                    price: med.price || '0.00',
-                    qty: qty,
-                    qtyBefore: med.quantity,
-                    qtyAfter: med.quantity + qty,
-                    isOrder: true,
-                    hospital_name: HOSPITAL_NAME
+                    // Mark as resolved in alertStatus
+                    if (alertStatus[`low_${medName}`]) {
+                        alertStatus[`low_${medName}`] = 'resolved';
+                    }
+                    if (alertStatus[`expiry_${medName}`]) {
+                        alertStatus[`expiry_${medName}`] = 'resolved';
+                    }
+
+                    // Resolve database alerts
+                    const lowAlertId = alertIds[`low_${medName}`];
+                    const expiryAlertId = alertIds[`expiry_${medName}`];
+
+                    const resolveAlert = (id) => {
+                        if (!id) return;
+                        fetch(`http://localhost:3000/api/alerts/${id}`, {
+                            method: 'PUT',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                status: 'Resolved',
+                                hospital_name: HOSPITAL_NAME
+                            })
+                        }).catch(e => console.error('Error resolving alert:', e));
+                    };
+
+                    resolveAlert(lowAlertId);
+                    resolveAlert(expiryAlertId);
+
+                    // Create local order record
+                    const order = {
+                        id: data.orderId || 'ORD-' + String(Math.floor(Math.random() * 9000) + 1000),
+                        medicine: medName,
+                        quantity: qty,
+                        status: 'Pending',
+                        date: new Date().toISOString().split('T')[0],
+                        hospital_name: HOSPITAL_NAME
+                    };
+
+                    orders.unshift(order);
+                    localStorage.setItem('stockOrders', JSON.stringify(orders));
+
+                    // Add to stock in history
+                    const med = inventoryData.find(m => m.name === medName);
+                    if (med) {
+                        const date = new Date().toISOString().split('T')[0];
+                        stockInHistory.unshift({
+                            date: date,
+                            name: medName,
+                            dose: med.dose || '-',
+                            mfg: med.mfg || '2024-01-01',
+                            expiry: med.expiry || '2028-12-31',
+                            price: med.price || '0.00',
+                            qty: qty,
+                            qtyBefore: med.quantity,
+                            qtyAfter: med.quantity + qty,
+                            isOrder: true,
+                            hospital_name: HOSPITAL_NAME
+                        });
+                        localStorage.setItem('stockInHistory', JSON.stringify(stockInHistory));
+                        med.quantity += qty;
+                    }
+
+                    closeOrderModal();
+                    renderAlertTables();
+                    renderDashboardTables();
+                    renderMedicineMaster();
+                    loadStockInHistory();
+                    runAIPrediction();
+                    showToast(`✅ Order placed for ${medName} (${qty} units)`);
+                })
+                .catch(err => {
+                    console.error('Error placing order:', err);
+                    showToast('❌ Could not connect to server.');
                 });
-                localStorage.setItem('stockInHistory', JSON.stringify(stockInHistory));
-                med.quantity += qty;
-            }
-
-            closeOrderModal();
-            renderAlertTables();
-            renderDashboardTables();
-            renderMedicineMaster();
-            loadStockInHistory();
-            runAIPrediction();
-            showToast(`✅ Order placed for ${pendingOrder} (${qty} units)`);
         }
 
         function denyOrder(medicineName) {
@@ -2633,6 +2730,24 @@
             if (alertStatus[`expiry_${medicineName}`]) {
                 alertStatus[`expiry_${medicineName}`] = 'denied';
             }
+
+            const lowAlertId = alertIds[`low_${medicineName}`];
+            const expiryAlertId = alertIds[`expiry_${medicineName}`];
+
+            const denyAlert = (id) => {
+                if (!id) return;
+                fetch(`http://localhost:3000/api/alerts/${id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        status: 'Denied',
+                        hospital_name: HOSPITAL_NAME
+                    })
+                }).catch(e => console.error('Error denying alert:', e));
+            };
+
+            denyAlert(lowAlertId);
+            denyAlert(expiryAlertId);
 
             const order = {
                 id: 'DEN-' + String(Math.floor(Math.random() * 9000) + 1000),
@@ -2650,9 +2765,30 @@
             showToast(`❌ Order denied for ${medicineName}`);
         }
 
-        function loadOrders() {
+        async function loadOrders() {
             const ordersBody = document.getElementById('ordersBody');
-            orders = JSON.parse(localStorage.getItem('stockOrders') || '[]');
+            if (!ordersBody) return;
+
+            try {
+                const response = await fetch(`http://localhost:3000/api/orders/executive/status?hospital_name=${encodeURIComponent(HOSPITAL_NAME)}`);
+                if (response.ok) {
+                    const dbOrders = await response.json();
+                    orders = dbOrders.map(o => ({
+                        id: o.order_id,
+                        medicine: o.medicine_name,
+                        quantity: o.quantity_requested,
+                        status: o.status,
+                        date: o.created_at ? o.created_at.split('T')[0] : new Date().toISOString().split('T')[0],
+                        hospital_name: o.hospital_name
+                    }));
+                    localStorage.setItem('stockOrders', JSON.stringify(orders));
+                } else {
+                    throw new Error('API non-ok response');
+                }
+            } catch (err) {
+                console.error('Error fetching orders:', err);
+                orders = JSON.parse(localStorage.getItem('stockOrders') || '[]');
+            }
 
             const filteredOrders = orders.filter(o => o.hospital_name === HOSPITAL_NAME || !o.hospital_name);
 
@@ -2665,7 +2801,7 @@
             filteredOrders.slice(0, 20).forEach(order => {
                 let statusClass = 'status-pending';
                 let statusText = order.status || 'Pending';
-                if (statusText === 'Resolved') {
+                if (statusText === 'Accepted' || statusText === 'Resolved') {
                     statusClass = 'status-resolved';
                 } else if (statusText === 'Denied') {
                     statusClass = 'status-denied';

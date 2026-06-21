@@ -25,7 +25,6 @@
             min-height: 100vh;
         }
 
-        /* Sidebar Styles */
         aside {
             width: 260px;
             background-color: #0F172A;
@@ -62,6 +61,7 @@
         .menu-list {
             flex: 1;
             list-style: none;
+            overflow-y: auto;
         }
 
         .menu-item {
@@ -94,7 +94,6 @@
             padding-top: 20px;
         }
 
-        /* Main Content */
         main {
             flex: 1;
             margin-left: 260px;
@@ -209,7 +208,6 @@
             font-weight: 700;
         }
 
-        /* Content Sections */
         .content-section {
             display: none;
         }
@@ -218,10 +216,9 @@
             display: block;
         }
 
-        /* Stats Grid */
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
+            grid-template-columns: repeat(6, 1fr);
             gap: 1.5rem;
             margin-bottom: 2rem;
         }
@@ -274,10 +271,20 @@
             border-left: 4px solid #3B82F6;
         }
 
-        /* Dashboard Grid */
+        .stat-card.border-purple {
+            border-left: 4px solid #8B5CF6;
+        }
+
         .dashboard-grid {
             display: grid;
             grid-template-columns: 2fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .alert-cards-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
             gap: 1.5rem;
             margin-bottom: 1.5rem;
         }
@@ -302,7 +309,11 @@
             position: relative;
         }
 
-        /* Forecast Card */
+        .chart-container-sm {
+            height: 200px;
+            position: relative;
+        }
+
         .forecast-card {
             background: linear-gradient(135deg, #EFF6FF 0%, #FFFFFF 100%);
             border: 1px solid #DBEAFE;
@@ -343,10 +354,15 @@
             background: #4338CA;
         }
 
-        /* Tables */
         .table-wrapper {
             overflow-x: auto;
             max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .table-wrapper-full {
+            overflow-x: auto;
+            max-height: 400px;
             overflow-y: auto;
         }
 
@@ -420,7 +436,11 @@
             color: white;
         }
 
-        /* Alert Tabs */
+        .btn-warning {
+            background: #F59E0B;
+            color: white;
+        }
+
         .alert-tabs {
             display: flex;
             gap: 1rem;
@@ -453,7 +473,6 @@
             display: block;
         }
 
-        /* Medicine Grid */
         .medicine-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
@@ -501,7 +520,6 @@
             color: #059669;
         }
 
-        /* Prediction Table */
         .prediction-table-container {
             margin-top: 1.5rem;
         }
@@ -534,7 +552,86 @@
             cursor: pointer;
         }
 
-        /* Modal */
+        .filter-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .filter-group label {
+            font-size: 0.65rem;
+            font-weight: 600;
+            color: #64748B;
+        }
+
+        .filter-group select {
+            padding: 4px 8px;
+            border: 1px solid #E2E8F0;
+            border-radius: 6px;
+            font-size: 0.7rem;
+            background: white;
+            outline: none;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .card-header h3 {
+            margin-bottom: 0;
+        }
+
+        .card-header .view-link {
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: #3B82F6;
+            cursor: pointer;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+
+        .settings-form {
+            max-width: 500px;
+        }
+
+        .settings-form .form-group {
+            margin-bottom: 1.2rem;
+        }
+
+        .settings-form .form-group label {
+            display: block;
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: #64748B;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+
+        .settings-form .form-group input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #E2E8F0;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            outline: none;
+            background: #F8FAFC;
+        }
+
+        .settings-form .form-group input:focus {
+            border-color: #3B82F6;
+            background: white;
+        }
+
+        .settings-form .form-group input:read-only {
+            background: #E2E8F0;
+            cursor: not-allowed;
+        }
+
         #confirm-modal {
             display: none;
             position: fixed;
@@ -599,13 +696,64 @@
             z-index: 2000;
         }
 
-        /* Responsive */
+        .reports-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .report-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 1px solid #E2E8F0;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .report-card .chart-container {
+            height: 250px;
+            position: relative;
+        }
+
+        .report-card .report-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .report-card .report-header h4 {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #0F172A;
+        }
+
+        .report-card .report-header .filter-group select {
+            padding: 4px 10px;
+            border: 1px solid #E2E8F0;
+            border-radius: 6px;
+            font-size: 0.7rem;
+            background: white;
+            outline: none;
+        }
+
         @media (max-width: 1024px) {
             .stats-grid {
-                grid-template-columns: repeat(2, 1fr);
+                grid-template-columns: repeat(3, 1fr);
             }
 
             .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .alert-cards-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .reports-grid {
                 grid-template-columns: 1fr;
             }
         }
@@ -634,10 +782,8 @@
 
 <body>
 
-    <!-- Toast Notification -->
     <div id="toast">Action Processed!</div>
 
-    <!-- Confirm Modal -->
     <div id="confirm-modal">
         <div class="modal-box">
             <h3 id="modal-title">Confirmation</h3>
@@ -649,7 +795,6 @@
         </div>
     </div>
 
-    <!-- Sidebar -->
     <aside>
         <div class="logo-container">
             <img src="logformedistock.png" alt="Logo" class="brand-logo"
@@ -658,40 +803,49 @@
         </div>
         <ul class="menu-list">
             <li class="menu-item active" onclick="showSection('dashboard', this)">
-                <i data-lucide="layout-grid"></i> Dashboard
+                <i class="fas fa-th-large"></i> Dashboard
             </li>
             <li class="menu-item" onclick="showSection('medicines', this)">
-                <i data-lucide="pill"></i> Medicines
+                <i class="fas fa-pills"></i> Medicines
+            </li>
+            <li class="menu-item" onclick="showSection('stockin', this)">
+                <i class="fas fa-arrow-down"></i> Stock In
+            </li>
+            <li class="menu-item" onclick="showSection('stockout', this)">
+                <i class="fas fa-arrow-up"></i> Stock Out
             </li>
             <li class="menu-item" onclick="showSection('alerts', this)">
-                <i data-lucide="bell-ring"></i> Alerts
+                <i class="fas fa-bell"></i> Alerts
             </li>
             <li class="menu-item" onclick="showSection('orders', this)">
-                <i data-lucide="shopping-cart"></i> Orders
+                <i class="fas fa-shopping-cart"></i> Orders
             </li>
             <li class="menu-item" onclick="showSection('prediction', this)">
-                <i data-lucide="trending-up"></i> AI Prediction
+                <i class="fas fa-brain"></i> AI Prediction
             </li>
             <li class="menu-item" onclick="showSection('staff', this)">
-                <i data-lucide="users"></i> Staff
+                <i class="fas fa-users"></i> Staff
+            </li>
+            <li class="menu-item" onclick="showSection('reports', this)">
+                <i class="fas fa-file-alt"></i> Reports
+            </li>
+            <li class="menu-item" onclick="showSection('settings', this)">
+                <i class="fas fa-cog"></i> Settings
             </li>
             <li class="menu-item logout-btn" onclick="handleLogout()">
-                <i data-lucide="log-out"></i> Logout
+                <i class="fas fa-sign-out-alt"></i> Logout
             </li>
         </ul>
     </aside>
 
-    <!-- Main Content -->
     <main>
-        <!-- Top Navigation -->
         <div class="top-nav">
             <div class="search-wrapper">
-                <i data-lucide="search" class="search-icon" style="width:18px; height:18px;"></i>
+                <i class="fas fa-search search-icon"></i>
                 <input type="text" placeholder="Search..." onkeyup="searchGlobal(this.value)">
             </div>
         </div>
 
-        <!-- Header -->
         <header>
             <div class="header-left">
                 <p>Welcome back,</p>
@@ -711,7 +865,7 @@
         <section id="dashboard" class="content-section active">
             <div class="stats-grid">
                 <div class="stat-card border-primary">
-                    <h4>Total Medicines</h4>
+                    <h4>Medicines</h4>
                     <span class="value" id="stat-total-meds">0</span>
                     <span class="view-link" onclick="showSection('medicines')">View All →</span>
                 </div>
@@ -721,14 +875,24 @@
                     <span class="view-link" onclick="showSection('medicines')">View All →</span>
                 </div>
                 <div class="stat-card border-warning">
-                    <h4>Low Stock Items</h4>
+                    <h4>Low Stock</h4>
                     <span class="value" id="stat-low-stock">0</span>
-                    <span class="view-link" onclick="showSection('alerts')">View Alerts →</span>
+                    <span class="view-link" onclick="showSection('alerts')">View All →</span>
                 </div>
                 <div class="stat-card border-danger">
                     <h4>Critical Stock</h4>
                     <span class="value" id="stat-critical-stock">0</span>
-                    <span class="view-link" onclick="showSection('alerts')">View Alerts →</span>
+                    <span class="view-link" onclick="showSection('alerts')">View All →</span>
+                </div>
+                <div class="stat-card border-purple">
+                    <h4>Expiries</h4>
+                    <span class="value" id="stat-expiry-count">0</span>
+                    <span class="view-link" onclick="showSection('alerts')">View All →</span>
+                </div>
+                <div class="stat-card border-primary">
+                    <h4>Dispatched</h4>
+                    <span class="value" id="stat-dispatched">0</span>
+                    <span class="view-link" onclick="showSection('stockout')">View All →</span>
                 </div>
             </div>
 
@@ -752,11 +916,21 @@
                 </div>
             </div>
 
-            <div class="dashboard-grid">
+            <div class="alert-cards-grid">
                 <div class="card">
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                    <div class="card-header">
                         <h3 style="color:#F59E0B; font-size:0.85rem;">⚠️ Low Stock Items</h3>
-                        <span class="view-link" onclick="showSection('alerts')">View All →</span>
+                        <div style="display:flex; align-items:center; gap:8px;">
+                            <div class="filter-group">
+                                <select id="dashLowFilter" onchange="renderDashboard()"
+                                    style="font-size:0.6rem; padding:2px 6px;">
+                                    <option value="75">75</option>
+                                    <option value="100" selected>100</option>
+                                    <option value="200">200</option>
+                                </select>
+                            </div>
+                            <span class="view-link" onclick="showSection('alerts')">View All →</span>
+                        </div>
                     </div>
                     <div class="table-wrapper">
                         <table>
@@ -764,17 +938,27 @@
                                 <tr>
                                     <th>Medicine</th>
                                     <th>Stock</th>
-                                    <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody id="dash-low-stock"></tbody>
                         </table>
                     </div>
                 </div>
+
                 <div class="card">
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                    <div class="card-header">
                         <h3 style="color:#EF4444; font-size:0.85rem;">🔥 Critical Stock</h3>
-                        <span class="view-link" onclick="showSection('alerts')">View All →</span>
+                        <div style="display:flex; align-items:center; gap:8px;">
+                            <div class="filter-group">
+                                <select id="dashCriticalFilter" onchange="renderDashboard()"
+                                    style="font-size:0.6rem; padding:2px 6px;">
+                                    <option value="10">10</option>
+                                    <option value="20" selected>20</option>
+                                    <option value="30">30</option>
+                                </select>
+                            </div>
+                            <span class="view-link" onclick="showSection('alerts')">View All →</span>
+                        </div>
                     </div>
                     <div class="table-wrapper">
                         <table>
@@ -782,29 +966,83 @@
                                 <tr>
                                     <th>Medicine</th>
                                     <th>Stock</th>
-                                    <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody id="dash-critical-stock"></tbody>
                         </table>
                     </div>
                 </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3 style="color:#8B5CF6; font-size:0.85rem;">📅 Upcoming Expiries</h3>
+                        <div style="display:flex; align-items:center; gap:8px;">
+                            <div class="filter-group">
+                                <select id="dashExpiryFilter" onchange="renderDashboard()"
+                                    style="font-size:0.6rem; padding:2px 6px;">
+                                    <option value="all">All</option>
+                                    <option value="expired">Expired</option>
+                                    <option value="critical">0-15</option>
+                                    <option value="warning">15-30</option>
+                                    <option value="soon">30-60</option>
+                                </select>
+                            </div>
+                            <span class="view-link" onclick="showSection('alerts')">View All →</span>
+                        </div>
+                    </div>
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Medicine</th>
+                                    <th>Days Left</th>
+                                </tr>
+                            </thead>
+                            <tbody id="dash-expiry-stock"></tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
 
             <div class="card">
-                <h3>📋 Recent Orders</h3>
+                <div class="card-header">
+                    <h3 style="color:#3B82F6; font-size:0.85rem;">🧾 Recent Dispatches</h3>
+                    <span class="view-link" onclick="showSection('stockout')">View All →</span>
+                </div>
                 <div class="table-wrapper">
                     <table>
                         <thead>
                             <tr>
-                                <th>Order ID</th>
+                                <th>Bill ID</th>
                                 <th>Medicine</th>
+                                <th>Category</th>
                                 <th>Qty</th>
+                                <th>Unit Price</th>
+                                <th>Total</th>
                                 <th>Status</th>
-                                <th>Date</th>
                             </tr>
                         </thead>
-                        <tbody id="dash-recent-orders"></tbody>
+                        <tbody id="dash-recent-bills"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h3 style="color:#10B981; font-size:0.85rem;">📥 Recent Stock In</h3>
+                    <span class="view-link" onclick="showSection('stockin')">View All →</span>
+                </div>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Medicine</th>
+                                <th>Quantity</th>
+                                <th>Price</th>
+                            </tr>
+                        </thead>
+                        <tbody id="dash-recent-stockin"></tbody>
                     </table>
                 </div>
             </div>
@@ -817,8 +1055,103 @@
                     <h3>💊 Medicine Inventory</h3>
                     <span class="view-link" onclick="refreshMedicines()">🔄 Refresh</span>
                 </div>
-                <div class="medicine-grid" id="medicine-grid">
-                    <!-- Medicines will be rendered here -->
+                <div class="medicine-grid" id="medicine-grid"></div>
+            </div>
+        </section>
+
+        <!-- ==================== STOCK IN ==================== -->
+        <section id="stockin" class="content-section">
+            <div class="card">
+                <div class="card-header">
+                    <h3>📊 Stock In Trend</h3>
+                    <div class="filter-group">
+                        <label>Period:</label>
+                        <select id="stockInPeriod" onchange="renderStockInChart()">
+                            <option value="weekly">Weekly</option>
+                            <option value="monthly">Monthly</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="chart-container-sm">
+                    <canvas id="stockInChart"></canvas>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h3 style="margin-bottom:0;">📥 Stock In History</h3>
+                    <div class="filter-group">
+                        <label>Filter:</label>
+                        <select id="stockInFilter" onchange="renderStockInHistory()">
+                            <option value="daily">Day to Day</option>
+                            <option value="weekly" selected>Weekly</option>
+                            <option value="monthly">Monthly</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="table-wrapper-full">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Name</th>
+                                <th>Dose</th>
+                                <th>Mfg Date</th>
+                                <th>Expiry</th>
+                                <th>Price</th>
+                                <th>Qty Before</th>
+                                <th>Qty Added</th>
+                                <th>Qty After</th>
+                            </tr>
+                        </thead>
+                        <tbody id="stockin-history-body"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== STOCK OUT ==================== -->
+        <section id="stockout" class="content-section">
+            <div class="card">
+                <div class="card-header">
+                    <h3>📊 Stock Out Trend</h3>
+                    <div class="filter-group">
+                        <label>Period:</label>
+                        <select id="stockOutPeriod" onchange="renderStockOutChart()">
+                            <option value="weekly">Weekly</option>
+                            <option value="monthly">Monthly</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="chart-container-sm">
+                    <canvas id="stockOutChart"></canvas>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h3 style="margin-bottom:0;">🧾 Dispatches / Bills History</h3>
+                    <div class="filter-group">
+                        <label>Filter:</label>
+                        <select id="stockOutFilter" onchange="renderBillsHistory()">
+                            <option value="daily">Day to Day</option>
+                            <option value="weekly" selected>Weekly</option>
+                            <option value="monthly">Monthly</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="table-wrapper-full">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Bill ID</th>
+                                <th>Medicine</th>
+                                <th>Qty</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody id="bills-history-body"></tbody>
+                    </table>
                 </div>
             </div>
         </section>
@@ -834,6 +1167,17 @@
                 </div>
 
                 <div id="alert-critical" class="alert-subsection active">
+                    <div class="card-header">
+                        <h4 style="color:#EF4444; font-size:0.85rem;">Critical Stock Items</h4>
+                        <div class="filter-group">
+                            <label>Filter:</label>
+                            <select id="alertCriticalFilter" onchange="renderAlerts()">
+                                <option value="10">Below 10</option>
+                                <option value="20" selected>Below 20</option>
+                                <option value="30">Below 30</option>
+                            </select>
+                        </div>
+                    </div>
                     <div class="table-wrapper">
                         <table>
                             <thead>
@@ -841,7 +1185,6 @@
                                     <th>Medicine</th>
                                     <th>Current Stock</th>
                                     <th>Threshold</th>
-                                    <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody id="alert-critical-body"></tbody>
@@ -850,6 +1193,17 @@
                 </div>
 
                 <div id="alert-low" class="alert-subsection">
+                    <div class="card-header">
+                        <h4 style="color:#F59E0B; font-size:0.85rem;">Low Stock Items</h4>
+                        <div class="filter-group">
+                            <label>Filter:</label>
+                            <select id="alertLowFilter" onchange="renderAlerts()">
+                                <option value="75">Below 75</option>
+                                <option value="100" selected>Below 100</option>
+                                <option value="200">Below 200</option>
+                            </select>
+                        </div>
+                    </div>
                     <div class="table-wrapper">
                         <table>
                             <thead>
@@ -857,7 +1211,6 @@
                                     <th>Medicine</th>
                                     <th>Current Stock</th>
                                     <th>Threshold</th>
-                                    <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody id="alert-low-body"></tbody>
@@ -866,6 +1219,19 @@
                 </div>
 
                 <div id="alert-expiry" class="alert-subsection">
+                    <div class="card-header">
+                        <h4 style="color:#8B5CF6; font-size:0.85rem;">Upcoming Expiry</h4>
+                        <div class="filter-group">
+                            <label>Filter:</label>
+                            <select id="alertExpiryFilter" onchange="renderAlerts()">
+                                <option value="all">All</option>
+                                <option value="expired">Expired (&lt;0 days)</option>
+                                <option value="critical">0-15 days</option>
+                                <option value="warning">15-30 days</option>
+                                <option value="soon">30-60 days</option>
+                            </select>
+                        </div>
+                    </div>
                     <div class="table-wrapper">
                         <table>
                             <thead>
@@ -873,7 +1239,6 @@
                                     <th>Medicine</th>
                                     <th>Expiry Date</th>
                                     <th>Days Left</th>
-                                    <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody id="alert-expiry-body"></tbody>
@@ -916,9 +1281,7 @@
                             <option value="monthly">Monthly</option>
                             <option value="quarterly">Quarterly</option>
                         </select>
-                        <button class="btn-refresh" onclick="runPrediction()">
-                            🔄 Refresh
-                        </button>
+                        <button class="btn-refresh" onclick="runPrediction()">🔄 Refresh</button>
                     </div>
                 </div>
                 <div class="chart-container" style="height:300px;">
@@ -962,68 +1325,229 @@
                 </div>
             </div>
         </section>
+
+        <!-- ==================== REPORTS ==================== -->
+        <section id="reports" class="content-section">
+            <div class="card">
+                <div class="card-header">
+                    <h3 style="font-size:1rem; font-weight:800;">📊 Inventory Analytics</h3>
+                    <div class="filter-group">
+                        <label>Year:</label>
+                        <select id="reportYearSelect" onchange="updateAllReportCharts()">
+                            <option value="2016">2016</option>
+                            <option value="2017">2017</option>
+                            <option value="2018">2018</option>
+                            <option value="2019">2019</option>
+                            <option value="2020">2020</option>
+                            <option value="2021">2021</option>
+                            <option value="2022">2022</option>
+                            <option value="2023">2023</option>
+                            <option value="2024">2024</option>
+                            <option value="2025">2025</option>
+                            <option value="2026" selected>2026</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="reports-grid">
+                <div class="report-card">
+                    <div class="report-header">
+                        <h4>📈 Stock Overview</h4>
+                        <div class="filter-group">
+                            <select id="reportStockYear" onchange="updateAllReportCharts()">
+                                <option value="2016">2016</option>
+                                <option value="2017">2017</option>
+                                <option value="2018">2018</option>
+                                <option value="2019">2019</option>
+                                <option value="2020">2020</option>
+                                <option value="2021">2021</option>
+                                <option value="2022">2022</option>
+                                <option value="2023">2023</option>
+                                <option value="2024">2024</option>
+                                <option value="2025">2025</option>
+                                <option value="2026" selected>2026</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="reportStockOverviewChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="report-card">
+                    <div class="report-header">
+                        <h4>📥 Stock In Trend</h4>
+                        <div class="filter-group">
+                            <select id="reportStockInYear" onchange="updateAllReportCharts()">
+                                <option value="2016">2016</option>
+                                <option value="2017">2017</option>
+                                <option value="2018">2018</option>
+                                <option value="2019">2019</option>
+                                <option value="2020">2020</option>
+                                <option value="2021">2021</option>
+                                <option value="2022">2022</option>
+                                <option value="2023">2023</option>
+                                <option value="2024">2024</option>
+                                <option value="2025">2025</option>
+                                <option value="2026" selected>2026</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="reportStockInChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="report-card">
+                    <div class="report-header">
+                        <h4>📤 Stock Out Trend</h4>
+                        <div class="filter-group">
+                            <select id="reportStockOutYear" onchange="updateAllReportCharts()">
+                                <option value="2016">2016</option>
+                                <option value="2017">2017</option>
+                                <option value="2018">2018</option>
+                                <option value="2019">2019</option>
+                                <option value="2020">2020</option>
+                                <option value="2021">2021</option>
+                                <option value="2022">2022</option>
+                                <option value="2023">2023</option>
+                                <option value="2024">2024</option>
+                                <option value="2025">2025</option>
+                                <option value="2026" selected>2026</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="reportStockOutChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="report-card">
+                    <div class="report-header">
+                        <h4>📊 Stock In vs Out Comparison</h4>
+                        <div class="filter-group">
+                            <select id="reportComparisonYear" onchange="updateAllReportCharts()">
+                                <option value="2016">2016</option>
+                                <option value="2017">2017</option>
+                                <option value="2018">2018</option>
+                                <option value="2019">2019</option>
+                                <option value="2020">2020</option>
+                                <option value="2021">2021</option>
+                                <option value="2022">2022</option>
+                                <option value="2023">2023</option>
+                                <option value="2024">2024</option>
+                                <option value="2025">2025</option>
+                                <option value="2026" selected>2026</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="reportComparisonChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== SETTINGS ==================== -->
+        <section id="settings" class="content-section">
+            <div class="card">
+                <h3 style="margin-bottom:1.5rem;">⚙️ Settings</h3>
+                <div class="settings-form">
+                    <div class="form-group">
+                        <label>🏥 Hospital Name</label>
+                        <input type="text" id="settings-hospital" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label>👤 Username</label>
+                        <input type="text" id="settings-username" placeholder="Enter username">
+                    </div>
+                    <div class="form-group">
+                        <label>📧 Email Address</label>
+                        <input type="email" id="settings-email" placeholder="Enter email address">
+                    </div>
+                    <div class="form-group">
+                        <label>🔑 New Password</label>
+                        <input type="password" id="settings-new-password" placeholder="Enter new password">
+                    </div>
+                    <div class="form-group">
+                        <label>✅ Confirm New Password</label>
+                        <input type="password" id="settings-confirm-password" placeholder="Confirm new password">
+                    </div>
+                    <button class="btn-sm btn-primary" onclick="saveSettings()"
+                        style="padding:12px 30px; width:100%; font-size:0.85rem;">
+                        <i class="fas fa-save"></i> Save Changes
+                    </button>
+                </div>
+            </div>
+        </section>
     </main>
 
-    <script src="https://unpkg.com/lucide@latest"></script>
     <script>
-        // ============================================
-        // CEO DASHBOARD - WITH sessionStorage
-        // ============================================
-
-        // FIXED: Get hospital context from sessionStorage (tab-specific)
         const HOSPITAL_NAME = sessionStorage.getItem('hospitalName') || '';
         const USERNAME = sessionStorage.getItem('username') || 'ceo';
         const USER_ROLE = sessionStorage.getItem('userRole') || 'CEO';
 
-        // Application State
         let inventoryData = [];
         let orders = [];
         let staffMembers = [];
-        let alertStatus = {};
+        let bills = [];
+        let stockInHistory = [];
         let predictionData = [];
         let charts = {};
 
-        // Constants
-        const CRITICAL_THRESHOLD = 20;
-        const LOW_THRESHOLD = 50;
+        let CRITICAL_THRESHOLD = 20;
+        let LOW_THRESHOLD = 50;
 
-        // ============================================
-        // INITIALIZATION
-        // ============================================
+        const reportData = {
+            '2016': { stock: [12000, 12500, 11800, 12200, 12800, 13100, 13500, 13800, 14200, 14500, 14800, 15000], in: [3200, 2800, 3500, 2900, 3800, 4200, 3900, 4500, 4100, 4800, 4400, 5000], out: [800, 600, 900, 700, 1100, 1300, 1000, 1400, 1200, 1500, 1300, 1600] },
+            '2017': { stock: [12500, 13000, 12800, 13200, 13800, 14100, 14500, 14800, 15200, 15500, 15800, 16000], in: [3400, 3000, 3700, 3100, 4000, 4400, 4100, 4700, 4300, 5000, 4600, 5200], out: [900, 700, 1000, 800, 1200, 1400, 1100, 1500, 1300, 1600, 1400, 1700] },
+            '2018': { stock: [13000, 13500, 13200, 13600, 14200, 14500, 14900, 15200, 15600, 15900, 16200, 16400], in: [3600, 3200, 3900, 3300, 4200, 4600, 4300, 4900, 4500, 5200, 4800, 5400], out: [1000, 800, 1100, 900, 1300, 1500, 1200, 1600, 1400, 1700, 1500, 1800] },
+            '2019': { stock: [13500, 14000, 13700, 14100, 14700, 15000, 15400, 15700, 16100, 16400, 16700, 16900], in: [3800, 3400, 4100, 3500, 4400, 4800, 4500, 5100, 4700, 5400, 5000, 5600], out: [1100, 900, 1200, 1000, 1400, 1600, 1300, 1700, 1500, 1800, 1600, 1900] },
+            '2020': { stock: [14000, 14500, 14200, 14600, 15200, 15500, 15900, 16200, 16600, 16900, 17200, 17400], in: [4000, 3600, 4300, 3700, 4600, 5000, 4700, 5300, 4900, 5600, 5200, 5800], out: [1200, 1000, 1300, 1100, 1500, 1700, 1400, 1800, 1600, 1900, 1700, 2000] },
+            '2021': { stock: [14500, 15000, 14700, 15100, 15700, 16000, 16400, 16700, 17100, 17400, 17700, 17900], in: [4200, 3800, 4500, 3900, 4800, 5200, 4900, 5500, 5100, 5800, 5400, 6000], out: [1300, 1100, 1400, 1200, 1600, 1800, 1500, 1900, 1700, 2000, 1800, 2100] },
+            '2022': { stock: [15000, 15500, 15200, 15600, 16200, 16500, 16900, 17200, 17600, 17900, 18200, 18400], in: [4400, 4000, 4700, 4100, 5000, 5400, 5100, 5700, 5300, 6000, 5600, 6200], out: [1400, 1200, 1500, 1300, 1700, 1900, 1600, 2000, 1800, 2100, 1900, 2200] },
+            '2023': { stock: [15500, 16000, 15700, 16100, 16700, 17000, 17400, 17700, 18100, 18400, 18700, 18900], in: [4600, 4200, 4900, 4300, 5200, 5600, 5300, 5900, 5500, 6200, 5800, 6400], out: [1500, 1300, 1600, 1400, 1800, 2000, 1700, 2100, 1900, 2200, 2000, 2300] },
+            '2024': { stock: [16000, 16500, 16200, 16600, 17200, 17500, 17900, 18200, 18600, 18900, 19200, 19400], in: [4800, 4400, 5100, 4500, 5400, 5800, 5500, 6100, 5700, 6400, 6000, 6600], out: [1600, 1400, 1700, 1500, 1900, 2100, 1800, 2200, 2000, 2300, 2100, 2400] },
+            '2025': { stock: [16500, 17000, 16700, 17100, 17700, 18000, 18400, 18700, 19100, 19400, 19700, 19900], in: [5000, 4600, 5300, 4700, 5600, 6000, 5700, 6300, 5900, 6600, 6200, 6800], out: [1700, 1500, 1800, 1600, 2000, 2200, 1900, 2300, 2100, 2400, 2200, 2500] },
+            '2026': { stock: [17000, 17500, 17200, 17600, 18200, 18500, 18900, 19200, 19600, 19900, 20200, 20400], in: [5200, 4800, 5500, 4900, 5800, 6200, 5900, 6500, 6100, 6800, 6400, 7000], out: [1800, 1600, 1900, 1700, 2100, 2300, 2000, 2400, 2200, 2500, 2300, 2600] }
+        };
+
+        const medicineNames = ['Paracetamol 500mg', 'Amoxicillin 250mg', 'Cetirizine 10mg', 'Aspirin 325mg', 'Ibuprofen 400mg', 'Metformin 500mg', 'Lisinopril 10mg', 'Omeprazole 20mg', 'Vitamin D 1000IU', 'Atorvastatin 20mg', 'Pantoprazole 40mg', 'Furosemide 20mg', 'Escitalopram 10mg', 'Gabapentin 300mg', 'Ciprofloxacin 500mg'];
+        const doses = ['500mg', '250mg', '10mg', '325mg', '400mg', '500mg', '10mg', '20mg', '1000IU', '20mg', '40mg', '20mg', '10mg', '300mg', '500mg'];
+        const prices = [2.50, 3.25, 1.50, 1.20, 2.10, 4.50, 6.20, 3.80, 5.00, 7.50, 3.25, 2.10, 5.80, 4.50, 6.75];
 
         async function init() {
-            // Display hospital badge
             if (HOSPITAL_NAME) {
                 document.getElementById('hospital-badge').innerText = '🏥 ' + HOSPITAL_NAME;
+                document.getElementById('settings-hospital').value = HOSPITAL_NAME;
             } else {
                 document.getElementById('hospital-badge').innerText = '⚠️ No Hospital Assigned';
+                document.getElementById('settings-hospital').value = 'No Hospital Assigned';
             }
 
-            // Load profile
             loadProfile();
-
-            // Load data
             await loadMedicines();
             await loadOrders();
             await loadStaff();
+            await loadBills();
+            await loadStockInHistory();
 
-            // Render everything
             renderDashboard();
             renderMedicines();
             renderAlerts();
             renderOrders();
             renderStaff();
+            renderStockInHistory();
+            renderBillsHistory();
+            renderStockInChart();
+            renderStockOutChart();
             runPrediction();
-
-            // Initialize Lucide icons
-            lucide.createIcons();
-
-            // Initialize charts
+            updateAllReportCharts();
             initStockChart();
         }
 
         function loadProfile() {
-            // FIXED: Read from sessionStorage
             const stored = sessionStorage.getItem('ceoProfile');
             if (stored) {
                 const profile = JSON.parse(stored);
@@ -1031,19 +1555,16 @@
                 document.getElementById('ceo-role').innerText = profile.role || 'Chief Executive Officer';
                 document.getElementById('ceo-avatar').src =
                     `https://ui-avatars.com/api/?name=${encodeURIComponent(profile.name || 'CEO')}&background=3B82F6&color=fff`;
+                document.getElementById('settings-username').value = profile.username || '';
+                document.getElementById('settings-email').value = profile.email || '';
             }
         }
-
-        // ============================================
-        // DATA LOADING
-        // ============================================
 
         async function loadMedicines() {
             try {
                 const response = await fetch('http://localhost:3000/api/medicines');
                 if (!response.ok) throw new Error('Failed to fetch medicines');
                 const data = await response.json();
-
                 inventoryData = data.map(item => ({
                     id: item['Medicine ID'] || `MED-${Math.floor(Math.random() * 9000) + 1000}`,
                     name: item['Medicine Name'] || 'Unknown',
@@ -1054,11 +1575,8 @@
                     expiry: item['Expiry Date'] || '2026-12-31',
                     mfg: item['Manufacture Date'] || '2024-01-01'
                 }));
-
-                console.log(`✅ Loaded ${inventoryData.length} medicines for ${HOSPITAL_NAME}`);
             } catch (err) {
                 console.error('Error loading medicines:', err);
-                // Fallback data
                 inventoryData = [
                     { id: 'MED-001', name: 'Paracetamol 500mg', category: 'Pain Relief', dosage: '500mg', stock: 15, price: 2.50, expiry: '2026-12-31', mfg: '2024-01-01' },
                     { id: 'MED-002', name: 'Amoxicillin 250mg', category: 'Antibiotic', dosage: '250mg', stock: 8, price: 3.25, expiry: '2026-08-15', mfg: '2024-01-01' },
@@ -1069,7 +1587,11 @@
                     { id: 'MED-007', name: 'Lisinopril 10mg', category: 'Hypertension', dosage: '10mg', stock: 5, price: 6.20, expiry: '2026-11-11', mfg: '2024-01-01' },
                     { id: 'MED-008', name: 'Omeprazole 20mg', category: 'Gastric', dosage: '20mg', stock: 25, price: 3.80, expiry: '2026-10-01', mfg: '2024-01-01' },
                     { id: 'MED-009', name: 'Vitamin D 1000IU', category: 'Vitamin', dosage: '1000IU', stock: 95, price: 5.00, expiry: '2027-06-15', mfg: '2024-01-01' },
-                    { id: 'MED-010', name: 'Atorvastatin 20mg', category: 'Cholesterol', dosage: '20mg', stock: 42, price: 7.50, expiry: '2026-12-05', mfg: '2024-01-01' }
+                    { id: 'MED-010', name: 'Atorvastatin 20mg', category: 'Cholesterol', dosage: '20mg', stock: 42, price: 7.50, expiry: '2026-12-05', mfg: '2024-01-01' },
+                    { id: 'MED-011', name: 'Pantoprazole 40mg', category: 'Gastric', dosage: '40mg', stock: 80, price: 3.25, expiry: '2026-07-10', mfg: '2024-01-01' },
+                    { id: 'MED-012', name: 'Furosemide 20mg', category: 'Diuretic', dosage: '20mg', stock: 45, price: 2.10, expiry: '2026-08-15', mfg: '2024-01-01' },
+                    { id: 'MED-013', name: 'Escitalopram 10mg', category: 'Antidepressant', dosage: '10mg', stock: 30, price: 5.80, expiry: '2026-08-20', mfg: '2024-01-01' },
+                    { id: 'MED-014', name: 'Omeprazole 20mg', category: 'Gastric', dosage: '20mg', stock: 90, price: 2.90, expiry: '2026-09-15', mfg: '2024-01-01' }
                 ];
             }
         }
@@ -1087,9 +1609,7 @@
                     ];
                     localStorage.setItem('ceoOrders', JSON.stringify(orders));
                 }
-
                 orders = orders.filter(o => o.hospital_name === HOSPITAL_NAME || !o.hospital_name);
-                console.log(`✅ Loaded ${orders.length} orders for ${HOSPITAL_NAME}`);
             } catch (err) {
                 console.error('Error loading orders:', err);
             }
@@ -1107,30 +1627,124 @@
                     ];
                     localStorage.setItem('ceoStaff', JSON.stringify(staffMembers));
                 }
-                console.log(`✅ Loaded ${staffMembers.length} staff members for ${HOSPITAL_NAME}`);
             } catch (err) {
                 console.error('Error loading staff:', err);
             }
         }
 
-        // ============================================
-        // RENDER FUNCTIONS
-        // ============================================
+        async function loadBills() {
+            try {
+                const stored = localStorage.getItem('ceoBills');
+                if (stored) {
+                    bills = JSON.parse(stored);
+                } else {
+                    bills = [];
+                    const today = new Date();
+                    for (let i = 0; i < 30; i++) {
+                        const date = new Date(today);
+                        date.setDate(date.getDate() - i);
+                        const idx = i % medicineNames.length;
+                        bills.push({
+                            id: 'B-' + String(Math.floor(Math.random() * 9000) + 1000),
+                            medicine: medicineNames[idx],
+                            qty: Math.floor(Math.random() * 30) + 5,
+                            date: date.toISOString().split('T')[0],
+                            hospital_name: HOSPITAL_NAME
+                        });
+                    }
+                    localStorage.setItem('ceoBills', JSON.stringify(bills));
+                }
+                bills = bills.filter(b => b.hospital_name === HOSPITAL_NAME || !b.hospital_name);
+            } catch (err) {
+                console.error('Error loading bills:', err);
+            }
+        }
+
+        async function loadStockInHistory() {
+            try {
+                const stored = localStorage.getItem('ceoStockInHistory');
+                if (stored) {
+                    stockInHistory = JSON.parse(stored);
+                } else {
+                    stockInHistory = [];
+                    const today = new Date();
+                    for (let i = 0; i < 30; i++) {
+                        const date = new Date(today);
+                        date.setDate(date.getDate() - i);
+                        const idx = i % medicineNames.length;
+                        const qtyBefore = Math.floor(Math.random() * 50) + 10;
+                        const qtyAdded = Math.floor(Math.random() * 80) + 20;
+                        stockInHistory.push({
+                            date: date.toISOString().split('T')[0],
+                            name: medicineNames[idx],
+                            dose: doses[idx],
+                            mfg: '2024-01-01',
+                            expiry: '2026-12-31',
+                            price: prices[idx],
+                            qtyBefore: qtyBefore,
+                            qtyAdded: qtyAdded,
+                            qtyAfter: qtyBefore + qtyAdded,
+                            hospital_name: HOSPITAL_NAME
+                        });
+                    }
+                    localStorage.setItem('ceoStockInHistory', JSON.stringify(stockInHistory));
+                }
+                stockInHistory = stockInHistory.filter(s => s.hospital_name === HOSPITAL_NAME || !s.hospital_name);
+            } catch (err) {
+                console.error('Error loading stock-in history:', err);
+            }
+        }
+
+        function getDaysLeft(expiryDate) {
+            if (!expiryDate) return null;
+            const today = new Date();
+            const exp = new Date(expiryDate);
+            if (isNaN(exp)) return null;
+            const diffTime = exp - today;
+            return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        }
 
         function renderDashboard() {
             const totalMeds = inventoryData.length;
             const totalStock = inventoryData.reduce((sum, m) => sum + m.stock, 0);
-            const lowStock = inventoryData.filter(m => m.stock >= CRITICAL_THRESHOLD && m.stock < LOW_THRESHOLD);
-            const criticalStock = inventoryData.filter(m => m.stock < CRITICAL_THRESHOLD);
+
+            const lowFilter = parseInt(document.getElementById('dashLowFilter').value);
+            const criticalFilter = parseInt(document.getElementById('dashCriticalFilter').value);
+            const expiryFilter = document.getElementById('dashExpiryFilter').value;
+
+            const lowStock = inventoryData.filter(m => m.stock >= criticalFilter && m.stock < lowFilter);
+            const criticalStock = inventoryData.filter(m => m.stock < criticalFilter);
+
+            let expiryItems = inventoryData.filter(m => {
+                const days = getDaysLeft(m.expiry);
+                return days !== null && days < 180;
+            }).map(m => ({ ...m, daysLeft: getDaysLeft(m.expiry) }))
+                .sort((a, b) => a.daysLeft - b.daysLeft);
+
+            if (expiryFilter === 'expired') {
+                expiryItems = expiryItems.filter(m => m.daysLeft < 0);
+            } else if (expiryFilter === 'critical') {
+                expiryItems = expiryItems.filter(m => m.daysLeft >= 0 && m.daysLeft <= 15);
+            } else if (expiryFilter === 'warning') {
+                expiryItems = expiryItems.filter(m => m.daysLeft > 15 && m.daysLeft <= 30);
+            } else if (expiryFilter === 'soon') {
+                expiryItems = expiryItems.filter(m => m.daysLeft > 30 && m.daysLeft <= 60);
+            }
+
+            const dispatchedCount = bills.length;
 
             document.getElementById('stat-total-meds').textContent = totalMeds;
             document.getElementById('stat-total-stock').textContent = totalStock.toLocaleString();
-            document.getElementById('stat-low-stock').textContent = lowStock.length;
-            document.getElementById('stat-critical-stock').textContent = criticalStock.length;
+            document.getElementById('stat-low-stock').textContent = lowStock.length.toString().padStart(2, '0');
+            document.getElementById('stat-critical-stock').textContent = criticalStock.length.toString().padStart(2, '0');
+            document.getElementById('stat-expiry-count').textContent = expiryItems.length.toString().padStart(2, '0');
+            document.getElementById('stat-dispatched').textContent = dispatchedCount;
 
             renderDashboardLowStock(lowStock);
             renderDashboardCriticalStock(criticalStock);
-            renderDashboardOrders();
+            renderDashboardExpiry(expiryItems);
+            renderDashboardBills();
+            renderDashboardStockIn();
             renderForecast();
         }
 
@@ -1140,9 +1754,8 @@
                 <tr>
                     <td><strong>${m.name}</strong></td>
                     <td style="color:#D97706; font-weight:700;">${m.stock}</td>
-                    <td><button class="btn-sm btn-primary" onclick="placeOrder('${m.name}')">Order</button></td>
                 </tr>
-            `).join('') || '<tr><td colspan="3" style="text-align:center;color:#94A3B8;">No low stock items</td></tr>';
+            `).join('') || '<tr><td colspan="2" style="text-align:center;color:#94A3B8;">No low stock items</td></tr>';
         }
 
         function renderDashboardCriticalStock(criticalStock) {
@@ -1151,111 +1764,134 @@
                 <tr>
                     <td><strong>${m.name}</strong></td>
                     <td style="color:#DC2626; font-weight:700;">${m.stock}</td>
-                    <td><button class="btn-sm btn-danger" onclick="placeOrder('${m.name}')">URGENT</button></td>
                 </tr>
-            `).join('') || '<tr><td colspan="3" style="text-align:center;color:#94A3B8;">No critical stock items</td></tr>';
+            `).join('') || '<tr><td colspan="2" style="text-align:center;color:#94A3B8;">No critical stock items</td></tr>';
         }
 
-        function renderDashboardOrders() {
-            const tbody = document.getElementById('dash-recent-orders');
-            const recentOrders = orders.slice(0, 5);
-
-            tbody.innerHTML = recentOrders.map(order => {
-                let statusClass = 'status-badge normal';
-                if (order.status === 'Pending') statusClass = 'status-badge low';
-                if (order.status === 'Denied') statusClass = 'status-badge critical';
-
+        function renderDashboardExpiry(expiryItems) {
+            const tbody = document.getElementById('dash-expiry-stock');
+            tbody.innerHTML = expiryItems.slice(0, 5).map(m => {
+                const days = m.daysLeft;
+                let status = days < 0 ? 'EXPIRED!' : days <= 15 ? `${days} days` : days <= 30 ? `${days} days` : `${days} days`;
+                let color = days < 0 ? '#DC2626' : days <= 15 ? '#D97706' : days <= 30 ? '#8B5CF6' : '#6B7280';
                 return `<tr>
-                    <td><strong>#${order.id}</strong></td>
-                    <td>${order.medicine}</td>
-                    <td>${order.quantity}</td>
-                    <td><span class="${statusClass}">${order.status}</span></td>
-                    <td>${order.date}</td>
+                    <td><strong>${m.name}</strong></td>
+                    <td style="color:${color}; font-weight:700;">${status}</td>
                 </tr>`;
-            }).join('') || '<tr><td colspan="5" style="text-align:center;color:#94A3B8;">No orders found</td></tr>';
+            }).join('') || '<tr><td colspan="2" style="text-align:center;color:#94A3B8;">No expiry items</td></tr>';
+        }
+
+        function renderDashboardBills() {
+            const tbody = document.getElementById('dash-recent-bills');
+            const recentBills = bills.slice(0, 5);
+            tbody.innerHTML = recentBills.map(bill => `
+                <tr>
+                    <td><strong>#${bill.id}</strong></td>
+                    <td>${bill.medicine}</td>
+                    <td>${bill.category || 'General'}</td>
+                    <td>${bill.qty}</td>
+                    <td>$${(bill.price || 2.50).toFixed(2)}</td>
+                    <td>$${(bill.qty * (bill.price || 2.50)).toFixed(2)}</td>
+                    <td><span class="status-badge normal">Completed</span></td>
+                </tr>
+            `).join('') || '<tr><td colspan="7" style="text-align:center;color:#94A3B8;">No bills found</td></tr>';
+        }
+
+        function renderDashboardStockIn() {
+            const tbody = document.getElementById('dash-recent-stockin');
+            const recent = stockInHistory.slice(0, 5);
+            tbody.innerHTML = recent.map(item => `
+                <tr>
+                    <td>${item.date}</td>
+                    <td><strong>${item.name}</strong></td>
+                    <td>${item.qtyAdded || item.quantity || 0}</td>
+                    <td>$${item.price.toFixed(2)}</td>
+                </tr>
+            `).join('') || '<tr><td colspan="4" style="text-align:center;color:#94A3B8;">No stock-in entries</td></tr>';
         }
 
         function renderForecast() {
             const container = document.getElementById('forecast-items');
-            const topMeds = inventoryData
-                .sort((a, b) => b.stock - a.stock)
-                .slice(0, 4);
-
+            const topMeds = inventoryData.sort((a, b) => b.stock - a.stock).slice(0, 4);
             container.innerHTML = topMeds.map(m => {
                 const predicted = Math.round(m.stock * 1.3 + Math.random() * 50);
-                return `<div class="forecast-item">
-                    <span>${m.name}</span>
-                    <strong>+${predicted} units</strong>
-                </div>`;
+                return `<div class="forecast-item"><span>${m.name}</span><strong>+${predicted} units</strong></div>`;
             }).join('');
         }
 
         function renderMedicines() {
             const grid = document.getElementById('medicine-grid');
-
             grid.innerHTML = inventoryData.map(m => {
                 let stockClass = 'normal';
                 if (m.stock < CRITICAL_THRESHOLD) stockClass = 'critical';
                 else if (m.stock < LOW_THRESHOLD) stockClass = 'low';
-
                 return `<div class="medicine-card">
                     <div class="name">${m.name}</div>
                     <div class="details">${m.category} • ${m.dosage}</div>
-                    <div class="details">Exp: ${m.expiry} • $${m.price.toFixed(2)}</div>
+                    <div class="details">Mfg: ${m.mfg || '2024-01-01'} • Exp: ${m.expiry}</div>
+                    <div class="details">$${m.price.toFixed(2)}</div>
                     <div class="stock ${stockClass}">${m.stock} units</div>
                 </div>`;
             }).join('');
         }
 
         function renderAlerts() {
-            const criticalItems = inventoryData.filter(m => m.stock < CRITICAL_THRESHOLD);
-            const lowItems = inventoryData.filter(m => m.stock >= CRITICAL_THRESHOLD && m.stock < LOW_THRESHOLD);
-            const expiryItems = inventoryData.filter(m => {
-                const expDate = new Date(m.expiry);
-                const today = new Date();
-                const daysDiff = (expDate - today) / (1000 * 60 * 60 * 24);
-                return daysDiff < 180 && daysDiff > 0;
-            });
+            const criticalFilter = parseInt(document.getElementById('alertCriticalFilter')?.value || 20);
+            const criticalItems = inventoryData.filter(m => m.stock < criticalFilter);
+
+            const lowFilter = parseInt(document.getElementById('alertLowFilter')?.value || 100);
+            const lowItems = inventoryData.filter(m => m.stock >= criticalFilter && m.stock < lowFilter);
+
+            const expiryFilter = document.getElementById('alertExpiryFilter')?.value || 'all';
+            let expiryItems = inventoryData.filter(m => {
+                const days = getDaysLeft(m.expiry);
+                return days !== null && days < 180;
+            }).map(m => ({ ...m, daysLeft: getDaysLeft(m.expiry) }));
+
+            if (expiryFilter === 'expired') {
+                expiryItems = expiryItems.filter(m => m.daysLeft < 0);
+            } else if (expiryFilter === 'critical') {
+                expiryItems = expiryItems.filter(m => m.daysLeft >= 0 && m.daysLeft <= 15);
+            } else if (expiryFilter === 'warning') {
+                expiryItems = expiryItems.filter(m => m.daysLeft > 15 && m.daysLeft <= 30);
+            } else if (expiryFilter === 'soon') {
+                expiryItems = expiryItems.filter(m => m.daysLeft > 30 && m.daysLeft <= 60);
+            }
 
             document.getElementById('alert-critical-body').innerHTML = criticalItems.map(m => `
                 <tr>
                     <td><strong>${m.name}</strong></td>
                     <td style="color:#DC2626; font-weight:700;">${m.stock}</td>
-                    <td>< ${CRITICAL_THRESHOLD}</td>
-                    <td><button class="btn-sm btn-danger" onclick="placeOrder('${m.name}')">Order Now</button></td>
+                    <td>< ${criticalFilter}</td>
                 </tr>
-            `).join('') || '<tr><td colspan="4" style="text-align:center;color:#94A3B8;">No critical alerts</td></tr>';
+            `).join('') || '<tr><td colspan="3" style="text-align:center;color:#94A3B8;">No critical alerts</td></tr>';
 
             document.getElementById('alert-low-body').innerHTML = lowItems.map(m => `
                 <tr>
                     <td><strong>${m.name}</strong></td>
                     <td style="color:#D97706; font-weight:700;">${m.stock}</td>
-                    <td>< ${LOW_THRESHOLD}</td>
-                    <td><button class="btn-sm btn-primary" onclick="placeOrder('${m.name}')">Order</button></td>
+                    <td>< ${lowFilter}</td>
                 </tr>
-            `).join('') || '<tr><td colspan="4" style="text-align:center;color:#94A3B8;">No low stock alerts</td></tr>';
+            `).join('') || '<tr><td colspan="3" style="text-align:center;color:#94A3B8;">No low stock alerts</td></tr>';
 
-            document.getElementById('alert-expiry-body').innerHTML = expiryItems.map(m => {
-                const expDate = new Date(m.expiry);
-                const today = new Date();
-                const daysLeft = Math.ceil((expDate - today) / (1000 * 60 * 60 * 24));
+            document.getElementById('alert-expiry-body').innerHTML = expiryItems.slice(0, 20).map(m => {
+                const days = m.daysLeft;
+                let status = days < 0 ? 'EXPIRED!' : days <= 15 ? `${days} days (Critical)` : days <= 30 ? `${days} days (Soon)` : `${days} days`;
+                let color = days < 0 ? '#DC2626' : days <= 15 ? '#D97706' : days <= 30 ? '#8B5CF6' : '#6B7280';
                 return `<tr>
                     <td><strong>${m.name}</strong></td>
                     <td>${m.expiry}</td>
-                    <td style="color:#DC2626; font-weight:700;">${daysLeft} days</td>
-                    <td><button class="btn-sm btn-primary" onclick="notifyExpiry('${m.name}')">Notify</button></td>
+                    <td style="color:${color}; font-weight:700;">${status}</td>
                 </tr>`;
-            }).join('') || '<tr><td colspan="4" style="text-align:center;color:#94A3B8;">No expiry alerts</td></tr>';
+            }).join('') || '<tr><td colspan="3" style="text-align:center;color:#94A3B8;">No expiry alerts</td></tr>';
         }
 
         function renderOrders() {
             const tbody = document.getElementById('orders-body');
-
             tbody.innerHTML = orders.map(order => {
                 let statusClass = 'status-badge normal';
                 if (order.status === 'Pending') statusClass = 'status-badge low';
                 if (order.status === 'Denied') statusClass = 'status-badge critical';
-
                 return `<tr>
                     <td><strong>#${order.id}</strong></td>
                     <td>${order.medicine}</td>
@@ -1268,7 +1904,6 @@
 
         function renderStaff() {
             const tbody = document.getElementById('staff-body');
-
             tbody.innerHTML = staffMembers.map(m => `
                 <tr>
                     <td><strong>${m.username}</strong></td>
@@ -1279,38 +1914,390 @@
             `).join('') || '<tr><td colspan="4" style="text-align:center;color:#94A3B8;">No staff members</td></tr>';
         }
 
-        // ============================================
-        // AI PREDICTION
-        // ============================================
+        function renderStockInHistory() {
+            const filter = document.getElementById('stockInFilter').value;
+            const tbody = document.getElementById('stockin-history-body');
+
+            let filtered = [...stockInHistory];
+            const today = new Date();
+
+            if (filter === 'daily') {
+                const todayStr = today.toISOString().split('T')[0];
+                filtered = filtered.filter(item => item.date === todayStr);
+            } else if (filter === 'weekly') {
+                const weekAgo = new Date(today);
+                weekAgo.setDate(weekAgo.getDate() - 7);
+                filtered = filtered.filter(item => new Date(item.date) >= weekAgo);
+            } else if (filter === 'monthly') {
+                const monthAgo = new Date(today);
+                monthAgo.setMonth(monthAgo.getMonth() - 1);
+                filtered = filtered.filter(item => new Date(item.date) >= monthAgo);
+            }
+
+            filtered.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+            tbody.innerHTML = filtered.map(item => `
+                <tr>
+                    <td>${item.date}</td>
+                    <td><strong>${item.name}</strong></td>
+                    <td>${item.dose}</td>
+                    <td>${item.mfg}</td>
+                    <td>${item.expiry}</td>
+                    <td>$${item.price.toFixed(2)}</td>
+                    <td>${item.qtyBefore}</td>
+                    <td>${item.qtyAdded}</td>
+                    <td>${item.qtyAfter}</td>
+                </tr>
+            `).join('') || '<tr><td colspan="9" style="text-align:center;color:#94A3B8;">No stock-in entries found</td></tr>';
+        }
+
+        function renderBillsHistory() {
+            const filter = document.getElementById('stockOutFilter').value;
+            const tbody = document.getElementById('bills-history-body');
+
+            let filtered = [...bills];
+            const today = new Date();
+
+            if (filter === 'daily') {
+                const todayStr = today.toISOString().split('T')[0];
+                filtered = filtered.filter(item => item.date === todayStr);
+            } else if (filter === 'weekly') {
+                const weekAgo = new Date(today);
+                weekAgo.setDate(weekAgo.getDate() - 7);
+                filtered = filtered.filter(item => new Date(item.date) >= weekAgo);
+            } else if (filter === 'monthly') {
+                const monthAgo = new Date(today);
+                monthAgo.setMonth(monthAgo.getMonth() - 1);
+                filtered = filtered.filter(item => new Date(item.date) >= monthAgo);
+            }
+
+            filtered.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+            tbody.innerHTML = filtered.map(bill => `
+                <tr>
+                    <td><strong>#${bill.id}</strong></td>
+                    <td>${bill.medicine}</td>
+                    <td>${bill.qty}</td>
+                    <td>${bill.date}</td>
+                </tr>
+            `).join('') || '<tr><td colspan="4" style="text-align:center;color:#94A3B8;">No bills found</td></tr>';
+        }
+
+        function renderStockInChart() {
+            const ctx = document.getElementById('stockInChart');
+            if (!ctx) return;
+            if (charts.stockIn) charts.stockIn.destroy();
+
+            const period = document.getElementById('stockInPeriod').value;
+            let labels, data;
+
+            if (period === 'weekly') {
+                const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+                const now = new Date();
+                data = days.map((_, i) => {
+                    const date = new Date(now);
+                    date.setDate(date.getDate() - (6 - i));
+                    const dateStr = date.toISOString().split('T')[0];
+                    return stockInHistory.filter(item => item.date === dateStr)
+                        .reduce((sum, item) => sum + (item.qtyAdded || item.quantity || 0), 0);
+                });
+                labels = days;
+            } else {
+                const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+                data = months.map((_, i) => {
+                    const month = String(i + 1).padStart(2, '0');
+                    return stockInHistory.filter(item => item.date && item.date.endsWith(`-${month}`))
+                        .reduce((sum, item) => sum + (item.qtyAdded || item.quantity || 0), 0);
+                });
+                labels = months;
+            }
+
+            charts.stockIn = new Chart(ctx.getContext('2d'), {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Stock In',
+                        data: data,
+                        backgroundColor: '#10B981',
+                        borderRadius: 4,
+                        borderColor: '#059669',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.05)' }, ticks: { color: '#64748B' } },
+                        x: { grid: { display: false }, ticks: { color: '#64748B' } }
+                    }
+                }
+            });
+        }
+
+        function renderStockOutChart() {
+            const ctx = document.getElementById('stockOutChart');
+            if (!ctx) return;
+            if (charts.stockOut) charts.stockOut.destroy();
+
+            const period = document.getElementById('stockOutPeriod').value;
+            let labels, data;
+
+            if (period === 'weekly') {
+                const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+                const now = new Date();
+                data = days.map((_, i) => {
+                    const date = new Date(now);
+                    date.setDate(date.getDate() - (6 - i));
+                    const dateStr = date.toISOString().split('T')[0];
+                    return bills.filter(item => item.date === dateStr)
+                        .reduce((sum, item) => sum + (item.qty || 0), 0);
+                });
+                labels = days;
+            } else {
+                const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+                data = months.map((_, i) => {
+                    const month = String(i + 1).padStart(2, '0');
+                    return bills.filter(item => item.date && item.date.endsWith(`-${month}`))
+                        .reduce((sum, item) => sum + (item.qty || 0), 0);
+                });
+                labels = months;
+            }
+
+            charts.stockOut = new Chart(ctx.getContext('2d'), {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Stock Out',
+                        data: data,
+                        backgroundColor: '#EF4444',
+                        borderRadius: 4,
+                        borderColor: '#DC2626',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.05)' }, ticks: { color: '#64748B' } },
+                        x: { grid: { display: false }, ticks: { color: '#64748B' } }
+                    }
+                }
+            });
+        }
+
+        function updateAllReportCharts() {
+            const year = document.getElementById('reportYearSelect').value;
+            const stockYear = document.getElementById('reportStockYear').value;
+            const inYear = document.getElementById('reportStockInYear').value;
+            const outYear = document.getElementById('reportStockOutYear').value;
+            const compYear = document.getElementById('reportComparisonYear').value;
+
+            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+            const ctx1 = document.getElementById('reportStockOverviewChart');
+            if (ctx1) {
+                if (charts.reportStockOverview) charts.reportStockOverview.destroy();
+                const data = reportData[stockYear] || reportData['2026'];
+                charts.reportStockOverview = new Chart(ctx1.getContext('2d'), {
+                    type: 'line',
+                    data: {
+                        labels: months,
+                        datasets: [{
+                            label: `Stock Overview (${stockYear})`,
+                            data: data.stock,
+                            borderColor: '#3B82F6',
+                            backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                            fill: true,
+                            tension: 0.4,
+                            borderWidth: 2
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: true, position: 'top' },
+                            tooltip: {
+                                callbacks: {
+                                    label: function (context) {
+                                        return context.parsed.y.toLocaleString() + ' units';
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                grid: { color: 'rgba(0,0,0,0.05)' },
+                                ticks: { callback: function (value) { return value.toLocaleString(); } }
+                            },
+                            x: { grid: { display: false } }
+                        }
+                    }
+                });
+            }
+
+            const ctx2 = document.getElementById('reportStockInChart');
+            if (ctx2) {
+                if (charts.reportStockIn) charts.reportStockIn.destroy();
+                const data = reportData[inYear] || reportData['2026'];
+                charts.reportStockIn = new Chart(ctx2.getContext('2d'), {
+                    type: 'bar',
+                    data: {
+                        labels: months,
+                        datasets: [{
+                            label: `Stock In (${inYear})`,
+                            data: data.in,
+                            backgroundColor: '#10B981',
+                            borderRadius: 4,
+                            borderColor: '#059669',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: true, position: 'top' },
+                            tooltip: {
+                                callbacks: {
+                                    label: function (context) {
+                                        return context.parsed.y.toLocaleString() + ' units';
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                grid: { color: 'rgba(0,0,0,0.05)' },
+                                ticks: { callback: function (value) { return value.toLocaleString(); } }
+                            },
+                            x: { grid: { display: false } }
+                        }
+                    }
+                });
+            }
+
+            const ctx3 = document.getElementById('reportStockOutChart');
+            if (ctx3) {
+                if (charts.reportStockOut) charts.reportStockOut.destroy();
+                const data = reportData[outYear] || reportData['2026'];
+                charts.reportStockOut = new Chart(ctx3.getContext('2d'), {
+                    type: 'bar',
+                    data: {
+                        labels: months,
+                        datasets: [{
+                            label: `Stock Out (${outYear})`,
+                            data: data.out,
+                            backgroundColor: '#EF4444',
+                            borderRadius: 4,
+                            borderColor: '#DC2626',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: true, position: 'top' },
+                            tooltip: {
+                                callbacks: {
+                                    label: function (context) {
+                                        return context.parsed.y.toLocaleString() + ' units';
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                grid: { color: 'rgba(0,0,0,0.05)' },
+                                ticks: { callback: function (value) { return value.toLocaleString(); } }
+                            },
+                            x: { grid: { display: false } }
+                        }
+                    }
+                });
+            }
+
+            const ctx4 = document.getElementById('reportComparisonChart');
+            if (ctx4) {
+                if (charts.reportComparison) charts.reportComparison.destroy();
+                const data = reportData[compYear] || reportData['2026'];
+                charts.reportComparison = new Chart(ctx4.getContext('2d'), {
+                    type: 'line',
+                    data: {
+                        labels: months,
+                        datasets: [
+                            {
+                                label: `Stock In (${compYear})`,
+                                data: data.in,
+                                borderColor: '#10B981',
+                                backgroundColor: 'rgba(16, 185, 129, 0.05)',
+                                fill: true,
+                                tension: 0.4,
+                                borderWidth: 2
+                            },
+                            {
+                                label: `Stock Out (${compYear})`,
+                                data: data.out,
+                                borderColor: '#EF4444',
+                                backgroundColor: 'rgba(239, 68, 68, 0.05)',
+                                fill: true,
+                                tension: 0.4,
+                                borderWidth: 2
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: true, position: 'top' },
+                            tooltip: {
+                                callbacks: {
+                                    label: function (context) {
+                                        return context.dataset.label + ': ' + context.parsed.y.toLocaleString() + ' units';
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                grid: { color: 'rgba(0,0,0,0.05)' },
+                                ticks: { callback: function (value) { return value.toLocaleString(); } }
+                            },
+                            x: { grid: { display: false } }
+                        }
+                    }
+                });
+            }
+        }
 
         function runPrediction() {
             const period = document.getElementById('pred-period').value;
-
             predictionData = inventoryData.map(m => {
                 const baseDemand = m.stock * 0.3 + 50;
                 const multiplier = period === 'weekly' ? 1.2 : period === 'monthly' ? 1.5 : 2.0;
                 const predicted = Math.round(baseDemand * multiplier + Math.random() * 20);
                 const status = predicted > m.stock * 1.5 ? 'Critical' : predicted > m.stock * 1.2 ? 'Moderate' : 'Stable';
-
-                return {
-                    name: m.name,
-                    currentStock: m.stock,
-                    predicted: predicted,
-                    status: status
-                };
+                return { name: m.name, currentStock: m.stock, predicted, status };
             });
-
             updatePredictionChart();
             renderPredictionTable();
         }
 
         function updatePredictionChart() {
             const ctx = document.getElementById('predictionChart').getContext('2d');
-
-            if (charts.prediction) {
-                charts.prediction.destroy();
-            }
-
+            if (charts.prediction) charts.prediction.destroy();
             const labels = predictionData.slice(0, 10).map(p => p.name);
             const currentData = predictionData.slice(0, 10).map(p => p.currentStock);
             const predictedData = predictionData.slice(0, 10).map(p => p.predicted);
@@ -1320,52 +2307,25 @@
                 data: {
                     labels: labels,
                     datasets: [
-                        {
-                            label: 'Current Stock',
-                            data: currentData,
-                            backgroundColor: 'rgba(59, 130, 246, 0.6)',
-                            borderColor: '#3B82F6',
-                            borderWidth: 1
-                        },
-                        {
-                            label: 'Predicted Demand',
-                            data: predictedData,
-                            backgroundColor: 'rgba(239, 68, 68, 0.6)',
-                            borderColor: '#EF4444',
-                            borderWidth: 1
-                        }
+                        { label: 'Current Stock', data: currentData, backgroundColor: 'rgba(59, 130, 246, 0.6)', borderColor: '#3B82F6', borderWidth: 1 },
+                        { label: 'Predicted Demand', data: predictedData, backgroundColor: 'rgba(239, 68, 68, 0.6)', borderColor: '#EF4444', borderWidth: 1 }
                     ]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            display: true,
-                            position: 'top'
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            title: {
-                                display: true,
-                                text: 'Units'
-                            }
-                        }
-                    }
+                    plugins: { legend: { display: true, position: 'top' } },
+                    scales: { y: { beginAtZero: true, title: { display: true, text: 'Units' } } }
                 }
             });
         }
 
         function renderPredictionTable() {
             const tbody = document.getElementById('prediction-body');
-
             tbody.innerHTML = predictionData.slice(0, 10).map(p => {
                 let statusClass = 'status-badge normal';
                 if (p.status === 'Critical') statusClass = 'status-badge critical';
                 else if (p.status === 'Moderate') statusClass = 'status-badge low';
-
                 return `<tr>
                     <td><strong>${p.name}</strong></td>
                     <td>${p.currentStock}</td>
@@ -1375,17 +2335,9 @@
             }).join('');
         }
 
-        // ============================================
-        // CHARTS
-        // ============================================
-
         function initStockChart() {
             const ctx = document.getElementById('stockChart').getContext('2d');
-
-            if (charts.stock) {
-                charts.stock.destroy();
-            }
-
+            if (charts.stock) charts.stock.destroy();
             const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
             const data = days.map(() => {
                 const total = inventoryData.reduce((sum, m) => sum + m.stock, 0);
@@ -1408,67 +2360,13 @@
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            display: false
-                        }
-                    },
+                    plugins: { legend: { display: false } },
                     scales: {
-                        y: {
-                            beginAtZero: true,
-                            ticks: {
-                                color: '#64748B'
-                            },
-                            grid: {
-                                color: 'rgba(148, 163, 184, 0.1)'
-                            }
-                        },
-                        x: {
-                            ticks: {
-                                color: '#64748B'
-                            },
-                            grid: {
-                                display: false
-                            }
-                        }
+                        y: { beginAtZero: true, ticks: { color: '#64748B' }, grid: { color: 'rgba(148, 163, 184, 0.1)' } },
+                        x: { ticks: { color: '#64748B' }, grid: { display: false } }
                     }
                 }
             });
-        }
-
-        // ============================================
-        // ACTIONS
-        // ============================================
-
-        function placeOrder(medicineName) {
-            const med = inventoryData.find(m => m.name === medicineName);
-            if (!med) return;
-
-            const qty = prompt(`Enter quantity to order for ${medicineName}:`, '100');
-            if (!qty || isNaN(qty) || parseInt(qty) <= 0) return;
-
-            const order = {
-                id: 'ORD-' + String(Math.floor(Math.random() * 9000) + 1000),
-                medicine: medicineName,
-                quantity: parseInt(qty),
-                status: 'Pending',
-                date: new Date().toISOString().split('T')[0],
-                hospital_name: HOSPITAL_NAME
-            };
-
-            orders.unshift(order);
-            localStorage.setItem('ceoOrders', JSON.stringify(orders));
-            med.stock += parseInt(qty);
-
-            showToast(`✅ Order placed for ${medicineName} (${qty} units)`);
-            renderDashboard();
-            renderMedicines();
-            renderAlerts();
-            renderOrders();
-        }
-
-        function notifyExpiry(medicineName) {
-            showToast(`📢 Notification sent for ${medicineName} expiry`);
         }
 
         function refreshMedicines() {
@@ -1480,28 +2378,53 @@
             });
         }
 
-        // ============================================
-        // UI HELPERS
-        // ============================================
+        function saveSettings() {
+            const username = document.getElementById('settings-username').value;
+            const email = document.getElementById('settings-email').value;
+            const newPass = document.getElementById('settings-new-password').value;
+            const confirmPass = document.getElementById('settings-confirm-password').value;
+
+            if (newPass || confirmPass) {
+                if (newPass !== confirmPass) {
+                    showToast('❌ Passwords do not match!');
+                    return;
+                }
+                if (newPass.length < 6) {
+                    showToast('❌ Password must be at least 6 characters!');
+                    return;
+                }
+            }
+
+            const profile = { username, email, name: username, role: 'Chief Executive Officer' };
+            if (newPass) profile.password = newPass;
+            sessionStorage.setItem('ceoProfile', JSON.stringify(profile));
+
+            document.getElementById('ceo-name').innerText = username || 'CEO';
+            document.getElementById('ceo-avatar').src =
+                `https://ui-avatars.com/api/?name=${encodeURIComponent(username || 'CEO')}&background=3B82F6&color=fff`;
+            document.getElementById('settings-new-password').value = '';
+            document.getElementById('settings-confirm-password').value = '';
+            showToast('✅ Settings saved successfully!');
+        }
 
         function showSection(sectionId, el) {
-            document.querySelectorAll('.content-section').forEach(s => {
-                s.classList.remove('active');
-            });
+            document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
             document.getElementById(sectionId).classList.add('active');
 
-            document.querySelectorAll('.menu-item').forEach(m => {
-                m.classList.remove('active');
-            });
+            document.querySelectorAll('.menu-item').forEach(m => m.classList.remove('active'));
             if (el) el.classList.add('active');
 
             const titles = {
                 'dashboard': 'CEO Dashboard',
                 'medicines': 'Medicine Inventory',
+                'stockin': 'Stock In',
+                'stockout': 'Stock Out',
                 'alerts': 'System Alerts',
                 'orders': 'All Orders',
                 'prediction': 'AI Demand Forecast',
-                'staff': 'Staff Management'
+                'staff': 'Staff Management',
+                'reports': 'Reports',
+                'settings': 'Settings'
             };
             document.getElementById('page-title').textContent = titles[sectionId] || 'Dashboard';
 
@@ -1510,39 +2433,48 @@
             if (sectionId === 'orders') renderOrders();
             if (sectionId === 'staff') renderStaff();
             if (sectionId === 'prediction') runPrediction();
+            if (sectionId === 'stockin') {
+                renderStockInHistory();
+                renderStockInChart();
+            }
+            if (sectionId === 'stockout') {
+                renderBillsHistory();
+                renderStockOutChart();
+            }
+            if (sectionId === 'reports') updateAllReportCharts();
         }
 
         function switchAlertTab(tab) {
             document.querySelectorAll('.alert-tab').forEach(t => t.classList.remove('active'));
-            document.querySelector(`.alert-tab[onclick*="${tab}"]`)?.classList.add('active');
+            document.querySelectorAll('.alert-tab').forEach(t => {
+                if (t.textContent.trim().toLowerCase() === tab) t.classList.add('active');
+            });
             document.querySelectorAll('.alert-subsection').forEach(s => s.classList.remove('active'));
             document.getElementById(`alert-${tab}`).classList.add('active');
         }
 
         function searchGlobal(query) {
             const q = query.toLowerCase();
-            document.querySelectorAll('tbody tr').forEach(tr => {
-                const text = tr.textContent.toLowerCase();
-                tr.style.display = text.includes(q) ? '' : 'none';
-            });
+            const activeSection = document.querySelector('.content-section.active');
+            if (activeSection) {
+                activeSection.querySelectorAll('tbody tr').forEach(tr => {
+                    tr.style.display = tr.textContent.toLowerCase().includes(q) ? '' : 'none';
+                });
+            }
         }
 
         function showToast(msg) {
             const toast = document.getElementById('toast');
             toast.textContent = msg;
             toast.style.display = 'block';
-            setTimeout(() => {
-                toast.style.display = 'none';
-            }, 3000);
+            setTimeout(() => toast.style.display = 'none', 3000);
         }
 
         function handleLogout() {
             document.getElementById('modal-title').textContent = 'Logout Confirmation';
             document.getElementById('modal-desc').textContent = 'Are you sure you want to logout?';
             document.getElementById('confirm-modal').style.display = 'flex';
-
             document.getElementById('modal-confirm-btn').onclick = function () {
-                // FIXED: Clear sessionStorage instead of localStorage
                 sessionStorage.removeItem('ceoProfile');
                 sessionStorage.removeItem('hospitalName');
                 sessionStorage.removeItem('username');
@@ -1555,11 +2487,9 @@
             document.getElementById('confirm-modal').style.display = 'none';
         }
 
-        function confirmAction() { }
-
-        // ============================================
-        // START
-        // ============================================
+        function confirmAction() {
+            closeModal();
+        }
 
         window.onload = init;
     </script>

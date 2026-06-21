@@ -803,19 +803,7 @@
 <body>
   <div id="toast">Action Processed!</div>
 
-  <!-- Order Modal -->
-  <div id="order-modal">
-    <div class="order-modal-content">
-      <h3>📦 Place Medicine Order</h3>
-      <p id="order-medicine-name" style="font-weight:bold;color:var(--primary);">Medicine: -</p>
-      <label for="order-quantity-input">Quantity to Order (units)</label>
-      <input type="number" id="order-quantity-input" placeholder="Enter quantity" min="1">
-      <div class="order-modal-buttons">
-        <button class="btn-cancel" onclick="closeOrderModal()">Cancel</button>
-        <button class="btn-submit" onclick="submitOrderFromModal()">✅ Place Order</button>
-      </div>
-    </div>
-  </div>
+  <!-- Direct Order Modal Removed (Billing Executive can only Intimate) -->
 
   <div id="confirm-modal">
     <div class="modal-box">
@@ -1423,25 +1411,26 @@
               stock: stockVal,
               initialStock: stockVal,
               expiry: item["Expiry Date"] || "2026-12-31",
-              price: parseFloat(rawPrice) || 15
+              price: parseFloat(rawPrice) || 15,
+              vendor: item.vendor_name || item["Vendor"] || item.vendor || 'MediPlus Supplies'
             });
           });
         }
       } catch (err) {
         console.error("Backend error, using fallback data", err);
         inventory = [
-          { id: 'MED-1001', name: 'Amoxicillin', cat: 'Antibiotic', stock: 120, initialStock: 120, expiry: '2026-08-15', price: 25 },
-          { id: 'MED-1002', name: 'Pantoprazole', cat: 'Antacid', stock: 80, initialStock: 80, expiry: '2026-08-20', price: 18 },
-          { id: 'MED-1003', name: 'Furosemide', cat: 'Diuretic', stock: 45, initialStock: 45, expiry: '2026-09-01', price: 22 },
-          { id: 'MED-1004', name: 'Escitalopram', cat: 'Antidepressant', stock: 30, initialStock: 30, expiry: '2026-07-10', price: 30 },
-          { id: 'MED-1005', name: 'Metformin', cat: 'Antidiabetic', stock: 600, initialStock: 600, expiry: '2027-01-20', price: 12 },
-          { id: 'MED-1006', name: 'Lisinopril', cat: 'Antihypertensive', stock: 450, initialStock: 450, expiry: '2026-12-05', price: 20 },
-          { id: 'MED-1007', name: 'Atorvastatin', cat: 'Cholesterol', stock: 200, initialStock: 200, expiry: '2026-11-11', price: 35 },
-          { id: 'MED-1008', name: 'Omeprazole', cat: 'Antacid', stock: 90, initialStock: 90, expiry: '2026-10-01', price: 16 }
+          { id: 'MED-1001', name: 'Amoxicillin', cat: 'Antibiotic', stock: 120, initialStock: 120, expiry: '2026-08-15', price: 25, vendor: 'MediPlus Supplies' },
+          { id: 'MED-1002', name: 'Pantoprazole', cat: 'Antacid', stock: 80, initialStock: 80, expiry: '2026-08-20', price: 18, vendor: 'MediPlus Supplies' },
+          { id: 'MED-1003', name: 'Furosemide', cat: 'Diuretic', stock: 45, initialStock: 45, expiry: '2026-09-01', price: 22, vendor: 'MediPlus Supplies' },
+          { id: 'MED-1004', name: 'Escitalopram', cat: 'Antidepressant', stock: 30, initialStock: 30, expiry: '2026-07-10', price: 30, vendor: 'MediPlus Supplies' },
+          { id: 'MED-1005', name: 'Metformin', cat: 'Antidiabetic', stock: 600, initialStock: 600, expiry: '2027-01-20', price: 12, vendor: 'MediPlus Supplies' },
+          { id: 'MED-1006', name: 'Lisinopril', cat: 'Antihypertensive', stock: 450, initialStock: 450, expiry: '2026-12-05', price: 20, vendor: 'MediPlus Supplies' },
+          { id: 'MED-1007', name: 'Atorvastatin', cat: 'Cholesterol', stock: 200, initialStock: 200, expiry: '2026-11-11', price: 35, vendor: 'MediPlus Supplies' },
+          { id: 'MED-1008', name: 'Omeprazole', cat: 'Antacid', stock: 90, initialStock: 90, expiry: '2026-10-01', price: 16, vendor: 'MediPlus Supplies' }
         ];
       }
 
-      orders = JSON.parse(localStorage.getItem('orders') || '[]');
+      await loadOrders();
       renderAll();
       lucide.createIcons();
       await loadHospitalAlerts();
@@ -1457,6 +1446,36 @@
       } catch (err) {
         console.error('Error loading alerts:', err);
       }
+    }
+
+    async function loadOrders() {
+      try {
+        const response = await fetch(`http://localhost:3000/api/orders/executive/status?hospital_name=${encodeURIComponent(HOSPITAL_NAME)}`);
+        if (response.ok) {
+          const dbOrders = await response.json();
+          orders = dbOrders.map(o => ({
+            id: o.order_id,
+            medicine: o.medicine_name,
+            quantity: o.quantity_requested,
+            status: o.status,
+            date: o.created_at ? o.created_at.split('T')[0] : new Date().toISOString().split('T')[0],
+            vendor: o.vendor_name
+          }));
+          localStorage.setItem('orders', JSON.stringify(orders));
+
+          // Sync intimateStatus
+          dbOrders.forEach(o => {
+            if (o.status === 'Pending' || o.status === 'Accepted') {
+              intimateStatus[`low_${o.medicine_name}`] = true;
+              intimateStatus[`expiry_${o.medicine_name}`] = true;
+            }
+          });
+        }
+      } catch (err) {
+        console.error('Error fetching orders:', err);
+        orders = JSON.parse(localStorage.getItem('orders') || '[]');
+      }
+      renderOrdersTable();
     }
 
     function fillBillData() {
@@ -1754,23 +1773,47 @@
     }
 
     function handleIntimate(btn, medName, alertType, stockQty) {
-      const key = alertType === 'LOW STOCK' ? `low_${medName}` : `expiry_${medName}`;
+      if (btn) {
+        btn.disabled = true;
+        btn.innerText = 'Intimating...';
+      }
 
-      const order = {
-        id: 'INT-' + String(Math.floor(Math.random() * 9000) + 1000),
-        medicine: medName,
-        quantity: 'N/A',
-        status: 'Intimated',
-        date: new Date().toISOString().split('T')[0]
-      };
-      orders.unshift(order);
-      localStorage.setItem('orders', JSON.stringify(orders));
+      fetch('http://localhost:3000/api/alerts/intimate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          alert_type: alertType,
+          medicine_name: medName,
+          status: 'Pending',
+          triggered_by: USERNAME,
+          hospital_name: HOSPITAL_NAME
+        })
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.error) {
+          showToast('❌ ' + data.error);
+          if (btn) {
+            btn.disabled = false;
+            btn.innerText = 'Intimate';
+          }
+          return;
+        }
 
-      intimateStatus[key] = true;
+        const key = alertType === 'LOW STOCK' ? `low_${medName}` : `expiry_${medName}`;
+        intimateStatus[key] = true;
 
-      showToast(`✅ ${alertType} intimated for ${medName}`);
-
-      renderAll();
+        showToast(`✅ Intimated ${alertType.toLowerCase()} alert for ${medName} to Stock-In Manager`);
+        renderAll();
+      })
+      .catch(error => {
+        console.error('Error creating alert:', error);
+        showToast('❌ Failed to intimate Stock-In Manager. Please check server connection.');
+        if (btn) {
+          btn.disabled = false;
+          btn.innerText = 'Intimate';
+        }
+      });
     }
 
     function renderOrdersTable() {
@@ -1781,7 +1824,7 @@
       sortedOrders.forEach(order => {
         let statusClass = 'status-pending';
         let statusText = order.status || 'Pending';
-        if (statusText === 'Resolved' || statusText === 'Completed') {
+        if (statusText === 'Resolved' || statusText === 'Completed' || statusText === 'Accepted') {
           statusClass = 'status-resolved';
         } else if (statusText === 'Denied') {
           statusClass = 'status-denied';
@@ -1803,55 +1846,7 @@
       }
     }
 
-    function openOrderModal(medicineName) {
-      pendingOrder = medicineName;
-      document.getElementById('order-medicine-name').innerText = `Medicine: ${medicineName}`;
-      document.getElementById('order-quantity-input').value = '';
-      document.getElementById('order-modal').style.display = 'flex';
-    }
-
-    function closeOrderModal() {
-      document.getElementById('order-modal').style.display = 'none';
-      pendingOrder = null;
-    }
-
-    function submitOrderFromModal() {
-      const qty = parseInt(document.getElementById('order-quantity-input').value);
-      if (!pendingOrder) {
-        showToast('❌ No medicine selected');
-        return;
-      }
-      if (!qty || qty <= 0) {
-        showToast('❌ Please enter a valid quantity');
-        return;
-      }
-      const order = {
-        id: 'ORD-' + String(Math.floor(Math.random() * 9000) + 1000),
-        medicine: pendingOrder,
-        quantity: qty,
-        status: 'Pending',
-        date: new Date().toISOString().split('T')[0]
-      };
-      orders.unshift(order);
-      localStorage.setItem('orders', JSON.stringify(orders));
-      intimateStatus[`low_${pendingOrder}`] = true;
-      const med = inventory.find(m => m.name === pendingOrder);
-      if (med) {
-        const newBill = {
-          bid: `PO-${Math.floor(Math.random() * 9000) + 1000}`,
-          name: pendingOrder,
-          cat: med.cat || 'General',
-          qty: qty,
-          price: med.price || 15,
-          total: qty * (med.price || 15),
-          date: new Date().toISOString().split('T')[0]
-        };
-        stockouts.unshift(newBill);
-      }
-      closeOrderModal();
-      renderAll();
-      showToast(`✅ Order placed for ${pendingOrder}!`);
-    }
+    // Order modal handlers removed since billing executives only intimate.
 
     function switchAlertTab(tab) {
       document.querySelectorAll('.alert-tab').forEach(t => t.classList.remove('active'));

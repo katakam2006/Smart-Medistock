@@ -682,7 +682,10 @@
                 // Store role-specific profile in sessionStorage (tab-specific)
                 const userProfile = {
                     ...user,
-                    name: user.username,
+                    vendor: user.vendor_name || '',
+                    name: (user.role && (user.role.toLowerCase().includes('supplier') || user.role.toLowerCase().includes('vendor')))
+                        ? (user.vendor_name || user.username)
+                        : user.username,
                     hospital_name: user.hospital_name || ''
                 };
 
@@ -717,6 +720,7 @@
                 }
                 else if (roleLower.includes('supplier') || roleLower.includes('vendor')) {
                     sessionStorage.setItem('supplierProfile', JSON.stringify(userProfile));
+                    sessionStorage.setItem('vendorProfile', JSON.stringify(userProfile));
                     redirectUrl = 'Vendor (1).html';
                     console.log('✅ Matched: Medicine Supplier');
                 }

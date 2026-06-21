@@ -669,6 +669,11 @@
             font-weight: bold;
         }
 
+        .order-status-denied {
+            color: var(--red, #ff4d4f);
+            font-weight: bold;
+        }
+
         .stockin-form-row {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
@@ -1561,8 +1566,8 @@
                         <!-- Vendor Name -->
                         <div class="form-group">
                             <label for="settings-vendor">🏪 Vendor Name</label>
-                            <input type="text" id="settings-vendor" placeholder="Enter vendor/supplier name">
-                            <div class="helper-text">Primary medicine supplier/vendor</div>
+                            <input type="text" id="settings-vendor" placeholder="Enter vendor/supplier name" value="">
+                            <button type="button" id="save-vendor-btn" onclick="saveVendorOnly()" class="btn btn-save" style="margin-top: 8px; padding: 6px 14px; width: auto; font-size: 0.8rem; background-color: var(--accent, #4318FF); color: white; border: none; border-radius: 6px; cursor: pointer; display: block;">Save</button>
                         </div>
 
                         <hr class="form-divider">
@@ -1886,7 +1891,6 @@
 
             const username = document.getElementById('settings-username').value;
             const email = document.getElementById('settings-email').value;
-            const vendor = document.getElementById('settings-vendor').value;
             const newPass = document.getElementById('settings-new-password').value;
             const confirmPass = document.getElementById('settings-confirm-password').value;
 
@@ -1906,7 +1910,6 @@
                 const p = JSON.parse(stored);
                 p.name = username;
                 p.email = email;
-                p.vendor = vendor;
                 if (newPass) {
                     p.password = newPass;
                 }
@@ -1949,6 +1952,29 @@
             showToast('🔄 Form reset to saved values');
         }
 
+        function saveVendorOnly() {
+            const vendorVal = document.getElementById('settings-vendor').value;
+            const stored = sessionStorage.getItem('stockerProfile');
+            if (stored) {
+                const p = JSON.parse(stored);
+                p.vendor = vendorVal;
+                sessionStorage.setItem('stockerProfile', JSON.stringify(p));
+
+                const ua = JSON.parse(localStorage.getItem('userAccount') || '{}');
+                if (ua.username === p.username) {
+                    ua.vendor = vendorVal;
+                    localStorage.setItem('userAccount', JSON.stringify(ua));
+                }
+
+                const all = JSON.parse(localStorage.getItem('smartMediStockUsers') || '{}');
+                if (all[p.username]) {
+                    all[p.username].vendor = vendorVal;
+                    localStorage.setItem('smartMediStockUsers', JSON.stringify(all));
+                }
+            }
+            showToast('✅ Vendor Name saved successfully!');
+        }
+
         function saveProfile() {
             const stored = sessionStorage.getItem('stockerProfile');
             if (!stored) return;
@@ -1974,6 +2000,8 @@
             renderAlertTables();
             renderPredictionChart();
             renderMedicineMaster();
+            // Auto refresh orders every 5 seconds
+            setInterval(loadOrders, 5000);
         }
 
         async function loadData() {
@@ -2048,9 +2076,7 @@
             bills = JSON.parse(localStorage.getItem('bills') || '[]');
             renderBills();
 
-            orders = JSON.parse(localStorage.getItem('orders') || '[]');
-            orders = orders.filter(o => o.hospital_name === HOSPITAL_NAME || !o.hospital_name);
-            renderOrders();
+            await loadOrders();
 
             renderDashTables();
             renderAlertTables();
@@ -2156,6 +2182,41 @@
             billBody.innerHTML = filtered.slice(0, 20).map(b => `<tr><td>#${b.id}</td><td>${b.med}</td><td>${b.qty}</td><td>${b.date}</td></tr>`).join('');
         }
 
+        async function loadOrders() {
+            try {
+                const response = await fetch(`http://localhost:3000/api/orders/executive/status?hospital_name=${encodeURIComponent(HOSPITAL_NAME)}`);
+                if (response.ok) {
+                    const dbOrders = await response.json();
+                    orders = dbOrders.map(o => ({
+                        id: o.order_id,
+                        medicine: o.medicine_name,
+                        quantity: o.quantity_requested,
+                        status: o.status,
+                        date: o.created_at ? o.created_at.split('T')[0] : new Date().toISOString().split('T')[0],
+                        hospital_name: o.hospital_name
+                    }));
+                    localStorage.setItem('orders', JSON.stringify(orders));
+                } else {
+                    throw new Error('API non-ok response');
+                }
+            } catch (err) {
+                console.error('Error fetching orders:', err);
+                orders = JSON.parse(localStorage.getItem('orders') || '[]');
+            }
+
+            orders = orders.filter(o => o.hospital_name === HOSPITAL_NAME || !o.hospital_name);
+
+            // Update orderStatus mapping
+            orderStatus = {};
+            orders.forEach(o => {
+                if (o.status === 'Pending') {
+                    orderStatus[`low_${o.medicine}`] = true;
+                }
+            });
+
+            renderOrders();
+        }
+
         function renderOrders() {
             const ordersBody = document.getElementById('ordersBody');
             if (!ordersBody) return;
@@ -2164,12 +2225,18 @@
             const sortedOrders = [...orders].sort((a, b) => new Date(b.date) - new Date(a.date));
 
             sortedOrders.forEach(order => {
-                const statusClass = order.status === 'Resolved' ? 'status-resolved' : 'order-status-pending';
+                let statusClass = 'order-status-pending';
+                let statusText = order.status || 'Pending';
+                if (statusText === 'Accepted' || statusText === 'Resolved') {
+                    statusClass = 'order-status-resolved';
+                } else if (statusText === 'Denied') {
+                    statusClass = 'order-status-denied';
+                }
                 ordersBody.innerHTML += `<tr>
                     <td>#${order.id}</td>
                     <td><b>${order.medicine}</b></td>
                     <td>${order.quantity}</td>
-                    <td><span class="${statusClass}">${order.status}</span></td>
+                    <td><span class="${statusClass}">${statusText}</span></td>
                     <td>${order.date}</td>
                 </tr>`;
             });
@@ -2253,30 +2320,47 @@
                 return;
             }
 
-            const order = {
-                id: 'ORD-' + String(Math.floor(Math.random() * 9000) + 1000),
-                medicine: currentMedicineName,
-                quantity: qty,
-                status: 'Pending',
-                date: new Date().toISOString().split('T')[0],
-                hospital_name: HOSPITAL_NAME
-            };
+            // Get vendor name from settings or profile
+            const profile = JSON.parse(sessionStorage.getItem('stockerProfile') || '{}');
+            const vendorName = document.getElementById('settings-vendor')?.value || profile.vendor || profile.vendor_name || '';
 
-            orders.unshift(order);
-            localStorage.setItem('orders', JSON.stringify(orders));
+            // Send order to server
+            fetch('http://localhost:3000/api/orders/place', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    medicine_name: currentMedicineName,
+                    quantity_requested: qty,
+                    hospital_name: HOSPITAL_NAME,
+                    vendor_name: vendorName,
+                    placed_by: USERNAME
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    showToast('❌ ' + data.error);
+                    return;
+                }
 
-            orderStatus[`low_${currentMedicineName}`] = true;
+                orderStatus[`low_${currentMedicineName}`] = true;
 
-            if (alertStatus[`low_${currentMedicineName}`] !== undefined) {
-                alertStatus[`low_${currentMedicineName}`] = true;
-            }
+                if (alertStatus[`low_${currentMedicineName}`] !== undefined) {
+                    alertStatus[`low_${currentMedicineName}`] = true;
+                }
 
-            showToast(`✅ Order placed for ${currentMedicineName} (${qty} units)`);
+                showToast(`✅ Order placed for ${currentMedicineName} (${qty} units)`);
 
-            closeOrderModal();
-            renderDashTables();
-            renderAlertTables();
-            renderOrders();
+                closeOrderModal();
+                loadOrders().then(() => {
+                    renderDashTables();
+                    renderAlertTables();
+                });
+            })
+            .catch(err => {
+                console.error('Error placing order:', err);
+                showToast('❌ Failed to place order on server');
+            });
         }
 
         document.getElementById('order-quantity-modal').addEventListener('click', function (e) {

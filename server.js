@@ -87,6 +87,8 @@ async function initializeDatabase() {
                 medicine_name VARCHAR(100) NOT NULL,
                 quantity_requested INT NOT NULL,
                 vendor_id INT DEFAULT 1,
+                vendor_name VARCHAR(100),
+                placed_by VARCHAR(100),
                 status ENUM('Pending', 'Accepted', 'Denied') DEFAULT 'Pending',
                 hospital_name VARCHAR(100),
                 updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
@@ -103,6 +105,26 @@ async function initializeDatabase() {
             }
         } catch (migrationErr) {
             console.error('Error migrating purchase_orders table schema:', migrationErr.message);
+        }
+
+        try {
+            const [columns] = await db.query(`SHOW COLUMNS FROM purchase_orders LIKE 'vendor_name'`);
+            if (columns.length === 0) {
+                await db.query(`ALTER TABLE purchase_orders ADD COLUMN vendor_name VARCHAR(100)`);
+                console.log("Migration: Added 'vendor_name' column to purchase_orders table.");
+            }
+        } catch (migrationErr) {
+            console.error('Error migrating purchase_orders table schema (vendor_name):', migrationErr.message);
+        }
+
+        try {
+            const [columns] = await db.query(`SHOW COLUMNS FROM purchase_orders LIKE 'placed_by'`);
+            if (columns.length === 0) {
+                await db.query(`ALTER TABLE purchase_orders ADD COLUMN placed_by VARCHAR(100)`);
+                console.log("Migration: Added 'placed_by' column to purchase_orders table.");
+            }
+        } catch (migrationErr) {
+            console.error('Error migrating purchase_orders table schema (placed_by):', migrationErr.message);
         }
 
         // 4. Seed a default CEO account if the table is completely empty
@@ -234,7 +256,8 @@ app.post('/api/alerts/intimate', async (req, res) => {
             if (userCheck[0].hospital_name !== hospital_name) {
                 return res.status(403).json({ error: 'User does not belong to this hospital' });
             }
-            if (!['Billing Executive', 'CEO'].includes(userCheck[0].role)) {
+            const dbRole = (userCheck[0].role || '').toLowerCase();
+            if (!['billing executive', 'ceo'].includes(dbRole)) {
                 return res.status(403).json({ error: 'Only Billing Executives and CEO can create alerts' });
             }
         } catch (err) {
@@ -513,7 +536,7 @@ app.get('/api/medicines', (req, res) => {
 
 // API: Place a new purchase order (Stock-In Executive -> Vendor)
 app.post('/api/orders/place', async (req, res) => {
-    const { medicine_name, quantity_requested, vendor_id, hospital_name, placed_by } = req.body;
+    const { medicine_name, quantity_requested, vendor_id, vendor_name, hospital_name, placed_by } = req.body;
 
     if (!medicine_name || !quantity_requested) {
         return res.status(400).json({ error: 'Missing medicine_name or quantity_requested' });
@@ -535,14 +558,15 @@ app.post('/api/orders/place', async (req, res) => {
         if (userCheck[0][0].hospital_name !== hospital_name) {
             return res.status(403).json({ error: 'User does not belong to this hospital' });
         }
-        if (!['Stock-In Manager', 'CEO'].includes(userCheck[0][0].role)) {
-            return res.status(403).json({ error: 'Only Stock-In Managers and CEO can place orders' });
+        const dbRole = (userCheck[0][0].role || '').toLowerCase();
+        if (!['stock-in manager', 'stock in manager', 'ceo', 'stocker'].includes(dbRole)) {
+            return res.status(403).json({ error: 'Only Stock-In Managers, CEO, and Stockers can place orders' });
         }
     }
 
-    const query = `INSERT INTO purchase_orders (medicine_name, quantity_requested, vendor_id, status, hospital_name) VALUES (?, ?, ?, 'Pending', ?)`;
+    const query = `INSERT INTO purchase_orders (medicine_name, quantity_requested, vendor_id, vendor_name, placed_by, status, hospital_name) VALUES (?, ?, ?, ?, ?, 'Pending', ?)`;
     try {
-        const [result] = await db.query(query, [medicine_name, quantity_requested, vendor_id || 1, hospital_name]);
+        const [result] = await db.query(query, [medicine_name, quantity_requested, vendor_id || 1, vendor_name || null, placed_by || null, hospital_name]);
         res.status(201).json({
             message: 'Order placed successfully!',
             orderId: result.insertId,
@@ -551,10 +575,37 @@ app.post('/api/orders/place', async (req, res) => {
                 medicine_name,
                 quantity_requested,
                 vendor_id: vendor_id || 1,
+                vendor_name: vendor_name || null,
                 status: 'Pending',
                 hospital_name: hospital_name
             }
         });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// API: Fetch all purchase orders for a specific Medicine Supplier (Vendor)
+app.get('/api/orders/vendor/orders', async (req, res) => {
+    const vendorName = req.query.vendor_name;
+
+    if (!vendorName) {
+        return res.status(400).json({ error: 'Vendor name is required' });
+    }
+
+    let query = `SELECT * FROM purchase_orders WHERE vendor_name = ?`;
+    let params = [vendorName];
+
+    if (req.query.status) {
+        query += ` AND status = ?`;
+        params.push(req.query.status);
+    }
+
+    query += ` ORDER BY order_id DESC`;
+
+    try {
+        const [rows] = await db.query(query, params);
+        res.json(rows);
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
