@@ -1,1 +1,12 @@
 security/robustmed_model.joblib
+
+# Local python environment
+.venv/
+pyrightconfig.json
+numpy/
+pandas/
+sklearn/
+joblib/
+mysql/
+
+

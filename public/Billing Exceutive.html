@@ -1237,7 +1237,7 @@
       return inventory.map(m => m.name).sort();
     }
 
-    function filterBillOptions(searchText) {
+    async function filterBillOptions(searchText) {
       const dropdown = document.getElementById('billAutocompleteDropdown');
       const input = document.getElementById('billMedInput');
 
@@ -1246,30 +1246,55 @@
         return;
       }
 
-      const allNames = getMedicineNames();
-      const filtered = allNames.filter(name =>
-        name.toLowerCase().includes(searchText.toLowerCase())
-      );
+      try {
+        const response = await fetch(`/api/medicines?search=${encodeURIComponent(searchText)}&limit=15`);
+        if (!response.ok) throw new Error("Could not reach backend");
+        const items = await response.json();
 
-      if (filtered.length === 0) {
-        dropdown.innerHTML = `<div class="no-results">No medicines found matching "${searchText}"</div>`;
+        // Dynamically add found items to the inventory if they aren't already there
+        items.forEach(item => {
+          const name = item["Medicine Name"];
+          const exists = inventory.some(m => m.name === name);
+          if (!exists) {
+            const rawPrice = item["Price ($)"] || item.Price || 15;
+            const stockVal = parseInt(item["No. of Units"] || item.Quantity || 0, 10) || 0;
+            inventory.push({
+              id: item["Medicine ID"] || `MED-${Math.floor(Math.random() * 9000) + 1000}`,
+              name: name,
+              cat: item["Category"] || 'General',
+              stock: stockVal,
+              initialStock: stockVal,
+              expiry: item["Expiry Date"] || "2026-12-31",
+              price: parseFloat(rawPrice) || 15,
+              vendor: item.vendor_name || item["Vendor"] || item.vendor || 'MediPlus Supplies'
+            });
+          }
+        });
+
+        const filtered = items.map(item => item["Medicine Name"]);
+
+        if (filtered.length === 0) {
+          dropdown.innerHTML = `<div class="no-results">No medicines found matching "${searchText}"</div>`;
+          dropdown.classList.add('show');
+          return;
+        }
+
+        dropdown.innerHTML = '';
+        filtered.slice(0, 10).forEach(name => {
+          const option = document.createElement('div');
+          option.className = 'option';
+          const highlighted = name.replace(
+            new RegExp(searchText, 'gi'),
+            match => `<span class="highlight">${match}</span>`
+          );
+          option.innerHTML = highlighted;
+          option.onclick = () => selectBillMedicine(name);
+          dropdown.appendChild(option);
+        });
         dropdown.classList.add('show');
-        return;
+      } catch (err) {
+        console.error("Autocomplete search failed:", err);
       }
-
-      dropdown.innerHTML = '';
-      filtered.slice(0, 10).forEach(name => {
-        const option = document.createElement('div');
-        option.className = 'option';
-        const highlighted = name.replace(
-          new RegExp(searchText, 'gi'),
-          match => `<span class="highlight">${match}</span>`
-        );
-        option.innerHTML = highlighted;
-        option.onclick = () => selectBillMedicine(name);
-        dropdown.appendChild(option);
-      });
-      dropdown.classList.add('show');
     }
 
     function selectBillMedicine(name) {
@@ -1395,7 +1420,7 @@
       loadSettings();
 
       try {
-        const response = await fetch('http://localhost:3000/api/medicines');
+        const response = await fetch('/api/medicines');
         if (!response.ok) throw new Error("Could not reach backend");
         const datasetItems = await response.json();
         inventory = [];
@@ -1438,7 +1463,7 @@
 
     async function loadHospitalAlerts() {
       try {
-        const response = await fetch(`http://localhost:3000/api/alerts/active?hospital_name=${encodeURIComponent(HOSPITAL_NAME)}`);
+        const response = await fetch(`/api/alerts/active?hospital_name=${encodeURIComponent(HOSPITAL_NAME)}`);
         if (response.ok) {
           const alerts = await response.json();
           console.log(`Loaded ${alerts.length} alerts for ${HOSPITAL_NAME}`);
@@ -1450,7 +1475,7 @@
 
     async function loadOrders() {
       try {
-        const response = await fetch(`http://localhost:3000/api/orders/executive/status?hospital_name=${encodeURIComponent(HOSPITAL_NAME)}`);
+        const response = await fetch(`/api/orders/executive/status?hospital_name=${encodeURIComponent(HOSPITAL_NAME)}`);
         if (response.ok) {
           const dbOrders = await response.json();
           orders = dbOrders.map(o => ({
@@ -1503,6 +1528,33 @@
         total: qty * med.price,
         date: new Date().toISOString().split('T')[0]
       };
+      
+      // Update the database stock on dispatch
+      fetch('/api/medicines/dispatch', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          medicine_id: med.id,
+          medicine_name: med.name,
+          quantity: qty
+        })
+      })
+      .then(res => {
+        if (!res.ok) {
+          return res.json().then(errData => {
+            throw new Error(errData.error || 'Failed to dispatch stock in database.');
+          });
+        }
+        return res.json();
+      })
+      .then(data => {
+        console.log('✅ Database stock updated on dispatch:', data);
+      })
+      .catch(err => {
+        console.error('❌ Database update error on dispatch:', err);
+        showToast('⚠️ Stock updated locally but failed in database.');
+      });
+
       stockouts.unshift(newBill);
       renderAll();
       showToast(`Bill ${newBill.bid} generated!`);
@@ -1778,7 +1830,7 @@
         btn.innerText = 'Intimating...';
       }
 
-      fetch('http://localhost:3000/api/alerts/intimate', {
+      fetch('/api/alerts/intimate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

@@ -27,6 +27,80 @@ const pool = mysql.createPool({
 // Convert pool to use promises for cleaner async/await code
 const db = pool.promise();
 
+// Function to seed medicines from CSV if table is empty
+async function seedMedicines() {
+    try {
+        const [rows] = await db.query('SELECT COUNT(*) as count FROM medicines');
+        if (rows[0].count > 0) {
+            console.log('Medicines table already has records. Skipping seeding.');
+            return;
+        }
+
+        console.log('Seeding medicines from CSV... This may take a few seconds.');
+        const csvPath = path.resolve(__dirname, 'medicine_dataset_250k-v2_fixed.csv');
+        if (!fs.existsSync(csvPath)) {
+            console.warn('Dataset CSV file not found at:', csvPath);
+            return;
+        }
+
+        const content = fs.readFileSync(csvPath, 'utf8');
+        const lines = content.split('\n');
+        const headers = lines[0].split(',').map(h => h.trim());
+
+        const chunkSize = 5000;
+        let currentChunk = [];
+
+        for (let i = 1; i < lines.length; i++) {
+            const line = lines[i].trim();
+            if (!line) continue;
+
+            const values = line.split(',').map(v => v.trim());
+            if (values.length < headers.length) continue;
+
+            const medicine_id = values[0];
+            const medicine_name = values[1];
+            const category = values[2];
+            const dosage = values[3];
+            const manufacture_date = values[4];
+            const expiry_date = values[5];
+            const price = parseFloat(values[6]) || 0.00;
+            const no_of_units = parseInt(values[7], 10) || 0;
+            const stock_out_units = parseInt(values[8], 10) || 0;
+
+            currentChunk.push([
+                medicine_id,
+                medicine_name,
+                category,
+                dosage,
+                manufacture_date,
+                expiry_date,
+                price,
+                no_of_units,
+                stock_out_units
+            ]);
+
+            if (currentChunk.length >= chunkSize) {
+                await db.query(
+                    `INSERT INTO medicines (medicine_id, medicine_name, category, dosage, manufacture_date, expiry_date, price, no_of_units, stock_out_units) VALUES ?`,
+                    [currentChunk]
+                );
+                currentChunk = [];
+            }
+        }
+
+        if (currentChunk.length > 0) {
+            await db.query(
+                `INSERT INTO medicines (medicine_id, medicine_name, category, dosage, manufacture_date, expiry_date, price, no_of_units, stock_out_units) VALUES ?`,
+                [currentChunk]
+            );
+        }
+
+        console.log('Seeding medicines completed successfully.');
+    } catch (err) {
+        console.error('Error seeding medicines from CSV:', err.message);
+    }
+}
+
 // Create database tables matching your system structure
 async function initializeDatabase() {
     try {
@@ -151,6 +225,37 @@ async function initializeDatabase() {
             `);
             console.log("Sample alerts seeded successfully.");
         }
+
+        // 6. Create medicines table if it doesn't exist (migrate if old schema exists)
+        try {
+            const [cols] = await db.query(`SHOW COLUMNS FROM medicines LIKE 'stock_out_units'`).catch(() => [[]]);
+            if (cols.length === 0) {
+                console.log('Migrating: Dropping outdated medicines table.');
+                await db.query(`DROP TABLE IF EXISTS medicines`);
+            }
+        } catch (e) {
+            // Ignore if table does not exist
+        }
+
+        await db.query(`
+            CREATE TABLE IF NOT EXISTS medicines (
+                medicine_id VARCHAR(50) PRIMARY KEY,
+                medicine_name VARCHAR(100) NOT NULL,
+                category VARCHAR(100),
+                dosage VARCHAR(50),
+                manufacture_date DATE,
+                expiry_date DATE,
+                price DECIMAL(10, 2),
+                no_of_units INT NOT NULL DEFAULT 0,
+                stock_out_units INT NOT NULL DEFAULT 0,
+                INDEX idx_medicine_name (medicine_name),
+                INDEX idx_category (category)
+            )
+        `);
+        console.log('MySQL medicines table verified/created.');
+
+        // Seed medicines table
+        await seedMedicines();
 
     } catch (err) {
         console.error('Error setting up database tables:', err.message);
@@ -503,35 +608,183 @@ app.get('/api/prediction/forecast', (req, res) => {
     }
 });
 
-// API Endpoint to fetch medicine dataset rows safely
-app.get('/api/medicines', (req, res) => {
-    const csvPath = path.resolve(__dirname, 'medicine_dataset_250k-v2_fixed.csv');
+// API Endpoint to fetch medicine dataset rows from database
+app.get('/api/medicines', async (req, res) => {
+    const search = req.query.search || '';
+    const limit = parseInt(req.query.limit, 10) || 100;
+    const offset = parseInt(req.query.offset, 10) || 0;
 
-    fs.readFile(csvPath, 'utf8', (err, data) => {
-        if (err) {
-            console.error("CSV Read Error Details:", err);
-            return res.status(500).json({ error: "Failed to read dataset file. Check file placement." });
+    let query = `
+        SELECT 
+            medicine_id AS 'Medicine ID', 
+            medicine_name AS 'Medicine Name', 
+            category AS 'Category', 
+            dosage AS 'Dosage', 
+            DATE_FORMAT(manufacture_date, '%Y-%m-%d') AS 'Manufacture Date', 
+            DATE_FORMAT(expiry_date, '%Y-%m-%d') AS 'Expiry Date', 
+            price AS 'Price ($)', 
+            no_of_units AS 'No. of Units', 
+            stock_out_units AS 'Stock Out Units' 
+        FROM medicines
+    `;
+    const params = [];
+
+    if (search) {
+        query += ` WHERE medicine_name LIKE ? OR category LIKE ? OR medicine_id LIKE ?`;
+        params.push(`%${search}%`, `%${search}%`, `%${search}%`);
+    }
+
+    if (search) {
+        query += ` ORDER BY medicine_name ASC LIMIT ? OFFSET ?`;
+    } else {
+        query += ` ORDER BY medicine_id ASC LIMIT ? OFFSET ?`;
+    }
+    params.push(limit, offset);
+
+    try {
+        const [rows] = await db.query(query, params);
+        res.json(rows);
+    } catch (err) {
+        console.error('Error fetching medicines from database:', err);
+        res.status(500).json({ error: 'Failed to retrieve medicines from database.' });
+    }
+});
+
+// API: Dispatch/Deduct medicine stock (Billing Executive -> Customer)
+app.post('/api/medicines/dispatch', async (req, res) => {
+    const { medicine_id, medicine_name, quantity } = req.body;
+    const qty = parseInt(quantity, 10);
+
+    if ((!medicine_id && !medicine_name) || isNaN(qty) || qty <= 0) {
+        return res.status(400).json({ error: 'Missing medicine identifier or valid quantity.' });
+    }
+
+    try {
+        let selectQuery = 'SELECT medicine_id, no_of_units, stock_out_units FROM medicines WHERE ';
+        const params = [];
+        if (medicine_id) {
+            selectQuery += 'medicine_id = ?';
+            params.push(medicine_id);
+        } else {
+            selectQuery += 'medicine_name = ?';
+            params.push(medicine_name);
         }
 
-        const lines = data.split('\n');
-        const headers = lines[0].split(',');
-        const result = [];
+        const [rows] = await db.query(selectQuery, params);
+        if (rows.length === 0) {
+            return res.status(404).json({ error: 'Medicine not found.' });
+        }
 
-        // Limit to first 100 rows for display performance so it loads instantly
-        const maxRows = Math.min(lines.length, 101);
+        const med = rows[0];
+        if (med.no_of_units < qty) {
+            return res.status(400).json({ error: `Insufficient stock. Only ${med.no_of_units} units available.` });
+        }
 
-        for (let i = 1; i < maxRows; i++) {
-            if (!lines[i].trim()) continue;
-            const currentline = lines[i].split(',');
-            const obj = {};
-            for (let j = 0; j < headers.length; j++) {
-                obj[headers[j].trim()] = currentline[j] ? currentline[j].trim() : '';
+        const newUnits = med.no_of_units - qty;
+        const newStockOut = med.stock_out_units + qty;
+
+        await db.query(
+            'UPDATE medicines SET no_of_units = ?, stock_out_units = ? WHERE medicine_id = ?',
+            [newUnits, newStockOut, med.medicine_id]
+        );
+
+        res.json({
+            message: 'Stock dispatched successfully.',
+            medicine_id: med.medicine_id,
+            remaining_units: newUnits,
+            stock_out_units: newStockOut
+        });
+    } catch (err) {
+        console.error('Error dispatching stock:', err);
+        res.status(500).json({ error: 'Failed to dispatch stock.' });
+    }
+});
+
+// API: Restock medicine (Stock-In Manager/Stocker -> Inventory)
+app.post('/api/medicines/restock', async (req, res) => {
+    const { medicine_name, quantity, dosage, price, category, mfg, expiry } = req.body;
+    const qty = parseInt(quantity, 10);
+
+    if (!medicine_name || isNaN(qty) || qty <= 0) {
+        return res.status(400).json({ error: 'Missing medicine_name or valid quantity.' });
+    }
+
+    try {
+        const [rows] = await db.query(
+            'SELECT medicine_id, no_of_units FROM medicines WHERE LOWER(medicine_name) = LOWER(?) AND (dosage = ? OR ? IS NULL OR dosage = \'-\') LIMIT 1',
+            [medicine_name, dosage || null, dosage || null]
+        );
+
+        if (rows.length > 0) {
+            const med = rows[0];
+            const newUnits = med.no_of_units + qty;
+            
+            let updateQuery = 'UPDATE medicines SET no_of_units = ?';
+            const updateParams = [newUnits];
+
+            if (mfg) {
+                updateQuery += ', manufacture_date = ?';
+                updateParams.push(mfg);
             }
-            result.push(obj);
-        }
+            if (expiry) {
+                updateQuery += ', expiry_date = ?';
+                updateParams.push(expiry);
+            }
+            if (price) {
+                updateQuery += ', price = ?';
+                updateParams.push(parseFloat(price));
+            }
+            if (category) {
+                updateQuery += ', category = ?';
+                updateParams.push(category);
+            }
 
-        res.json(result);
-    });
+            updateQuery += ' WHERE medicine_id = ?';
+            updateParams.push(med.medicine_id);
+
+            await db.query(updateQuery, updateParams);
+
+            return res.json({
+                message: 'Medicine restocked successfully.',
+                medicine_id: med.medicine_id,
+                new_quantity: newUnits
+            });
+        } else {
+            const newId = `MED-${Math.floor(Math.random() * 900000) + 100000}`;
+            const mfgDate = mfg || new Date().toISOString().split('T')[0];
+            
+            let expDate = expiry;
+            if (!expDate) {
+                const twoYearsLater = new Date();
+                twoYearsLater.setFullYear(twoYearsLater.getFullYear() + 2);
+                expDate = twoYearsLater.toISOString().split('T')[0];
+            }
+
+            await db.query(
+                `INSERT INTO medicines (medicine_id, medicine_name, category, dosage, manufacture_date, expiry_date, price, no_of_units, stock_out_units) 
+                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, 0)`,
+                [
+                    newId,
+                    medicine_name,
+                    category || 'General',
+                    dosage || '-',
+                    mfgDate,
+                    expDate,
+                    parseFloat(price) || 0.00,
+                    qty
+                ]
+            );
+
+            return res.json({
+                message: 'New medicine added and stocked successfully.',
+                medicine_id: newId,
+                new_quantity: qty
+            });
+        }
+    } catch (err) {
+        console.error('Error restocking medicine:', err);
+        res.status(500).json({ error: 'Failed to restock medicine.' });
+    }
 });
 
 // API: Place a new purchase order (Stock-In Executive -> Vendor)

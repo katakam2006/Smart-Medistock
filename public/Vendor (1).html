@@ -476,7 +476,7 @@
             }
 
             try {
-                const response = await fetch(`http://localhost:3000/api/orders/vendor/orders?vendor_name=${encodeURIComponent(vendorName)}&status=Pending`);
+                const response = await fetch(`/api/orders/vendor/orders?vendor_name=${encodeURIComponent(vendorName)}&status=Pending`);
                 if (!response.ok) return;
                 const pendingOrders = await response.json();
 
@@ -525,7 +525,7 @@
             }
 
             try {
-                const response = await fetch(`http://localhost:3000/api/orders/vendor/orders?vendor_name=${encodeURIComponent(vendorName)}`);
+                const response = await fetch(`/api/orders/vendor/orders?vendor_name=${encodeURIComponent(vendorName)}`);
                 if (!response.ok) return;
                 const orders = await response.json();
 
@@ -563,7 +563,7 @@
 
         async function respondToOrder(orderId, statusDecision) {
             try {
-                const response = await fetch(`http://localhost:3000/api/orders/vendor/respond/${orderId}`, {
+                const response = await fetch(`/api/orders/vendor/respond/${orderId}`, {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ status: statusDecision })

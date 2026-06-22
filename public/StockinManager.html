@@ -1593,7 +1593,7 @@
             return names.sort();
         }
 
-        function filterMedicineOptions(searchText) {
+        async function filterMedicineOptions(searchText) {
             const dropdown = document.getElementById('autocompleteDropdown');
             const input = document.getElementById('manualNameInput');
 
@@ -1602,30 +1602,55 @@
                 return;
             }
 
-            const allNames = getMedicineNames();
-            const filtered = allNames.filter(name =>
-                name.toLowerCase().includes(searchText.toLowerCase())
-            );
+            try {
+                const response = await fetch(`/api/medicines?search=${encodeURIComponent(searchText)}&limit=15`);
+                if (!response.ok) throw new Error("Could not reach backend");
+                const items = await response.json();
 
-            if (filtered.length === 0) {
-                dropdown.innerHTML = `<div class="no-results">No medicines found matching "${searchText}"</div>`;
+                // Dynamically add found items to the inventoryData if they aren't already there
+                items.forEach(item => {
+                    const name = item["Medicine Name"];
+                    const exists = inventoryData.some(m => m.name === name);
+                    if (!exists) {
+                        const rawPrice = item["Price ($)"] || item.Price || 15;
+                        const stockVal = parseInt(item["No. of Units"] || item.Quantity || 0, 10) || 0;
+                        inventoryData.push({
+                            id: item["Medicine ID"] || `MED-${Math.floor(Math.random() * 9000) + 1000}`,
+                            name: name,
+                            cat: item["Category"] || 'General',
+                            quantity: stockVal,
+                            dose: item["Dosage"] || '-',
+                            price: parseFloat(rawPrice) || 15,
+                            expiry: item["Expiry Date"] || "2026-12-31",
+                            mfg: item["Manufacture Date"] || '2024-01-01'
+                        });
+                    }
+                });
+
+                const filtered = items.map(item => item["Medicine Name"]);
+
+                if (filtered.length === 0) {
+                    dropdown.innerHTML = `<div class="no-results">No medicines found matching "${searchText}"</div>`;
+                    dropdown.classList.add('show');
+                    return;
+                }
+
+                dropdown.innerHTML = '';
+                filtered.slice(0, 10).forEach(name => {
+                    const option = document.createElement('div');
+                    option.className = 'option';
+                    const highlighted = name.replace(
+                        new RegExp(searchText, 'gi'),
+                        match => `<span class="highlight">${match}</span>`
+                    );
+                    option.innerHTML = highlighted;
+                    option.onclick = () => selectMedicine(name);
+                    dropdown.appendChild(option);
+                });
                 dropdown.classList.add('show');
-                return;
+            } catch (err) {
+                console.error("Autocomplete search failed:", err);
             }
-
-            dropdown.innerHTML = '';
-            filtered.slice(0, 10).forEach(name => {
-                const option = document.createElement('div');
-                option.className = 'option';
-                const highlighted = name.replace(
-                    new RegExp(searchText, 'gi'),
-                    match => `<span class="highlight">${match}</span>`
-                );
-                option.innerHTML = highlighted;
-                option.onclick = () => selectMedicine(name);
-                dropdown.appendChild(option);
-            });
-            dropdown.classList.add('show');
         }
 
         function selectMedicine(name) {
@@ -1693,7 +1718,7 @@
             }
 
             // Save settings on the backend database
-            fetch('http://localhost:3000/api/user/settings', {
+            fetch('/api/user/settings', {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -2124,7 +2149,7 @@
             }
 
             try {
-                const response = await fetch(`http://localhost:3000/api/alerts/active?hospital_name=${encodeURIComponent(HOSPITAL_NAME)}`);
+                const response = await fetch(`/api/alerts/active?hospital_name=${encodeURIComponent(HOSPITAL_NAME)}`);
                 if (response.ok) {
                     const alerts = await response.json();
                     console.log(`📊 Loaded ${alerts.length} alerts for ${HOSPITAL_NAME}`);
@@ -2164,7 +2189,7 @@
 
             // ===== FETCH DATA FROM API =====
             try {
-                const response = await fetch('http://localhost:3000/api/medicines');
+                const response = await fetch('/api/medicines');
                 if (!response.ok) throw new Error("Could not reach backend");
                 const datasetItems = await response.json();
                 inventoryData = [];
@@ -2282,6 +2307,36 @@
                 inventoryData.push(newMed);
                 qtyAfter = parseInt(qty, 10);
             }
+
+            // Sync with backend database
+            fetch('/api/medicines/restock', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    medicine_name: name,
+                    quantity: parseInt(qty, 10),
+                    dosage: document.getElementById('manualDose').value || '-',
+                    price: parseFloat(document.getElementById('manualPrice').value) || 0.00,
+                    category: existing ? existing.cat : 'General',
+                    mfg: mfg,
+                    expiry: expiry
+                })
+            })
+            .then(res => {
+                if (!res.ok) {
+                    return res.json().then(errData => {
+                        throw new Error(errData.error || 'Failed to update stock in database.');
+                    });
+                }
+                return res.json();
+            })
+            .then(data => {
+                console.log('✅ Database stock updated on restock:', data);
+            })
+            .catch(err => {
+                console.error('❌ Database update error on restock:', err);
+                showToast('⚠️ Stock updated locally but failed in database.');
+            });
 
             stockInHistory.unshift({
                 date: date,
@@ -2628,7 +2683,7 @@
             const vendorName = document.getElementById('settings-vendor')?.value || profile.vendor || profile.vendor_name || '';
 
             // Send order to server
-            fetch('http://localhost:3000/api/orders/place', {
+            fetch('/api/orders/place', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -2662,7 +2717,7 @@
 
                     const resolveAlert = (id) => {
                         if (!id) return;
-                        fetch(`http://localhost:3000/api/alerts/${id}`, {
+                        fetch(`/api/alerts/${id}`, {
                             method: 'PUT',
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify({
@@ -2736,7 +2791,7 @@
 
             const denyAlert = (id) => {
                 if (!id) return;
-                fetch(`http://localhost:3000/api/alerts/${id}`, {
+                fetch(`/api/alerts/${id}`, {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -2770,7 +2825,7 @@
             if (!ordersBody) return;
 
             try {
-                const response = await fetch(`http://localhost:3000/api/orders/executive/status?hospital_name=${encodeURIComponent(HOSPITAL_NAME)}`);
+                const response = await fetch(`/api/orders/executive/status?hospital_name=${encodeURIComponent(HOSPITAL_NAME)}`);
                 if (response.ok) {
                     const dbOrders = await response.json();
                     orders = dbOrders.map(o => ({

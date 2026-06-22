@@ -1562,7 +1562,7 @@
 
         async function loadMedicines() {
             try {
-                const response = await fetch('http://localhost:3000/api/medicines');
+                const response = await fetch('/api/medicines');
                 if (!response.ok) throw new Error('Failed to fetch medicines');
                 const data = await response.json();
                 inventoryData = data.map(item => ({

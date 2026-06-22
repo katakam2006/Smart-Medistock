@@ -4,10 +4,10 @@ echo   LAUNCHING PYTHON PIPELINE VIA DIRECT APP EXECUTION
 echo ===================================================
 echo.
 
-set PY_PATH="%LOCALAPPDATA%\Microsoft\WindowsApps\python.exe"
+set PY_PATH="C:\Users\KOTHAS\AppData\Local\Programs\Python\Python313\python.exe"
 
 echo [1/2] Installing Required Data Libraries...
-%PY_PATH% -m pip install pandas numpy scikit-learn joblib
+%PY_PATH% -m pip install pandas numpy scikit-learn joblib mysql-connector-python
 
 echo.
 echo [2/2] Running Machine Learning Training Script...
