@@ -402,6 +402,7 @@
     </div>
 
     <script>
+        const API_BASE = window.location.port === '3000' ? '' : 'http://localhost:3000';
         let autoRefreshInterval = null;
 
         function initVendorProfile() {
@@ -426,17 +427,45 @@
             if (!stored) return;
             const profile = JSON.parse(stored);
 
-            profile.name = document.getElementById('vendor-input-name').value;
-            profile.email = document.getElementById('vendor-input-email').value;
+            const name = document.getElementById('vendor-input-name').value;
+            const email = document.getElementById('vendor-input-email').value;
             const newPass = document.getElementById('vendor-input-pass').value;
-            if (newPass) profile.password = newPass;
 
-            sessionStorage.setItem('vendorProfile', JSON.stringify(profile));
-            localStorage.setItem('userAccount', JSON.stringify(profile));
+            const bodyPayload = {
+                username: profile.username || 'vendor',
+                email: email,
+                name: name
+            };
+            if (newPass) {
+                bodyPayload.password = newPass;
+            }
 
-            initVendorProfile();
-            showToast("✅ Profile Updated Successfully!");
-            document.getElementById('vendor-input-pass').value = '';
+            fetch(API_BASE + '/api/user/settings', {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(bodyPayload)
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.error) {
+                    showToast("❌ Failed to save profile: " + data.error);
+                } else {
+                    profile.name = name;
+                    profile.email = email;
+                    if (newPass) profile.password = newPass;
+
+                    sessionStorage.setItem('vendorProfile', JSON.stringify(profile));
+                    localStorage.setItem('userAccount', JSON.stringify(profile));
+
+                    initVendorProfile();
+                    showToast("✅ Profile Updated Successfully!");
+                    document.getElementById('vendor-input-pass').value = '';
+                }
+            })
+            .catch(err => {
+                showToast("❌ Server error updating profile");
+                console.error(err);
+            });
         }
 
         function showSection(sectionId, element) {
@@ -476,7 +505,7 @@
             }
 
             try {
-                const response = await fetch(`/api/orders/vendor/orders?vendor_name=${encodeURIComponent(vendorName)}&status=Pending`);
+                const response = await fetch(API_BASE + `/api/orders/vendor/orders?vendor_name=${encodeURIComponent(vendorName)}&status=Pending`);
                 if (!response.ok) return;
                 const pendingOrders = await response.json();
 
@@ -525,7 +554,7 @@
             }
 
             try {
-                const response = await fetch(`/api/orders/vendor/orders?vendor_name=${encodeURIComponent(vendorName)}`);
+                const response = await fetch(API_BASE + `/api/orders/vendor/orders?vendor_name=${encodeURIComponent(vendorName)}`);
                 if (!response.ok) return;
                 const orders = await response.json();
 
@@ -563,7 +592,7 @@
 
         async function respondToOrder(orderId, statusDecision) {
             try {
-                const response = await fetch(`/api/orders/vendor/respond/${orderId}`, {
+                const response = await fetch(API_BASE + `/api/orders/vendor/respond/${orderId}`,  {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ status: statusDecision })

@@ -1564,6 +1564,7 @@
     </main>
 
     <script>
+        const API_BASE = window.location.port === '3000' ? '' : 'http://localhost:3000';
         // ============================================
         // STOCK-IN MANAGER - CONNECTS TO DATASET API
         // ============================================
@@ -1588,6 +1589,18 @@
         // AUTOCOMPLETE FUNCTIONALITY
         // ============================================
 
+        function highlightMatch(text, search) {
+            if (!search) return text;
+            const trimmed = search.trim();
+            if (!trimmed) return text;
+            const index = text.toLowerCase().indexOf(trimmed.toLowerCase());
+            if (index === -1) return text;
+            const before = text.slice(0, index);
+            const match = text.slice(index, index + trimmed.length);
+            const after = text.slice(index + trimmed.length);
+            return `${before}<span class="highlight">${match}</span>${after}`;
+        }
+
         function getMedicineNames() {
             const names = inventoryData.map(m => m.name);
             return names.sort();
@@ -1597,20 +1610,21 @@
             const dropdown = document.getElementById('autocompleteDropdown');
             const input = document.getElementById('manualNameInput');
 
-            if (!searchText || searchText.length < 2) {
+            const trimmed = (searchText || '').trim();
+            if (!trimmed || trimmed.length < 2) {
                 dropdown.classList.remove('show');
                 return;
             }
 
             try {
-                const response = await fetch(`/api/medicines?search=${encodeURIComponent(searchText)}&limit=15`);
+                const response = await fetch(API_BASE + `/api/medicines?search=${encodeURIComponent(trimmed)}&limit=15`);
                 if (!response.ok) throw new Error("Could not reach backend");
                 const items = await response.json();
 
                 // Dynamically add found items to the inventoryData if they aren't already there
                 items.forEach(item => {
                     const name = item["Medicine Name"];
-                    const exists = inventoryData.some(m => m.name === name);
+                    const exists = inventoryData.some(m => m.id === item["Medicine ID"]);
                     if (!exists) {
                         const rawPrice = item["Price ($)"] || item.Price || 15;
                         const stockVal = parseInt(item["No. of Units"] || item.Quantity || 0, 10) || 0;
@@ -1627,24 +1641,25 @@
                     }
                 });
 
-                const filtered = items.map(item => item["Medicine Name"]);
-
-                if (filtered.length === 0) {
+                if (items.length === 0) {
                     dropdown.innerHTML = `<div class="no-results">No medicines found matching "${searchText}"</div>`;
                     dropdown.classList.add('show');
                     return;
                 }
 
                 dropdown.innerHTML = '';
-                filtered.slice(0, 10).forEach(name => {
+                items.slice(0, 15).forEach(item => {
+                    const id = item["Medicine ID"];
+                    const name = item["Medicine Name"];
+                    const dose = item["Dosage"] || '-';
+                    const price = item["Price ($)"] || '0.00';
+                    const displayText = `${name} (${dose}) - ${parseFloat(price).toFixed(2)}`;
+
                     const option = document.createElement('div');
                     option.className = 'option';
-                    const highlighted = name.replace(
-                        new RegExp(searchText, 'gi'),
-                        match => `<span class="highlight">${match}</span>`
-                    );
+                    const highlighted = highlightMatch(displayText, trimmed);
                     option.innerHTML = highlighted;
-                    option.onclick = () => selectMedicine(name);
+                    option.onclick = () => selectMedicine(id, name);
                     dropdown.appendChild(option);
                 });
                 dropdown.classList.add('show');
@@ -1653,15 +1668,16 @@
             }
         }
 
-        function selectMedicine(name) {
+        function selectMedicine(id, name) {
             document.getElementById('manualNameInput').value = name;
+            document.getElementById('manualNameInput').dataset.selectedId = id;
             document.getElementById('manualName').value = name;
             document.getElementById('autocompleteDropdown').classList.remove('show');
-            fillStockInMedInfoByName(name);
+            fillStockInMedInfoById(id);
         }
 
-        function fillStockInMedInfoByName(name) {
-            const med = inventoryData.find(m => m.name === name);
+        function fillStockInMedInfoById(id) {
+            const med = inventoryData.find(m => m.id === id);
             if (med) {
                 document.getElementById('manualDose').value = med.dose || '-';
                 document.getElementById('manualPrice').value = med.price || '0.00';
@@ -1718,14 +1734,19 @@
             }
 
             // Save settings on the backend database
-            fetch('/api/user/settings', {
+            const bodyPayload = {
+                username: USERNAME,
+                email: email,
+                name: username
+            };
+            if (newPass) {
+                bodyPayload.password = newPass;
+            }
+
+            fetch(API_BASE + '/api/user/settings', {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    username: USERNAME,
-                    email: email,
-                    name: username
-                })
+                body: JSON.stringify(bodyPayload)
             })
             .then(res => res.json())
             .then(data => {
@@ -1971,14 +1992,10 @@
         // AI Prediction Function
         // ============================================
 
-        function runAIPrediction() {
+        async function runAIPrediction() {
             const period = document.getElementById('predPeriodFilter')?.value || 'weekly';
             const year = parseInt(document.getElementById('predYearFilter')?.value || '2026');
             const resultsBody = document.getElementById('prediction-results-body');
-
-            if (!predictor) {
-                predictor = new DemandPredictor();
-            }
 
             if (!inventoryData || inventoryData.length === 0) {
                 if (resultsBody) {
@@ -1987,44 +2004,81 @@
                 return;
             }
 
-            const medicineData = inventoryData.map(m => ({
-                id: m.id || `MED-${Math.floor(Math.random() * 9000) + 1000}`,
-                name: m.name || 'Unknown',
-                currentStock: m.quantity || 0
-            }));
-
-            medicineData.sort((a, b) => a.name.localeCompare(b.name));
-            const topMeds = medicineData.slice(0, 15);
-
-            const predictions = topMeds.map(med => {
-                const categoryCode = predictor.getCategoryCode(med.name);
-                const currentStock = Math.max(med.currentStock, 1);
-                const features = [categoryCode, currentStock];
-
-                let predicted = predictor.predict(features);
-                const yearFactor = 1 + (year - 2024) * 0.05;
-                const stockFactor = 0.6 + (Math.min(currentStock, 500) / 500) * 0.4;
-
-                let finalPrediction = Math.round(predicted * yearFactor * stockFactor);
-                finalPrediction = Math.max(50, Math.min(800, finalPrediction));
-
-                if (isNaN(finalPrediction) || finalPrediction < 10) {
-                    finalPrediction = 50 + Math.floor(Math.random() * 100);
+            let predictions = [];
+            try {
+                const response = await fetch(`${API_BASE}/api/prediction/forecast?limit=15&period=${period}`);
+                if (!response.ok) throw new Error('API error');
+                const data = await response.json();
+                predictions = data.map(item => {
+                    let predicted = item.weekly_demand;
+                    if (period === 'daily') predicted = item.daily_demand;
+                    if (period === 'monthly') predicted = item.monthly_demand;
+                    
+                    const currentStock = item.current_stock;
+                    let label = "Stable";
+                    let classVal = "status-badge normal";
+                    if (predicted > currentStock * 1.5) {
+                        label = "Critical";
+                        classVal = "status-badge critical";
+                    } else if (predicted > currentStock * 1.1) {
+                        label = "Moderate";
+                        classVal = "status-badge low";
+                    }
+                    
+                    return {
+                        medicine_id: item.id,
+                        medicine_name: item.name,
+                        current_stock: currentStock,
+                        predicted_demand: predicted,
+                        confidence: 85,
+                        status: label,
+                        statusClass: classVal
+                    };
+                });
+            } catch (err) {
+                console.error('Failed to load predictions from backend:', err);
+                if (!predictor) {
+                    predictor = new DemandPredictor();
                 }
+                const medicineData = inventoryData.map(m => ({
+                    id: m.id || `MED-${Math.floor(Math.random() * 9000) + 1000}`,
+                    name: m.name || 'Unknown',
+                    currentStock: m.quantity || 0
+                }));
 
-                const confidence = Math.round(65 + Math.random() * 30);
-                const statusInfo = predictor.getStatus(finalPrediction, currentStock);
+                medicineData.sort((a, b) => a.name.localeCompare(b.name));
+                const topMeds = medicineData.slice(0, 15);
 
-                return {
-                    medicine_id: med.id,
-                    medicine_name: med.name,
-                    current_stock: currentStock,
-                    predicted_demand: finalPrediction,
-                    confidence: confidence,
-                    status: statusInfo.label,
-                    statusClass: statusInfo.class
-                };
-            });
+                predictions = topMeds.map(med => {
+                    const categoryCode = predictor.getCategoryCode(med.name);
+                    const currentStock = Math.max(med.currentStock, 1);
+                    const features = [categoryCode, currentStock];
+
+                    let predicted = predictor.predict(features);
+                    const yearFactor = 1 + (year - 2024) * 0.05;
+                    const stockFactor = 0.6 + (Math.min(currentStock, 500) / 500) * 0.4;
+
+                    let finalPrediction = Math.round(predicted * yearFactor * stockFactor);
+                    finalPrediction = Math.max(50, Math.min(800, finalPrediction));
+
+                    if (isNaN(finalPrediction) || finalPrediction < 10) {
+                        finalPrediction = 50 + Math.floor(Math.random() * 100);
+                    }
+
+                    const confidence = Math.round(65 + Math.random() * 30);
+                    const statusInfo = predictor.getStatus(finalPrediction, currentStock);
+
+                    return {
+                        medicine_id: med.id,
+                        medicine_name: med.name,
+                        current_stock: currentStock,
+                        predicted_demand: finalPrediction,
+                        confidence: confidence,
+                        status: statusInfo.label,
+                        statusClass: statusInfo.class
+                    };
+                });
+            }
 
             predictions.sort((a, b) => b.predicted_demand - a.predicted_demand);
             predictionData = predictions;
@@ -2039,16 +2093,21 @@
                         const statusClass = p.statusClass;
                         resultsBody.innerHTML += `
                             <tr>
-                                <td><strong>${p.medicine_id}</strong></td>
-                                <td><span class="med-name">${p.medicine_name}</span></td>
-                                <td><span class="pred-value">${p.predicted_demand}</span></td>
-                                <td><span class="status-badge ${statusClass}">${statusDisplay}</span></td>
+                                <td>
+                                    <div class="med-name">${p.medicine_name}</div>
+                                    <div style="font-size:0.75rem;color:#64748b;">ID: ${p.medicine_id}</div>
+                                </td>
+                                <td>${p.current_stock}</td>
+                                <td><span class="pred-value">+${p.predicted_demand}</span></td>
+                                <td><span class="${statusClass}">${statusDisplay}</span></td>
                             </tr>
                         `;
                     });
                 }
             }
 
+            const yearLabel = document.getElementById('reportYearSelect');
+            if (yearLabel) yearLabel.value = year;
             updatePredictionChart(predictions, year, period);
         }
 
@@ -2149,7 +2208,7 @@
             }
 
             try {
-                const response = await fetch(`/api/alerts/active?hospital_name=${encodeURIComponent(HOSPITAL_NAME)}`);
+                const response = await fetch(API_BASE + `/api/alerts/active?hospital_name=${encodeURIComponent(HOSPITAL_NAME)}`);
                 if (response.ok) {
                     const alerts = await response.json();
                     console.log(`📊 Loaded ${alerts.length} alerts for ${HOSPITAL_NAME}`);
@@ -2189,7 +2248,7 @@
 
             // ===== FETCH DATA FROM API =====
             try {
-                const response = await fetch('/api/medicines');
+                const response = await fetch(API_BASE + '/api/medicines');
                 if (!response.ok) throw new Error("Could not reach backend");
                 const datasetItems = await response.json();
                 inventoryData = [];
@@ -2283,7 +2342,8 @@
             if (!mfg || !expiry || !qty) { showToast('❌ Please fill all fields'); return; }
             if (parseInt(qty) <= 0) { showToast('❌ Quantity must be greater than 0'); return; }
 
-            const existing = inventoryData.find(m => m.name.toLowerCase() === name.toLowerCase());
+            const selectedId = document.getElementById('manualNameInput').dataset.selectedId || '';
+            const existing = inventoryData.find(m => (selectedId && m.id === selectedId) || (m.name.toLowerCase() === name.toLowerCase() && m.dose === document.getElementById('manualDose').value));
             let qtyBefore = 0;
             let qtyAfter = 0;
 
@@ -2295,7 +2355,7 @@
                 qtyAfter = existing.quantity;
             } else {
                 const newMed = {
-                    id: `MED-${Math.floor(Math.random() * 9000) + 1000}`,
+                    id: selectedId || `MED-${Math.floor(Math.random() * 9000) + 1000}`,
                     name: name,
                     cat: 'General',
                     dose: document.getElementById('manualDose').value || '-',
@@ -2309,10 +2369,11 @@
             }
 
             // Sync with backend database
-            fetch('/api/medicines/restock', {
+            fetch(API_BASE + '/api/medicines/restock', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
+                    medicine_id: selectedId,
                     medicine_name: name,
                     quantity: parseInt(qty, 10),
                     dosage: document.getElementById('manualDose').value || '-',
@@ -2683,7 +2744,7 @@
             const vendorName = document.getElementById('settings-vendor')?.value || profile.vendor || profile.vendor_name || '';
 
             // Send order to server
-            fetch('/api/orders/place', {
+            fetch(API_BASE + '/api/orders/place', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -2717,7 +2778,7 @@
 
                     const resolveAlert = (id) => {
                         if (!id) return;
-                        fetch(`/api/alerts/${id}`, {
+                        fetch(API_BASE + `/api/alerts/${id}`, {
                             method: 'PUT',
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify({
@@ -2791,7 +2852,7 @@
 
             const denyAlert = (id) => {
                 if (!id) return;
-                fetch(`/api/alerts/${id}`, {
+                fetch(API_BASE + `/api/alerts/${id}`, {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -2825,7 +2886,7 @@
             if (!ordersBody) return;
 
             try {
-                const response = await fetch(`/api/orders/executive/status?hospital_name=${encodeURIComponent(HOSPITAL_NAME)}`);
+                const response = await fetch(API_BASE + `/api/orders/executive/status?hospital_name=${encodeURIComponent(HOSPITAL_NAME)}`);
                 if (response.ok) {
                     const dbOrders = await response.json();
                     orders = dbOrders.map(o => ({

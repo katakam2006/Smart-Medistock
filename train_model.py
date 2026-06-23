@@ -24,20 +24,25 @@ def load_data_from_db(unique_only=False):
             database="smart_medistock"
         )
         if unique_only:
-            # Optimized query returning only unique medicine names (aggregated)
+            # Optimized query returning only the primary record for each unique medicine name
             query = """
                 SELECT 
-                    MIN(medicine_id) AS 'Medicine ID', 
-                    medicine_name AS 'Medicine Name', 
-                    MAX(category) AS 'Category', 
-                    MAX(dosage) AS 'Dosage', 
-                    MAX(manufacture_date) AS 'Manufacture Date', 
-                    MAX(expiry_date) AS 'Expiry Date', 
-                    AVG(price) AS 'Price ($)', 
-                    SUM(no_of_units) AS 'No. of Units', 
-                    SUM(stock_out_units) AS 'Stock Out Units' 
-                FROM medicines 
-                GROUP BY medicine_name
+                    m.medicine_id AS 'Medicine ID', 
+                    m.medicine_name AS 'Medicine Name', 
+                    m.category AS 'Category', 
+                    m.dosage AS 'Dosage', 
+                    m.manufacture_date AS 'Manufacture Date', 
+                    m.expiry_date AS 'Expiry Date', 
+                    m.price AS 'Price ($)', 
+                    m.no_of_units AS 'No. of Units', 
+                    m.stock_out_units AS 'Stock Out Units',
+                    t.record_count AS 'Record Count'
+                FROM medicines m
+                JOIN (
+                    SELECT MIN(medicine_id) as min_id, COUNT(*) as record_count 
+                    FROM medicines 
+                    GROUP BY medicine_name
+                ) t ON m.medicine_id = t.min_id
             """
         else:
             query = """
@@ -89,6 +94,8 @@ def load_data(unique_only=False):
     df = df.fillna(0)
     df["Category"] = df["Category"].astype(str)
     df["Medicine Name"] = df["Medicine Name"].astype(str)
+    if "Record Count" not in df.columns:
+        df["Record Count"] = 1
     
     return df
 
@@ -159,22 +166,30 @@ def run_vectorized_predictions(df_predict, ai_agent, category_mapping, medicine_
         category = str(row["Category"])
         price = float(row["Price ($)"])
         available_units = int(row["No. of Units"])
-        historical_stock_out = min(float(row["Stock Out Units"]), float(available_units))
+        historical_stock_out = float(row["Stock Out Units"])
+        
+        # Since the query returns the primary record directly, its stock out is already on the per-record scale.
+        record_count = float(row.get("Record Count", 1))
+        if record_count <= 0:
+            record_count = 1.0
+            
+        avg_stock_out = historical_stock_out
 
         med_code = medicine_mapping.get(med_name, 0)
         cat_code = category_mapping.get(category, 0)
 
-        # Batch inputs: Daily (Day=5, Month=1), Weekly (Day=12, Month=1), Monthly (Day=5, Month=2)
-        input_rows.append([med_code, cat_code, price, historical_stock_out, 5, 1, 2026])
-        input_rows.append([med_code, cat_code, price, historical_stock_out, 12, 1, 2026])
-        input_rows.append([med_code, cat_code, price, historical_stock_out, 5, 2, 2026])
+        # Batch inputs using avg_stock_out to avoid model saturation
+        input_rows.append([med_code, cat_code, price, avg_stock_out, 5, 1, 2026])
+        input_rows.append([med_code, cat_code, price, avg_stock_out, 12, 1, 2026])
+        input_rows.append([med_code, cat_code, price, avg_stock_out, 5, 2, 2026])
         
         metadata.append({
             "id": str(row["Medicine ID"]),
             "name": med_name,
             "category": category,
             "current_stock": available_units,
-            "stock_out_history": int(historical_stock_out)
+            "stock_out_history": int(historical_stock_out),
+            "record_count": record_count
         })
 
     input_df = pd.DataFrame(input_rows, columns=features)
@@ -182,6 +197,7 @@ def run_vectorized_predictions(df_predict, ai_agent, category_mapping, medicine_
     
     prediction_list = []
     for i, meta in enumerate(metadata):
+        # Predictions are kept on the per-record scale (highest normal units is ~950) instead of multiplying by record_count.
         daily_pred = int(round(all_predictions[i * 3]))
         weekly_pred = int(round(all_predictions[i * 3 + 1]))
         monthly_pred = int(round(all_predictions[i * 3 + 2]))

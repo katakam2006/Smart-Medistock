@@ -1213,6 +1213,7 @@
   </main>
 
   <script>
+    const API_BASE = window.location.port === '3000' ? '' : 'http://localhost:3000';
     // ============================================
     // BILLING EXECUTIVE - WITH AUTOCOMPLETE
     // ============================================
@@ -1237,24 +1238,37 @@
       return inventory.map(m => m.name).sort();
     }
 
+    function highlightMatch(text, search) {
+      if (!search) return text;
+      const trimmed = search.trim();
+      if (!trimmed) return text;
+      const index = text.toLowerCase().indexOf(trimmed.toLowerCase());
+      if (index === -1) return text;
+      const before = text.slice(0, index);
+      const match = text.slice(index, index + trimmed.length);
+      const after = text.slice(index + trimmed.length);
+      return `${before}<span class="highlight">${match}</span>${after}`;
+    }
+
     async function filterBillOptions(searchText) {
       const dropdown = document.getElementById('billAutocompleteDropdown');
       const input = document.getElementById('billMedInput');
 
-      if (!searchText || searchText.length < 2) {
+      const trimmed = (searchText || '').trim();
+      if (!trimmed || trimmed.length < 2) {
         dropdown.classList.remove('show');
         return;
       }
 
       try {
-        const response = await fetch(`/api/medicines?search=${encodeURIComponent(searchText)}&limit=15`);
+        const response = await fetch(API_BASE + `/api/medicines?search=${encodeURIComponent(trimmed)}&limit=15`);
         if (!response.ok) throw new Error("Could not reach backend");
         const items = await response.json();
 
         // Dynamically add found items to the inventory if they aren't already there
         items.forEach(item => {
           const name = item["Medicine Name"];
-          const exists = inventory.some(m => m.name === name);
+          const exists = inventory.some(m => m.id === item["Medicine ID"]);
           if (!exists) {
             const rawPrice = item["Price ($)"] || item.Price || 15;
             const stockVal = parseInt(item["No. of Units"] || item.Quantity || 0, 10) || 0;
@@ -1271,24 +1285,28 @@
           }
         });
 
-        const filtered = items.map(item => item["Medicine Name"]);
-
-        if (filtered.length === 0) {
+        if (items.length === 0) {
           dropdown.innerHTML = `<div class="no-results">No medicines found matching "${searchText}"</div>`;
           dropdown.classList.add('show');
           return;
         }
 
         dropdown.innerHTML = '';
-        filtered.slice(0, 10).forEach(name => {
+        items.slice(0, 15).forEach(item => {
+          const id = item["Medicine ID"];
+          const name = item["Medicine Name"];
+          const dose = item["Dosage"] || '-';
+          const price = item["Price ($)"] || '0.00';
+          const displayText = `${name} (` + (item["Dosage"] ? item["Dosage"] : '-') + `) - ₹${parseFloat(price).toFixed(2)}`;
+
           const option = document.createElement('div');
           option.className = 'option';
-          const highlighted = name.replace(
+          const highlighted = displayText.replace(
             new RegExp(searchText, 'gi'),
             match => `<span class="highlight">${match}</span>`
           );
           option.innerHTML = highlighted;
-          option.onclick = () => selectBillMedicine(name);
+          option.onclick = () => selectBillMedicine(id, name);
           dropdown.appendChild(option);
         });
         dropdown.classList.add('show');
@@ -1297,12 +1315,12 @@
       }
     }
 
-    function selectBillMedicine(name) {
+    function selectBillMedicine(id, name) {
       document.getElementById('billMedInput').value = name;
       document.getElementById('billAutocompleteDropdown').classList.remove('show');
 
       // Find the medicine index
-      const idx = inventory.findIndex(m => m.name === name);
+      const idx = inventory.findIndex(m => m.id === id);
       if (idx !== -1) {
         document.getElementById('billMedIdx').value = idx;
         fillBillData();
@@ -1353,41 +1371,42 @@
         }
       }
 
-      const stored = sessionStorage.getItem('billingProfile');
-      let profile = {};
-      if (stored) {
-        profile = JSON.parse(stored);
-      }
-
-      profile.name = username;
-      profile.email = email;
+      const bodyPayload = {
+        username: USERNAME,
+        email: email,
+        name: username
+      };
       if (newPass) {
-        profile.password = newPass;
-      }
-      sessionStorage.setItem('billingProfile', JSON.stringify(profile));
-
-      const ua = JSON.parse(localStorage.getItem('userAccount') || '{}');
-      if (ua.username === profile.username || !ua.username) {
-        ua.name = username;
-        ua.email = email;
-        if (newPass) ua.password = newPass;
-        localStorage.setItem('userAccount', JSON.stringify(ua));
+        bodyPayload.password = newPass;
       }
 
-      const all = JSON.parse(localStorage.getItem('smartMediStockUsers') || '{}');
-      const usernameKey = profile.username || 'billing_exec';
-      if (all[usernameKey]) {
-        all[usernameKey].name = username;
-        all[usernameKey].email = email;
-        if (newPass) all[usernameKey].password = newPass;
-        localStorage.setItem('smartMediStockUsers', JSON.stringify(all));
-      }
+      fetch(API_BASE + '/api/user/settings', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(bodyPayload)
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.error) {
+          showToast('❌ Failed to save settings on server: ' + data.error);
+        } else {
+          const stored = sessionStorage.getItem('billingProfile');
+          let profile = {};
+          if (stored) {
+            profile = JSON.parse(stored);
+          }
+          profile.name = username;
+          profile.email = email;
+          if (newPass) profile.password = newPass;
+          sessionStorage.setItem('billingProfile', JSON.stringify(profile));
 
-      document.getElementById('settings-new-password').value = '';
-      document.getElementById('settings-confirm-password').value = '';
-
-      initProfile();
-      showToast('✅ Settings saved successfully!');
+          showToast('✅ Settings saved successfully!');
+        }
+      })
+      .catch(err => {
+        showToast('❌ Server error updating settings');
+        console.error(err);
+      });
     }
 
     function resetSettingsForm() {
@@ -1420,7 +1439,7 @@
       loadSettings();
 
       try {
-        const response = await fetch('/api/medicines');
+        const response = await fetch(API_BASE + '/api/medicines');
         if (!response.ok) throw new Error("Could not reach backend");
         const datasetItems = await response.json();
         inventory = [];
@@ -1463,7 +1482,7 @@
 
     async function loadHospitalAlerts() {
       try {
-        const response = await fetch(`/api/alerts/active?hospital_name=${encodeURIComponent(HOSPITAL_NAME)}`);
+        const response = await fetch(API_BASE + `/api/alerts/active?hospital_name=${encodeURIComponent(HOSPITAL_NAME)}`);
         if (response.ok) {
           const alerts = await response.json();
           console.log(`Loaded ${alerts.length} alerts for ${HOSPITAL_NAME}`);
@@ -1475,7 +1494,7 @@
 
     async function loadOrders() {
       try {
-        const response = await fetch(`/api/orders/executive/status?hospital_name=${encodeURIComponent(HOSPITAL_NAME)}`);
+        const response = await fetch(API_BASE + `/api/orders/executive/status?hospital_name=${encodeURIComponent(HOSPITAL_NAME)}`);
         if (response.ok) {
           const dbOrders = await response.json();
           orders = dbOrders.map(o => ({
@@ -1530,7 +1549,7 @@
       };
       
       // Update the database stock on dispatch
-      fetch('/api/medicines/dispatch', {
+      fetch(API_BASE + '/api/medicines/dispatch', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

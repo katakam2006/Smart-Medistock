@@ -318,6 +318,53 @@ app.post('/api/login', async (req, res) => {
     }
 });
 
+// API: Update User Settings
+app.put('/api/user/settings', async (req, res) => {
+    const { username, email, name, password } = req.body;
+    if (!username) {
+        return res.status(400).json({ error: 'Username is required to identify the user' });
+    }
+    try {
+        const [users] = await db.query('SELECT * FROM users WHERE username = ?', [username]);
+        if (users.length === 0) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+        
+        let updateFields = [];
+        let queryParams = [];
+        
+        if (email !== undefined) {
+            updateFields.push('email = ?');
+            queryParams.push(email);
+        }
+        if (name) {
+            updateFields.push('username = ?');
+            queryParams.push(name);
+        }
+        if (password) {
+            updateFields.push('password = ?');
+            queryParams.push(password);
+        }
+        
+        if (updateFields.length === 0) {
+            return res.status(400).json({ error: 'No fields to update' });
+        }
+        
+        const updateQuery = `UPDATE users SET ${updateFields.join(', ')} WHERE username = ?`;
+        queryParams.push(username);
+        
+        await db.query(updateQuery, queryParams);
+        
+        const [updatedUser] = await db.query('SELECT id, username, email, role, address, hospital_name FROM users WHERE username = ?', [name || username]);
+        res.json({ message: 'Settings updated successfully', user: updatedUser[0] });
+    } catch (err) {
+        if (err.code === 'ER_DUP_ENTRY') {
+            return res.status(400).json({ error: 'New username already exists' });
+        }
+        res.status(500).json({ error: err.message });
+    }
+});
+
 // API: Get Users by Hospital (for admin/CEO)
 app.get('/api/users/hospital/:hospitalName', async (req, res) => {
     const { hospitalName } = req.params;
@@ -610,7 +657,7 @@ app.get('/api/prediction/forecast', (req, res) => {
 
 // API Endpoint to fetch medicine dataset rows from database
 app.get('/api/medicines', async (req, res) => {
-    const search = req.query.search || '';
+    const search = (req.query.search || '').trim();
     const limit = parseInt(req.query.limit, 10) || 100;
     const offset = parseInt(req.query.offset, 10) || 0;
 
@@ -710,10 +757,19 @@ app.post('/api/medicines/restock', async (req, res) => {
     }
 
     try {
-        const [rows] = await db.query(
-            'SELECT medicine_id, no_of_units FROM medicines WHERE LOWER(medicine_name) = LOWER(?) AND (dosage = ? OR ? IS NULL OR dosage = \'-\') LIMIT 1',
-            [medicine_name, dosage || null, dosage || null]
-        );
+        let rows = [];
+        if (req.body.medicine_id) {
+            const [r] = await db.query('SELECT medicine_id, no_of_units FROM medicines WHERE medicine_id = ?', [req.body.medicine_id]);
+            rows = r;
+        }
+        if (rows.length === 0) {
+            const [r] = await db.query(
+                'SELECT medicine_id, no_of_units FROM medicines WHERE LOWER(medicine_name) = LOWER(?) AND (dosage = ? OR ? IS NULL OR dosage = \'-\') LIMIT 1',
+                [medicine_name, dosage || null, dosage || null]
+            );
+            rows = r;
+        }
+        
 
         if (rows.length > 0) {
             const med = rows[0];

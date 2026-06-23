@@ -1639,6 +1639,7 @@
     </div>
 
     <script>
+        const API_BASE = window.location.port === '3000' ? '' : 'http://localhost:3000';
         // ============================================
         // FIXED: Get hospital context from sessionStorage (tab-specific)
         // ============================================
@@ -1684,6 +1685,18 @@
             return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
         }
 
+        function highlightMatch(text, search) {
+            if (!search) return text;
+            const trimmed = search.trim();
+            if (!trimmed) return text;
+            const index = text.toLowerCase().indexOf(trimmed.toLowerCase());
+            if (index === -1) return text;
+            const before = text.slice(0, index);
+            const match = text.slice(index, index + trimmed.length);
+            const after = text.slice(index + trimmed.length);
+            return `${before}<span class="highlight">${match}</span>${after}`;
+        }
+
         function getExpiryClass(daysLeft) {
             if (daysLeft === null) return 'expiry-safe';
             if (daysLeft < 0) return 'expiry-danger';
@@ -1724,20 +1737,21 @@
             const dropdown = document.getElementById('manualAutocompleteDropdown');
             const input = document.getElementById('manualNameInput');
 
-            if (!searchText || searchText.length < 2) {
+            const trimmed = (searchText || '').trim();
+            if (!trimmed || trimmed.length < 2) {
                 dropdown.classList.remove('show');
                 return;
             }
 
             try {
-                const response = await fetch(`/api/medicines?search=${encodeURIComponent(searchText)}&limit=15`);
+                const response = await fetch(API_BASE + `/api/medicines?search=${encodeURIComponent(trimmed)}&limit=15`);
                 if (!response.ok) throw new Error("Could not reach backend");
                 const items = await response.json();
 
                 // Dynamically add found items to activeMedicines if they aren't already there
                 items.forEach(item => {
                     const name = item["Medicine Name"];
-                    const exists = activeMedicines.some(m => m.name === name);
+                    const exists = activeMedicines.some(m => m.id === item["Medicine ID"]);
                     if (!exists) {
                         const rawPrice = item["Price ($)"] || item.Price || 15;
                         const stockVal = parseInt(item["No. of Units"] || item.Quantity || 0, 10) || 0;
@@ -1754,24 +1768,25 @@
                     }
                 });
 
-                const filtered = items.map(item => item["Medicine Name"]);
-
-                if (filtered.length === 0) {
+                if (items.length === 0) {
                     dropdown.innerHTML = `<div class="no-results">No medicines found matching "${searchText}"</div>`;
                     dropdown.classList.add('show');
                     return;
                 }
 
                 dropdown.innerHTML = '';
-                filtered.slice(0, 10).forEach(name => {
+                items.slice(0, 15).forEach(item => {
+                    const id = item["Medicine ID"];
+                    const name = item["Medicine Name"];
+                    const dose = item["Dosage"] || '-';
+                    const price = item["Price ($)"] || '0.00';
+                    const displayText = `${name} (${dose}) - ${parseFloat(price).toFixed(2)}`;
+
                     const option = document.createElement('div');
                     option.className = 'option';
-                    const highlighted = name.replace(
-                        new RegExp(searchText, 'gi'),
-                        match => `<span class="highlight">${match}</span>`
-                    );
+                    const highlighted = highlightMatch(displayText, trimmed);
                     option.innerHTML = highlighted;
-                    option.onclick = () => selectMedicine(name);
+                    option.onclick = () => selectMedicine(id, name);
                     dropdown.appendChild(option);
                 });
                 dropdown.classList.add('show');
@@ -1780,49 +1795,44 @@
             }
         }
 
-        function selectMedicine(name) {
+        function selectMedicine(id, name) {
             document.getElementById('manualNameInput').value = name;
+            document.getElementById('manualNameInput').dataset.selectedId = id;
             document.getElementById('manualName').value = name;
             document.getElementById('manualAutocompleteDropdown').classList.remove('show');
-            fillStockInMedInfoByName(name);
+            fillStockInMedInfoById(id);
         }
 
-        function fillStockInMedInfoByName(name) {
-            const med = activeMedicines.find(m => m.name === name);
+        function fillStockInMedInfoById(id) {
+            const med = activeMedicines.find(m => m.id === id);
             if (med) {
                 document.getElementById('manualDose').value = med.dose || '-';
                 document.getElementById('manualPrice').value = med.price || '0.00';
             } else {
-                const defaultMed = medicineOptions.find(m => m.name === name);
-                if (defaultMed) {
-                    document.getElementById('manualDose').value = defaultMed.dose || '-';
-                    document.getElementById('manualPrice').value = defaultMed.price || '0.00';
-                } else {
-                    document.getElementById('manualDose').value = '';
-                    document.getElementById('manualPrice').value = '';
-                }
+                document.getElementById('manualDose').value = '';
+                document.getElementById('manualPrice').value = '';
             }
         }
 
-        // Stock Out Autocomplete
         async function filterBillOptions(searchText) {
             const dropdown = document.getElementById('billAutocompleteDropdown');
             const input = document.getElementById('billMedInput');
 
-            if (!searchText || searchText.length < 2) {
+            const trimmed = (searchText || '').trim();
+            if (!trimmed || trimmed.length < 2) {
                 dropdown.classList.remove('show');
                 return;
             }
 
             try {
-                const response = await fetch(`/api/medicines?search=${encodeURIComponent(searchText)}&limit=15`);
+                const response = await fetch(API_BASE + `/api/medicines?search=${encodeURIComponent(trimmed)}&limit=15`);
                 if (!response.ok) throw new Error("Could not reach backend");
                 const items = await response.json();
 
                 // Dynamically add found items to activeMedicines if they aren't already there
                 items.forEach(item => {
                     const name = item["Medicine Name"];
-                    const exists = activeMedicines.some(m => m.name === name);
+                    const exists = activeMedicines.some(m => m.id === item["Medicine ID"]);
                     if (!exists) {
                         const rawPrice = item["Price ($)"] || item.Price || 15;
                         const stockVal = parseInt(item["No. of Units"] || item.Quantity || 0, 10) || 0;
@@ -1839,24 +1849,25 @@
                     }
                 });
 
-                const filtered = items.map(item => item["Medicine Name"]);
-
-                if (filtered.length === 0) {
+                if (items.length === 0) {
                     dropdown.innerHTML = `<div class="no-results">No medicines found matching "${searchText}"</div>`;
                     dropdown.classList.add('show');
                     return;
                 }
 
                 dropdown.innerHTML = '';
-                filtered.slice(0, 10).forEach(name => {
+                items.slice(0, 15).forEach(item => {
+                    const id = item["Medicine ID"];
+                    const name = item["Medicine Name"];
+                    const dose = item["Dosage"] || '-';
+                    const price = item["Price ($)"] || '0.00';
+                    const displayText = `${name} (${dose}) - ${parseFloat(price).toFixed(2)}`;
+
                     const option = document.createElement('div');
                     option.className = 'option';
-                    const highlighted = name.replace(
-                        new RegExp(searchText, 'gi'),
-                        match => `<span class="highlight">${match}</span>`
-                    );
+                    const highlighted = highlightMatch(displayText, trimmed);
                     option.innerHTML = highlighted;
-                    option.onclick = () => selectBillMedicine(name);
+                    option.onclick = () => selectBillMedicine(id, name);
                     dropdown.appendChild(option);
                 });
                 dropdown.classList.add('show');
@@ -1865,27 +1876,21 @@
             }
         }
 
-        function selectBillMedicine(name) {
+        function selectBillMedicine(id, name) {
             document.getElementById('billMedInput').value = name;
-            document.getElementById('billMedSelect').value = name;
+            document.getElementById('billMedSelect').value = id;
             document.getElementById('billAutocompleteDropdown').classList.remove('show');
-            fillBillMedInfoByName(name);
+            fillBillMedInfoById(id);
         }
 
-        function fillBillMedInfoByName(name) {
-            const med = activeMedicines.find(m => m.name === name);
+        function fillBillMedInfoById(id) {
+            const med = activeMedicines.find(m => m.id === id);
             if (med) {
                 document.getElementById('billDose').value = med.dose || '-';
                 document.getElementById('billPrice').value = med.price || '0.00';
             } else {
-                const defaultMed = medicineOptions.find(m => m.name === name);
-                if (defaultMed) {
-                    document.getElementById('billDose').value = defaultMed.dose || '-';
-                    document.getElementById('billPrice').value = defaultMed.price || '0.00';
-                } else {
-                    document.getElementById('billDose').value = '';
-                    document.getElementById('billPrice').value = '';
-                }
+                document.getElementById('billDose').value = '';
+                document.getElementById('billPrice').value = '';
             }
         }
 
@@ -1955,38 +1960,40 @@
                 }
             }
 
-            const stored = sessionStorage.getItem('stockerProfile');
-            if (stored) {
-                const p = JSON.parse(stored);
-                p.name = username;
-                p.email = email;
-                if (newPass) {
-                    p.password = newPass;
-                }
-                sessionStorage.setItem('stockerProfile', JSON.stringify(p));
-
-                const ua = JSON.parse(localStorage.getItem('userAccount') || '{}');
-                if (ua.username === p.username) {
-                    ua.name = username;
-                    ua.email = email;
-                    if (newPass) ua.password = newPass;
-                    localStorage.setItem('userAccount', JSON.stringify(ua));
-                }
-
-                const all = JSON.parse(localStorage.getItem('smartMediStockUsers') || '{}');
-                if (all[p.username]) {
-                    all[p.username].name = username;
-                    all[p.username].email = email;
-                    if (newPass) all[p.username].password = newPass;
-                    localStorage.setItem('smartMediStockUsers', JSON.stringify(all));
-                }
+            const bodyPayload = {
+                username: USERNAME,
+                email: email,
+                name: username
+            };
+            if (newPass) {
+                bodyPayload.password = newPass;
             }
 
-            document.getElementById('settings-new-password').value = '';
-            document.getElementById('settings-confirm-password').value = '';
-
-            initProfile();
-            showToast('✅ Settings saved successfully!');
+            fetch(API_BASE + '/api/user/settings', {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(bodyPayload)
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.error) {
+                    showToast('❌ Failed to save settings on server: ' + data.error);
+                } else {
+                    const stored = sessionStorage.getItem('stockerProfile');
+                    if (stored) {
+                        const p = JSON.parse(stored);
+                        p.name = username;
+                        p.email = email;
+                        if (newPass) p.password = newPass;
+                        sessionStorage.setItem('stockerProfile', JSON.stringify(p));
+                    }
+                    showToast('✅ Settings saved successfully!');
+                }
+            })
+            .catch(err => {
+                showToast('❌ Server error updating settings');
+                console.error(err);
+            });
         }
 
         function resetSettingsForm() {
@@ -2029,17 +2036,41 @@
             const stored = sessionStorage.getItem('stockerProfile');
             if (!stored) return;
             const p = JSON.parse(stored);
-            p.name = document.getElementById('input-name').value;
-            p.email = document.getElementById('input-email').value;
+            const name = document.getElementById('input-name').value;
+            const email = document.getElementById('input-email').value;
             const np = document.getElementById('input-pass').value;
-            if (np) p.password = np;
-            sessionStorage.setItem('stockerProfile', JSON.stringify(p));
-            const ua = JSON.parse(localStorage.getItem('userAccount') || '{}');
-            if (ua.username === p.username) { ua.name = p.name; ua.email = p.email; if (np) ua.password = np; localStorage.setItem('userAccount', JSON.stringify(ua)); }
-            const all = JSON.parse(localStorage.getItem('smartMediStockUsers') || '{}');
-            if (all[p.username]) { all[p.username].name = p.name; all[p.username].email = p.email; if (np) all[p.username].password = np; localStorage.setItem('smartMediStockUsers', JSON.stringify(all)); }
-            initProfile();
-            showToast('✅ Profile Updated!');
+
+            const bodyPayload = {
+                username: p.username || USERNAME,
+                email: email,
+                name: name
+            };
+            if (np) {
+                bodyPayload.password = np;
+            }
+
+            fetch(API_BASE + '/api/user/settings', {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(bodyPayload)
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.error) {
+                    showToast('❌ Failed to update profile on server: ' + data.error);
+                } else {
+                    p.name = name;
+                    p.email = email;
+                    if (np) p.password = np;
+                    sessionStorage.setItem('stockerProfile', JSON.stringify(p));
+                    initProfile();
+                    showToast('✅ Profile Updated!');
+                }
+            })
+            .catch(err => {
+                showToast('❌ Server error updating profile');
+                console.error(err);
+            });
         }
 
         async function init() {
@@ -2061,7 +2092,7 @@
             const stockMap = {};
 
             try {
-                const res = await fetch('/api/medicines');
+                const res = await fetch(API_BASE + '/api/medicines');
                 if (res.ok) {
                     const items = await res.json();
                     items.forEach((item, i) => {
@@ -2172,8 +2203,8 @@
         }
 
         function fillBillMedInfo() {
-            const name = document.getElementById('billMedSelect').value;
-            const med = activeMedicines.find(m => m.name === name);
+            const id = document.getElementById('billMedSelect').value;
+            const med = activeMedicines.find(m => m.id === id);
             if (med) {
                 document.getElementById('billDose').value = med.dose || '-';
                 document.getElementById('billPrice').value = med.price || '0.00';
@@ -2184,20 +2215,20 @@
         }
 
         function generateBillFromForm() {
-            const name = document.getElementById('billMedSelect').value;
+            const id = document.getElementById('billMedSelect').value;
             const qty = parseInt(document.getElementById('billQty').value);
-            if (!name || isNaN(qty) || qty <= 0) { showToast('❌ Select medicine and valid quantity'); return; }
-            const med = activeMedicines.find(m => m.name === name);
+            if (!id || isNaN(qty) || qty <= 0) { showToast('❌ Select medicine and valid quantity'); return; }
+            const med = activeMedicines.find(m => m.id === id);
             if (!med) { showToast('❌ Medicine not found'); return; }
             if (qty > med.quantity) { showToast(`❌ Insufficient stock! Only ${med.quantity} left.`); return; }
 
-            const id = 'B-' + String(Math.floor(Math.random() * 9000) + 1000);
+            const billId = 'B-' + String(Math.floor(Math.random() * 9000) + 1000);
             const date = new Date().toISOString().split('T')[0];
             const display = med.dose && med.dose !== '-' ? `${med.name} (${med.dose})` : med.name;
-            const bill = { id, med: display, qty, date, hospital_name: HOSPITAL_NAME };
+            const bill = { id: billId, med: display, qty, date, hospital_name: HOSPITAL_NAME };
             
             // Deduct stock in database
-            fetch('/api/medicines/dispatch', {
+            fetch(API_BASE + '/api/medicines/dispatch', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -2261,7 +2292,7 @@
 
         async function loadOrders() {
             try {
-                const response = await fetch(`/api/orders/executive/status?hospital_name=${encodeURIComponent(HOSPITAL_NAME)}`);
+                const response = await fetch(API_BASE + `/api/orders/executive/status?hospital_name=${encodeURIComponent(HOSPITAL_NAME)}`);
                 if (response.ok) {
                     const dbOrders = await response.json();
                     orders = dbOrders.map(o => ({
@@ -2402,7 +2433,7 @@
             const vendorName = document.getElementById('settings-vendor')?.value || profile.vendor || profile.vendor_name || '';
 
             // Send order to server
-            fetch('/api/orders/place', {
+            fetch(API_BASE + '/api/orders/place', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -2656,7 +2687,8 @@
             if (!mfg || !expiry || !qty) { showToast('❌ Please fill manufacture date, expiry date and quantity'); return; }
             if (parseInt(qty) <= 0) { showToast('❌ Quantity must be greater than 0'); return; }
 
-            const existing = activeMedicines.find(m => m.name.toLowerCase() === name.toLowerCase());
+            const selectedId = document.getElementById('manualNameInput').dataset.selectedId || '';
+            const existing = activeMedicines.find(m => (selectedId && m.id === selectedId) || (m.name.toLowerCase() === name.toLowerCase() && m.dose === dose));
             let qtyBefore = 0;
             let qtyAfter = 0;
 
@@ -2668,7 +2700,7 @@
                 qtyAfter = existing.quantity;
             } else {
                 const newMed = {
-                    id: `MED-${Math.floor(Math.random() * 9000) + 1000}`,
+                    id: selectedId || `MED-${Math.floor(Math.random() * 9000) + 1000}`,
                     name,
                     dose: dose || '-',
                     mfg: mfg || '2024-01-01',
@@ -2682,10 +2714,11 @@
             }
 
             // Sync with database
-            fetch('/api/medicines/restock', {
+            fetch(API_BASE + '/api/medicines/restock', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
+                    medicine_id: selectedId,
                     medicine_name: name,
                     quantity: parseInt(qty, 10),
                     dosage: dose || '-',
@@ -2863,62 +2896,94 @@
             const period = document.getElementById('predPeriodFilter')?.value || 'weekly';
             const pr = document.getElementById('prBody');
 
-            const historicalSales = bills.reduce((acc, bill) => {
-                const medName = bill.med;
-                if (!acc[medName]) acc[medName] = [];
-                acc[medName].push({ date: bill.date, qty: bill.qty });
-                return acc;
-            }, {});
+            let predictions = [];
+            try {
+                const response = await fetch(`${API_BASE}/api/prediction/forecast?limit=12&period=${period}`);
+                if (!response.ok) throw new Error('API error');
+                const data = await response.json();
+                predictions = data.map(item => {
+                    let predicted = item.weekly_demand;
+                    if (period === 'daily') predicted = item.daily_demand;
+                    if (period === 'monthly') predicted = item.monthly_demand;
+                    
+                    const currentStock = item.current_stock;
+                    let status = "Stable";
+                    let confidence = 85;
+                    if (predicted > currentStock * 1.5) {
+                        status = "Critical Risk";
+                        confidence = 90;
+                    } else if (predicted > currentStock * 1.1) {
+                        status = "Moderate Restock";
+                        confidence = 75;
+                    }
+                    
+                    return {
+                        medicine_id: item.id,
+                        medicine_name: item.name,
+                        current_stock: currentStock,
+                        predicted_demand: predicted,
+                        status: status,
+                        confidence: confidence
+                    };
+                });
+            } catch (err) {
+                console.error('Failed to load predictions from backend:', err);
+                const historicalSales = bills.reduce((acc, bill) => {
+                    const medName = bill.med;
+                    if (!acc[medName]) acc[medName] = [];
+                    acc[medName].push({ date: bill.date, qty: bill.qty });
+                    return acc;
+                }, {});
 
-            const medicineData = activeMedicines.map(m => ({
-                id: m.id,
-                name: m.name,
-                currentStock: m.quantity,
-                historical: historicalSales[m.name] || []
-            }));
+                const medicineData = activeMedicines.map(m => ({
+                    id: m.id,
+                    name: m.name,
+                    currentStock: m.quantity,
+                    historical: historicalSales[m.name] || []
+                }));
 
-            medicineData.sort((a, b) => a.name.localeCompare(b.name));
-            const topMeds = medicineData.slice(0, 12);
+                medicineData.sort((a, b) => a.name.localeCompare(b.name));
+                const topMeds = medicineData.slice(0, 12);
 
-            const predictions = topMeds.map(med => {
-                const hist = med.historical;
-                let predicted = med.currentStock * 0.8;
+                predictions = topMeds.map(med => {
+                    const hist = med.historical;
+                    let predicted = med.currentStock * 0.8;
 
-                if (hist.length > 0) {
-                    const totalQty = hist.reduce((sum, h) => sum + h.qty, 0);
-                    const avgSales = totalQty / Math.max(hist.length, 1);
-                    const recent = hist.slice(-7);
-                    const recentAvg = recent.length > 0 ? recent.reduce((s, h) => s + h.qty, 0) / recent.length : avgSales;
-                    const dailyDemand = Math.max(recentAvg, avgSales * 0.5);
-                    const weeks = period === 'weekly' ? 4 : 8;
-                    predicted = dailyDemand * weeks * 0.9 + med.currentStock * 0.3;
-                }
+                    if (hist.length > 0) {
+                        const totalQty = hist.reduce((sum, h) => sum + h.qty, 0);
+                        const avgSales = totalQty / Math.max(hist.length, 1);
+                        const recent = hist.slice(-7);
+                        const recentAvg = recent.length > 0 ? recent.reduce((s, h) => s + h.qty, 0) / recent.length : avgSales;
+                        const dailyDemand = Math.max(recentAvg, avgSales * 0.5);
+                        const weeks = period === 'weekly' ? 4 : 8;
+                        predicted = dailyDemand * weeks * 0.9 + med.currentStock * 0.3;
+                    }
 
-                const yearFactor = 1 + (parseInt(year) - 2024) * 0.05;
-                predicted = Math.max(10, Math.round(predicted * yearFactor));
+                    const yearFactor = 1 + (parseInt(year) - 2024) * 0.05;
+                    predicted = Math.max(10, Math.round(predicted * yearFactor));
 
-                let status, confidence;
-                if (predicted > med.currentStock * 1.5) {
-                    status = "Critical Risk";
-                    confidence = Math.round(70 + Math.random() * 20);
-                } else if (predicted > med.currentStock * 1.1) {
-                    status = "Moderate Restock";
-                    confidence = Math.round(70 + Math.random() * 20);
-                } else {
-                    status = "Stable";
-                    confidence = Math.round(75 + Math.random() * 20);
-                }
+                    let status, confidence;
+                    if (predicted > med.currentStock * 1.5) {
+                        status = "Critical Risk";
+                        confidence = Math.round(70 + Math.random() * 20);
+                    } else if (predicted > med.currentStock * 1.1) {
+                        status = "Moderate Restock";
+                        confidence = Math.round(70 + Math.random() * 20);
+                    } else {
+                        status = "Stable";
+                        confidence = Math.round(75 + Math.random() * 20);
+                    }
 
-                return {
-                    medicine_id: med.id,
-                    medicine_name: med.name,
-                    current_stock: med.currentStock,
-                    predicted_demand: predicted,
-                    status: status,
-                    confidence: confidence,
-                    historical_days: hist.length
-                };
-            });
+                    return {
+                        medicine_id: med.id,
+                        medicine_name: med.name,
+                        current_stock: med.currentStock,
+                        predicted_demand: predicted,
+                        status: status,
+                        confidence: confidence
+                    };
+                });
+            }
 
             if (pr) {
                 pr.innerHTML = '';

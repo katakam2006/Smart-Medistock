@@ -1484,6 +1484,7 @@
     </main>
 
     <script>
+        const API_BASE = window.location.port === '3000' ? '' : 'http://localhost:3000';
         const HOSPITAL_NAME = sessionStorage.getItem('hospitalName') || '';
         const USERNAME = sessionStorage.getItem('username') || 'ceo';
         const USER_ROLE = sessionStorage.getItem('userRole') || 'CEO';
@@ -1562,7 +1563,7 @@
 
         async function loadMedicines() {
             try {
-                const response = await fetch('/api/medicines');
+                const response = await fetch(API_BASE + '/api/medicines');
                 if (!response.ok) throw new Error('Failed to fetch medicines');
                 const data = await response.json();
                 inventoryData = data.map(item => ({
@@ -2282,15 +2283,39 @@
             }
         }
 
-        function runPrediction() {
+        async function runPrediction() {
             const period = document.getElementById('pred-period').value;
-            predictionData = inventoryData.map(m => {
-                const baseDemand = m.stock * 0.3 + 50;
-                const multiplier = period === 'weekly' ? 1.2 : period === 'monthly' ? 1.5 : 2.0;
-                const predicted = Math.round(baseDemand * multiplier + Math.random() * 20);
-                const status = predicted > m.stock * 1.5 ? 'Critical' : predicted > m.stock * 1.2 ? 'Moderate' : 'Stable';
-                return { name: m.name, currentStock: m.stock, predicted, status };
-            });
+            const limit = 15;
+            try {
+                const response = await fetch(`${API_BASE}/api/prediction/forecast?limit=${limit}&period=${period}`);
+                if (!response.ok) throw new Error('Prediction API failed');
+                const data = await response.json();
+                
+                predictionData = data.map(item => {
+                    let predicted = item.weekly_demand;
+                    if (period === 'daily') predicted = item.daily_demand;
+                    if (period === 'monthly') predicted = item.monthly_demand;
+                    
+                    const currentStock = item.current_stock;
+                    const status = predicted > currentStock * 1.5 ? 'Critical' : predicted > currentStock * 1.2 ? 'Moderate' : 'Stable';
+                    return {
+                        name: item.name,
+                        currentStock: currentStock,
+                        predicted: predicted,
+                        status: status
+                    };
+                });
+            } catch (err) {
+                console.error('Failed to run AI prediction:', err);
+                // Fallback to mock prediction if API fails
+                predictionData = inventoryData.map(m => {
+                    const baseDemand = m.stock * 0.3 + 50;
+                    const multiplier = period === 'weekly' ? 1.2 : period === 'monthly' ? 1.5 : 2.0;
+                    const predicted = Math.round(baseDemand * multiplier + Math.random() * 20);
+                    const status = predicted > m.stock * 1.5 ? 'Critical' : predicted > m.stock * 1.2 ? 'Moderate' : 'Stable';
+                    return { name: m.name, currentStock: m.stock, predicted, status };
+                });
+            }
             updatePredictionChart();
             renderPredictionTable();
         }
@@ -2395,16 +2420,41 @@
                 }
             }
 
-            const profile = { username, email, name: username, role: 'Chief Executive Officer' };
-            if (newPass) profile.password = newPass;
-            sessionStorage.setItem('ceoProfile', JSON.stringify(profile));
+            const bodyPayload = {
+                username: USERNAME,
+                email: email,
+                name: username
+            };
+            if (newPass) {
+                bodyPayload.password = newPass;
+            }
 
-            document.getElementById('ceo-name').innerText = username || 'CEO';
-            document.getElementById('ceo-avatar').src =
-                `https://ui-avatars.com/api/?name=${encodeURIComponent(username || 'CEO')}&background=3B82F6&color=fff`;
-            document.getElementById('settings-new-password').value = '';
-            document.getElementById('settings-confirm-password').value = '';
-            showToast('✅ Settings saved successfully!');
+            fetch(API_BASE + '/api/user/settings', {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(bodyPayload)
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.error) {
+                    showToast('❌ Failed to save settings on server: ' + data.error);
+                } else {
+                    const profile = { username, email, name: username, role: 'Chief Executive Officer' };
+                    if (newPass) profile.password = newPass;
+                    sessionStorage.setItem('ceoProfile', JSON.stringify(profile));
+
+                    document.getElementById('ceo-name').innerText = username || 'CEO';
+                    document.getElementById('ceo-avatar').src =
+                        `https://ui-avatars.com/api/?name=${encodeURIComponent(username || 'CEO')}&background=3B82F6&color=fff`;
+                    document.getElementById('settings-new-password').value = '';
+                    document.getElementById('settings-confirm-password').value = '';
+                    showToast('✅ Settings saved successfully!');
+                }
+            })
+            .catch(err => {
+                showToast('❌ Server error updating settings');
+                console.error(err);
+            });
         }
 
         function showSection(sectionId, el) {
