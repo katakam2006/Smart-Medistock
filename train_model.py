@@ -158,6 +158,12 @@ def run_vectorized_predictions(df_predict, ai_agent, category_mapping, medicine_
     """Runs predictions in a single vectorized batch call to maximize execution speed."""
     print(f"🔮 Running vectorized predictions for {len(df_predict)} unique medicines...", file=sys.stderr)
     
+    from datetime import datetime, timedelta
+    now = datetime.now()
+    tomorrow = now + timedelta(days=1)
+    next_week = now + timedelta(days=7)
+    next_month = now + timedelta(days=30)
+    
     input_rows = []
     metadata = []
     
@@ -175,18 +181,21 @@ def run_vectorized_predictions(df_predict, ai_agent, category_mapping, medicine_
             
         avg_stock_out = historical_stock_out
 
+        dosage = str(row.get("Dosage", "-"))
+
         med_code = medicine_mapping.get(med_name, 0)
         cat_code = category_mapping.get(category, 0)
 
         # Batch inputs using avg_stock_out to avoid model saturation
-        input_rows.append([med_code, cat_code, price, avg_stock_out, 5, 1, 2026])
-        input_rows.append([med_code, cat_code, price, avg_stock_out, 12, 1, 2026])
-        input_rows.append([med_code, cat_code, price, avg_stock_out, 5, 2, 2026])
+        input_rows.append([med_code, cat_code, price, avg_stock_out, tomorrow.day, tomorrow.month, tomorrow.year])
+        input_rows.append([med_code, cat_code, price, avg_stock_out, next_week.day, next_week.month, next_week.year])
+        input_rows.append([med_code, cat_code, price, avg_stock_out, next_month.day, next_month.month, next_month.year])
         
         metadata.append({
             "id": str(row["Medicine ID"]),
             "name": med_name,
             "category": category,
+            "dosage": dosage,
             "current_stock": available_units,
             "stock_out_history": int(historical_stock_out),
             "record_count": record_count
@@ -206,6 +215,7 @@ def run_vectorized_predictions(df_predict, ai_agent, category_mapping, medicine_
             "id": meta["id"],
             "name": meta["name"],
             "category": meta["category"],
+            "dosage": meta["dosage"],
             "current_stock": meta["current_stock"],
             "stock_out_history": meta["stock_out_history"],
             "daily_demand": daily_pred,

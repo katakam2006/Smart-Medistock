@@ -483,7 +483,7 @@ app.get('/api/alerts/active', async (req, res) => {
 
     try {
         const [rows] = await db.query(query, params);
-        console.log(`📊 Retrieved ${rows.length} active pending alerts for ${hospitalName}`);
+        // console.log(`📊 Retrieved ${rows.length} active pending alerts for ${hospitalName}`);
         res.json(rows);
     } catch (err) {
         console.error('Error fetching alerts:', err);

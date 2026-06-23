@@ -904,7 +904,8 @@
                     </div>
                 </div>
                 <div class="card forecast-card">
-                    <h3>🤖 AI Forecast</h3>
+                    <h3 style="margin-bottom: 4px;">🤖 AI Forecast</h3>
+
                     <div id="forecast-items">
                         <div class="forecast-item">
                             <span>Loading predictions...</span>
@@ -1284,6 +1285,7 @@
                         <button class="btn-refresh" onclick="runPrediction()">🔄 Refresh</button>
                     </div>
                 </div>
+
                 <div class="chart-container" style="height:300px;">
                     <canvas id="predictionChart"></canvas>
                 </div>
@@ -1811,13 +1813,28 @@
             `).join('') || '<tr><td colspan="4" style="text-align:center;color:#94A3B8;">No stock-in entries</td></tr>';
         }
 
-        function renderForecast() {
+        async function renderForecast() {
             const container = document.getElementById('forecast-items');
-            const topMeds = inventoryData.sort((a, b) => b.stock - a.stock).slice(0, 4);
-            container.innerHTML = topMeds.map(m => {
-                const predicted = Math.round(m.stock * 1.3 + Math.random() * 50);
-                return `<div class="forecast-item"><span>${m.name}</span><strong>+${predicted} units</strong></div>`;
-            }).join('');
+            try {
+                const response = await fetch(`${API_BASE}/api/prediction/forecast?limit=4&period=weekly`);
+                if (!response.ok) throw new Error('API failed');
+                const data = await response.json();
+                
+                if (data && data.length > 0) {
+                    container.innerHTML = data.map(m => {
+                        return `<div class="forecast-item"><span>${m.name}</span><strong>+${m.weekly_demand.toLocaleString()} units</strong></div>`;
+                    }).join('');
+                } else {
+                    container.innerHTML = '<div class="forecast-item">No predictions available</div>';
+                }
+            } catch (err) {
+                console.error('Failed to load forecast widget:', err);
+                const topMeds = inventoryData.sort((a, b) => b.stock - a.stock).slice(0, 4);
+                container.innerHTML = topMeds.map(m => {
+                    const predicted = Math.round(m.stock * 1.3);
+                    return `<div class="forecast-item"><span>${m.name}</span><strong>+${predicted.toLocaleString()} units</strong></div>`;
+                }).join('');
+            }
         }
 
         function renderMedicines() {
@@ -2300,6 +2317,7 @@
                     const status = predicted > currentStock * 1.5 ? 'Critical' : predicted > currentStock * 1.2 ? 'Moderate' : 'Stable';
                     return {
                         name: item.name,
+                        dosage: item.dosage || '-',
                         currentStock: currentStock,
                         predicted: predicted,
                         status: status
@@ -2313,7 +2331,7 @@
                     const multiplier = period === 'weekly' ? 1.2 : period === 'monthly' ? 1.5 : 2.0;
                     const predicted = Math.round(baseDemand * multiplier + Math.random() * 20);
                     const status = predicted > m.stock * 1.5 ? 'Critical' : predicted > m.stock * 1.2 ? 'Moderate' : 'Stable';
-                    return { name: m.name, currentStock: m.stock, predicted, status };
+                    return { name: m.name, dosage: m.dosage || '-', currentStock: m.stock, predicted, status };
                 });
             }
             updatePredictionChart();
@@ -2352,7 +2370,7 @@
                 if (p.status === 'Critical') statusClass = 'status-badge critical';
                 else if (p.status === 'Moderate') statusClass = 'status-badge low';
                 return `<tr>
-                    <td><strong>${p.name}</strong></td>
+                    <td><strong>${p.name}</strong><br><small style="color:#64748b;">Dosage: ${p.dosage || '-'}</small></td>
                     <td>${p.currentStock}</td>
                     <td style="color:#EF4444; font-weight:700;">${p.predicted}</td>
                     <td><span class="${statusClass}">${p.status}</span></td>
