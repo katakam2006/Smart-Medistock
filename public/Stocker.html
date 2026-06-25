@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Stocker Dashboard · Smart MediStock</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         * {
@@ -1007,6 +1008,70 @@
             text-align: center;
             font-size: 0.85rem;
         }
+
+        .pagination-container {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 20px;
+            margin-top: 15px;
+            padding: 10px 0;
+            border-top: 1px solid #e2e8f0;
+            font-size: 14px;
+            color: #475569;
+        }
+        .pagination-size {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .pagination-size select {
+            padding: 6px 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            outline: none;
+            background: #ffffff;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .pagination-size select:hover {
+            border-color: #94a3b8;
+        }
+        .pagination-info {
+            font-weight: 500;
+        }
+        .pagination-buttons {
+            display: flex;
+            gap: 6px;
+        }
+        .btn-pagination {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            padding: 0;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            background: #ffffff;
+            color: #475569;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .btn-pagination:hover:not(:disabled) {
+            background: #f8fafc;
+            border-color: #94a3b8;
+            color: #1e293b;
+        }
+        .btn-pagination:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+        .btn-pagination svg {
+            width: 16px;
+            height: 16px;
+        }
     </style>
 </head>
 
@@ -1254,6 +1319,32 @@
                             </thead>
                             <tbody id="medMasterBody"></tbody>
                         </table>
+                        <div class="pagination-container">
+                            <div class="pagination-size">
+                                <label for="med-page-size">Items per page:</label>
+                                <select id="med-page-size" onchange="changePageSize(this.value)">
+                                    <option value="10">10</option>
+                                    <option value="25">25</option>
+                                    <option value="50">50</option>
+                                    <option value="100" selected>100</option>
+                                </select>
+                            </div>
+                            <div class="pagination-info" id="pagination-info">1 - 100 of 4000</div>
+                            <div class="pagination-buttons">
+                                <button class="btn btn-pagination" id="btn-first" onclick="gotoFirstPage()" title="First Page">
+                                    <i data-lucide="chevrons-left"></i>
+                                </button>
+                                <button class="btn btn-pagination" id="btn-prev" onclick="gotoPrevPage()" title="Previous Page">
+                                    <i data-lucide="chevron-left"></i>
+                                </button>
+                                <button class="btn btn-pagination" id="btn-next" onclick="gotoNextPage()" title="Next Page">
+                                    <i data-lucide="chevron-right"></i>
+                                </button>
+                                <button class="btn btn-pagination" id="btn-last" onclick="gotoLastPage()" title="Last Page">
+                                    <i data-lucide="chevrons-right"></i>
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -1506,11 +1597,12 @@
                             <option value="weekly">Weekly (4 Weeks)</option>
                             <option value="monthly">Monthly (2 Months)</option>
                         </select>
-                        <label style="font-weight:600;font-size:0.85rem;margin-left:15px;">Year:</label>
-                        <select id="yearFilter" onchange="renderPredictionChart()">
-                            <option value="2024">2024</option>
-                            <option value="2025">2025</option>
-                            <option value="2026" selected>2026</option>
+                        <label style="font-weight:600;font-size:0.85rem;margin-left:15px;">Filter:</label>
+                        <select id="predStatusFilter" onchange="filterPredictionTable()">
+                            <option value="all">All Predictions</option>
+                            <option value="low">Low Stock</option>
+                            <option value="expiry">Expiry Risk</option>
+                            <option value="billing">Recent Bills</option>
                         </select>
                         <button class="btn" onclick="renderPredictionChart()"><i class="fas fa-sync-alt"></i> Refresh
                             Prediction</button>
@@ -1647,6 +1739,11 @@
         const USER_ROLE = sessionStorage.getItem('userRole') || 'Stocker';
 
         let activeMedicines = [];
+        let currentPage = 1;
+        let pageSize = 100;
+        let totalItems = 0;
+        let searchQuery = "";
+        let pageInventoryData = [];
         let bills = [];
         let orders = [];
         let stockInHistory = [];
@@ -1655,6 +1752,7 @@
         let currentMedicineStock = 0;
         let predChartInstance = null;
         let mainChartInstance = null;
+        let allPredictions = [];
         let orderStatus = {};
 
         const medicineOptions = [
@@ -1713,8 +1811,8 @@
         }
 
         function filterExpiryItems(items, filterType) {
-            if (filterType === 'all') return items;
-            if (filterType === 'expired') return items.filter(m => m.daysLeft < 0);
+            if (filterType === 'all') return items.filter(m => m.daysLeft !== null && m.daysLeft >= -30 && m.daysLeft <= 30);
+            if (filterType === 'expired') return items.filter(m => m.daysLeft >= -30 && m.daysLeft < 0);
             if (filterType === 'critical') return items.filter(m => m.daysLeft >= 0 && m.daysLeft <= 15);
             if (filterType === 'warning') return items.filter(m => m.daysLeft > 15 && m.daysLeft <= 30);
             return items;
@@ -1743,7 +1841,7 @@
             }
 
             try {
-                const response = await fetch(API_BASE + `/api/medicines?search=${encodeURIComponent(trimmed)}&limit=15`);
+                const response = await fetch(API_BASE + `/api/medicines?search=${encodeURIComponent(trimmed)}&limit=15&hospital_name=${encodeURIComponent(HOSPITAL_NAME)}`);
                 if (!response.ok) throw new Error("Could not reach backend");
                 const items = await response.json();
 
@@ -1824,7 +1922,7 @@
             }
 
             try {
-                const response = await fetch(API_BASE + `/api/medicines?search=${encodeURIComponent(trimmed)}&limit=15`);
+                const response = await fetch(API_BASE + `/api/medicines?search=${encodeURIComponent(trimmed)}&limit=15&hospital_name=${encodeURIComponent(HOSPITAL_NAME)}`);
                 if (!response.ok) throw new Error("Could not reach backend");
                 const items = await response.json();
 
@@ -2076,7 +2174,7 @@
             const list = document.getElementById('live-forecast-list');
             if (!list) return;
             try {
-                const response = await fetch(`${API_BASE}/api/prediction/forecast?limit=3&period=weekly`);
+                const response = await fetch(`${API_BASE}/api/prediction/forecast?limit=3&period=weekly&hospital_name=${encodeURIComponent(HOSPITAL_NAME)}`);
                 if (!response.ok) throw new Error('API failed');
                 const data = await response.json();
                 if (data && data.length > 0) {
@@ -2101,7 +2199,9 @@
         }
 
         async function init() {
+            lucide.createIcons();
             initProfile();
+            await loadOrders();
             await loadData();
             renderCharts();
             renderDashTables();
@@ -2120,7 +2220,7 @@
             const stockMap = {};
 
             try {
-                const res = await fetch(API_BASE + '/api/medicines');
+                const res = await fetch(API_BASE + '/api/medicines?limit=4000&hospital_name=' + encodeURIComponent(HOSPITAL_NAME));
                 if (res.ok) {
                     const items = await res.json();
                     items.forEach((item, i) => {
@@ -2178,8 +2278,15 @@
 
             activeMedicines = Object.values(stockMap);
 
-            stockInHistory = JSON.parse(localStorage.getItem('stockInHistory') || '[]');
-            stockInHistory = stockInHistory.filter(item => item.hospital_name === HOSPITAL_NAME || !item.hospital_name);
+            stockInHistory = JSON.parse(localStorage.getItem('stockInHistory') || '[]').map(s => ({
+                ...s,
+                quantity: s.quantity !== undefined ? s.quantity : (s.qty !== undefined ? s.qty : 0),
+                qty: s.qty !== undefined ? s.qty : (s.quantity !== undefined ? s.quantity : 0)
+            }));
+            stockInHistory = stockInHistory.filter(item => {
+                if (!item.hospital_name || !HOSPITAL_NAME) return true;
+                return item.hospital_name.trim().toLowerCase() === HOSPITAL_NAME.trim().toLowerCase();
+            });
             renderStockInHistory();
 
             bills = JSON.parse(localStorage.getItem('bills') || '[]');
@@ -2189,7 +2296,7 @@
 
             renderDashTables();
             renderAlertTables();
-            renderMedicineMaster();
+            await fetchPage();
         }
 
         function fillStockInMedInfo() {
@@ -2207,7 +2314,7 @@
         function renderMedicineMaster() {
             const body = document.getElementById('medMasterBody');
             body.innerHTML = '';
-            activeMedicines.forEach((m) => {
+            pageInventoryData.forEach((m) => {
                 const daysLeft = getDaysLeft(m.expiry);
                 const expiryClass = getExpiryClass(daysLeft);
                 const badgeClass = getDaysBadgeClass(daysLeft);
@@ -2228,6 +2335,108 @@
           <td>${m.quantity || 0}</td>
         </tr>`;
             });
+        }
+
+        async function fetchPage() {
+            try {
+                const offset = (currentPage - 1) * pageSize;
+                const response = await fetch(API_BASE + `/api/medicines?limit=${pageSize}&offset=${offset}&search=${encodeURIComponent(searchQuery)}&hospital_name=${encodeURIComponent(HOSPITAL_NAME)}`);
+                if (!response.ok) throw new Error("Could not fetch paginated page");
+                
+                const totalHeader = response.headers.get('X-Total-Count');
+                if (totalHeader) {
+                    totalItems = parseInt(totalHeader, 10);
+                } else {
+                    totalItems = 4000;
+                }
+
+                const datasetItems = await response.json();
+                pageInventoryData = datasetItems.map((item, i) => {
+                    const name = item["Medicine Name"] || 'Unknown';
+                    const rawPrice = item["Price ($)"] || item.Price || 15;
+                    const stockVal = parseInt(item["No. of Units"] || item.Quantity || 0, 10) || 0;
+                    return {
+                        id: item["Medicine ID"] || `MED-${1000 + i}`,
+                        name: name,
+                        category: item["Category"] || 'General',
+                        quantity: stockVal,
+                        dose: item["Dosage"] || '-',
+                        price: parseFloat(rawPrice).toFixed(2),
+                        expiry: item["Expiry Date"] || "2026-12-31",
+                        mfg: item["Manufacture Date"] || '2024-01-01'
+                    };
+                });
+
+                renderMedicineMaster();
+                updatePaginationControls();
+            } catch (err) {
+                console.error("Pagination error, falling back to client-side page slicing", err);
+                const filtered = activeMedicines.filter(m => 
+                    m.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                    m.id.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                    m.category.toLowerCase().includes(searchQuery.toLowerCase())
+                );
+                totalItems = filtered.length;
+                const offset = (currentPage - 1) * pageSize;
+                pageInventoryData = filtered.slice(offset, offset + pageSize);
+                renderMedicineMaster();
+                updatePaginationControls();
+            }
+        }
+
+        function updatePaginationControls() {
+            const start = totalItems === 0 ? 0 : (currentPage - 1) * pageSize + 1;
+            const end = Math.min(currentPage * pageSize, totalItems);
+            
+            const info = document.getElementById('pagination-info');
+            if (info) {
+                info.innerText = `${start} - ${end} of ${totalItems}`;
+            }
+
+            const totalPages = Math.ceil(totalItems / pageSize) || 1;
+            
+            document.getElementById('btn-first').disabled = (currentPage === 1);
+            document.getElementById('btn-prev').disabled = (currentPage === 1);
+            document.getElementById('btn-next').disabled = (currentPage === totalPages);
+            document.getElementById('btn-last').disabled = (currentPage === totalPages);
+
+            lucide.createIcons();
+        }
+
+        function changePageSize(size) {
+            pageSize = parseInt(size, 10);
+            currentPage = 1;
+            fetchPage();
+        }
+
+        function gotoFirstPage() {
+            if (currentPage > 1) {
+                currentPage = 1;
+                fetchPage();
+            }
+        }
+
+        function gotoPrevPage() {
+            if (currentPage > 1) {
+                currentPage--;
+                fetchPage();
+            }
+        }
+
+        function gotoNextPage() {
+            const totalPages = Math.ceil(totalItems / pageSize) || 1;
+            if (currentPage < totalPages) {
+                currentPage++;
+                fetchPage();
+            }
+        }
+
+        function gotoLastPage() {
+            const totalPages = Math.ceil(totalItems / pageSize) || 1;
+            if (currentPage < totalPages) {
+                currentPage = totalPages;
+                fetchPage();
+            }
         }
 
         function fillBillMedInfo() {
@@ -2253,7 +2462,7 @@
             const billId = 'B-' + String(Math.floor(Math.random() * 9000) + 1000);
             const date = new Date().toISOString().split('T')[0];
             const display = med.dose && med.dose !== '-' ? `${med.name} (${med.dose})` : med.name;
-            const bill = { id: billId, med: display, qty, date, hospital_name: HOSPITAL_NAME };
+            const bill = { id: billId, med: display, medicine: display, qty, date, hospital_name: HOSPITAL_NAME };
             
             // Deduct stock in database
             fetch(API_BASE + '/api/medicines/dispatch', {
@@ -2262,7 +2471,8 @@
                 body: JSON.stringify({
                     medicine_id: med.id,
                     medicine_name: med.name,
-                    quantity: qty
+                    quantity: qty,
+                    hospital_name: HOSPITAL_NAME
                 })
             })
             .then(res => {
@@ -2299,7 +2509,13 @@
         function renderBills() {
             const filter = document.getElementById('stockoutFilter')?.value || 'daily';
             const billBody = document.getElementById('billBody');
-            let filtered = bills.filter(b => b.hospital_name === HOSPITAL_NAME || !b.hospital_name);
+            let filtered = bills.filter(b => {
+                if (!b.hospital_name || !HOSPITAL_NAME) return true;
+                return b.hospital_name.trim().toLowerCase() === HOSPITAL_NAME.trim().toLowerCase();
+            }).map(b => ({
+                ...b,
+                med: b.med || b.medicine || ''
+            }));
             const now = new Date();
 
             if (filter === 'daily') {
@@ -2340,7 +2556,10 @@
                 orders = JSON.parse(localStorage.getItem('orders') || '[]');
             }
 
-            orders = orders.filter(o => o.hospital_name === HOSPITAL_NAME || !o.hospital_name);
+            orders = orders.filter(o => {
+                if (!o.hospital_name || !HOSPITAL_NAME) return true;
+                return o.hospital_name.trim().toLowerCase() === HOSPITAL_NAME.trim().toLowerCase();
+            });
 
             // Update orderStatus mapping
             orderStatus = {};
@@ -2381,15 +2600,21 @@
         function renderStockInHistory() {
             const filter = document.getElementById('stockinFilter')?.value || 'all';
             const siBody = document.getElementById('siBody');
-            let filtered = stockInHistory.filter(item => item.hospital_name === HOSPITAL_NAME || !item.hospital_name);
+            let filtered = stockInHistory.filter(item => {
+                if (!item.hospital_name || !HOSPITAL_NAME) return true;
+                return item.hospital_name.trim().toLowerCase() === HOSPITAL_NAME.trim().toLowerCase();
+            });
+
+            const now = new Date();
+            const todayStr = now.toISOString().split('T')[0];
 
             if (filter === 'daily') {
-                const today = new Date().toISOString().split('T')[0];
-                filtered = filtered.filter(item => item.date === today);
+                filtered = filtered.filter(item => item.date === todayStr);
             } else if (filter === 'weekly') {
-                const weekAgo = new Date();
+                const weekAgo = new Date(now);
                 weekAgo.setDate(weekAgo.getDate() - 7);
-                filtered = filtered.filter(item => new Date(item.date) >= weekAgo);
+                const weekAgoStr = weekAgo.toISOString().split('T')[0];
+                filtered = filtered.filter(item => item.date >= weekAgoStr);
             }
 
             siBody.innerHTML = '';
@@ -2753,7 +2978,8 @@
                     price: parseFloat(price) || 0.00,
                     category: existing ? existing.category : 'General',
                     mfg: mfg,
-                    expiry: expiry
+                    expiry: expiry,
+                    hospital_name: HOSPITAL_NAME
                 })
             })
             .then(res => {
@@ -2922,11 +3148,10 @@
 
             const year = document.getElementById('yearFilter')?.value || '2026';
             const period = document.getElementById('predPeriodFilter')?.value || 'weekly';
-            const pr = document.getElementById('prBody');
 
             let predictions = [];
             try {
-                const response = await fetch(`${API_BASE}/api/prediction/forecast?limit=12&period=${period}`);
+                const response = await fetch(`${API_BASE}/api/prediction/forecast?limit=100&period=${period}&hospital_name=${encodeURIComponent(HOSPITAL_NAME)}`);
                 if (!response.ok) throw new Error('API error');
                 const data = await response.json();
                 predictions = data.map(item => {
@@ -2952,7 +3177,8 @@
                         current_stock: currentStock,
                         predicted_demand: predicted,
                         status: status,
-                        confidence: confidence
+                        confidence: confidence,
+                        stock_out_history: item.stock_out_history || 0
                     };
                 });
             } catch (err) {
@@ -2969,11 +3195,12 @@
                     name: m.name,
                     dosage: m.dose || '-',
                     currentStock: m.quantity,
-                    historical: historicalSales[m.name] || []
+                    historical: historicalSales[m.name] || [],
+                    stock_out_history: m.stock_out_units || 0
                 }));
 
                 medicineData.sort((a, b) => a.name.localeCompare(b.name));
-                const topMeds = medicineData.slice(0, 12);
+                const topMeds = medicineData;
 
                 predictions = topMeds.map(med => {
                     const hist = med.historical;
@@ -3011,14 +3238,42 @@
                         current_stock: med.currentStock,
                         predicted_demand: predicted,
                         status: status,
-                        confidence: confidence
+                        confidence: confidence,
+                        stock_out_history: med.stock_out_history
                     };
                 });
             }
 
-            if (pr) {
-                pr.innerHTML = '';
-                predictions.forEach(p => {
+            allPredictions = predictions;
+            filterPredictionTable();
+        }
+
+        function filterPredictionTable() {
+            const filterVal = document.getElementById('predStatusFilter')?.value || 'all';
+            const pr = document.getElementById('prBody');
+            if (!pr) return;
+
+            let filtered = [...allPredictions];
+
+            if (filterVal === 'low') {
+                filtered = filtered.filter(p => p.current_stock < 100);
+            } else if (filterVal === 'expiry') {
+                filtered = filtered.filter(p => {
+                    const matches = activeMedicines.filter(m => m.name.toLowerCase() === p.medicine_name.toLowerCase());
+                    return matches.some(m => {
+                        const days = getDaysLeft(m.expiry);
+                        return days !== null && days <= 30;
+                    });
+                });
+            } else if (filterVal === 'billing') {
+                filtered = filtered.filter(p => p.stock_out_history > 0);
+            }
+
+            pr.innerHTML = '';
+            if (filtered.length === 0) {
+                pr.innerHTML = `<tr><td colspan="4" style="text-align:center;color:#94a3b8;padding:20px;">No predictions match the selected filter</td></tr>`;
+            } else {
+                filtered.forEach(p => {
                     const statusClass = p.status === 'Critical Risk' ? 'status-critical' :
                         p.status === 'Moderate Restock' ? 'status-moderate' : 'status-stable';
                     pr.innerHTML += `<tr>
@@ -3030,9 +3285,19 @@
                 });
             }
 
-            const labels = predictions.map(p => p.medicine_name);
-            const currentStockData = predictions.map(p => p.current_stock);
-            const predictedDemandData = predictions.map(p => p.predicted_demand);
+            updatePredictionChart(filtered);
+        }
+
+        function updatePredictionChart(filteredData) {
+            const ctx = document.getElementById('predBarChart');
+            if (!ctx) return;
+
+            const period = document.getElementById('predPeriodFilter')?.value || 'weekly';
+            const chartData = filteredData.slice(0, 12);
+
+            const labels = chartData.map(p => p.medicine_name);
+            const currentStockData = chartData.map(p => p.current_stock);
+            const predictedDemandData = chartData.map(p => p.predicted_demand);
 
             if (predChartInstance) {
                 predChartInstance.destroy();
@@ -3105,8 +3370,12 @@
             document.getElementById('viewSearch').value = '';
             filterTable();
             if (id === 'alerts') renderAlertTables();
-            if (id === 'medicines') renderMedicineMaster();
-            if (id === 'prediction') renderPredictionChart();
+            if (id === 'medicines') fetchPage();
+            if (id === 'prediction') {
+                const statusDropdown = document.getElementById('predStatusFilter');
+                if (statusDropdown) statusDropdown.value = 'all';
+                renderPredictionChart();
+            }
             if (id === 'stockin') {
                 renderStockInHistory();
             }
@@ -3116,12 +3385,19 @@
         }
 
         function filterTable() {
-            const val = document.getElementById('viewSearch').value.toLowerCase();
+            const val = document.getElementById('viewSearch').value;
             const active = document.querySelector('.view-section.active');
             if (active) {
-                active.querySelectorAll('tbody tr').forEach(row => {
-                    row.style.display = row.innerText.toLowerCase().includes(val) ? '' : 'none';
-                });
+                if (active.id === 'medicines') {
+                    searchQuery = val.trim();
+                    currentPage = 1;
+                    fetchPage();
+                } else {
+                    const lval = val.toLowerCase();
+                    active.querySelectorAll('tbody tr').forEach(row => {
+                        row.style.display = row.innerText.toLowerCase().includes(lval) ? '' : 'none';
+                    });
+                }
             }
         }
 
@@ -3146,6 +3422,22 @@
             await originalLoadData();
             setTimeout(() => renderCharts(), 200);
         };
+
+        window.addEventListener('storage', (e) => {
+            if (e.key === 'bills') {
+                bills = JSON.parse(localStorage.getItem('bills') || '[]');
+                if (document.getElementById('dashboard').classList.contains('active')) {
+                    renderCharts();
+                }
+            }
+            if (e.key === 'stockInHistory') {
+                stockInHistory = JSON.parse(localStorage.getItem('stockInHistory') || '[]');
+                renderStockInHistory();
+                if (document.getElementById('dashboard').classList.contains('active')) {
+                    renderCharts();
+                }
+            }
+        });
 
         window.onload = init;
     </script>

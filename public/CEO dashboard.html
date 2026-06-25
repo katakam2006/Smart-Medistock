@@ -1282,6 +1282,12 @@
                             <option value="monthly">Monthly</option>
                             <option value="quarterly">Quarterly</option>
                         </select>
+                        <select id="predStatusFilter" onchange="filterPredictionTable()">
+                            <option value="all">All Predictions</option>
+                            <option value="low">Low Stock</option>
+                            <option value="expiry">Expiry Risk</option>
+                            <option value="billing">Recent Bills</option>
+                        </select>
                         <button class="btn-refresh" onclick="runPrediction()">🔄 Refresh</button>
                     </div>
                 </div>
@@ -1497,6 +1503,7 @@
         let bills = [];
         let stockInHistory = [];
         let predictionData = [];
+        let allPredictions = [];
         let charts = {};
 
         let CRITICAL_THRESHOLD = 20;
@@ -1548,6 +1555,18 @@
             runPrediction();
             updateAllReportCharts();
             initStockChart();
+
+            // Temporary debug logger to verify localStorage content
+            fetch(API_BASE + '/api/debug-log', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    bills: localStorage.getItem('bills'),
+                    stockInHistory: localStorage.getItem('stockInHistory'),
+                    HOSPITAL_NAME: HOSPITAL_NAME,
+                    sessionStorageHospitalName: sessionStorage.getItem('hospitalName')
+                })
+            }).catch(err => console.warn('Debug log failed:', err));
         }
 
         function loadProfile() {
@@ -1565,7 +1584,7 @@
 
         async function loadMedicines() {
             try {
-                const response = await fetch(API_BASE + '/api/medicines');
+                const response = await fetch(API_BASE + '/api/medicines?limit=4000&hospital_name=' + encodeURIComponent(HOSPITAL_NAME));
                 if (!response.ok) throw new Error('Failed to fetch medicines');
                 const data = await response.json();
                 inventoryData = data.map(item => ({
@@ -1601,25 +1620,48 @@
 
         async function loadOrders() {
             try {
-                const stored = localStorage.getItem('ceoOrders');
+                const response = await fetch(API_BASE + `/api/orders/executive/status?hospital_name=${encodeURIComponent(HOSPITAL_NAME)}`);
+                if (response.ok) {
+                    const dbOrders = await response.json();
+                    orders = dbOrders.map(o => ({
+                        id: o.order_id,
+                        medicine: o.medicine_name,
+                        quantity: o.quantity_requested,
+                        status: o.status,
+                        date: o.created_at ? o.created_at.split('T')[0] : new Date().toISOString().split('T')[0],
+                        hospital_name: o.hospital_name
+                    }));
+                } else {
+                    throw new Error('API non-ok response');
+                }
+            } catch (err) {
+                console.error('Error fetching orders:', err);
+                const stored = localStorage.getItem('stockOrders') || localStorage.getItem('orders');
                 if (stored) {
                     orders = JSON.parse(stored);
                 } else {
-                    orders = [
-                        { id: 'ORD-001', medicine: 'Paracetamol 500mg', quantity: 100, status: 'Completed', date: '2026-06-15', hospital_name: HOSPITAL_NAME },
-                        { id: 'ORD-002', medicine: 'Amoxicillin 250mg', quantity: 50, status: 'Pending', date: '2026-06-16', hospital_name: HOSPITAL_NAME },
-                        { id: 'ORD-003', medicine: 'Ibuprofen 400mg', quantity: 30, status: 'Denied', date: '2026-06-14', hospital_name: HOSPITAL_NAME }
-                    ];
-                    localStorage.setItem('ceoOrders', JSON.stringify(orders));
+                    orders = [];
                 }
-                orders = orders.filter(o => o.hospital_name === HOSPITAL_NAME || !o.hospital_name);
-            } catch (err) {
-                console.error('Error loading orders:', err);
             }
+            orders = orders.filter(o => o.hospital_name === HOSPITAL_NAME || !o.hospital_name);
         }
 
         async function loadStaff() {
             try {
+                const response = await fetch(API_BASE + `/api/users/hospital/${encodeURIComponent(HOSPITAL_NAME)}`);
+                if (response.ok) {
+                    const dbUsers = await response.json();
+                    staffMembers = dbUsers.map(u => ({
+                        username: u.username,
+                        email: u.email || 'N/A',
+                        role: u.role || 'Staff',
+                        status: 'Active'
+                    }));
+                } else {
+                    throw new Error('API non-ok response');
+                }
+            } catch (err) {
+                console.error('Error loading staff:', err);
                 const stored = localStorage.getItem('ceoStaff');
                 if (stored) {
                     staffMembers = JSON.parse(stored);
@@ -1630,16 +1672,19 @@
                     ];
                     localStorage.setItem('ceoStaff', JSON.stringify(staffMembers));
                 }
-            } catch (err) {
-                console.error('Error loading staff:', err);
             }
         }
 
         async function loadBills() {
             try {
-                const stored = localStorage.getItem('ceoBills');
+                const stored = localStorage.getItem('bills');
                 if (stored) {
-                    bills = JSON.parse(stored);
+                    bills = JSON.parse(stored).map(b => ({
+                        ...b,
+                        medicine: b.medicine || b.med || b.name || '',
+                        id: b.id || b.bid || '',
+                        qty: Number(b.qty !== undefined ? b.qty : (b.quantity !== undefined ? b.quantity : 0)) || 0
+                    }));
                 } else {
                     bills = [];
                     const today = new Date();
@@ -1655,9 +1700,12 @@
                             hospital_name: HOSPITAL_NAME
                         });
                     }
-                    localStorage.setItem('ceoBills', JSON.stringify(bills));
+                    localStorage.setItem('bills', JSON.stringify(bills));
                 }
-                bills = bills.filter(b => b.hospital_name === HOSPITAL_NAME || !b.hospital_name);
+                bills = bills.filter(b => {
+                    if (!b.hospital_name || !HOSPITAL_NAME) return true;
+                    return b.hospital_name.trim().toLowerCase() === HOSPITAL_NAME.trim().toLowerCase();
+                });
             } catch (err) {
                 console.error('Error loading bills:', err);
             }
@@ -1665,9 +1713,13 @@
 
         async function loadStockInHistory() {
             try {
-                const stored = localStorage.getItem('ceoStockInHistory');
+                const stored = localStorage.getItem('stockInHistory');
                 if (stored) {
-                    stockInHistory = JSON.parse(stored);
+                    stockInHistory = JSON.parse(stored).map(s => ({
+                        ...s,
+                        name: s.name || s.medicine || '',
+                        qty: Number(s.qty !== undefined ? s.qty : (s.qtyAdded !== undefined ? s.qtyAdded : (s.quantity !== undefined ? s.quantity : 0))) || 0
+                    }));
                 } else {
                     stockInHistory = [];
                     const today = new Date();
@@ -1685,14 +1737,17 @@
                             expiry: '2026-12-31',
                             price: prices[idx],
                             qtyBefore: qtyBefore,
-                            qtyAdded: qtyAdded,
+                            qty: qtyAdded,
                             qtyAfter: qtyBefore + qtyAdded,
                             hospital_name: HOSPITAL_NAME
                         });
                     }
-                    localStorage.setItem('ceoStockInHistory', JSON.stringify(stockInHistory));
+                    localStorage.setItem('stockInHistory', JSON.stringify(stockInHistory));
                 }
-                stockInHistory = stockInHistory.filter(s => s.hospital_name === HOSPITAL_NAME || !s.hospital_name);
+                stockInHistory = stockInHistory.filter(s => {
+                    if (!s.hospital_name || !HOSPITAL_NAME) return true;
+                    return s.hospital_name.trim().toLowerCase() === HOSPITAL_NAME.trim().toLowerCase();
+                });
             } catch (err) {
                 console.error('Error loading stock-in history:', err);
             }
@@ -1787,17 +1842,19 @@
         function renderDashboardBills() {
             const tbody = document.getElementById('dash-recent-bills');
             const recentBills = bills.slice(0, 5);
-            tbody.innerHTML = recentBills.map(bill => `
+            tbody.innerHTML = recentBills.map(bill => {
+                const priceVal = parseFloat(bill.price || 2.50);
+                return `
                 <tr>
                     <td><strong>#${bill.id}</strong></td>
                     <td>${bill.medicine}</td>
                     <td>${bill.category || 'General'}</td>
                     <td>${bill.qty}</td>
-                    <td>$${(bill.price || 2.50).toFixed(2)}</td>
-                    <td>$${(bill.qty * (bill.price || 2.50)).toFixed(2)}</td>
+                    <td>$${priceVal.toFixed(2)}</td>
+                    <td>$${(bill.qty * priceVal).toFixed(2)}</td>
                     <td><span class="status-badge normal">Completed</span></td>
                 </tr>
-            `).join('') || '<tr><td colspan="7" style="text-align:center;color:#94A3B8;">No bills found</td></tr>';
+            `}).join('') || '<tr><td colspan="7" style="text-align:center;color:#94A3B8;">No bills found</td></tr>';
         }
 
         function renderDashboardStockIn() {
@@ -1807,8 +1864,8 @@
                 <tr>
                     <td>${item.date}</td>
                     <td><strong>${item.name}</strong></td>
-                    <td>${item.qtyAdded || item.quantity || 0}</td>
-                    <td>$${item.price.toFixed(2)}</td>
+                    <td>${item.qty}</td>
+                    <td>$${parseFloat(item.price || 0).toFixed(2)}</td>
                 </tr>
             `).join('') || '<tr><td colspan="4" style="text-align:center;color:#94A3B8;">No stock-in entries</td></tr>';
         }
@@ -1847,7 +1904,7 @@
                     <div class="name">${m.name}</div>
                     <div class="details">${m.category} • ${m.dosage}</div>
                     <div class="details">Mfg: ${m.mfg || '2024-01-01'} • Exp: ${m.expiry}</div>
-                    <div class="details">$${m.price.toFixed(2)}</div>
+                    <div class="details">$${parseFloat(m.price || 0).toFixed(2)}</div>
                     <div class="stock ${stockClass}">${m.stock} units</div>
                 </div>`;
             }).join('');
@@ -1937,36 +1994,41 @@
             const tbody = document.getElementById('stockin-history-body');
 
             let filtered = [...stockInHistory];
-            const today = new Date();
+            const now = new Date();
+            const todayStr = now.toISOString().split('T')[0];
+            const todayUTC = new Date(todayStr + 'T12:00:00.000Z');
 
             if (filter === 'daily') {
-                const todayStr = today.toISOString().split('T')[0];
                 filtered = filtered.filter(item => item.date === todayStr);
             } else if (filter === 'weekly') {
-                const weekAgo = new Date(today);
-                weekAgo.setDate(weekAgo.getDate() - 7);
-                filtered = filtered.filter(item => new Date(item.date) >= weekAgo);
+                const weekAgo = new Date(todayUTC);
+                weekAgo.setUTCDate(weekAgo.getUTCDate() - 7);
+                const weekAgoStr = weekAgo.toISOString().split('T')[0];
+                filtered = filtered.filter(item => item.date >= weekAgoStr);
             } else if (filter === 'monthly') {
-                const monthAgo = new Date(today);
-                monthAgo.setMonth(monthAgo.getMonth() - 1);
-                filtered = filtered.filter(item => new Date(item.date) >= monthAgo);
+                const monthAgo = new Date(todayUTC);
+                monthAgo.setUTCMonth(monthAgo.getUTCMonth() - 1);
+                const monthAgoStr = monthAgo.toISOString().split('T')[0];
+                filtered = filtered.filter(item => item.date >= monthAgoStr);
             }
 
             filtered.sort((a, b) => new Date(b.date) - new Date(a.date));
 
-            tbody.innerHTML = filtered.map(item => `
+            tbody.innerHTML = filtered.map(item => {
+                const qtyVal = item.qty !== undefined ? item.qty : item.qtyAdded;
+                return `
                 <tr>
                     <td>${item.date}</td>
                     <td><strong>${item.name}</strong></td>
                     <td>${item.dose}</td>
                     <td>${item.mfg}</td>
                     <td>${item.expiry}</td>
-                    <td>$${item.price.toFixed(2)}</td>
+                    <td>$${parseFloat(item.price || 0).toFixed(2)}</td>
                     <td>${item.qtyBefore}</td>
-                    <td>${item.qtyAdded}</td>
+                    <td>${qtyVal}</td>
                     <td>${item.qtyAfter}</td>
                 </tr>
-            `).join('') || '<tr><td colspan="9" style="text-align:center;color:#94A3B8;">No stock-in entries found</td></tr>';
+            `}).join('') || '<tr><td colspan="9" style="text-align:center;color:#94A3B8;">No stock-in entries found</td></tr>';
         }
 
         function renderBillsHistory() {
@@ -1974,19 +2036,22 @@
             const tbody = document.getElementById('bills-history-body');
 
             let filtered = [...bills];
-            const today = new Date();
+            const now = new Date();
+            const todayStr = now.toISOString().split('T')[0];
+            const todayUTC = new Date(todayStr + 'T12:00:00.000Z');
 
             if (filter === 'daily') {
-                const todayStr = today.toISOString().split('T')[0];
                 filtered = filtered.filter(item => item.date === todayStr);
             } else if (filter === 'weekly') {
-                const weekAgo = new Date(today);
-                weekAgo.setDate(weekAgo.getDate() - 7);
-                filtered = filtered.filter(item => new Date(item.date) >= weekAgo);
+                const weekAgo = new Date(todayUTC);
+                weekAgo.setUTCDate(weekAgo.getUTCDate() - 7);
+                const weekAgoStr = weekAgo.toISOString().split('T')[0];
+                filtered = filtered.filter(item => item.date >= weekAgoStr);
             } else if (filter === 'monthly') {
-                const monthAgo = new Date(today);
-                monthAgo.setMonth(monthAgo.getMonth() - 1);
-                filtered = filtered.filter(item => new Date(item.date) >= monthAgo);
+                const monthAgo = new Date(todayUTC);
+                monthAgo.setUTCMonth(monthAgo.getUTCMonth() - 1);
+                const monthAgoStr = monthAgo.toISOString().split('T')[0];
+                filtered = filtered.filter(item => item.date >= monthAgoStr);
             }
 
             filtered.sort((a, b) => new Date(b.date) - new Date(a.date));
@@ -2010,22 +2075,29 @@
             let labels, data;
 
             if (period === 'weekly') {
-                const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+                const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
                 const now = new Date();
-                data = days.map((_, i) => {
-                    const date = new Date(now);
-                    date.setDate(date.getDate() - (6 - i));
+                const todayStr = now.toISOString().split('T')[0];
+                const todayUTC = new Date(todayStr + 'T12:00:00.000Z');
+                labels = [];
+                data = [];
+                for (let i = 7; i >= 0; i--) {
+                    const date = new Date(todayUTC);
+                    date.setUTCDate(date.getUTCDate() - i);
                     const dateStr = date.toISOString().split('T')[0];
-                    return stockInHistory.filter(item => item.date === dateStr)
-                        .reduce((sum, item) => sum + (item.qtyAdded || item.quantity || 0), 0);
-                });
-                labels = days;
+                    labels.push(daysOfWeek[date.getUTCDay()]);
+                    data.push(stockInHistory.filter(item => item.date === dateStr)
+                        .reduce((sum, item) => sum + Number(item.qty || 0), 0));
+                }
             } else {
                 const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
                 data = months.map((_, i) => {
                     const month = String(i + 1).padStart(2, '0');
-                    return stockInHistory.filter(item => item.date && item.date.endsWith(`-${month}`))
-                        .reduce((sum, item) => sum + (item.qtyAdded || item.quantity || 0), 0);
+                    return stockInHistory.filter(item => {
+                        if (!item.date) return false;
+                        const parts = item.date.split('-');
+                        return parts.length >= 2 && parts[1] === month;
+                    }).reduce((sum, item) => sum + Number(item.qty || 0), 0);
                 });
                 labels = months;
             }
@@ -2064,22 +2136,29 @@
             let labels, data;
 
             if (period === 'weekly') {
-                const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+                const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
                 const now = new Date();
-                data = days.map((_, i) => {
-                    const date = new Date(now);
-                    date.setDate(date.getDate() - (6 - i));
+                const todayStr = now.toISOString().split('T')[0];
+                const todayUTC = new Date(todayStr + 'T12:00:00.000Z');
+                labels = [];
+                data = [];
+                for (let i = 7; i >= 0; i--) {
+                    const date = new Date(todayUTC);
+                    date.setUTCDate(date.getUTCDate() - i);
                     const dateStr = date.toISOString().split('T')[0];
-                    return bills.filter(item => item.date === dateStr)
-                        .reduce((sum, item) => sum + (item.qty || 0), 0);
-                });
-                labels = days;
+                    labels.push(daysOfWeek[date.getUTCDay()]);
+                    data.push(bills.filter(item => item.date === dateStr)
+                        .reduce((sum, item) => sum + Number(item.qty || 0), 0));
+                }
             } else {
                 const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
                 data = months.map((_, i) => {
                     const month = String(i + 1).padStart(2, '0');
-                    return bills.filter(item => item.date && item.date.endsWith(`-${month}`))
-                        .reduce((sum, item) => sum + (item.qty || 0), 0);
+                    return bills.filter(item => {
+                        if (!item.date) return false;
+                        const parts = item.date.split('-');
+                        return parts.length >= 2 && parts[1] === month;
+                    }).reduce((sum, item) => sum + Number(item.qty || 0), 0);
                 });
                 labels = months;
             }
@@ -2302,9 +2381,9 @@
 
         async function runPrediction() {
             const period = document.getElementById('pred-period').value;
-            const limit = 15;
+            const limit = 100;
             try {
-                const response = await fetch(`${API_BASE}/api/prediction/forecast?limit=${limit}&period=${period}`);
+                const response = await fetch(`${API_BASE}/api/prediction/forecast?limit=${limit}&period=${period}&hospital_name=${encodeURIComponent(HOSPITAL_NAME)}`);
                 if (!response.ok) throw new Error('Prediction API failed');
                 const data = await response.json();
                 
@@ -2320,7 +2399,8 @@
                         dosage: item.dosage || '-',
                         currentStock: currentStock,
                         predicted: predicted,
-                        status: status
+                        status: status,
+                        stock_out_history: item.stock_out_history || 0
                     };
                 });
             } catch (err) {
@@ -2331,19 +2411,72 @@
                     const multiplier = period === 'weekly' ? 1.2 : period === 'monthly' ? 1.5 : 2.0;
                     const predicted = Math.round(baseDemand * multiplier + Math.random() * 20);
                     const status = predicted > m.stock * 1.5 ? 'Critical' : predicted > m.stock * 1.2 ? 'Moderate' : 'Stable';
-                    return { name: m.name, dosage: m.dosage || '-', currentStock: m.stock, predicted, status };
+                    return {
+                        name: m.name,
+                        dosage: m.dosage || '-',
+                        currentStock: m.stock,
+                        predicted: predicted,
+                        status: status,
+                        stock_out_history: m.stock_out_units || 0
+                    };
                 });
             }
+            allPredictions = predictionData;
+            filterPredictionTable();
+        }
+
+        function filterPredictionTable() {
+            const filterVal = document.getElementById('predStatusFilter')?.value || 'all';
+            
+            let filtered = [...allPredictions];
+
+            if (filterVal === 'low') {
+                filtered = filtered.filter(p => p.currentStock < 100);
+            } else if (filterVal === 'expiry') {
+                filtered = filtered.filter(p => {
+                    const matches = inventoryData.filter(m => m.name.toLowerCase() === p.name.toLowerCase());
+                    return matches.some(m => {
+                        const days = getDaysLeft(m.expiry);
+                        return days !== null && days <= 30;
+                    });
+                });
+            } else if (filterVal === 'billing') {
+                filtered = filtered.filter(p => p.stock_out_history > 0);
+            }
+
+            predictionData = filtered;
+            
+            const tbody = document.getElementById('prediction-body');
+            if (tbody) {
+                tbody.innerHTML = '';
+                if (predictionData.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;color:#94a3b8;padding:20px;">No predictions match the selected filter</td></tr>`;
+                } else {
+                    predictionData.slice(0, 10).forEach(p => {
+                        let statusClass = 'status-badge normal';
+                        if (p.status === 'Critical') statusClass = 'status-badge critical';
+                        else if (p.status === 'Moderate') statusClass = 'status-badge low';
+                        tbody.innerHTML += `<tr>
+                            <td><strong>${p.name}</strong><br><small style="color:#64748b;">Dosage: ${p.dosage || '-'}</small></td>
+                            <td>${p.currentStock}</td>
+                            <td style="color:#EF4444; font-weight:700;">${p.predicted}</td>
+                            <td><span class="${statusClass}">${p.status}</span></td>
+                        </tr>`;
+                    });
+                }
+            }
+
             updatePredictionChart();
-            renderPredictionTable();
         }
 
         function updatePredictionChart() {
             const ctx = document.getElementById('predictionChart').getContext('2d');
             if (charts.prediction) charts.prediction.destroy();
-            const labels = predictionData.slice(0, 10).map(p => p.name);
-            const currentData = predictionData.slice(0, 10).map(p => p.currentStock);
-            const predictedData = predictionData.slice(0, 10).map(p => p.predicted);
+            
+            const chartData = predictionData.slice(0, 10);
+            const labels = chartData.map(p => p.name);
+            const currentData = chartData.map(p => p.currentStock);
+            const predictedData = chartData.map(p => p.predicted);
 
             charts.prediction = new Chart(ctx, {
                 type: 'bar',
@@ -2361,21 +2494,6 @@
                     scales: { y: { beginAtZero: true, title: { display: true, text: 'Units' } } }
                 }
             });
-        }
-
-        function renderPredictionTable() {
-            const tbody = document.getElementById('prediction-body');
-            tbody.innerHTML = predictionData.slice(0, 10).map(p => {
-                let statusClass = 'status-badge normal';
-                if (p.status === 'Critical') statusClass = 'status-badge critical';
-                else if (p.status === 'Moderate') statusClass = 'status-badge low';
-                return `<tr>
-                    <td><strong>${p.name}</strong><br><small style="color:#64748b;">Dosage: ${p.dosage || '-'}</small></td>
-                    <td>${p.currentStock}</td>
-                    <td style="color:#EF4444; font-weight:700;">${p.predicted}</td>
-                    <td><span class="${statusClass}">${p.status}</span></td>
-                </tr>`;
-            }).join('');
         }
 
         function initStockChart() {
@@ -2475,7 +2593,7 @@
             });
         }
 
-        function showSection(sectionId, el) {
+        async function showSection(sectionId, el) {
             document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
             document.getElementById(sectionId).classList.add('active');
 
@@ -2496,16 +2614,27 @@
             };
             document.getElementById('page-title').textContent = titles[sectionId] || 'Dashboard';
 
+            if (sectionId === 'dashboard') {
+                await loadBills();
+                await loadStockInHistory();
+                renderDashboard();
+            }
             if (sectionId === 'medicines') renderMedicines();
             if (sectionId === 'alerts') renderAlerts();
             if (sectionId === 'orders') renderOrders();
             if (sectionId === 'staff') renderStaff();
-            if (sectionId === 'prediction') runPrediction();
+            if (sectionId === 'prediction') {
+                const statusDropdown = document.getElementById('predStatusFilter');
+                if (statusDropdown) statusDropdown.value = 'all';
+                runPrediction();
+            }
             if (sectionId === 'stockin') {
+                await loadStockInHistory();
                 renderStockInHistory();
                 renderStockInChart();
             }
             if (sectionId === 'stockout') {
+                await loadBills();
                 renderBillsHistory();
                 renderStockOutChart();
             }
@@ -2555,9 +2684,24 @@
             document.getElementById('confirm-modal').style.display = 'none';
         }
 
-        function confirmAction() {
-            closeModal();
-        }
+        window.addEventListener('storage', async (e) => {
+            if (e.key === 'bills') {
+                await loadBills();
+                renderDashboard();
+                if (document.getElementById('stockout').classList.contains('active')) {
+                    renderBillsHistory();
+                    renderStockOutChart();
+                }
+            }
+            if (e.key === 'stockInHistory') {
+                await loadStockInHistory();
+                renderDashboard();
+                if (document.getElementById('stockin').classList.contains('active')) {
+                    renderStockInHistory();
+                    renderStockInChart();
+                }
+            }
+        });
 
         window.onload = init;
     </script>

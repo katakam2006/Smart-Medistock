@@ -14,7 +14,7 @@ csv_path = "medicine_dataset_250k-v2_fixed.csv"
 html_template_path = "Stocker With prediction.html"
 output_file_name = "Smart_MediStock_Final_Dashboard.html"
 
-def load_data_from_db(unique_only=False):
+def load_data_from_db(unique_only=False, hospital_name=""):
     """Attempts to connect to MySQL and load medicine records."""
     try:
         conn = mysql.connector.connect(
@@ -23,9 +23,27 @@ def load_data_from_db(unique_only=False):
             password="Hemasrikotha@07",
             database="smart_medistock"
         )
+        
+        # Determine hospital block offset
+        hospital_block_offset = 0
+        if hospital_name:
+            name_lower = hospital_name.lower().strip()
+            if "sai hospital" in name_lower or name_lower == "sai hospital":
+                hospital_block_offset = 0
+                print(f"📊 Hospital '{hospital_name}' found. Using static offset {hospital_block_offset}.", file=sys.stderr)
+            elif "city medical clinic" in name_lower or name_lower == "city medical clinic":
+                hospital_block_offset = 4000
+                print(f"📊 Hospital '{hospital_name}' found. Using static offset {hospital_block_offset}.", file=sys.stderr)
+            elif "pules hospital" in name_lower or name_lower == "pules hospital":
+                hospital_block_offset = 8000
+                print(f"📊 Hospital '{hospital_name}' found. Using static offset {hospital_block_offset}.", file=sys.stderr)
+            else:
+                hospital_block_offset = 0
+                print(f"⚠️ Hospital '{hospital_name}' not mapped statically. Using default offset 0.", file=sys.stderr)
+
         if unique_only:
-            # Optimized query returning only the primary record for each unique medicine name
-            query = """
+            # Optimized query returning only the primary record for each unique medicine name, limited to the hospital's 4,000 medicines block
+            query = f"""
                 SELECT 
                     m.medicine_id AS 'Medicine ID', 
                     m.medicine_name AS 'Medicine Name', 
@@ -37,15 +55,19 @@ def load_data_from_db(unique_only=False):
                     m.no_of_units AS 'No. of Units', 
                     m.stock_out_units AS 'Stock Out Units',
                     t.record_count AS 'Record Count'
-                FROM medicines m
+                FROM (
+                    SELECT * FROM medicines ORDER BY medicine_id ASC LIMIT 4000 OFFSET {hospital_block_offset}
+                ) m
                 JOIN (
                     SELECT MIN(medicine_id) as min_id, COUNT(*) as record_count 
-                    FROM medicines 
+                    FROM (
+                        SELECT * FROM medicines ORDER BY medicine_id ASC LIMIT 4000 OFFSET {hospital_block_offset}
+                    ) temp_meds 
                     GROUP BY medicine_name
                 ) t ON m.medicine_id = t.min_id
             """
         else:
-            query = """
+            query = f"""
                 SELECT 
                     medicine_id AS 'Medicine ID', 
                     medicine_name AS 'Medicine Name', 
@@ -57,11 +79,13 @@ def load_data_from_db(unique_only=False):
                     no_of_units AS 'No. of Units', 
                     stock_out_units AS 'Stock Out Units' 
                 FROM medicines
+                ORDER BY medicine_id ASC
+                LIMIT 4000 OFFSET {hospital_block_offset}
             """
         df = pd.read_sql(query, conn)
         conn.close()
         if len(df) > 0:
-            print(f"✅ Successfully loaded dataset (unique_only={unique_only}) from MySQL database.", file=sys.stderr)
+            print(f"✅ Successfully loaded dataset (unique_only={unique_only}, hospital={hospital_name}) from MySQL database.", file=sys.stderr)
             return df
         else:
             print("⚠️ MySQL database table 'medicines' is empty.", file=sys.stderr)
@@ -70,9 +94,9 @@ def load_data_from_db(unique_only=False):
         print(f"⚠️ MySQL connection or query failed: {e}", file=sys.stderr)
         return None
 
-def load_data(unique_only=False):
+def load_data(unique_only=False, hospital_name=""):
     """Loads dataset from DB or CSV fallback, and fills missing values."""
-    df = load_data_from_db(unique_only=unique_only)
+    df = load_data_from_db(unique_only=unique_only, hospital_name=hospital_name)
     
     if df is None or len(df) == 0:
         if os.path.exists(excel_path):
@@ -225,11 +249,11 @@ def run_vectorized_predictions(df_predict, ai_agent, category_mapping, medicine_
         
     return prediction_list
 
-def generate_forecast(limit):
+def generate_forecast(limit, hospital_name=""):
     """Generates predictions using loaded model or trains a new one if missing."""
     if not os.path.exists("model.joblib"):
         print("⚠️ Model file 'model.joblib' not found. Training model first...", file=sys.stderr)
-        df = load_data(unique_only=False)
+        df = load_data(unique_only=False, hospital_name=hospital_name)
         ai_agent, category_mapping, medicine_mapping, features = train_and_save_model(df)
         df_predict = df.drop_duplicates(subset=["Medicine Name"])
     else:
@@ -239,7 +263,7 @@ def generate_forecast(limit):
         category_mapping = save_data["category_mapping"]
         medicine_mapping = save_data["medicine_mapping"]
         features = save_data["features"]
-        df_predict = load_data(unique_only=True)
+        df_predict = load_data(unique_only=True, hospital_name=hospital_name)
 
     prediction_list = run_vectorized_predictions(df_predict, ai_agent, category_mapping, medicine_mapping, features)
 
@@ -250,6 +274,7 @@ def generate_forecast(limit):
 def main():
     mode = "train"
     limit = 12
+    hospital_name = ""
     
     if len(sys.argv) > 1:
         if sys.argv[1] == "forecast":
@@ -259,10 +284,12 @@ def main():
                     limit = int(sys.argv[2])
                 except ValueError:
                     pass
+            if len(sys.argv) > 3:
+                hospital_name = sys.argv[3]
 
     if mode == "forecast":
         try:
-            forecasts = generate_forecast(limit)
+            forecasts = generate_forecast(limit, hospital_name=hospital_name)
             # Output ONLY the valid JSON list to sys.stdout
             print(json.dumps(forecasts))
         except Exception as e:

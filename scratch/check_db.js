@@ -1,25 +1,26 @@
-const mysql = require('mysql2');
+const mysql = require('mysql2/promise');
 
-const pool = mysql.createPool({
-    host: 'localhost',
-    user: 'root',
-    password: 'Hemasrikotha@07',
-    database: 'smart_medistock',
-    waitForConnections: true,
-    connectionLimit: 10,
-    queueLimit: 0
-});
-
-const db = pool.promise();
-
-async function check() {
+async function run() {
     try {
-        const [rows] = await db.query('SELECT * FROM medicines WHERE price IN (134.44, 193.76, 186.70) LIMIT 10');
-        console.log(JSON.stringify(rows, null, 2));
+        const connection = await mysql.createConnection({
+            host: 'localhost',
+            user: 'root',
+            password: 'Hemasrikotha@07',
+            database: 'smart_medistock'
+        });
+
+        const [alerts] = await connection.query('SELECT * FROM inventory_alerts');
+        console.log("=== ALL ALERTS ===");
+        console.log(JSON.stringify(alerts, null, 2));
+
+        const [medicines] = await connection.query('SELECT * FROM medicines LIMIT 10');
+        console.log("=== FIRST 10 MEDICINES ===");
+        console.log(JSON.stringify(medicines, null, 2));
+
+        await connection.end();
     } catch (err) {
-        console.error(err);
-    } finally {
-        pool.end();
+        console.error("Database connection error:", err);
     }
 }
-check();
+
+run();

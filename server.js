@@ -6,7 +6,7 @@ const fs = require('fs');
 const { spawnSync } = require('child_process');
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 // Middleware
 app.use(cors());
@@ -329,10 +329,10 @@ app.put('/api/user/settings', async (req, res) => {
         if (users.length === 0) {
             return res.status(404).json({ error: 'User not found' });
         }
-        
+
         let updateFields = [];
         let queryParams = [];
-        
+
         if (email !== undefined) {
             updateFields.push('email = ?');
             queryParams.push(email);
@@ -345,16 +345,16 @@ app.put('/api/user/settings', async (req, res) => {
             updateFields.push('password = ?');
             queryParams.push(password);
         }
-        
+
         if (updateFields.length === 0) {
             return res.status(400).json({ error: 'No fields to update' });
         }
-        
+
         const updateQuery = `UPDATE users SET ${updateFields.join(', ')} WHERE username = ?`;
         queryParams.push(username);
-        
+
         await db.query(updateQuery, queryParams);
-        
+
         const [updatedUser] = await db.query('SELECT id, username, email, role, address, hospital_name FROM users WHERE username = ?', [name || username]);
         res.json({ message: 'Settings updated successfully', user: updatedUser[0] });
     } catch (err) {
@@ -608,8 +608,9 @@ app.delete('/api/alerts/:id', async (req, res) => {
 
 // API: Fetch ML predictions with date range filter
 app.get('/api/prediction/forecast', (req, res) => {
-    const limit = Math.max(1, Math.min(50, parseInt(req.query.limit || '12', 10)));
+    const limit = Math.max(1, Math.min(200, parseInt(req.query.limit || '12', 10)));
     const period = req.query.period || 'weekly';
+    const hospitalName = req.query.hospital_name || '';
 
     let pythonCmd = 'python3';
     if (process.platform === 'win32') {
@@ -631,7 +632,7 @@ app.get('/api/prediction/forecast', (req, res) => {
         }
     }
 
-    const child = spawnSync(pythonCmd, ['train_model.py', 'forecast', String(limit)], {
+    const child = spawnSync(pythonCmd, ['train_model.py', 'forecast', String(limit), hospitalName], {
         cwd: __dirname,
         encoding: 'utf8'
     });
@@ -648,20 +649,78 @@ app.get('/api/prediction/forecast', (req, res) => {
 
     try {
         const payload = JSON.parse(child.stdout || '[]');
-        res.json(payload);
+        const hospitalBlockOffset = getHospitalBlockOffset(hospitalName);
+        const mappedPayload = payload.map(item => {
+            if (item.id) {
+                item.id = dbToClientMedId(item.id, hospitalBlockOffset);
+            }
+            return item;
+        });
+        res.json(mappedPayload);
     } catch (err) {
         console.error('Prediction JSON parse error:', err);
         res.status(500).json({ error: 'Prediction output could not be parsed.' });
     }
 });
 
+// ============================================
+// Hospital Block Offsets and ID Virtualization Helpers
+// ============================================
+function getHospitalBlockOffset(hospitalName) {
+    if (!hospitalName) return 0;
+    const nameLower = hospitalName.toLowerCase().trim();
+    if (nameLower.includes('sai hospital') || nameLower === 'sai hospital') {
+        return 0;
+    } else if (nameLower.includes('city medical clinic') || nameLower === 'city medical clinic') {
+        return 4000;
+    } else if (nameLower.includes('pules hospital') || nameLower === 'pules hospital') {
+        return 8000;
+    }
+    return 0;
+}
+
+function parseMedNumber(medId) {
+    if (!medId || typeof medId !== 'string') return 0;
+    const match = medId.match(/\d+/);
+    return match ? parseInt(match[0], 10) : 0;
+}
+
+function formatMedId(num) {
+    return 'MED-' + String(num).padStart(6, '0');
+}
+
+function dbToClientMedId(dbMedId, hospitalBlockOffset) {
+    if (!dbMedId) return dbMedId;
+    const num = parseMedNumber(dbMedId);
+    if (num === 0) return dbMedId;
+    if (num > hospitalBlockOffset && num <= hospitalBlockOffset + 4000) {
+        return formatMedId(num - hospitalBlockOffset);
+    }
+    return dbMedId;
+}
+
+function clientToDbMedId(clientMedId, hospitalBlockOffset) {
+    if (!clientMedId) return clientMedId;
+    const num = parseMedNumber(clientMedId);
+    if (num === 0) return clientMedId;
+    if (num <= 4000) {
+        return formatMedId(num + hospitalBlockOffset);
+    }
+    return clientMedId;
+}
+
 // API Endpoint to fetch medicine dataset rows from database
 app.get('/api/medicines', async (req, res) => {
     const search = (req.query.search || '').trim();
     const limit = parseInt(req.query.limit, 10) || 100;
     const offset = parseInt(req.query.offset, 10) || 0;
+    const hospitalName = (req.query.hospital_name || '').trim();
 
-    let query = `
+    // Determine the block offset for the hospital
+    const hospitalBlockOffset = getHospitalBlockOffset(hospitalName);
+
+    // 2. Define subquery that gets exactly 4,000 medicines for the hospital
+    const subquery = `
         SELECT 
             medicine_id AS 'Medicine ID', 
             medicine_name AS 'Medicine Name', 
@@ -673,24 +732,55 @@ app.get('/api/medicines', async (req, res) => {
             no_of_units AS 'No. of Units', 
             stock_out_units AS 'Stock Out Units' 
         FROM medicines
+        ORDER BY medicine_id ASC
+        LIMIT 4000 OFFSET ?
     `;
-    const params = [];
+
+    let dataQuery = `SELECT * FROM (${subquery}) AS hospital_meds`;
+    let countQuery = `SELECT COUNT(*) AS total FROM (${subquery}) AS hospital_meds`;
+
+    const dataParams = [hospitalBlockOffset];
+    const countParams = [hospitalBlockOffset];
 
     if (search) {
-        query += ` WHERE medicine_name LIKE ? OR category LIKE ? OR medicine_id LIKE ?`;
-        params.push(`%${search}%`, `%${search}%`, `%${search}%`);
+        const searchClause = ` WHERE \`Medicine Name\` LIKE ? OR \`Category\` LIKE ? OR \`Medicine ID\` LIKE ?`;
+        dataQuery += searchClause;
+        countQuery += searchClause;
+
+        const searchPattern = `%${search}%`;
+        let idSearchPattern = searchPattern;
+        if (/^MED-\d+$/i.test(search)) {
+            const dbId = clientToDbMedId(search.toUpperCase(), hospitalBlockOffset);
+            idSearchPattern = `%${dbId}%`;
+        }
+        dataParams.push(searchPattern, searchPattern, idSearchPattern);
+        countParams.push(searchPattern, searchPattern, idSearchPattern);
     }
 
     if (search) {
-        query += ` ORDER BY medicine_name ASC LIMIT ? OFFSET ?`;
+        dataQuery += ` ORDER BY \`Medicine Name\` ASC LIMIT ? OFFSET ?`;
     } else {
-        query += ` ORDER BY medicine_id ASC LIMIT ? OFFSET ?`;
+        dataQuery += ` ORDER BY \`Medicine ID\` ASC LIMIT ? OFFSET ?`;
     }
-    params.push(limit, offset);
+    dataParams.push(limit, offset);
 
     try {
-        const [rows] = await db.query(query, params);
-        res.json(rows);
+        const [countResult] = await db.query(countQuery, countParams);
+        const totalCount = countResult[0].total;
+
+        const [rows] = await db.query(dataQuery, dataParams);
+
+        // Virtualize Medicine IDs to start from 1 for each hospital
+        const mappedRows = rows.map(row => {
+            if (row['Medicine ID']) {
+                row['Medicine ID'] = dbToClientMedId(row['Medicine ID'], hospitalBlockOffset);
+            }
+            return row;
+        });
+
+        res.setHeader('Access-Control-Expose-Headers', 'X-Total-Count');
+        res.setHeader('X-Total-Count', totalCount.toString());
+        res.json(mappedRows);
     } catch (err) {
         console.error('Error fetching medicines from database:', err);
         res.status(500).json({ error: 'Failed to retrieve medicines from database.' });
@@ -699,22 +789,26 @@ app.get('/api/medicines', async (req, res) => {
 
 // API: Dispatch/Deduct medicine stock (Billing Executive -> Customer)
 app.post('/api/medicines/dispatch', async (req, res) => {
-    const { medicine_id, medicine_name, quantity } = req.body;
+    const { medicine_id, medicine_name, quantity, hospital_name } = req.body;
     const qty = parseInt(quantity, 10);
 
     if ((!medicine_id && !medicine_name) || isNaN(qty) || qty <= 0) {
         return res.status(400).json({ error: 'Missing medicine identifier or valid quantity.' });
     }
 
+    const hospitalBlockOffset = getHospitalBlockOffset(hospital_name);
+
     try {
         let selectQuery = 'SELECT medicine_id, no_of_units, stock_out_units FROM medicines WHERE ';
         const params = [];
         if (medicine_id) {
+            const dbMedId = clientToDbMedId(medicine_id, hospitalBlockOffset);
             selectQuery += 'medicine_id = ?';
-            params.push(medicine_id);
+            params.push(dbMedId);
         } else {
-            selectQuery += 'medicine_name = ?';
-            params.push(medicine_name);
+            // Scope query by name within the hospital's block
+            selectQuery += 'LOWER(medicine_name) = LOWER(?) AND CAST(SUBSTRING(medicine_id, 5) AS UNSIGNED) > ? AND CAST(SUBSTRING(medicine_id, 5) AS UNSIGNED) <= ? LIMIT 1';
+            params.push(medicine_name, hospitalBlockOffset, hospitalBlockOffset + 4000);
         }
 
         const [rows] = await db.query(selectQuery, params);
@@ -737,7 +831,7 @@ app.post('/api/medicines/dispatch', async (req, res) => {
 
         res.json({
             message: 'Stock dispatched successfully.',
-            medicine_id: med.medicine_id,
+            medicine_id: dbToClientMedId(med.medicine_id, hospitalBlockOffset),
             remaining_units: newUnits,
             stock_out_units: newStockOut
         });
@@ -749,32 +843,39 @@ app.post('/api/medicines/dispatch', async (req, res) => {
 
 // API: Restock medicine (Stock-In Manager/Stocker -> Inventory)
 app.post('/api/medicines/restock', async (req, res) => {
-    const { medicine_name, quantity, dosage, price, category, mfg, expiry } = req.body;
+    const { medicine_id, medicine_name, quantity, dosage, price, category, mfg, expiry, hospital_name } = req.body;
     const qty = parseInt(quantity, 10);
 
     if (!medicine_name || isNaN(qty) || qty <= 0) {
         return res.status(400).json({ error: 'Missing medicine_name or valid quantity.' });
     }
 
+    const hospitalBlockOffset = getHospitalBlockOffset(hospital_name);
+
     try {
         let rows = [];
-        if (req.body.medicine_id) {
-            const [r] = await db.query('SELECT medicine_id, no_of_units FROM medicines WHERE medicine_id = ?', [req.body.medicine_id]);
+        if (medicine_id) {
+            const dbMedId = clientToDbMedId(medicine_id, hospitalBlockOffset);
+            const [r] = await db.query('SELECT medicine_id, no_of_units FROM medicines WHERE medicine_id = ?', [dbMedId]);
             rows = r;
         }
         if (rows.length === 0) {
             const [r] = await db.query(
-                'SELECT medicine_id, no_of_units FROM medicines WHERE LOWER(medicine_name) = LOWER(?) AND (dosage = ? OR ? IS NULL OR dosage = \'-\') LIMIT 1',
-                [medicine_name, dosage || null, dosage || null]
+                `SELECT medicine_id, no_of_units FROM medicines 
+                 WHERE LOWER(medicine_name) = LOWER(?) 
+                   AND (dosage = ? OR ? IS NULL OR dosage = '-')
+                   AND CAST(SUBSTRING(medicine_id, 5) AS UNSIGNED) > ? 
+                   AND CAST(SUBSTRING(medicine_id, 5) AS UNSIGNED) <= ? 
+                 LIMIT 1`,
+                [medicine_name, dosage || null, dosage || null, hospitalBlockOffset, hospitalBlockOffset + 4000]
             );
             rows = r;
         }
-        
 
         if (rows.length > 0) {
             const med = rows[0];
             const newUnits = med.no_of_units + qty;
-            
+
             let updateQuery = 'UPDATE medicines SET no_of_units = ?';
             const updateParams = [newUnits];
 
@@ -802,13 +903,13 @@ app.post('/api/medicines/restock', async (req, res) => {
 
             return res.json({
                 message: 'Medicine restocked successfully.',
-                medicine_id: med.medicine_id,
+                medicine_id: dbToClientMedId(med.medicine_id, hospitalBlockOffset),
                 new_quantity: newUnits
             });
         } else {
             const newId = `MED-${Math.floor(Math.random() * 900000) + 100000}`;
             const mfgDate = mfg || new Date().toISOString().split('T')[0];
-            
+
             let expDate = expiry;
             if (!expDate) {
                 const twoYearsLater = new Date();
@@ -833,7 +934,7 @@ app.post('/api/medicines/restock', async (req, res) => {
 
             return res.json({
                 message: 'New medicine added and stocked successfully.',
-                medicine_id: newId,
+                medicine_id: dbToClientMedId(newId, hospitalBlockOffset),
                 new_quantity: qty
             });
         }
@@ -1009,6 +1110,13 @@ app.get('/api/orders/all', async (req, res) => {
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
+});
+
+// Debug endpoint to capture client-side state
+app.post('/api/debug-log', (req, res) => {
+    console.log('--- DEBUG LOG FROM CLIENT ---');
+    console.log(JSON.stringify(req.body, null, 2));
+    res.json({ status: 'ok' });
 });
 
 // Start standard HTTP Server on port 3000

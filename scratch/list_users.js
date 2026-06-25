@@ -12,14 +12,17 @@ const pool = mysql.createPool({
 
 const db = pool.promise();
 
-async function check() {
+async function listUsers() {
     try {
-        const [rows] = await db.query('SELECT username, role, hospital_name FROM users');
-        console.log(JSON.stringify(rows, null, 2));
+        console.log("Listing users...");
+        const [users] = await db.query(
+            "SELECT id, username, email, role, hospital_name FROM users"
+        );
+        console.table(users);
     } catch (err) {
         console.error(err);
     } finally {
         pool.end();
     }
 }
-check();
+listUsers();
