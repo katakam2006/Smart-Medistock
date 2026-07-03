@@ -3,7 +3,7 @@ import os
 import sys
 import numpy as np
 import pandas as pd
-from sklearn.ensemble import RandomForestRegressor
+from sklearn.ensemble import GradientBoostingRegressor, RandomForestRegressor
 from sklearn.model_selection import train_test_split
 import joblib
 import mysql.connector
@@ -34,7 +34,7 @@ def load_data_from_db(unique_only=False, hospital_name=""):
             elif "city medical clinic" in name_lower or name_lower == "city medical clinic":
                 hospital_block_offset = 4000
                 print(f"📊 Hospital '{hospital_name}' found. Using static offset {hospital_block_offset}.", file=sys.stderr)
-            elif "pules hospital" in name_lower or name_lower == "pules hospital":
+            elif "pulse hospital" in name_lower or name_lower == "pulse hospital":
                 hospital_block_offset = 8000
                 print(f"📊 Hospital '{hospital_name}' found. Using static offset {hospital_block_offset}.", file=sys.stderr)
             else:
@@ -42,46 +42,50 @@ def load_data_from_db(unique_only=False, hospital_name=""):
                 print(f"⚠️ Hospital '{hospital_name}' not mapped statically. Using default offset 0.", file=sys.stderr)
 
         if unique_only:
-            # Optimized query returning only the primary record for each unique medicine name, limited to the hospital's 4,000 medicines block
-            query = f"""
-                SELECT 
-                    m.medicine_id AS 'Medicine ID', 
-                    m.medicine_name AS 'Medicine Name', 
-                    m.category AS 'Category', 
-                    m.dosage AS 'Dosage', 
-                    m.manufacture_date AS 'Manufacture Date', 
-                    m.expiry_date AS 'Expiry Date', 
-                    m.price AS 'Price ($)', 
-                    m.no_of_units AS 'No. of Units', 
-                    m.stock_out_units AS 'Stock Out Units',
-                    t.record_count AS 'Record Count'
-                FROM (
-                    SELECT * FROM medicines ORDER BY medicine_id ASC LIMIT 4000 OFFSET {hospital_block_offset}
-                ) m
-                JOIN (
-                    SELECT MIN(medicine_id) as min_id, COUNT(*) as record_count 
-                    FROM (
-                        SELECT * FROM medicines ORDER BY medicine_id ASC LIMIT 4000 OFFSET {hospital_block_offset}
-                    ) temp_meds 
-                    GROUP BY medicine_name
-                ) t ON m.medicine_id = t.min_id
-            """
+            # FIX: Aggregate stock_out_units across ALL rows for each medicine name
+            # This gives us the TOTAL historical stock-out demand for each unique medicine,
+            # which is what the model needs to make accurate predictions.
+            query = (
+                "SELECT "
+                "    t.min_id AS 'Medicine ID', "
+                "    t.medicine_name AS 'Medicine Name', "
+                "    m2.category AS 'Category', "
+                "    m2.dosage AS 'Dosage', "
+                "    m2.manufacture_date AS 'Manufacture Date', "
+                "    m2.expiry_date AS 'Expiry Date', "
+                "    m2.price AS 'Price ($)', "
+                "    m2.no_of_units AS 'No. of Units', "
+                "    t.total_stock_out AS 'Stock Out Units', "
+                "    t.record_count AS 'Record Count' "
+                "FROM ( "
+                "    SELECT "
+                "        MIN(medicine_id) AS min_id, "
+                "        medicine_name, "
+                "        SUM(stock_out_units) AS total_stock_out, "
+                "        COUNT(*) AS record_count "
+                "    FROM ( "
+                "        SELECT * FROM medicines ORDER BY medicine_id ASC LIMIT 4000 OFFSET {offset} "
+                "    ) block "
+                "    GROUP BY medicine_name "
+                ") t "
+                "JOIN medicines m2 ON m2.medicine_id = t.min_id"
+            ).format(offset=hospital_block_offset)
         else:
-            query = f"""
-                SELECT 
-                    medicine_id AS 'Medicine ID', 
-                    medicine_name AS 'Medicine Name', 
-                    category AS 'Category', 
-                    dosage AS 'Dosage', 
-                    manufacture_date AS 'Manufacture Date', 
-                    expiry_date AS 'Expiry Date', 
-                    price AS 'Price ($)', 
-                    no_of_units AS 'No. of Units', 
-                    stock_out_units AS 'Stock Out Units' 
-                FROM medicines
-                ORDER BY medicine_id ASC
-                LIMIT 4000 OFFSET {hospital_block_offset}
-            """
+            query = (
+                "SELECT "
+                "    medicine_id AS 'Medicine ID', "
+                "    medicine_name AS 'Medicine Name', "
+                "    category AS 'Category', "
+                "    dosage AS 'Dosage', "
+                "    manufacture_date AS 'Manufacture Date', "
+                "    expiry_date AS 'Expiry Date', "
+                "    price AS 'Price ($)', "
+                "    no_of_units AS 'No. of Units', "
+                "    stock_out_units AS 'Stock Out Units' "
+                "FROM medicines "
+                "ORDER BY medicine_id ASC "
+                "LIMIT 4000 OFFSET {offset}"
+            ).format(offset=hospital_block_offset)
         df = pd.read_sql(query, conn)
         conn.close()
         if len(df) > 0:
@@ -124,7 +128,7 @@ def load_data(unique_only=False, hospital_name=""):
     return df
 
 def train_and_save_model(df):
-    """Trains the Random Forest model and saves it to a joblib file."""
+    """Trains the model using aggregated stock-out data per unique medicine."""
     print("🔄 Processing time and category features...", file=sys.stderr)
     df["Manufacture Date"] = pd.to_datetime(df["Manufacture Date"])
     df["Day"] = df["Manufacture Date"].dt.day
@@ -141,29 +145,58 @@ def train_and_save_model(df):
     df["Category_Code"] = df["Category"].map(category_mapping)
     df["Medicine_Code"] = df["Medicine Name"].map(medicine_mapping)
 
-    # Calculate Future Demand (High Stock Out = High Future Demand baseline)
-    df["Future_Demand"] = df["No. of Units"] + (df["Stock Out Units"] * 2)
+    # FIX: Aggregate stock_out_units before computing Future_Demand.
+    # When training on the full (non-unique) dataset, aggregate by medicine name first,
+    # then compute the demand signal from those aggregated values.
+    print("🔄 Aggregating stock-out data per unique medicine for training...", file=sys.stderr)
+    agg_df = (
+        df.groupby("Medicine Name", as_index=False)
+        .agg(
+            total_stock_out=("Stock Out Units", "sum"),
+            avg_units=("No. of Units", "mean"),
+            record_count=("Medicine Name", "count"),
+            Category_Code=("Category_Code", "first"),
+            Medicine_Code=("Medicine_Code", "first"),
+            Price=("Price ($)", "mean"),
+            Day=("Day", "first"),
+            Month=("Month", "first"),
+            Year=("Year", "first"),
+        )
+    )
+    agg_df.rename(columns={"Price": "Price ($)", "avg_units": "No. of Units"}, inplace=True)
+
+    # FIX: Future_Demand formula using aggregated stock_out so model learns
+    # that high total demand = high future needs.
+    # We normalize by record_count so the scale is per-record-block,
+    # making it comparable to what we feed at inference time.
+    agg_df["Future_Demand"] = agg_df["No. of Units"] + (agg_df["total_stock_out"] / agg_df["record_count"]) * 2
 
     features = [
         "Medicine_Code",
         "Category_Code",
         "Price ($)",
-        "Stock Out Units",
+        "Avg_Stock_Out",
         "Day",
         "Month",
         "Year",
     ]
-    
-    X = df[features]
-    y = df["Future_Demand"]
+
+    # Create the Avg_Stock_Out feature (per-record normalised)
+    agg_df["Avg_Stock_Out"] = agg_df["total_stock_out"] / agg_df["record_count"]
+
+    X = agg_df[features]
+    y = agg_df["Future_Demand"]
 
     X_train, X_test, y_train, y_test = train_test_split(
         X, y, test_size=0.2, random_state=42
     )
 
-    print("🔄 Training Robust Med AI Model (n_estimators=50)...", file=sys.stderr)
-    ai_agent = RandomForestRegressor(n_estimators=50, random_state=42, n_jobs=-1, max_depth=15)
+    print("🔄 Training Robust Med AI Model (n_estimators=100)...", file=sys.stderr)
+    ai_agent = RandomForestRegressor(n_estimators=100, random_state=42, n_jobs=-1, max_depth=15)
     ai_agent.fit(X_train, y_train)
+
+    score = ai_agent.score(X_test, y_test)
+    print(f"🎯 Model R² score on test set: {score:.4f}", file=sys.stderr)
     print("🎉 AI Model Training Complete!", file=sys.stderr)
 
     # Save trained model and categorical encoder mappings
@@ -179,7 +212,7 @@ def train_and_save_model(df):
     return ai_agent, category_mapping, medicine_mapping, features
 
 def run_vectorized_predictions(df_predict, ai_agent, category_mapping, medicine_mapping, features):
-    """Runs predictions in a single vectorized batch call to maximize execution speed."""
+    """Runs predictions using aggregated (per-medicine) stock-out totals."""
     print(f"🔮 Running vectorized predictions for {len(df_predict)} unique medicines...", file=sys.stderr)
     
     from datetime import datetime, timedelta
@@ -196,21 +229,23 @@ def run_vectorized_predictions(df_predict, ai_agent, category_mapping, medicine_
         category = str(row["Category"])
         price = float(row["Price ($)"])
         available_units = int(row["No. of Units"])
-        historical_stock_out = float(row["Stock Out Units"])
-        
-        # Since the query returns the primary record directly, its stock out is already on the per-record scale.
+
+        # FIX: Use aggregated stock_out if available (from unique_only=True query),
+        # otherwise fall back to per-row value.
+        raw_stock_out = float(row.get("Stock Out Units", 0))
         record_count = float(row.get("Record Count", 1))
         if record_count <= 0:
             record_count = 1.0
-            
-        avg_stock_out = historical_stock_out
+
+        # avg_stock_out is per-record normalised — matches what model was trained on
+        avg_stock_out = raw_stock_out / record_count
 
         dosage = str(row.get("Dosage", "-"))
 
         med_code = medicine_mapping.get(med_name, 0)
         cat_code = category_mapping.get(category, 0)
 
-        # Batch inputs using avg_stock_out to avoid model saturation
+        # Batch inputs for tomorrow, next week, next month
         input_rows.append([med_code, cat_code, price, avg_stock_out, tomorrow.day, tomorrow.month, tomorrow.year])
         input_rows.append([med_code, cat_code, price, avg_stock_out, next_week.day, next_week.month, next_week.year])
         input_rows.append([med_code, cat_code, price, avg_stock_out, next_month.day, next_month.month, next_month.year])
@@ -221,8 +256,8 @@ def run_vectorized_predictions(df_predict, ai_agent, category_mapping, medicine_
             "category": category,
             "dosage": dosage,
             "current_stock": available_units,
-            "stock_out_history": int(historical_stock_out),
-            "record_count": record_count
+            "stock_out_history": int(raw_stock_out),
+            "record_count": int(record_count)
         })
 
     input_df = pd.DataFrame(input_rows, columns=features)
@@ -230,10 +265,9 @@ def run_vectorized_predictions(df_predict, ai_agent, category_mapping, medicine_
     
     prediction_list = []
     for i, meta in enumerate(metadata):
-        # Predictions are kept on the per-record scale (highest normal units is ~950) instead of multiplying by record_count.
-        daily_pred = int(round(all_predictions[i * 3]))
-        weekly_pred = int(round(all_predictions[i * 3 + 1]))
-        monthly_pred = int(round(all_predictions[i * 3 + 2]))
+        daily_pred = max(0, int(round(all_predictions[i * 3])))
+        weekly_pred = max(0, int(round(all_predictions[i * 3 + 1])))
+        monthly_pred = max(0, int(round(all_predictions[i * 3 + 2])))
         
         prediction_list.append({
             "id": meta["id"],
@@ -255,7 +289,7 @@ def generate_forecast(limit, hospital_name=""):
         print("⚠️ Model file 'model.joblib' not found. Training model first...", file=sys.stderr)
         df = load_data(unique_only=False, hospital_name=hospital_name)
         ai_agent, category_mapping, medicine_mapping, features = train_and_save_model(df)
-        df_predict = df.drop_duplicates(subset=["Medicine Name"])
+        df_predict = load_data(unique_only=True, hospital_name=hospital_name)
     else:
         print("💾 Loading trained model from 'model.joblib'...", file=sys.stderr)
         save_data = joblib.load("model.joblib")
@@ -302,8 +336,8 @@ def main():
             ai_agent, category_mapping, medicine_mapping, features = train_and_save_model(df)
             
             # Generate dashboard prediction inputs
-            unique_meds = df.drop_duplicates(subset=["Medicine Name"])
-            real_prediction_data = run_vectorized_predictions(unique_meds, ai_agent, category_mapping, medicine_mapping, features)
+            df_predict = load_data(unique_only=True)
+            real_prediction_data = run_vectorized_predictions(df_predict, ai_agent, category_mapping, medicine_mapping, features)
 
             # Injected dashboard builder fallback
             if os.path.exists(html_template_path):

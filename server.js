@@ -1,9 +1,69 @@
+require('dotenv').config();
 const express = require('express');
 const mysql = require('mysql2');
 const path = require('path');
 const cors = require('cors');
 const fs = require('fs');
 const { spawnSync } = require('child_process');
+const crypto = require('crypto');
+const nodemailer = require('nodemailer');
+
+// Setup Nodemailer Transporter
+const SMTP_USER = process.env.SMTP_USER;
+const SMTP_PASS = process.env.SMTP_PASS;
+let transporter = null;
+
+if (SMTP_USER && SMTP_PASS && !SMTP_PASS.includes('xxxx')) {
+    transporter = nodemailer.createTransport({
+        pool: true,
+        host: 'smtp.gmail.com',
+        port: 465,
+        secure: true, // Use SSL/TLS
+        auth: {
+            user: SMTP_USER,
+            pass: SMTP_PASS
+        }
+    });
+    // Prevent unhandled errors from crashing the app
+    transporter.on('error', (err) => {
+        console.error('✉️ Nodemailer transporter error:', err.message);
+    });
+    console.log('Nodemailer SMTP transporter initialized with connection pooling.');
+} else {
+    console.warn('⚠️ SMTP credentials not configured in .env file. Falling back to printing reset codes to server console.');
+}
+
+// Global Process Error Handlers to prevent crashing
+process.on('uncaughtException', (err) => {
+    console.error('🔥 Uncaught Exception:', err.message || err);
+});
+process.on('unhandledRejection', (reason, promise) => {
+    console.error('🔥 Unhandled Rejection at:', promise, 'reason:', reason);
+});
+
+function hashPassword(password) {
+    // Simply return plain text as requested by the user
+    return password || '';
+}
+
+function verifyPassword(password, storedPassword) {
+    if (!password || !storedPassword) return false;
+    
+    // Support legacy hashed passwords so existing users don't get locked out
+    if (storedPassword.includes(':') && storedPassword.length > 50) {
+        try {
+            const [salt, hash] = storedPassword.split(':');
+            const verifyHash = crypto.pbkdf2Sync(password, salt, 1000, 64, 'sha512').toString('hex');
+            if (hash === verifyHash) return true;
+        } catch (e) {
+            // Ignore error and fall through to plain text check
+        }
+    }
+    
+    // Compare as plain text
+    return password === storedPassword;
+}
+
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -11,6 +71,17 @@ const PORT = process.env.PORT || 3000;
 // Middleware
 app.use(cors());
 app.use(express.json());
+
+// Disable caching so browser always gets the latest client-side code updates
+app.use((req, res, next) => {
+    console.log(`[HTTP] ${req.method} ${req.url}`);
+    res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+    res.setHeader('Pragma', 'no-cache');
+    res.setHeader('Expires', '0');
+    res.setHeader('Surrogate-Control', 'no-store');
+    next();
+});
+
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Initialize MySQL Connection Pool
@@ -22,6 +93,11 @@ const pool = mysql.createPool({
     waitForConnections: true,
     connectionLimit: 10,
     queueLimit: 0
+});
+
+// Prevent unhandled database pool connection errors from crashing the app
+pool.on('error', (err) => {
+    console.error('🗄️ MySQL Pool Error:', err.message || err);
 });
 
 // Convert pool to use promises for cleaner async/await code
@@ -110,7 +186,7 @@ async function initializeDatabase() {
                 id INT AUTO_INCREMENT PRIMARY KEY,
                 username VARCHAR(50) UNIQUE NOT NULL,
                 email VARCHAR(100),
-                password VARCHAR(100) NOT NULL,
+                password VARCHAR(255) NOT NULL,
                 role VARCHAR(50) NOT NULL,
                 address TEXT,
                 hospital_name VARCHAR(100)
@@ -125,6 +201,13 @@ async function initializeDatabase() {
                 await db.query(`ALTER TABLE users ADD COLUMN hospital_name VARCHAR(100)`);
                 console.log("Migration: Added 'hospital_name' column to users table.");
             }
+
+            // Migration: Alter password field length to 255
+            const [pwdColumns] = await db.query(`SHOW COLUMNS FROM users LIKE 'password'`);
+            if (pwdColumns.length > 0 && pwdColumns[0].Type !== 'varchar(255)') {
+                await db.query(`ALTER TABLE users MODIFY COLUMN password VARCHAR(255) NOT NULL`);
+                console.log("Migration: Altered 'password' column to VARCHAR(255) in users table.");
+            }
         } catch (migrationErr) {
             console.error('Error migrating users table schema:', migrationErr.message);
         }
@@ -135,6 +218,7 @@ async function initializeDatabase() {
                 id INT AUTO_INCREMENT PRIMARY KEY,
                 alert_type VARCHAR(50) NOT NULL,
                 medicine_name VARCHAR(100) NOT NULL,
+                dosage VARCHAR(50) DEFAULT NULL,
                 status VARCHAR(50) NOT NULL DEFAULT 'Pending',
                 triggered_by VARCHAR(50),
                 hospital_name VARCHAR(100),
@@ -154,11 +238,22 @@ async function initializeDatabase() {
             console.error('Error migrating inventory_alerts table schema:', migrationErr.message);
         }
 
+        try {
+            const [columns] = await db.query(`SHOW COLUMNS FROM inventory_alerts LIKE 'dosage'`);
+            if (columns.length === 0) {
+                await db.query(`ALTER TABLE inventory_alerts ADD COLUMN dosage VARCHAR(50) DEFAULT NULL`);
+                console.log("Migration: Added 'dosage' column to inventory_alerts table.");
+            }
+        } catch (migrationErr) {
+            console.error('Error migrating inventory_alerts table schema (dosage):', migrationErr.message);
+        }
+
         // 3. Create purchase_orders table if it doesn't exist
         await db.query(`
             CREATE TABLE IF NOT EXISTS purchase_orders (
                 order_id INT AUTO_INCREMENT PRIMARY KEY,
                 medicine_name VARCHAR(100) NOT NULL,
+                dosage VARCHAR(50) DEFAULT NULL,
                 quantity_requested INT NOT NULL,
                 vendor_id INT DEFAULT 1,
                 vendor_name VARCHAR(100),
@@ -179,6 +274,16 @@ async function initializeDatabase() {
             }
         } catch (migrationErr) {
             console.error('Error migrating purchase_orders table schema:', migrationErr.message);
+        }
+
+        try {
+            const [columns] = await db.query(`SHOW COLUMNS FROM purchase_orders LIKE 'dosage'`);
+            if (columns.length === 0) {
+                await db.query(`ALTER TABLE purchase_orders ADD COLUMN dosage VARCHAR(50) DEFAULT NULL`);
+                console.log("Migration: Added 'dosage' column to purchase_orders table.");
+            }
+        } catch (migrationErr) {
+            console.error('Error migrating purchase_orders table schema (dosage):', migrationErr.message);
         }
 
         try {
@@ -281,9 +386,10 @@ app.post('/api/register', async (req, res) => {
         return res.status(400).json({ error: 'Hospital name is required for this role' });
     }
 
+    const hashedPassword = hashPassword(password);
     const query = `INSERT INTO users (username, email, password, role, address, hospital_name) VALUES (?, ?, ?, ?, ?, ?)`;
     try {
-        const [result] = await db.query(query, [username, email, password, role, address || '', hospital_name || '']);
+        const [result] = await db.query(query, [username, email, hashedPassword, role, address || '', hospital_name || '']);
         res.status(201).json({
             message: 'User registered successfully!',
             userId: result.insertId,
@@ -301,18 +407,172 @@ app.post('/api/register', async (req, res) => {
 app.post('/api/login', async (req, res) => {
     const { username, password } = req.body;
 
-    const query = `SELECT id, username, email, role, address, hospital_name FROM users WHERE username = ? AND password = ?`;
+    const query = `SELECT id, username, email, password, role, address, hospital_name FROM users WHERE username = ?`;
     try {
-        const [rows] = await db.query(query, [username, password]);
-        if (rows.length === 0) {
+        const [rows] = await db.query(query, [username]);
+        if (rows.length === 0 || !verifyPassword(password, rows[0].password)) {
             return res.status(401).json({ error: 'Invalid username or password' });
         }
 
+        const user = { ...rows[0] };
+        delete user.password;
+
         res.json({
             message: 'Login successful',
-            user: rows[0],
-            hospital_name: rows[0].hospital_name
+            user: user,
+            hospital_name: user.hospital_name
         });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+// In-memory store for password reset verification codes (OTPs)
+const resetCodes = {}; // maps username to { code, email, expires }
+
+// API: Forgot Password - Request Verification Code (OTP)
+app.post('/api/user/forgot-password', async (req, res) => {
+    const { identifier } = req.body;
+    if (!identifier) {
+        return res.status(400).json({ error: 'Username or email address is required.' });
+    }
+
+    try {
+        // Find user by username OR email
+        const [rows] = await db.query(
+            'SELECT username, email FROM users WHERE username = ? OR email = ?',
+            [identifier, identifier]
+        );
+        if (rows.length === 0) {
+            return res.status(404).json({ error: 'No user found with the provided username or email.' });
+        }
+        
+        const user = rows[0];
+        const email = user.email;
+        const username = user.username;
+
+        if (!email) {
+            return res.status(400).json({ error: 'This user account does not have a registered email address. Please contact an administrator.' });
+        }
+
+        // Generate random 6-digit OTP
+        const code = Math.floor(100000 + Math.random() * 900000).toString();
+        const expires = Date.now() + 10 * 60 * 1000; // 10 minutes expiry
+        resetCodes[username] = { code, email, expires };
+
+        // Try to send a real email if transporter is configured (asynchronously in the background)
+        let emailSent = false;
+        if (transporter) {
+            transporter.sendMail({
+                from: `"Smart MediStock" <${SMTP_USER}>`,
+                to: email,
+                subject: 'Smart MediStock - Password Reset Code',
+                html: `
+                    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e2e8f0; border-radius: 8px;">
+                        <h2 style="color: #10b981; margin-bottom: 20px;">Password Reset Verification</h2>
+                        <p>Hello,</p>
+                        <p>You requested a password reset for your Smart MediStock account. Please use the following 6-digit verification code (OTP) to reset your password:</p>
+                        <div style="background-color: #f3f7ff; padding: 15px; text-align: center; font-size: 24px; font-weight: bold; letter-spacing: 4px; color: #1e293b; border-radius: 6px; margin: 20px 0;">
+                            ${code}
+                        </div>
+                        <p style="color: #6b7280; font-size: 14px;">This code is valid for 10 minutes. If you did not request this, you can safely ignore this email.</p>
+                        <hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 20px 0;">
+                        <p style="font-size: 12px; color: #9ca3af; text-align: center;">Smart MediStock System &copy; 2026</p>
+                    </div>
+                `
+            }).then(() => {
+                console.log(`✅ Real password reset email successfully sent to: ${email}`);
+            }).catch((mailErr) => {
+                console.error(`❌ Failed to send real email to ${email}:`, mailErr.message);
+            });
+            emailSent = true;
+        }
+
+        // Print password reset code in the server console for admin/local testing
+        console.log('\n==================================================');
+        console.log(`✉️  EMAIL STATUS: ${emailSent ? 'Dispatched to ' + email : 'Simulation/Fallback'}`);
+        console.log(`🔑 PASSWORD RESET CODE: ${code}`);
+        console.log(`⏱️  EXPIRES IN: 10 minutes`);
+        console.log('==================================================\n');
+
+        // Obfuscate email for UI display
+        let obfuscatedEmail = email;
+        const parts = email.split('@');
+        if (parts.length === 2) {
+            const namePart = parts[0];
+            const domainPart = parts[1];
+            if (namePart.length > 2) {
+                obfuscatedEmail = namePart.substring(0, 2) + '*'.repeat(namePart.length - 2) + '@' + domainPart;
+            } else {
+                obfuscatedEmail = namePart[0] + '*@' + domainPart;
+            }
+        }
+
+        res.json({
+            message: 'Verification code sent successfully!',
+            email: obfuscatedEmail,
+            username: username
+        });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// API: Verify OTP and Reset Password
+app.post('/api/user/verify-otp-reset', async (req, res) => {
+    const { username, code, newPassword } = req.body;
+    if (!username || !code || !newPassword) {
+        return res.status(400).json({ error: 'Missing username, verification code, or new password.' });
+    }
+
+    if (newPassword.length < 4) {
+        return res.status(400).json({ error: 'Password must be at least 4 characters.' });
+    }
+
+    const record = resetCodes[username];
+    if (!record) {
+        return res.status(400).json({ error: 'No active password reset request found for this user.' });
+    }
+
+    if (record.code !== code) {
+        return res.status(400).json({ error: 'Invalid verification code.' });
+    }
+
+    if (Date.now() > record.expires) {
+        delete resetCodes[username];
+        return res.status(400).json({ error: 'Verification code has expired. Please request a new one.' });
+    }
+
+    try {
+        const hashedPassword = hashPassword(newPassword);
+        await db.query('UPDATE users SET password = ? WHERE username = ?', [hashedPassword, username]);
+        delete resetCodes[username];
+        res.json({ message: 'Password reset successful! Please log in with your new password.' });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// API: Legacy Reset Password (kept for backward compatibility)
+app.post('/api/user/reset-password', async (req, res) => {
+    const { username, email, newPassword } = req.body;
+
+    if (!username || !email || !newPassword) {
+        return res.status(400).json({ error: 'Missing username, email, or new password.' });
+    }
+
+    if (newPassword.length < 4) {
+        return res.status(400).json({ error: 'Password must be at least 4 characters.' });
+    }
+
+    try {
+        const [rows] = await db.query('SELECT id FROM users WHERE username = ? AND email = ?', [username, email]);
+        if (rows.length === 0) {
+            return res.status(404).json({ error: 'Verification failed. Username and Registered Email do not match.' });
+        }
+
+        const hashedPassword = hashPassword(newPassword);
+        await db.query('UPDATE users SET password = ? WHERE username = ? AND email = ?', [hashedPassword, username, email]);
+        res.json({ message: 'Password updated successfully!' });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
@@ -343,7 +603,7 @@ app.put('/api/user/settings', async (req, res) => {
         }
         if (password) {
             updateFields.push('password = ?');
-            queryParams.push(password);
+            queryParams.push(hashPassword(password));
         }
 
         if (updateFields.length === 0) {
@@ -382,9 +642,9 @@ app.get('/api/users/hospital/:hospitalName', async (req, res) => {
 // ============================================
 
 app.post('/api/alerts/intimate', async (req, res) => {
-    const { alert_type, medicine_name, status, triggered_by, hospital_name } = req.body;
+    const { alert_type, medicine_name, dosage, status, triggered_by, hospital_name } = req.body;
 
-    console.log('📝 Received alert request:', { alert_type, medicine_name, hospital_name });
+    console.log('📝 Received alert request:', { alert_type, medicine_name, dosage, hospital_name });
 
     // Enhanced validation
     if (!alert_type || !medicine_name) {
@@ -418,26 +678,26 @@ app.post('/api/alerts/intimate', async (req, res) => {
         }
     }
 
-    // Check if alert already exists for this medicine and hospital
+    // Check if alert already exists for this medicine, dosage, and hospital
     try {
         const [existing] = await db.query(
             `SELECT id FROM inventory_alerts 
-             WHERE medicine_name = ? AND hospital_name = ? AND alert_type = ? AND status = 'Pending'`,
-            [medicine_name, hospital_name, alert_type]
+             WHERE medicine_name = ? AND COALESCE(dosage, '') = ? AND hospital_name = ? AND alert_type = ? AND status = 'Pending'`,
+            [medicine_name, dosage || '', hospital_name, alert_type]
         );
 
         if (existing.length > 0) {
             return res.status(400).json({
-                error: `An active ${alert_type} alert already exists for ${medicine_name}`
+                error: `An active ${alert_type} alert already exists for ${medicine_name}${dosage ? ' (' + dosage + ')' : ''}`
             });
         }
     } catch (err) {
         console.error('Error checking existing alerts:', err);
     }
 
-    const query = `INSERT INTO inventory_alerts (alert_type, medicine_name, status, triggered_by, hospital_name) VALUES (?, ?, ?, ?, ?)`;
+    const query = `INSERT INTO inventory_alerts (alert_type, medicine_name, dosage, status, triggered_by, hospital_name) VALUES (?, ?, ?, ?, ?, ?)`;
     try {
-        const [result] = await db.query(query, [alert_type, medicine_name, status || 'Pending', triggered_by || 'Billing Executive', hospital_name]);
+        const [result] = await db.query(query, [alert_type, medicine_name, dosage || null, status || 'Pending', triggered_by || 'Billing Executive', hospital_name]);
 
         // Get the created alert
         const [newAlert] = await db.query(
@@ -946,7 +1206,7 @@ app.post('/api/medicines/restock', async (req, res) => {
 
 // API: Place a new purchase order (Stock-In Executive -> Vendor)
 app.post('/api/orders/place', async (req, res) => {
-    const { medicine_name, quantity_requested, vendor_id, vendor_name, hospital_name, placed_by } = req.body;
+    const { medicine_name, dosage, quantity_requested, vendor_id, vendor_name, hospital_name, placed_by } = req.body;
 
     if (!medicine_name || !quantity_requested) {
         return res.status(400).json({ error: 'Missing medicine_name or quantity_requested' });
@@ -974,15 +1234,16 @@ app.post('/api/orders/place', async (req, res) => {
         }
     }
 
-    const query = `INSERT INTO purchase_orders (medicine_name, quantity_requested, vendor_id, vendor_name, placed_by, status, hospital_name) VALUES (?, ?, ?, ?, ?, 'Pending', ?)`;
+    const query = `INSERT INTO purchase_orders (medicine_name, dosage, quantity_requested, vendor_id, vendor_name, placed_by, status, hospital_name) VALUES (?, ?, ?, ?, ?, ?, 'Pending', ?)`;
     try {
-        const [result] = await db.query(query, [medicine_name, quantity_requested, vendor_id || 1, vendor_name || null, placed_by || null, hospital_name]);
+        const [result] = await db.query(query, [medicine_name, dosage || null, quantity_requested, vendor_id || 1, vendor_name || null, placed_by || null, hospital_name]);
         res.status(201).json({
             message: 'Order placed successfully!',
             orderId: result.insertId,
             order: {
                 order_id: result.insertId,
                 medicine_name,
+                dosage: dosage || '-',
                 quantity_requested,
                 vendor_id: vendor_id || 1,
                 vendor_name: vendor_name || null,
@@ -1003,15 +1264,15 @@ app.get('/api/orders/vendor/orders', async (req, res) => {
         return res.status(400).json({ error: 'Vendor name is required' });
     }
 
-    let query = `SELECT * FROM purchase_orders WHERE vendor_name = ?`;
+    let query = `SELECT po.*, (SELECT m.dosage FROM medicines m WHERE LOWER(m.medicine_name) = LOWER(po.medicine_name) LIMIT 1) AS dosage, (SELECT m.category FROM medicines m WHERE LOWER(m.medicine_name) = LOWER(po.medicine_name) LIMIT 1) AS category FROM purchase_orders po WHERE po.vendor_name = ?`;
     let params = [vendorName];
 
     if (req.query.status) {
-        query += ` AND status = ?`;
+        query += ` AND po.status = ?`;
         params.push(req.query.status);
     }
 
-    query += ` ORDER BY order_id DESC`;
+    query += ` ORDER BY po.order_id DESC`;
 
     try {
         const [rows] = await db.query(query, params);
@@ -1029,7 +1290,7 @@ app.get('/api/orders/vendor/pending', async (req, res) => {
         return res.status(400).json({ error: 'Hospital name is required' });
     }
 
-    const query = `SELECT * FROM purchase_orders WHERE status = 'Pending' AND hospital_name = ? ORDER BY order_id DESC`;
+    const query = `SELECT po.*, (SELECT m.dosage FROM medicines m WHERE LOWER(m.medicine_name) = LOWER(po.medicine_name) LIMIT 1) AS dosage, (SELECT m.category FROM medicines m WHERE LOWER(m.medicine_name) = LOWER(po.medicine_name) LIMIT 1) AS category FROM purchase_orders po WHERE po.status = 'Pending' AND po.hospital_name = ? ORDER BY po.order_id DESC`;
     try {
         const [rows] = await db.query(query, [hospitalName]);
         res.json(rows);
@@ -1082,16 +1343,16 @@ app.get('/api/orders/executive/status', async (req, res) => {
         return res.status(400).json({ error: 'Hospital name is required' });
     }
 
-    let query = `SELECT * FROM purchase_orders WHERE hospital_name = ?`;
+    let query = `SELECT po.*, COALESCE(po.dosage, (SELECT m.dosage FROM medicines m WHERE LOWER(m.medicine_name) = LOWER(po.medicine_name) LIMIT 1)) AS dosage, (SELECT m.category FROM medicines m WHERE LOWER(m.medicine_name) = LOWER(po.medicine_name) LIMIT 1) AS category FROM purchase_orders po WHERE po.hospital_name = ?`;
     let params = [hospitalName];
 
     // Optional: filter by status if provided
     if (req.query.status) {
-        query += ` AND status = ?`;
+        query += ` AND po.status = ?`;
         params.push(req.query.status);
     }
 
-    query += ` ORDER BY order_id DESC`;
+    query += ` ORDER BY po.order_id DESC`;
 
     try {
         const [rows] = await db.query(query, params);
@@ -1103,12 +1364,22 @@ app.get('/api/orders/executive/status', async (req, res) => {
 
 // API: Get orders for CEO/Admin view
 app.get('/api/orders/all', async (req, res) => {
-    const query = `SELECT * FROM purchase_orders ORDER BY order_id DESC`;
+    const query = `SELECT po.*, COALESCE(po.dosage, (SELECT m.dosage FROM medicines m WHERE LOWER(m.medicine_name) = LOWER(po.medicine_name) LIMIT 1)) AS dosage, (SELECT m.category FROM medicines m WHERE LOWER(m.medicine_name) = LOWER(po.medicine_name) LIMIT 1) AS category FROM purchase_orders po ORDER BY po.order_id DESC`;
     try {
         const [rows] = await db.query(query);
         res.json(rows);
     } catch (err) {
         res.status(500).json({ error: err.message });
+    }
+});
+
+// Debug endpoint to get password reset code for automated testing
+app.get('/api/debug/reset-code/:username', (req, res) => {
+    const record = resetCodes[req.params.username];
+    if (record) {
+        res.json({ code: record.code });
+    } else {
+        res.status(404).json({ error: 'No code found' });
     }
 });
 

@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Stocker Dashboard · Smart MediStock</title>
+    <link rel="icon" type="image/png" href="logformedistock.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -17,16 +18,16 @@
         }
 
         :root {
-            --primary: #4318FF;
+            --primary: #10b981;
             --bg-light: #f4f7fe;
             --sidebar-dark: #0b1437;
             --text-main: #1b2559;
             --text-muted: #a3aed0;
             --white: #ffffff;
             --red: #ee5d50;
-            --green: #05cd99;
+            --green: #10b981;
             --yellow: #ffb547;
-            --blue: #3b82f6;
+            --blue: #10b981;
         }
 
         body {
@@ -157,8 +158,8 @@
         .hospital-badge {
             display: inline-block;
             padding: 4px 12px;
-            background: #e0e7ff;
-            color: #4338ca;
+            background: #d1fae5;
+            color: #065f46;
             border-radius: 20px;
             font-size: 0.7rem;
             font-weight: 600;
@@ -291,9 +292,14 @@
             border: none;
             cursor: pointer;
             font-weight: bold;
-            background: var(--primary);
+            background: #000000;
             color: white;
             font-size: 0.7rem;
+            transition: background 0.2s;
+        }
+
+        .btn:hover {
+            background: #1f2937;
         }
 
         .btn-sm {
@@ -311,7 +317,7 @@
         }
 
         .btn-save {
-            background: var(--primary);
+            background: #000000;
             color: white;
             padding: 10px 30px;
             font-size: 0.85rem;
@@ -320,9 +326,9 @@
         }
 
         .btn-save:hover {
-            background: #3a14e6;
+            background: #1f2937;
             transform: translateY(-1px);
-            box-shadow: 0 4px 15px rgba(67, 24, 255, 0.3);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
         }
 
         #toast {
@@ -532,7 +538,7 @@
 
         .order-modal-content input:focus {
             border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(67, 24, 255, 0.1);
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
         }
 
         .order-modal-content .stock-info {
@@ -572,14 +578,14 @@
         }
 
         .order-modal-buttons .btn-submit {
-            background: var(--primary);
+            background: #000000;
             color: white;
         }
 
         .order-modal-buttons .btn-submit:hover {
-            background: #3a14e6;
+            background: #1f2937;
             transform: translateY(-1px);
-            box-shadow: 0 4px 15px rgba(67, 24, 255, 0.3);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
         }
 
         .bill-entry-form {
@@ -1126,7 +1132,7 @@
     <div class="wrapper">
         <header class="top-header">
             <div class="search-container"><i class="fas fa-search"></i><input type="text" id="viewSearch"
-                    placeholder="Search current view..." onkeyup="filterTable()"></div>
+                    autocomplete="off" placeholder="Search current view..." onkeyup="filterTable()"></div>
             <div class="profile-info" onclick="showSection('settings')" title="View Settings">
                 <div>
                     <b id="display-name">Venkatesh</b>
@@ -1188,6 +1194,7 @@
                             <thead>
                                 <tr>
                                     <th>Medicine</th>
+                                    <th>Category</th>
                                     <th>Stock</th>
                                     <th>Action</th>
                                 </tr>
@@ -1214,6 +1221,7 @@
                             <thead>
                                 <tr>
                                     <th>Medicine</th>
+                                    <th>Category</th>
                                     <th>Stock</th>
                                 </tr>
                             </thead>
@@ -1243,6 +1251,7 @@
                             <thead>
                                 <tr>
                                     <th>Medicine</th>
+                                    <th>Category</th>
                                     <th>Exp Date</th>
                                     <th>Days Left</th>
                                     <th>Action</th>
@@ -1295,7 +1304,7 @@
             <section id="medicines" class="view-section">
                 <div class="page-header">
                     <p>Welcome back, Venkatesh!</p>
-                    <h2>Medicine Master</h2>
+                    <h2>Medicine Inventory</h2>
                 </div>
                 <div class="table-container">
                     <div
@@ -1373,7 +1382,7 @@
                             <input type="text" id="manualDose" readonly placeholder="Auto-filled">
                         </div>
                         <div>
-                            <label>Price ($)</label>
+                            <label>Price (₹)</label>
                             <input type="text" id="manualPrice" readonly placeholder="Auto-filled">
                         </div>
                         <div>
@@ -1450,7 +1459,7 @@
                                 style="width:100%; padding:10px; border:1px solid #e0e7ff; border-radius:8px; background:#eef2f6;">
                         </div>
                         <div>
-                            <label style="display:block; font-size:0.7rem; font-weight:700;">Price ($)</label>
+                            <label style="display:block; font-size:0.7rem; font-weight:700;">Price (₹)</label>
                             <input type="text" id="billPrice" readonly
                                 style="width:100%; padding:10px; border:1px solid #e0e7ff; border-radius:8px; background:#eef2f6;">
                         </div>
@@ -1516,6 +1525,7 @@
                         <thead>
                             <tr>
                                 <th>Medicine</th>
+                                <th>Category</th>
                                 <th>Stock</th>
                                 <th>Action</th>
                             </tr>
@@ -1536,6 +1546,7 @@
                         <thead>
                             <tr>
                                 <th>Medicine</th>
+                                <th>Category</th>
                                 <th>Stock</th>
                             </tr>
                         </thead>
@@ -1559,6 +1570,7 @@
                         <thead>
                             <tr>
                                 <th>Medicine</th>
+                                <th>Category</th>
                                 <th>Expiry Date</th>
                                 <th>Days Left</th>
                                 <th>Action</th>
@@ -1574,6 +1586,7 @@
                             <tr>
                                 <th>Order ID</th>
                                 <th>Medicine</th>
+                                <th>Category</th>
                                 <th>Quantity</th>
                                 <th>Status</th>
                                 <th>Date</th>
@@ -1666,13 +1679,13 @@
                         <!-- Change Password - No current password required -->
                         <div class="form-group">
                             <label for="settings-new-password">🔑 New Password</label>
-                            <input type="password" id="settings-new-password" placeholder="Enter new password">
+                            <input type="password" id="settings-new-password" autocomplete="new-password" placeholder="Enter new password">
                             <div class="helper-text">Minimum 6 characters. Leave blank to keep current password.</div>
                         </div>
 
                         <div class="form-group">
                             <label for="settings-confirm-password">✅ Confirm New Password</label>
-                            <input type="password" id="settings-confirm-password" placeholder="Confirm new password">
+                            <input type="password" id="settings-confirm-password" autocomplete="new-password" placeholder="Confirm new password">
                         </div>
 
                         <div class="form-actions">
@@ -1718,7 +1731,7 @@
                         <h4 style="margin-bottom:15px;">Security</h4>
                         <div><label style="display:block; font-size:0.75rem; font-weight:700;">New
                                 Password</label><input type="password" id="input-pass"
-                                placeholder="Leave blank to keep current"
+                                autocomplete="new-password" placeholder="Leave blank to keep current"
                                 style="width:100%; padding:12px; border:1px solid #e0e5f2; border-radius:10px; background:#f9fbff;">
                         </div>
                     </div>
@@ -1737,6 +1750,89 @@
         const HOSPITAL_NAME = sessionStorage.getItem('hospitalName') || 'No Hospital Assigned';
         const USERNAME = sessionStorage.getItem('username') || 'Stocker';
         const USER_ROLE = sessionStorage.getItem('userRole') || 'Stocker';
+
+        // Robust JSON parse that heals common corruptions and handles partially complete arrays
+        function robustJSONParse(jsonStr, defaultValue = []) {
+            if (!jsonStr) return defaultValue;
+            try {
+                jsonStr = jsonStr.replace(/"quantity"Order":/g, '"quantityOrder":');
+                jsonStr = jsonStr.replace(/"mfg":"2023-01-":/g, '"mfg":"2023-01-01","qty":');
+            } catch (e) {
+                console.warn("Pre-parse replacement failed", e);
+            }
+            try {
+                return JSON.parse(jsonStr);
+            } catch (e) {
+                console.warn("JSON parse failed, executing robust recovery parser...", e);
+            }
+
+            const results = [];
+            let braceCount = 0;
+            let insideString = false;
+            let escaped = false;
+            let startIndex = -1;
+
+            for (let i = 0; i < jsonStr.length; i++) {
+                const char = jsonStr[i];
+                if (insideString) {
+                    if (escaped) {
+                        escaped = false;
+                    } else if (char === '\\') {
+                        escaped = true;
+                    } else if (char === '"') {
+                        insideString = false;
+                    }
+                } else {
+                    if (char === '"') {
+                        insideString = true;
+                    } else if (char === '{') {
+                        if (braceCount === 0) {
+                            startIndex = i;
+                        }
+                        braceCount++;
+                    } else if (char === '}') {
+                        braceCount--;
+                        if (braceCount === 0 && startIndex !== -1) {
+                            const candidate = jsonStr.substring(startIndex, i + 1);
+                            try {
+                                results.push(JSON.parse(candidate));
+                            } catch (err) {
+                                try {
+                                    let fixed = candidate.replace(/"quantity"Order":/g, '"quantityOrder":');
+                                    fixed = fixed.replace(/"mfg":"2023-01-":/g, '"mfg":"2023-01-01","qty":');
+                                    results.push(JSON.parse(fixed));
+                                } catch (err2) {
+                                    console.warn("Skipping unrecoverable JSON block:", candidate);
+                                }
+                            }
+                            startIndex = -1;
+                        } else if (braceCount < 0) {
+                            braceCount = 0;
+                            startIndex = -1;
+                        }
+                    }
+                }
+            }
+            return Array.isArray(defaultValue) ? results : (results.length > 0 ? results[0] : defaultValue);
+        }
+
+        function safeGetLocalStorageList(key, defaultValue = []) {
+            const raw = localStorage.getItem(key);
+            if (!raw) return defaultValue;
+            try {
+                const parsed = JSON.parse(raw);
+                if (Array.isArray(parsed)) return parsed;
+            } catch (e) {
+                console.warn(`LocalStorage key "${key}" contains invalid JSON. Recovering...`);
+            }
+            const recovered = robustJSONParse(raw, defaultValue);
+            try {
+                localStorage.setItem(key, JSON.stringify(recovered));
+            } catch (e) {
+                console.error("Failed to persist recovered localStorage item:", e);
+            }
+            return recovered;
+        }
 
         let activeMedicines = [];
         let currentPage = 1;
@@ -1877,7 +1973,7 @@
                     const name = item["Medicine Name"];
                     const dose = item["Dosage"] || '-';
                     const price = item["Price ($)"] || '0.00';
-                    const displayText = `${name} (${dose}) - ${parseFloat(price).toFixed(2)}`;
+                    const displayText = `${name} (${dose}) - ₹${parseFloat(price).toFixed(2)}`;
 
                     const option = document.createElement('div');
                     option.className = 'option';
@@ -1958,7 +2054,7 @@
                     const name = item["Medicine Name"];
                     const dose = item["Dosage"] || '-';
                     const price = item["Price ($)"] || '0.00';
-                    const displayText = `${name} (${dose}) - ${parseFloat(price).toFixed(2)}`;
+                    const displayText = `${name} (${dose}) - ₹${parseFloat(price).toFixed(2)}`;
 
                     const option = document.createElement('div');
                     option.className = 'option';
@@ -2051,8 +2147,8 @@
                     showToast('❌ New passwords do not match!');
                     return;
                 }
-                if (newPass.length < 6) {
-                    showToast('❌ New password must be at least 6 characters!');
+                if (newPass.length < 4) {
+                    showToast('❌ Password must be at least 4 characters long.');
                     return;
                 }
             }
@@ -2225,9 +2321,10 @@
                     const items = await res.json();
                     items.forEach((item, i) => {
                         const name = item["Medicine Name"] || item.name || 'Unknown';
-                        const key = name.toLowerCase();
+                        const id = item["Medicine ID"] || item.id || `MED-${1000 + i}`;
+                        const key = id.toLowerCase();
                         stockMap[key] = {
-                            id: item["Medicine ID"] || item.id || `MED-${1000 + i}`,
+                            id: id,
                             name: name,
                             quantity: parseInt(item["No. of Units"] || item.Quantity || item.quantity || 0, 10),
                             dose: item["Dosage"] || item.dose || '-',
@@ -2243,9 +2340,10 @@
             } catch (e) {
                 console.warn('API fetch failed, falling back to mock options', e);
                 medicineOptions.forEach(med => {
-                    const key = med.name.toLowerCase();
+                    const id = `MED-${Math.floor(Math.random() * 9000) + 1000}`;
+                    const key = id.toLowerCase();
                     stockMap[key] = {
-                        id: `MED-${Math.floor(Math.random() * 9000) + 1000}`,
+                        id: id,
                         name: med.name,
                         quantity: Math.floor(Math.random() * 300) + 50,
                         dose: med.dose,
@@ -2257,28 +2355,10 @@
                 });
             }
 
-            const manual = JSON.parse(localStorage.getItem('manualMedicines') || '[]');
-            manual.forEach(med => {
-                const key = med.name.toLowerCase();
-                if (stockMap[key]) {
-                    stockMap[key].quantity += parseInt(med.quantity, 10) || 0;
-                } else {
-                    stockMap[key] = {
-                        id: `MED-${Math.floor(Math.random() * 9000) + 1000}`,
-                        name: med.name,
-                        quantity: parseInt(med.quantity, 10) || 0,
-                        dose: med.dose || '-',
-                        price: med.price || '0.00',
-                        expiry: med.expiry || '2028-12-31',
-                        mfg: med.mfg || '2024-01-01',
-                        category: med.category || 'General'
-                    };
-                }
-            });
 
             activeMedicines = Object.values(stockMap);
 
-            stockInHistory = JSON.parse(localStorage.getItem('stockInHistory') || '[]').map(s => ({
+            stockInHistory = safeGetLocalStorageList('stockInHistory', []).map(s => ({
                 ...s,
                 quantity: s.quantity !== undefined ? s.quantity : (s.qty !== undefined ? s.qty : 0),
                 qty: s.qty !== undefined ? s.qty : (s.quantity !== undefined ? s.quantity : 0)
@@ -2289,7 +2369,7 @@
             });
             renderStockInHistory();
 
-            bills = JSON.parse(localStorage.getItem('bills') || '[]');
+            bills = safeGetLocalStorageList('bills', []);
             renderBills();
 
             await loadOrders();
@@ -2331,7 +2411,7 @@
           <td>${m.mfg || '2024-01-01'}</td>
           <td>${m.expiry || '2028-12-31'}</td>
           <td><span class="days-badge ${badgeClass}">${daysText}</span></td>
-          <td>$${m.price || '0.00'}</td>
+          <td>₹${m.price || '0.00'}</td>
           <td>${m.quantity || 0}</td>
         </tr>`;
             });
@@ -2542,6 +2622,7 @@
                     orders = dbOrders.map(o => ({
                         id: o.order_id,
                         medicine: o.medicine_name,
+                        category: o.category || 'General',
                         quantity: o.quantity_requested,
                         status: o.status,
                         date: o.created_at ? o.created_at.split('T')[0] : new Date().toISOString().split('T')[0],
@@ -2553,7 +2634,7 @@
                 }
             } catch (err) {
                 console.error('Error fetching orders:', err);
-                orders = JSON.parse(localStorage.getItem('orders') || '[]');
+                orders = safeGetLocalStorageList('orders', []);
             }
 
             orders = orders.filter(o => {
@@ -2590,6 +2671,7 @@
                 ordersBody.innerHTML += `<tr>
                     <td>#${order.id}</td>
                     <td><b>${order.medicine}</b></td>
+                    <td>${order.category || 'General'}</td>
                     <td>${order.quantity}</td>
                     <td><span class="${statusClass}">${statusText}</span></td>
                     <td>${order.date}</td>
@@ -2626,7 +2708,7 @@
                     <td>${m.dose || '-'}</td>
                     <td>${m.mfg || '2024-01-01'}</td>
                     <td>${m.expiry || '-'}</td>
-                    <td>$${m.price || '0.00'}</td>
+                    <td>₹${m.price || '0.00'}</td>
                     <td>${m.qtyBefore || 0}</td>
                     <td>${m.quantity || 0}</td>
                     <td>${m.qtyAfter || 0}</td>
@@ -2763,6 +2845,7 @@
                 const isOrdered = orderStatus[`low_${m.name}`] || false;
                 return `<tr>
                     <td><b>${m.name}</b></td>
+                    <td>${m.category || 'General'}</td>
                     <td style="color:var(--red)">${m.quantity}</td>
                     <td>
                         ${!isOrdered ?
@@ -2773,7 +2856,7 @@
                 </tr>`;
             }).join('');
 
-            document.getElementById('dashOverBody').innerHTML = over.slice(0, 5).map(m => `<tr><td><b>${m.name}</b></td><td style="color:var(--green)">${m.quantity}</td></tr>`).join('');
+            document.getElementById('dashOverBody').innerHTML = over.slice(0, 5).map(m => `<tr><td><b>${m.name}</b></td><td>${m.category || 'General'}</td><td style="color:var(--green)">${m.quantity}</td></tr>`).join('');
 
             document.getElementById('dashExpiryBody').innerHTML = expiry.slice(0, 5).map(m => {
                 const daysLeft = m.daysLeft;
@@ -2786,6 +2869,7 @@
                                 `${daysLeft} days`;
                 return `<tr class="${expiryClass}">
                     <td><b>${m.name}</b></td>
+                    <td>${m.category || 'General'}</td>
                     <td style="font-weight:bold;">${m.expiry}</td>
                     <td><span class="days-badge ${badgeClass}">${daysText}</span></td>
                     <td><button class="btn btn-sm btn-order" onclick="openOrderModal('${m.name}', ${m.quantity})">Notify</button></td>
@@ -2832,13 +2916,14 @@
                 }
                 return `<tr>
                     <td><b>${m.name}</b></td>
+                    <td>${m.category || 'General'}</td>
                     <td style="color:var(--red)">${m.quantity}</td>
                     <td>${actionHtml}</td>
                 </tr>`;
             }).join('');
 
             document.getElementById('alertOverBody').innerHTML = over.map(m =>
-                `<tr><td><b>${m.name}</b></td><td style="color:var(--green)">${m.quantity}</td></tr>`
+                `<tr><td><b>${m.name}</b></td><td>${m.category || 'General'}</td><td style="color:var(--green)">${m.quantity}</td></tr>`
             ).join('');
 
             document.getElementById('alertExpiryBody').innerHTML = expiry.map((m) => {
@@ -2854,6 +2939,7 @@
 
                 return `<tr class="${expiryClass}">
                     <td><b>${m.name}</b></td>
+                    <td>${m.category || 'General'}</td>
                     <td style="font-weight:bold;">${m.expiry}</td>
                     <td><span class="days-badge ${badgeClass}">${daysText}</span></td>
                     <td>
@@ -2878,9 +2964,11 @@
             const key = `expiry_${medicineName}`;
             alertStatus[key] = true;
 
+            const med = activeMedicines.find(m => m.name === medicineName);
             orders.push({
                 id: 'NOT-' + String(Math.floor(Math.random() * 9000) + 1000),
                 medicine: medicineName,
+                category: med ? (med.category || 'General') : 'General',
                 quantity: 'N/A',
                 status: 'Notified',
                 date: new Date().toISOString().split('T')[0],
@@ -2900,6 +2988,7 @@
                 orderStatus[`low_${medicineName}`] = true;
             }
 
+            const med = activeMedicines.find(m => m.name === medicineName);
             const existingOrder = orders.find(o => o.medicine === medicineName && o.status === 'Pending');
             if (existingOrder) {
                 existingOrder.status = 'Resolved';
@@ -2907,6 +2996,7 @@
                 orders.push({
                     id: 'ORD-' + String(Math.floor(Math.random() * 9000) + 1000),
                     medicine: medicineName,
+                    category: med ? (med.category || 'General') : 'General',
                     quantity: Math.floor(Math.random() * 50) + 10,
                     status: 'Resolved',
                     date: new Date().toISOString().split('T')[0],
@@ -3425,13 +3515,13 @@
 
         window.addEventListener('storage', (e) => {
             if (e.key === 'bills') {
-                bills = JSON.parse(localStorage.getItem('bills') || '[]');
+                bills = safeGetLocalStorageList('bills', []);
                 if (document.getElementById('dashboard').classList.contains('active')) {
                     renderCharts();
                 }
             }
             if (e.key === 'stockInHistory') {
-                stockInHistory = JSON.parse(localStorage.getItem('stockInHistory') || '[]');
+                stockInHistory = safeGetLocalStorageList('stockInHistory', []);
                 renderStockInHistory();
                 if (document.getElementById('dashboard').classList.contains('active')) {
                     renderCharts();

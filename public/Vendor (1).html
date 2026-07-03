@@ -5,17 +5,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vendor Portal - Smart MediStock</title>
+    <link rel="icon" type="image/png" href="logformedistock.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
-            --primary: #05cd99;
+            --primary: #10b981;
             --bg-light: #f4f7fe;
             --sidebar-dark: #0b1437;
             --text-main: #1b2559;
             --text-muted: #a3aed0;
             --white: #ffffff;
             --red: #ee5d50;
-            --green: #05cd99;
+            --green: #10b981;
             --yellow: #ffb547;
         }
 
@@ -138,12 +139,16 @@
             font-weight: bold;
             color: white;
             font-size: 0.8rem;
-            background: var(--primary);
+            background: #000000;
+            transition: background 0.2s;
+        }
+
+        .btn:hover {
+            background: #1f2937;
         }
 
         .btn-accept {
             background: var(--primary);
-            margin-right: 5px;
             padding: 6px 12px;
             font-size: 0.75rem;
         }
@@ -254,7 +259,7 @@
         }
 
         .refresh-btn {
-            background: var(--primary);
+            background: #000000;
             color: white;
             padding: 8px 15px;
             border: none;
@@ -263,6 +268,11 @@
             font-weight: bold;
             font-size: 0.75rem;
             margin-bottom: 15px;
+            transition: background 0.2s;
+        }
+
+        .refresh-btn:hover {
+            background: #1f2937;
         }
     </style>
 </head>
@@ -321,6 +331,8 @@
                             <tr>
                                 <th>Order ID</th>
                                 <th>Medicine</th>
+                                <th>Category</th>
+                                <th>Dosage</th>
                                 <th>Qty Requested</th>
                                 <th>Placed At</th>
                                 <th>Ordered By</th>
@@ -330,7 +342,7 @@
                         </thead>
                         <tbody id="vendorOrderBody">
                             <tr>
-                                <td colspan="7" style="text-align:center; padding:2rem; color:var(--text-muted);"><i
+                                <td colspan="9" style="text-align:center; padding:2rem; color:var(--text-muted);"><i
                                         class="fas fa-spinner fa-spin"></i> Fetching orders...</td>
                             </tr>
                         </tbody>
@@ -351,6 +363,8 @@
                             <tr>
                                 <th>Order ID</th>
                                 <th>Medicine</th>
+                                <th>Category</th>
+                                <th>Dosage</th>
                                 <th>Quantity</th>
                                 <th>Placed At</th>
                                 <th>Ordered By</th>
@@ -360,7 +374,7 @@
                         </thead>
                         <tbody id="historyBody">
                             <tr>
-                                <td colspan="7" style="text-align:center; padding:2rem; color:var(--text-muted);">
+                                <td colspan="9" style="text-align:center; padding:2rem; color:var(--text-muted);">
                                     Loading history...</td>
                             </tr>
                         </tbody>
@@ -391,7 +405,7 @@
                         <h4 style="margin-bottom:15px; color:var(--text-main);">Security</h4>
                         <div style="margin-bottom: 1.2rem;">
                             <label>Update Portal Password</label>
-                            <input type="password" id="vendor-input-pass"
+                            <input type="password" id="vendor-input-pass" autocomplete="new-password"
                                 placeholder="Leave blank to preserve current credentials">
                         </div>
                     </div>
@@ -437,6 +451,10 @@
                 name: name
             };
             if (newPass) {
+                if (newPass.length < 4) {
+                    showToast('❌ Password must be at least 4 characters long.');
+                    return;
+                }
                 bodyPayload.password = newPass;
             }
 
@@ -500,7 +518,7 @@
             }
 
             if (!vendorName) {
-                tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding:2rem; color:var(--text-muted);">Please set your profile Vendor Name first</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; padding:2rem; color:var(--text-muted);">Please set your profile Vendor Name first</td></tr>`;
                 return;
             }
 
@@ -510,7 +528,7 @@
                 const pendingOrders = await response.json();
 
                 if (pendingOrders.length === 0) {
-                    tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding:2rem; color:var(--text-muted);">✅ No pending orders at the moment</td></tr>`;
+                    tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; padding:2rem; color:var(--text-muted);">✅ No pending orders at the moment</td></tr>`;
                     return;
                 }
 
@@ -522,20 +540,24 @@
                         <tr style="background: #f0fff4;">
                             <td style="color:var(--primary); font-weight: bold;">#ORD-${order.order_id}</td>
                             <td><b>${order.medicine_name}</b></td>
+                            <td>${order.category || 'General'}</td>
+                            <td>${order.dosage || '-'}</td>
                             <td><span class="badge bg-yellow">${order.quantity_requested} Units</span></td>
                             <td><small>${placedTime}</small></td>
                             <td><b>${order.placed_by || 'Stocker'}</b><br><small style="color:var(--text-muted);">${order.hospital_name || ''}</small></td>
                             <td><span class="status-badge status-pending">🕐 Pending</span></td>
                             <td>
-                                <button class="btn btn-accept" onclick="respondToOrder(${order.order_id}, 'Accepted')">✅ Accept</button>
-                                <button class="btn btn-deny" onclick="respondToOrder(${order.order_id}, 'Denied')">❌ Deny</button>
+                                <div style="display: flex; gap: 8px; align-items: center;">
+                                    <button class="btn btn-accept" onclick="respondToOrder(${order.order_id}, 'Accepted')">✅ Accept</button>
+                                    <button class="btn btn-deny" onclick="respondToOrder(${order.order_id}, 'Denied')">❌ Deny</button>
+                                </div>
                             </td>
                         </tr>
                     `;
                 });
             } catch (err) {
                 console.error("Error fetching orders:", err);
-                tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; color: var(--red); padding:2rem;"><i class="fas fa-exclamation-circle"></i> Connection Error</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; color: var(--red); padding:2rem;"><i class="fas fa-exclamation-circle"></i> Connection Error</td></tr>`;
             }
         }
 
@@ -549,7 +571,7 @@
             }
 
             if (!vendorName) {
-                tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding:2rem; color:var(--text-muted);">Please set your profile Vendor Name first</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; padding:2rem; color:var(--text-muted);">Please set your profile Vendor Name first</td></tr>`;
                 return;
             }
 
@@ -562,7 +584,7 @@
                 const respondedOrders = orders.filter(o => o.status !== 'Pending');
 
                 if (respondedOrders.length === 0) {
-                    tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding:2rem; color:var(--text-muted);">No order history yet</td></tr>`;
+                    tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; padding:2rem; color:var(--text-muted);">No order history yet</td></tr>`;
                     return;
                 }
 
@@ -577,6 +599,8 @@
                         <tr>
                             <td style="color:var(--primary); font-weight: bold;">#ORD-${order.order_id}</td>
                             <td><b>${order.medicine_name}</b></td>
+                            <td>${order.category || 'General'}</td>
+                            <td>${order.dosage || '-'}</td>
                             <td>${order.quantity_requested} Units</td>
                             <td><small>${placedTime}</small></td>
                             <td><b>${order.placed_by || 'Stocker'}</b><br><small style="color:var(--text-muted);">${order.hospital_name || ''}</small></td>

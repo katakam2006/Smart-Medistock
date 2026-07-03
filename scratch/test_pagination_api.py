@@ -1,4 +1,4 @@
-import requests
+import requests  # type: ignore
 
 API_BASE = 'http://localhost:3000'
 

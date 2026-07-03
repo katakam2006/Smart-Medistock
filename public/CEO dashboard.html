@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Smart MediStock - CEO Dashboard</title>
+    <link rel="icon" type="image/png" href="logformedistock.png">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -54,7 +55,7 @@
         }
 
         .logo-container h2 {
-            color: #3B82F6;
+            color: #10B981;
             font-size: 1.25rem;
         }
 
@@ -84,7 +85,7 @@
         }
 
         .menu-item.active {
-            border-left: 4px solid #3B82F6;
+            border-left: 4px solid #10B981;
         }
 
         .logout-btn {
@@ -164,8 +165,8 @@
         .hospital-badge {
             display: inline-block;
             padding: 4px 14px;
-            background: #DBEAFE;
-            color: #1E40AF;
+            background: #d1fae5;
+            color: #065f46;
             border-radius: 20px;
             font-size: 0.75rem;
             font-weight: 600;
@@ -186,7 +187,7 @@
             width: 42px;
             height: 42px;
             border-radius: 9999px;
-            border: 2px solid #3B82F6;
+            border: 2px solid #10B981;
             object-fit: cover;
         }
 
@@ -204,7 +205,7 @@
             font-size: 0.65rem;
             text-transform: uppercase;
             letter-spacing: 0.1em;
-            color: #3B82F6;
+            color: #10B981;
             font-weight: 700;
         }
 
@@ -250,7 +251,7 @@
         .stat-card .view-link {
             font-size: 0.7rem;
             font-weight: 700;
-            color: #3B82F6;
+            color: #10B981;
             cursor: pointer;
             text-transform: uppercase;
         }
@@ -268,7 +269,7 @@
         }
 
         .stat-card.border-primary {
-            border-left: 4px solid #3B82F6;
+            border-left: 4px solid #10B981;
         }
 
         .stat-card.border-purple {
@@ -333,7 +334,7 @@
         }
 
         .forecast-item strong {
-            color: #4F46E5;
+            color: #10B981;
         }
 
         .forecast-btn {
@@ -341,7 +342,7 @@
             padding: 10px;
             border: none;
             border-radius: 8px;
-            background: #4F46E5;
+            background: #000;
             color: white;
             font-weight: 700;
             cursor: pointer;
@@ -351,7 +352,7 @@
         }
 
         .forecast-btn:hover {
-            background: #4338CA;
+            background: #1f2937;
         }
 
         .table-wrapper {
@@ -422,8 +423,12 @@
         }
 
         .btn-primary {
-            background: #3B82F6;
+            background: #000;
             color: white;
+            transition: background 0.2s;
+        }
+        .btn-primary:hover {
+            background: #1f2937;
         }
 
         .btn-danger {
@@ -460,9 +465,9 @@
         }
 
         .alert-tab.active {
-            background: #3B82F6;
+            background: #10B981;
             color: white;
-            border-color: #3B82F6;
+            border-color: #10B981;
         }
 
         .alert-subsection {
@@ -543,13 +548,17 @@
 
         .prediction-controls .btn-refresh {
             padding: 8px 18px;
-            background: #3B82F6;
+            background: #000;
             color: white;
             border: none;
             border-radius: 8px;
             font-weight: 600;
             font-size: 0.8rem;
             cursor: pointer;
+            transition: background 0.2s;
+        }
+        .prediction-controls .btn-refresh:hover {
+            background: #1f2937;
         }
 
         .filter-group {
@@ -589,7 +598,7 @@
         .card-header .view-link {
             font-size: 0.7rem;
             font-weight: 700;
-            color: #3B82F6;
+            color: #10B981;
             cursor: pointer;
             text-transform: uppercase;
             white-space: nowrap;
@@ -623,8 +632,9 @@
         }
 
         .settings-form .form-group input:focus {
-            border-color: #3B82F6;
+            border-color: #10B981;
             background: white;
+            box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1);
         }
 
         .settings-form .form-group input:read-only {
@@ -680,8 +690,12 @@
         }
 
         .modal-buttons .btn-confirm {
-            background: #3B82F6;
+            background: #000;
             color: white;
+            transition: background 0.2s;
+        }
+        .modal-buttons .btn-confirm:hover {
+            background: #1f2937;
         }
 
         #toast {
@@ -842,7 +856,7 @@
         <div class="top-nav">
             <div class="search-wrapper">
                 <i class="fas fa-search search-icon"></i>
-                <input type="text" placeholder="Search..." onkeyup="searchGlobal(this.value)">
+                <input type="text" placeholder="Search..." autocomplete="off" onkeyup="searchGlobal(this.value)">
             </div>
         </div>
 
@@ -938,6 +952,7 @@
                             <thead>
                                 <tr>
                                     <th>Medicine</th>
+                                    <th>Category</th>
                                     <th>Stock</th>
                                 </tr>
                             </thead>
@@ -966,6 +981,7 @@
                             <thead>
                                 <tr>
                                     <th>Medicine</th>
+                                    <th>Category</th>
                                     <th>Stock</th>
                                 </tr>
                             </thead>
@@ -996,6 +1012,7 @@
                             <thead>
                                 <tr>
                                     <th>Medicine</th>
+                                    <th>Category</th>
                                     <th>Days Left</th>
                                 </tr>
                             </thead>
@@ -1184,6 +1201,8 @@
                             <thead>
                                 <tr>
                                     <th>Medicine</th>
+                                    <th>Category</th>
+                                    <th>Dosage</th>
                                     <th>Current Stock</th>
                                     <th>Threshold</th>
                                 </tr>
@@ -1210,6 +1229,8 @@
                             <thead>
                                 <tr>
                                     <th>Medicine</th>
+                                    <th>Category</th>
+                                    <th>Dosage</th>
                                     <th>Current Stock</th>
                                     <th>Threshold</th>
                                 </tr>
@@ -1238,6 +1259,8 @@
                             <thead>
                                 <tr>
                                     <th>Medicine</th>
+                                    <th>Category</th>
+                                    <th>Dosage</th>
                                     <th>Expiry Date</th>
                                     <th>Days Left</th>
                                 </tr>
@@ -1259,6 +1282,8 @@
                             <tr>
                                 <th>Order ID</th>
                                 <th>Medicine</th>
+                                <th>Category</th>
+                                <th>Dosage</th>
                                 <th>Quantity</th>
                                 <th>Status</th>
                                 <th>Date</th>
@@ -1341,7 +1366,7 @@
                     <h3 style="font-size:1rem; font-weight:800;">📊 Inventory Analytics</h3>
                     <div class="filter-group">
                         <label>Year:</label>
-                        <select id="reportYearSelect" onchange="updateAllReportCharts()">
+                        <select id="reportYearSelect" onchange="updateAllReportCharts(true)">
                             <option value="2016">2016</option>
                             <option value="2017">2017</option>
                             <option value="2018">2018</option>
@@ -1476,11 +1501,11 @@
                     </div>
                     <div class="form-group">
                         <label>🔑 New Password</label>
-                        <input type="password" id="settings-new-password" placeholder="Enter new password">
+                        <input type="password" id="settings-new-password" autocomplete="new-password" placeholder="Enter new password">
                     </div>
                     <div class="form-group">
                         <label>✅ Confirm New Password</label>
-                        <input type="password" id="settings-confirm-password" placeholder="Confirm new password">
+                        <input type="password" id="settings-confirm-password" autocomplete="new-password" placeholder="Confirm new password">
                     </div>
                     <button class="btn-sm btn-primary" onclick="saveSettings()"
                         style="padding:12px 30px; width:100%; font-size:0.85rem;">
@@ -1496,6 +1521,89 @@
         const HOSPITAL_NAME = sessionStorage.getItem('hospitalName') || '';
         const USERNAME = sessionStorage.getItem('username') || 'ceo';
         const USER_ROLE = sessionStorage.getItem('userRole') || 'CEO';
+
+        // Robust JSON parse that heals common corruptions and handles partially complete arrays
+        function robustJSONParse(jsonStr, defaultValue = []) {
+            if (!jsonStr) return defaultValue;
+            try {
+                jsonStr = jsonStr.replace(/"quantity"Order":/g, '"quantityOrder":');
+                jsonStr = jsonStr.replace(/"mfg":"2023-01-":/g, '"mfg":"2023-01-01","qty":');
+            } catch (e) {
+                console.warn("Pre-parse replacement failed", e);
+            }
+            try {
+                return JSON.parse(jsonStr);
+            } catch (e) {
+                console.warn("JSON parse failed, executing robust recovery parser...", e);
+            }
+
+            const results = [];
+            let braceCount = 0;
+            let insideString = false;
+            let escaped = false;
+            let startIndex = -1;
+
+            for (let i = 0; i < jsonStr.length; i++) {
+                const char = jsonStr[i];
+                if (insideString) {
+                    if (escaped) {
+                        escaped = false;
+                    } else if (char === '\\') {
+                        escaped = true;
+                    } else if (char === '"') {
+                        insideString = false;
+                    }
+                } else {
+                    if (char === '"') {
+                        insideString = true;
+                    } else if (char === '{') {
+                        if (braceCount === 0) {
+                            startIndex = i;
+                        }
+                        braceCount++;
+                    } else if (char === '}') {
+                        braceCount--;
+                        if (braceCount === 0 && startIndex !== -1) {
+                            const candidate = jsonStr.substring(startIndex, i + 1);
+                            try {
+                                results.push(JSON.parse(candidate));
+                            } catch (err) {
+                                try {
+                                    let fixed = candidate.replace(/"quantity"Order":/g, '"quantityOrder":');
+                                    fixed = fixed.replace(/"mfg":"2023-01-":/g, '"mfg":"2023-01-01","qty":');
+                                    results.push(JSON.parse(fixed));
+                                } catch (err2) {
+                                    console.warn("Skipping unrecoverable JSON block:", candidate);
+                                }
+                            }
+                            startIndex = -1;
+                        } else if (braceCount < 0) {
+                            braceCount = 0;
+                            startIndex = -1;
+                        }
+                    }
+                }
+            }
+            return Array.isArray(defaultValue) ? results : (results.length > 0 ? results[0] : defaultValue);
+        }
+
+        function safeGetLocalStorageList(key, defaultValue = []) {
+            const raw = localStorage.getItem(key);
+            if (!raw) return defaultValue;
+            try {
+                const parsed = JSON.parse(raw);
+                if (Array.isArray(parsed)) return parsed;
+            } catch (e) {
+                console.warn(`LocalStorage key "${key}" contains invalid JSON. Recovering...`);
+            }
+            const recovered = robustJSONParse(raw, defaultValue);
+            try {
+                localStorage.setItem(key, JSON.stringify(recovered));
+            } catch (e) {
+                console.error("Failed to persist recovered localStorage item:", e);
+            }
+            return recovered;
+        }
 
         let inventoryData = [];
         let orders = [];
@@ -1626,6 +1734,8 @@
                     orders = dbOrders.map(o => ({
                         id: o.order_id,
                         medicine: o.medicine_name,
+                        dosage: o.dosage,
+                        category: o.category || 'General',
                         quantity: o.quantity_requested,
                         status: o.status,
                         date: o.created_at ? o.created_at.split('T')[0] : new Date().toISOString().split('T')[0],
@@ -1636,12 +1746,8 @@
                 }
             } catch (err) {
                 console.error('Error fetching orders:', err);
-                const stored = localStorage.getItem('stockOrders') || localStorage.getItem('orders');
-                if (stored) {
-                    orders = JSON.parse(stored);
-                } else {
-                    orders = [];
-                }
+                const isOrdersKey = localStorage.getItem('stockOrders') ? 'stockOrders' : 'orders';
+                orders = safeGetLocalStorageList(isOrdersKey, []);
             }
             orders = orders.filter(o => o.hospital_name === HOSPITAL_NAME || !o.hospital_name);
         }
@@ -1662,9 +1768,8 @@
                 }
             } catch (err) {
                 console.error('Error loading staff:', err);
-                const stored = localStorage.getItem('ceoStaff');
-                if (stored) {
-                    staffMembers = JSON.parse(stored);
+                if (localStorage.getItem('ceoStaff')) {
+                    staffMembers = safeGetLocalStorageList('ceoStaff', []);
                 } else {
                     staffMembers = [
                         { username: 'billing_1', email: 'billing@hospital.com', role: 'Billing Executive', status: 'Active' },
@@ -1677,9 +1782,8 @@
 
         async function loadBills() {
             try {
-                const stored = localStorage.getItem('bills');
-                if (stored) {
-                    bills = JSON.parse(stored).map(b => ({
+                if (localStorage.getItem('bills')) {
+                    bills = safeGetLocalStorageList('bills', []).map(b => ({
                         ...b,
                         medicine: b.medicine || b.med || b.name || '',
                         id: b.id || b.bid || '',
@@ -1713,9 +1817,8 @@
 
         async function loadStockInHistory() {
             try {
-                const stored = localStorage.getItem('stockInHistory');
-                if (stored) {
-                    stockInHistory = JSON.parse(stored).map(s => ({
+                if (localStorage.getItem('stockInHistory')) {
+                    stockInHistory = safeGetLocalStorageList('stockInHistory', []).map(s => ({
                         ...s,
                         name: s.name || s.medicine || '',
                         qty: Number(s.qty !== undefined ? s.qty : (s.qtyAdded !== undefined ? s.qtyAdded : (s.quantity !== undefined ? s.quantity : 0))) || 0
@@ -1811,9 +1914,10 @@
             tbody.innerHTML = lowStock.slice(0, 5).map(m => `
                 <tr>
                     <td><strong>${m.name}</strong></td>
+                    <td>${m.category || 'General'}</td>
                     <td style="color:#D97706; font-weight:700;">${m.stock}</td>
                 </tr>
-            `).join('') || '<tr><td colspan="2" style="text-align:center;color:#94A3B8;">No low stock items</td></tr>';
+            `).join('') || '<tr><td colspan="3" style="text-align:center;color:#94A3B8;">No low stock items</td></tr>';
         }
 
         function renderDashboardCriticalStock(criticalStock) {
@@ -1821,9 +1925,10 @@
             tbody.innerHTML = criticalStock.slice(0, 5).map(m => `
                 <tr>
                     <td><strong>${m.name}</strong></td>
+                    <td>${m.category || 'General'}</td>
                     <td style="color:#DC2626; font-weight:700;">${m.stock}</td>
                 </tr>
-            `).join('') || '<tr><td colspan="2" style="text-align:center;color:#94A3B8;">No critical stock items</td></tr>';
+            `).join('') || '<tr><td colspan="3" style="text-align:center;color:#94A3B8;">No critical stock items</td></tr>';
         }
 
         function renderDashboardExpiry(expiryItems) {
@@ -1834,9 +1939,10 @@
                 let color = days < 0 ? '#DC2626' : days <= 15 ? '#D97706' : days <= 30 ? '#8B5CF6' : '#6B7280';
                 return `<tr>
                     <td><strong>${m.name}</strong></td>
+                    <td>${m.category || 'General'}</td>
                     <td style="color:${color}; font-weight:700;">${status}</td>
                 </tr>`;
-            }).join('') || '<tr><td colspan="2" style="text-align:center;color:#94A3B8;">No expiry items</td></tr>';
+            }).join('') || '<tr><td colspan="3" style="text-align:center;color:#94A3B8;">No expiry items</td></tr>';
         }
 
         function renderDashboardBills() {
@@ -1850,8 +1956,8 @@
                     <td>${bill.medicine}</td>
                     <td>${bill.category || 'General'}</td>
                     <td>${bill.qty}</td>
-                    <td>$${priceVal.toFixed(2)}</td>
-                    <td>$${(bill.qty * priceVal).toFixed(2)}</td>
+                    <td>₹${priceVal.toFixed(2)}</td>
+                    <td>₹${(bill.qty * priceVal).toFixed(2)}</td>
                     <td><span class="status-badge normal">Completed</span></td>
                 </tr>
             `}).join('') || '<tr><td colspan="7" style="text-align:center;color:#94A3B8;">No bills found</td></tr>';
@@ -1865,7 +1971,7 @@
                     <td>${item.date}</td>
                     <td><strong>${item.name}</strong></td>
                     <td>${item.qty}</td>
-                    <td>$${parseFloat(item.price || 0).toFixed(2)}</td>
+                    <td>₹${parseFloat(item.price || 0).toFixed(2)}</td>
                 </tr>
             `).join('') || '<tr><td colspan="4" style="text-align:center;color:#94A3B8;">No stock-in entries</td></tr>';
         }
@@ -1904,7 +2010,7 @@
                     <div class="name">${m.name}</div>
                     <div class="details">${m.category} • ${m.dosage}</div>
                     <div class="details">Mfg: ${m.mfg || '2024-01-01'} • Exp: ${m.expiry}</div>
-                    <div class="details">$${parseFloat(m.price || 0).toFixed(2)}</div>
+                    <div class="details">₹${parseFloat(m.price || 0).toFixed(2)}</div>
                     <div class="stock ${stockClass}">${m.stock} units</div>
                 </div>`;
             }).join('');
@@ -1936,18 +2042,22 @@
             document.getElementById('alert-critical-body').innerHTML = criticalItems.map(m => `
                 <tr>
                     <td><strong>${m.name}</strong></td>
+                    <td>${m.category || 'General'}</td>
+                    <td>${m.dosage || '-'}</td>
                     <td style="color:#DC2626; font-weight:700;">${m.stock}</td>
                     <td>< ${criticalFilter}</td>
                 </tr>
-            `).join('') || '<tr><td colspan="3" style="text-align:center;color:#94A3B8;">No critical alerts</td></tr>';
+            `).join('') || '<tr><td colspan="5" style="text-align:center;color:#94A3B8;">No critical alerts</td></tr>';
 
             document.getElementById('alert-low-body').innerHTML = lowItems.map(m => `
                 <tr>
                     <td><strong>${m.name}</strong></td>
+                    <td>${m.category || 'General'}</td>
+                    <td>${m.dosage || '-'}</td>
                     <td style="color:#D97706; font-weight:700;">${m.stock}</td>
                     <td>< ${lowFilter}</td>
                 </tr>
-            `).join('') || '<tr><td colspan="3" style="text-align:center;color:#94A3B8;">No low stock alerts</td></tr>';
+            `).join('') || '<tr><td colspan="5" style="text-align:center;color:#94A3B8;">No low stock alerts</td></tr>';
 
             document.getElementById('alert-expiry-body').innerHTML = expiryItems.slice(0, 20).map(m => {
                 const days = m.daysLeft;
@@ -1955,10 +2065,12 @@
                 let color = days < 0 ? '#DC2626' : days <= 15 ? '#D97706' : days <= 30 ? '#8B5CF6' : '#6B7280';
                 return `<tr>
                     <td><strong>${m.name}</strong></td>
+                    <td>${m.category || 'General'}</td>
+                    <td>${m.dosage || '-'}</td>
                     <td>${m.expiry}</td>
                     <td style="color:${color}; font-weight:700;">${status}</td>
                 </tr>`;
-            }).join('') || '<tr><td colspan="3" style="text-align:center;color:#94A3B8;">No expiry alerts</td></tr>';
+            }).join('') || '<tr><td colspan="5" style="text-align:center;color:#94A3B8;">No expiry alerts</td></tr>';
         }
 
         function renderOrders() {
@@ -1970,11 +2082,13 @@
                 return `<tr>
                     <td><strong>#${order.id}</strong></td>
                     <td>${order.medicine}</td>
+                    <td>${order.category || 'General'}</td>
+                    <td>${order.dosage || '-'}</td>
                     <td>${order.quantity}</td>
                     <td><span class="${statusClass}">${order.status}</span></td>
                     <td>${order.date}</td>
                 </tr>`;
-            }).join('') || '<tr><td colspan="5" style="text-align:center;color:#94A3B8;">No orders found</td></tr>';
+            }).join('') || '<tr><td colspan="7" style="text-align:center;color:#94A3B8;">No orders found</td></tr>';
         }
 
         function renderStaff() {
@@ -2023,7 +2137,7 @@
                     <td>${item.dose}</td>
                     <td>${item.mfg}</td>
                     <td>${item.expiry}</td>
-                    <td>$${parseFloat(item.price || 0).toFixed(2)}</td>
+                    <td>₹${parseFloat(item.price || 0).toFixed(2)}</td>
                     <td>${item.qtyBefore}</td>
                     <td>${qtyVal}</td>
                     <td>${item.qtyAfter}</td>
@@ -2188,7 +2302,14 @@
             });
         }
 
-        function updateAllReportCharts() {
+        function updateAllReportCharts(isMainChange) {
+            if (isMainChange) {
+                const mainYear = document.getElementById('reportYearSelect').value;
+                document.getElementById('reportStockYear').value = mainYear;
+                document.getElementById('reportStockInYear').value = mainYear;
+                document.getElementById('reportStockOutYear').value = mainYear;
+                document.getElementById('reportComparisonYear').value = mainYear;
+            }
             const year = document.getElementById('reportYearSelect').value;
             const stockYear = document.getElementById('reportStockYear').value;
             const inYear = document.getElementById('reportStockInYear').value;
@@ -2208,8 +2329,8 @@
                         datasets: [{
                             label: `Stock Overview (${stockYear})`,
                             data: data.stock,
-                            borderColor: '#3B82F6',
-                            backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                            borderColor: '#10B981',
+                            backgroundColor: 'rgba(16, 185, 129, 0.1)',
                             fill: true,
                             tension: 0.4,
                             borderWidth: 2
@@ -2483,7 +2604,7 @@
                 data: {
                     labels: labels,
                     datasets: [
-                        { label: 'Current Stock', data: currentData, backgroundColor: 'rgba(59, 130, 246, 0.6)', borderColor: '#3B82F6', borderWidth: 1 },
+                        { label: 'Current Stock', data: currentData, backgroundColor: 'rgba(16, 185, 129, 0.6)', borderColor: '#10B981', borderWidth: 1 },
                         { label: 'Predicted Demand', data: predictedData, backgroundColor: 'rgba(239, 68, 68, 0.6)', borderColor: '#EF4444', borderWidth: 1 }
                     ]
                 },
@@ -2512,8 +2633,8 @@
                     datasets: [{
                         label: 'Total Stock',
                         data: data,
-                        borderColor: '#3B82F6',
-                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                        borderColor: '#10B981',
+                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
                         fill: true,
                         tension: 0.4
                     }]
@@ -2550,8 +2671,8 @@
                     showToast('❌ Passwords do not match!');
                     return;
                 }
-                if (newPass.length < 6) {
-                    showToast('❌ Password must be at least 6 characters!');
+                if (newPass.length < 4) {
+                    showToast('❌ Password must be at least 4 characters long.');
                     return;
                 }
             }
